@@ -15,6 +15,11 @@
     background-color: #101010;
 }
 
+#welcome {
+    text-align: center;
+    font-weight: bold;
+}
+
 h2 {
     text-align: center;
 }
