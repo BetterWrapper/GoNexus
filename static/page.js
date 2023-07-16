@@ -1,6 +1,7 @@
 const fUtil = require("../misc/file");
 const stuff = require("./info");
 const http = require("http");
+const ejs = require('ejs');
 
 function toAttrString(table) {
 	return typeof table == "object"
@@ -31,10 +32,11 @@ module.exports = function (req, res, url) {
 	if (req.method != "GET") return;
 	const query = url.query;
 
-	var attrs, params, title;
+	var attrs, params, title, filename;
 	switch (url.pathname) {
 		case "/cc": {
 			title = "Character Creator";
+			filename = "cc";
 			attrs = {
 				data: process.env.SWF_URL + "/cc.swf", // data: 'cc.swf',
 				type: "application/x-shockwave-flash",
@@ -68,6 +70,7 @@ module.exports = function (req, res, url) {
 
 		case "/cc_browser": {
 			title = "CC Browser";
+			filename = "cc_browser";
 			attrs = {
 				data: process.env.SWF_URL + "/cc_browser.swf", // data: 'cc_browser.swf',
 				type: "application/x-shockwave-flash",
@@ -100,11 +103,9 @@ module.exports = function (req, res, url) {
 		}
 
 		case "/go_full": {
-			let presave =
-				query.movieId && query.movieId.startsWith("m")
-					? query.movieId
-					: `m-${fUtil[query.noAutosave ? "getNextFileId" : "fillNextFileId"]("movie-", ".xml")}`;
+			let presave = query.movieId && query.movieId.startsWith("m") ? query.movieId: `m-${fUtil.getNextFileId("movie-", ".xml")}`;
 			title = "Video Editor";
+			filename = "studio";
 			attrs = {
 				data: process.env.SWF_URL + "/go_full.swf",
 				type: "application/x-shockwave-flash",
@@ -141,6 +142,7 @@ module.exports = function (req, res, url) {
 
 		case "/player": {
 			title = "Player";
+			filename = "player";
 			attrs = {
 				data: process.env.SWF_URL + "/player.swf",
 				type: "application/x-shockwave-flash",
@@ -165,12 +167,19 @@ module.exports = function (req, res, url) {
 		default:
 			return;
 	}
-	res.setHeader("Content-Type", "text/html; charset=UTF-8");
 	Object.assign(params.flashvars, query);
-	res.end(
-		`<script>document.title='${title}',flashvars=${JSON.stringify(
-			params.flashvars
-		)}</script><body style="margin:0px">${toObjectString(attrs, params)}</body>${stuff.pages[url.pathname] || ""}`
-	);
+	ejs.renderFile(`./views/${filename}`, {
+		title,
+		attrs,
+		params
+	}, function(err, str){
+		if (err) {
+			console.log(err);
+			res.end('Not Found');
+		} else {
+			res.setHeader("Content-Type", "text/html; charset=UTF-8");
+			res.end(str);
+		}
+	});
 	return true;
 };
