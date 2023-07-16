@@ -1,86 +1,72 @@
 <!DOCTYPE html>
 <html>
-    <head>
+	<head>
         <title>Your Videos | BetterWrapper</title>
         <meta name="description" content="The website for BetterWrapper, a project that helps improve the errors Wrapper: Offline has.">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
-        <link rel="icon" type="image/x-icon" href="ui/img/icon/favicon.ico">
-        <link rel="stylesheet" href="ui/css/better-global.css">
-	<script src="js/user.js"></script>
+        <link rel="icon" type="image/x-icon" href="/ui/img/icon/favicon.ico">
+        <link rel="stylesheet" href="/ui/css/better-global.css">
+		<script src="/js/user.js"></script>
     </head>
     <body>
         <div class="header">
             <header>
-                <img id="logo" src="ui/img/logo_better.png" alt="BetterWrapper"/>
-		<div style="float: right">
-			<a class="button_small" onclick="document.getElementById('file').click()">UPLOAD A MOVIE</a>
-			<div class="char_dropdown button_small">
-				<div>CREATE A CHARACTER</div>
-				<menu>
-					<a href="/cc?themeId=family&bs=adam">Adam</a>
-					<a href="/cc?themeId=family&bs=eve">Eve</a>
-					<a href="/cc?themeId=family&bs=bob">Bob</a>
-					<a href="/cc?themeId=family&bs=rocky">Rocky</a>
-					<div></div>
-					<!--
-					<a href="/cc?themeId=business&bs=default">Business</a>
-					<a href="/cc?themeId=business&bs=heavy">Heavy</a>
-					<a href="/cc?themeId=business&bs=kid">Kid</a>
-					<div></div>
-					<a href="/cc?themeId=whiteboard&bs=default">Whiteboard</a>
-					<a href="/cc?themeId=whiteboard&bs=kid">Whiteboard (Kid)</a>
-					<div></div>
-					-->
-					<a href="/cc?themeId=anime&bs=guy">Guy (Anime)</a>
-					<a href="/cc?themeId=anime&bs=girl">Girl (Anime)</a>
-					<div></div>
-					<a href="/cc?themeId=ninjaanime&bs=guy">Guy (Ninja Anime)</a>
-					<a href="/cc?themeId=ninjaanime&bs=girl">Girl (Ninja Anime)</a>
-					<div></div>
-					<a href="/cc?themeId=cc2&bs=default">Lil' Peepz</a>
-					<div></div>
-					<a href="/cc?themeId=chibi&bs=default">Chibi Peepz</a>
-					<div></div>
-					<a href="/cc?themeId=ninja&bs=default">Chibi Ninjas</a>
-				</menu>
-			</div>
-			<div class="char_dropdown button_small">
-				<div>BROWSE CHARACTERS</div>
-				<menu>
-					<a href="/cc_browser?themeId=family">Comedy World</a>
-					<a href="/cc_browser?themeId=anime">Anime</a>
-					<a href="/cc_browser?themeId=ninjaanime">Ninja Anime</a>
-					<a href="/cc_browser?themeId=cc2">Lil' Peepz</a>
-					<a href="/cc_browser?themeId=chibi">Chibi Peepz</a>
-					<a href="/cc_browser?themeId=ninja">Chibi Ninjas</a>
-				</menu>
-			</div>
-			<a href="/go_full" class="button_big">MAKE A VIDEO</a>
+                <img id="logo" src="/ui/img/logo_better.png" alt="BetterWrapper"/>
+				<div style="float: right">
+					<a class="button_small" onclick="document.getElementById('file').click()">UPLOAD A MOVIE</a>
+					<div class="char_dropdown button_small">
+						<div>CREATE A CHARACTER</div>
+						<menu>
+							<a href="/cc?themeId=family&bs=adam">Adam</a>
+							<a href="/cc?themeId=family&bs=eve">Eve</a>
+							<a href="/cc?themeId=family&bs=bob">Bob</a>
+							<a href="/cc?themeId=family&bs=rocky">Rocky</a>
+							<div></div>
+							<a href="/cc?themeId=anime&bs=guy">Guy (Anime)</a>
+							<a href="/cc?themeId=anime&bs=girl">Girl (Anime)</a>
+							<div></div>
+							<a href="/cc?themeId=ninjaanime&bs=guy">Guy (Ninja Anime)</a>
+							<a href="/cc?themeId=ninjaanime&bs=girl">Girl (Ninja Anime)</a>
+							<div></div>
+							<a href="/cc?themeId=cc2&bs=default">Lil' Peepz</a>
+							<div></div>
+							<a href="/cc?themeId=chibi&bs=default">Chibi Peepz</a>
+							<div></div>
+							<a href="/cc?themeId=ninja&bs=default">Chibi Ninjas</a>
+						</menu>
+					</div>
+					<div class="char_dropdown button_small">
+						<div>BROWSE CHARACTERS</div>
+						<menu>
+							<a href="/cc_browser?themeId=family">Comedy World</a>
+							<a href="/cc_browser?themeId=anime">Anime</a>
+							<a href="/cc_browser?themeId=ninjaanime">Ninja Anime</a>
+							<a href="/cc_browser?themeId=cc2">Lil' Peepz</a>
+							<a href="/cc_browser?themeId=chibi">Chibi Peepz</a>
+							<a href="/cc_browser?themeId=ninja">Chibi Ninjas</a>
+						</menu>
+					</div>
+					<a href="/go_full" class="button_big">MAKE A VIDEO</a>
+				</div>
+			</header>
 		</div>
-		<div class="warning">Please note that BetterWrapper is currently in it's development stage right now. 
-			we are currently nowhere near close to beta testing yet, 
-			so this lVM clone is basicly very unstable at the monent.
-			For updates with BetterWrapper, you may join our <a href="https://discord.gg/2G8caKYmGr">Discord Server</a>.
-		</div>
-            </header>
-        </div>
-	<table>
-		<thead>
-			<tr>
-				<td></td>
-				<td>Video Title</td>
-				<td>Last Modified</td>
-				<td></td>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
-	<form enctype='multipart/form-data' action='/upload_movie' method='post'>
-		<input id='file' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
-	</form>
-	<script>
+		<table>
+			<thead>
+				<tr>
+					<td></td>
+					<td>Video Title</td>
+					<td>Last Modified</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<form enctype='multipart/form-data' action='/upload_movie' method='post'>
+			<input id='file' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
+		</form>
+		<script>
 		// TODO: make all of this use jquery instead of this document shit.
 		var json;
 		var tbody = document.getElementsByTagName('tbody')[0];
@@ -107,109 +93,8 @@
 		function popup(id) {
 			window.open('/player?movieId=' + id, 'MsgWindow', 'width=1280,height=723,left=' + (screen.width / 2 - 640) + ',top=' + (screen.height / 2 - 360));
 		}
-	</script>
-	<style>
-		.button_big,
-		.button_small {
-			margin-left: 20px;
-			margin-top: 7px;
-			display: inline-block;
-			padding-top: 5px;
-			padding-bottom: 3px;
-			border-radius: 3px;
-			font-size: 14px;
-			text-decoration: none;
-			color: #fff;
-		}
-
-		.button_big {
-			background-color: #d85e27;
-			width: 160px;
-		}
-
-		.button_big:hover {
-			text-decoration: underline;
-		}
-
-		.button_small:hover {
-			color: #d85e27;
-		}
-
-		.button_big:hover,
-		.button_small:hover {
-			cursor: pointer;
-		}
-
-		.char_dropdown:hover>:nth-child(1) {
-			cursor: context-menu;
-			color: #d85e27;
-		}
-
-		.char_dropdown>menu {
-			position: relative;
-			display: none;
-			top: 100%;
-			left: 0;
-			z-index: 1000;
-			float: left;
-			width: 100%;
-			padding: 10px 0;
-			margin: 9px 0 0;
-			list-style: none;
-			font-size: 14px;
-			text-align: left;
-			background-color: #fff;
-			border: 1px solid #ccc;
-			border: 1px solid rgba(0, 0, 0, 0.15);
-			border-radius: 4px;
-			-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-			-webkit-background-clip: padding-box;
-			background-clip: padding-box;
-		}
-
-		.char_dropdown:hover>menu {
-			display: block;
-		}
-
-		.char_dropdown>menu>a {
-			display: block;
-			padding: 2px 20px;
-			clear: both;
-			font-weight: normal;
-			color: #333;
-			text-decoration: none;
-		}
-
-		.char_dropdown>menu>a:hover {
-			color: #d85e27;
-			background-color: #f5f5f5;
-		}
-
-		.char_dropdown>menu>div {
-			height: 1px;
-			margin: 10px 0;
-			background-color: #e5e5e5;
-		}
-
-		.warning {
-			font-size: 14px;
-			padding: 10px 0;
-			background-color: #fd7;
-			text-align: center;
-		}
-
-		.warning::before {
-			font-family: 'GlyphiconsRegular';
-			padding-right: 4px;
-			content: '\E079';
-			font-size: 12px;
-		}
-
-		.warning>a {
-			color: #5596e6;
-		}
-
+		</script>
+		<style>
 		table {
 			width: 100%;
 			max-width: 100%;
@@ -408,6 +293,6 @@
 			font-weight: normal;
 			font-style: normal;
 		}
-	</style>
-    </body>
+		</style>
+	</body>
 </html>

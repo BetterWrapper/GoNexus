@@ -22,6 +22,7 @@ const thL = require("./theme/list");
 const thl = require("./theme/load");
 const tsv = require("./tts/voices");
 const tsl = require("./tts/load");
+const fs = require("fs");
 const url = require("url");
 
 const functions = [mvL, pmc, asl, chl, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
@@ -30,7 +31,19 @@ module.exports = http
 	.createServer((req, res) => {
 		try {
 			const parsedUrl = url.parse(req.url, true);
-			//if (!parsedUrl.path.endsWith('/')) parsedUrl.path += '/';
+			//pages
+			switch (req.method) {
+				case "GET": {
+					switch (parsedUrl.pathname) {
+						case "/": {
+							res.setHeader("Content-Type", "text/html; charset=UTF-8");
+							res.end(fs.readFileSync('./index.html'));
+							break;
+						} default: break;
+					}
+					break;
+				} default: break;
+			}
 			const found = functions.find((f) => f(req, res, parsedUrl));
 			console.log(req.method, parsedUrl.path);
 			if (!found) {

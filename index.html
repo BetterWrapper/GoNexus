@@ -8,18 +8,41 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
         <link rel="icon" type="image/x-icon" href="ui/img/icon/favicon.ico">
         <link rel="stylesheet" href="ui/css/better-global.css">
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="js/user.js"></script>
     </head>
     <body>
         <div class="header">
             <header>
                 <img id="logo" src="ui/img/logo_better.png" alt="BetterWrapper">
+                <div style="float: right">
+                    <div id="is-guest">
+                        <a class="button_small" href="/signup">Sign Up</a>
+                        <a class="button_small" href="/login">Log In</a>
+                    </div>
+                    <div id="is-login" style="display: none;">
+                        <div class="char_dropdown button_small">
+                            <div>Your Account</div>
+                            <menu>
+                                <a href="/html/list.html">Your Videos</a>
+                                <a href="javascript:;" class="logout-button">Log Out</a>
+                            </menu>
+                        </div>
+                    </div>
+				</div>
             </header>
         </div>
         <br>
         <h1 id="welcome">Welcome!</h1>
         <br>
-        <h2>Stuff is currently being worked on.</h2>
+        <h2>
+            As you can probably see, BetterWrapper is currently in it's development stage right now. 
+            we are currently nowhere near close to beta testing yet, 
+            so this lVM clone is basicly very unstable at the monent.
+        </h2>
         <br>
-        <h3>Don't expect this site to change for a while.</h3>
+        <h3>For updates with BetterWrapper, you may join our <a href="https://discord.gg/2G8caKYmGr">Discord Server</a></h3>
     </body>
 </html>

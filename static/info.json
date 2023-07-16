@@ -1,19 +1,5 @@
 {
 	"GET": {
-		"/index.html": {
-			"headers": {
-				"Location": "/html/list.html"
-			},
-			"statusCode": 302,
-			"content": ""
-		},
-		"/$": {
-			"headers": {
-				"Location": "/html/list.html"
-			},
-			"statusCode": 302,
-			"content": ""
-		},
 		"/goapi/getAssetTags": {
 			"headers": {
 				"Content-Type": "application/json"
@@ -40,6 +26,45 @@
 			"regexLink": "/html/$1",
 			"headers": {
 				"Content-Type": "text/html; charset=UTF-8"
+			}
+		},
+		"/js/([^?]+js).*": {
+			"contentReplace": true,
+			"regexLink": "/js/$1",
+			"headers": {
+				"Content-Type": "text/js"
+			}
+		},
+		"/ui/css/([^?]+js).*": {
+			"contentReplace": true,
+			"regexLink": "/ui/css/$1",
+			"headers": {
+				"Content-Type": "text/css"
+			}
+		},
+		"/ui/img/([^?]+js).*": {
+			"contentReplace": true,
+			"regexLink": "/ui/img/$1",
+			"headers": {
+				"Content-Type": "image/png"
+			}
+		},
+		"/ui/img/([^?]+).*": {
+			"regexLink": "/ui/img/$1",
+			"headers": {
+				"Content-Type": "text/css"
+			}
+		},
+		"/ui/css/([^?]+).*": {
+			"regexLink": "/ui/css/$1",
+			"headers": {
+				"Content-Type": "text/css"
+			}
+		},
+		"/js/([^?]+).*": {
+			"regexLink": "/js/$1",
+			"headers": {
+				"Content-Type": "text/js"
 			}
 		},
 		"/html/([^?]+).*": {
