@@ -1,3 +1,4 @@
+<title>Your Videos In BetterWrapper</title>
 <body>
 	<header>
 		<div>
@@ -51,12 +52,10 @@
 				<a href="/go_full" class="button_big">MAKE A VIDEO</a>
 			</div>
 		</div>
-		<div class="warning"><strong>I was just notified by Spark that GoAnimate Inc. wanted me to <a
-					href="https://media.discordapp.net/attachments/741394845679091792/778077861650759711/unknown.png">cease
-					development on Wrapper</a> ... again.</strong><br>This instance of Wrapper will be taken down any
-			time before
-			2020-11-17 09:00 UTC.<br><a href='https://github.com/GoAnimate-Wrapper/GoAnimate-Wrapper/projects/1'>Link
-				to a progress map of the project on GitHub</a>
+		<div class="warning">Please note that BetterWrapper is currently in it's development stage right now. 
+			we are currently nowhere near close to beta testing yet, 
+			so this lVM clone is basicly very unstable at the monent.
+			For updates with BetterWrapper, you may join our <a href="https://discord.gg/2G8caKYmGr">Discord Server</a>.
 		</div>
 	</header>
 	<table>
@@ -69,11 +68,6 @@
 			</tr>
 		</thead>
 		<tbody></tbody>
-		<tfoot>
-			<tr>
-				<td colspan="127"><a id="load_more" href="javascript:;">LOAD MORE...</a></td>
-			</tr>
-		</tfoot>
 	</table>
 	<form enctype='multipart/form-data' action='/upload_movie' method='post'>
 		<input id='file' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
@@ -86,16 +80,8 @@
 		listReq.open('GET', '/movieList');
 		listReq.send();
 
-		var C = 0;
 		function loadRows() {
-			let c = C; C += 69;
-			for (; c < C; c++) {
-				if (c > json.length - 1) {
-					loadMore.remove();
-					break;
-				}
-
-				const tbl = json[c];
+			for (const tbl of json) {
 				const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
 				tbody.insertAdjacentHTML('beforeend',
 					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div></div></td><td><span>' + date + '</span></td><td><a href="javascript:;" onclick="popup(\'' + tbl.id + '\')"></a><a href="/go_full?movieId=' + tbl.id + '"></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"></a></td></tr>');
