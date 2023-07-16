@@ -5,7 +5,7 @@
  */
 const auth = firebase.auth();
 auth.onAuthStateChanged(user => {
-    // action it does when the user is logged in.
+    // action it does when the user is logged in or not.
 });
 function userSignup(email, password) {
     auth.createUserWithEmailAndPassword(email, password).then(() => {
