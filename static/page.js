@@ -68,6 +68,11 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
+		case "/": {
+			filename = "home";
+			break;
+		}
+
 		case "/cc_browser": {
 			title = "CC Browser";
 			filename = "cc_browser";
