@@ -109,10 +109,13 @@ module.exports = {
 	},
 	loadThumb(movieId) {
 		return new Promise(async (res, rej) => {
-			if (!movieId.startsWith("m-")) return;
-			const n = Number.parseInt(movieId.substr(2));
-			const fn = fUtil.getFileIndex("thumb-", ".png", n);
-			isNaN(n) ? rej() : res(fs.readFileSync(fn));
+			try {
+				const n = Number.parseInt(movieId.substr(2));
+				const fn = fUtil.getFileIndex("thumb-", ".png", n);
+				res(fs.readFileSync(fn));
+			} catch (e) {
+				rej(e);
+			}
 		});
 	},
 	list() {

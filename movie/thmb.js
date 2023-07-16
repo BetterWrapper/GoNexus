@@ -22,9 +22,9 @@ module.exports = function (req, res, url) {
 			res.statusCode = 200;
 			res.end(v);
 		})
-		.catch(() => {
-			res.statusCode = 400;
-			res.end();
+		.catch((e) => {
+			console.log(e);
+			res.end("Not Found");
 		});
 	return true;
 };

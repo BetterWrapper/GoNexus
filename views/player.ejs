@@ -14,7 +14,7 @@
 <meta name="title" content="<%= title %>">
 
 
-<link href="https://web.archive.org/web/20191104072153cs_/https://d2bm7x1jqouzel.cloudfront.net/fonts/1/sailec.css" rel="stylesheet" type="text/css">
+<link href="https://josephanimate2021.github.io/fonts/1/sailec.css" rel="stylesheet" type="text/css">
 <link href="https://web.archive.org/web/20191104072153cs_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/css/common_combined.css.gz.css" rel="stylesheet" type="text/css">
 
 <link href="https://web.archive.org/web/20191104072153cs_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/css/watermark.css.gz.css" rel="stylesheet" type="text/css">
@@ -169,9 +169,15 @@ if (self !== top) {
         <div class="container">
             <div class="row">
                 <div class="player-container col-sm-7">
+                    <div class="notification using-h5">
+                        <span class="icon glyph-halfling glyph-info-sign"></span> Your video is currently in process of being loaded right now. please wait a few minutes then refresh this page. If you encounter any technical problems, switch to the <a onclick="switchPlayers('flash')">legacy video player</a>.
+                    </div>
+                    <div class="notification using-flash hidden">
+                        <span class="icon glyph-halfling glyph-info-sign"></span>If your video takes longer to load with the legacy player, you can switch to the <a onclick="switchPlayers('h5')">h5 video player</a>.
+                    </div>
                     <div class="video-player">
                         <div class="video-player-container">
-                            <div class="video-player-viewport" style="background-image: url('https://web.archive.org/web/20191104072153im_/https://s3.amazonaws.com/fs.goanimate.com/files/thumbnails/movie/1927/7201927/25238467L.jpg');">
+                            <div class="video-player-viewport" style="background-image: url('/movie_thumbs/<%= params.flashvars.movieId %>.png');">
                                 <div class="video-player-wrapper embed-responsive embed-responsive-16by9">
                                     <div class="embed-responsive-item hidden" id="flash-player">
                                         <div class="no-flash-player">
@@ -344,7 +350,7 @@ if (self !== top) {
                         <a class="history-toggle" data-dismiss="modal">View revision history.</a>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-default text-uppercase" onclick="fullscreenStudio('');">Manually saved</button>
+                        <button class="btn btn-default text-uppercase" id="load-manual-save">Manually saved</button>
                         <button class="load-autosave btn btn-default btn-orange text-uppercase">Load autosaved</button>
                     </div>
                 </div>
@@ -545,11 +551,13 @@ if (self !== top) {
 <input id="embed_code_field" type="hidden" value="<iframe scrolling=&quot;no&quot; allowTransparency=&quot;true&quot; allowfullscreen frameborder=&quot;0&quot; width=&quot;640&quot; height=&quot;360&quot; src=&quot;https://ga.vyond.com/player/embed/09NT7zVNrDlw&quot; ></iframe>
 "/>
 <script>
-    const flashvars = '<%= params.flashvars %>';
-    var flashPlayerUrl = '<%= attrs.data %>',
-        flashPlayerVars = JSON.stringify(flashvars),
-        h5PlayerElem = null,
-        sceneDetails = {};
+    var flashPlayerUrl = '<%= attrs.data %>';
+    var flashPlayerVars;
+    var h5PlayerElem = null;
+    var sceneDetails = {};
+    $.getJSON(`/api/convertUrlQuery2JSON?<%= flashvarsString %>`, (d) => {
+        flashPlayerVars = JSON.stringify(d).split("amp;").join("");
+    });
 </script>
 
 <script src="https://web.archive.org/web/20191104072153js_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/js/h5preview/media-controller.js.gz.js"></script>
@@ -561,7 +569,8 @@ if (self !== top) {
     var videoPage = new VideoPage("<%= params.flashvars.movieId %>"),
         previewPlayer,
         flashVar = {
-            duration: 3        };
+            duration: 3        
+        };
     var videoCopyableUrl = '';
 
     function setupPreviewPlayer() {
@@ -570,83 +579,29 @@ if (self !== top) {
 
         video.innerHTML = '';
 
-        previewPlayer = new PreviewPlayer("wss://preview.vyond.com", "09NT7zVNrDlw", true);
+        previewPlayer = new PreviewPlayer("wss://preview.vyond.com", "<%= params.flashvars.movieId %>", true);
         previewPlayer.setVideoElement(video);
         previewPlayer.setUserAuthenticationToken('1:8af7a0920360fc523946b7fa20900d37c9cdc60ca8b684356b0030822c0b9e10:1Q/Zr1DXah/msl7S8mCq++RTQtqE6rntMS7j8S1GfqQ=');
         previewPlayer.setFromPptConversion(false);
     }
-
-    $('[data-action="user-opt-out"]').on('click', function(e) {
-        e.preventDefault();
-        if (previewPlayer) {
-            previewPlayer.userOptOut();
-        } else {
-            switchToFlashPlayer();
-            window.localStorage.setItem(PreviewPlayerConstants.USE_H5_PREVIEW_PREFERENCE_KEY, PreviewPlayerConstants.USER_OPT_OUT);
-        }
-        amplitudeSetUserProperty(
-            AMPLITUDE_USER_PROPERTY_KEYS.LATEST_PLAYER_METHOD,
-            AMPLITUDE_EVENT_PROPERTIES.PREVIEW_METHOD_LEGACY
-        );
-        amplitudeTrackEvent(
-            AMPLITUDE_EVENT.VIDEO_PLAYER_SWITCH,
-            {
-                video_id: '09NT7zVNrDlw',
-                action: AMPLITUDE_EVENT_PROPERTIES.PREVIEW_ACTION_HTML5_TO_LEGACY
+    function switchPlayers(type) {
+        switch (type) {
+            case "flash": {
+                switchToFlashPlayer();
+                break;
+            } case "h5": {
+                switchToH5Player();
+                break;
             }
-        );
-    });
-
-    $('[data-action="user-opt-in"]').on('click', function(e) {
-        e.preventDefault();
-        if (previewPlayer) {
-            previewPlayer.userOptIn();
-        } else {
-            switchToH5Player();
-            window.localStorage.setItem(PreviewPlayerConstants.USE_H5_PREVIEW_PREFERENCE_KEY, PreviewPlayerConstants.USER_OPT_IN);
         }
-        amplitudeSetUserProperty(
-            AMPLITUDE_USER_PROPERTY_KEYS.LATEST_PLAYER_METHOD,
-            AMPLITUDE_EVENT_PROPERTIES.PREVIEW_METHOD_HTML5
-        );
-        amplitudeTrackEvent(
-            AMPLITUDE_EVENT.VIDEO_PLAYER_SWITCH,
-            {
-                video_id: '<%= params.flashvars.movieId %>',
-                action: AMPLITUDE_EVENT_PROPERTIES.PREVIEW_ACTION_LEGACY_TO_HTML5
-            }
-        );
-    });
-    if (!window.MediaSource) {
-        if ($.flash.available) {
-            // MSE not available
-            $('.player-container > .notification').addClass('hidden')
-                .filter('.browser-no-mse').removeClass('hidden');
-        } else {
-            // MSE and flash plugin not available
-            $('.player-container > .notification').addClass('hidden')
-                .filter('.browser-no-mse-no-flash').removeClass('hidden');
-            // refresh the page after 30 seconds
-            setTimeout(function() {
-                window.location.reload()
-            }, 30000);
-        }
-        // trigger h5 video compilation
-        $.post('/ajax/compileH5Video/<%= params.flashvars.movieId %>');
     }
-    setupPreviewPlayer();
-    loadH5Preview();
-
-    $(document).on('click', 'a.for-unavailable', function() {
-        amplitudeTrackEvent(AMPLITUDE_EVENT.VIEW_PLANS_FROM_VIDEO_PAGE);
-    });
 </script>
 
 
 
 <script>
 $(window).on('amplitude_loaded', function() {
-    amplitudeTrackEvent(AMPLITUDE_EVENT.VISIT_VIDEO_PAGE, {"movie":"09NT7zVNrDlw","owner":0,"editor":0,"duration":"3","creator_plan":"gopublish","referral":null,"login_status":"no","video_status":"private","manage_end_date":""});
+    amplitudeTrackEvent(AMPLITUDE_EVENT.VISIT_VIDEO_PAGE, {"movie":"<%= params.flashvars.movieId %>","owner":0,"editor":0,"duration":"3","creator_plan":"gopublish","referral":null,"login_status":"no","video_status":"","manage_end_date":""});
 });
 </script>
 

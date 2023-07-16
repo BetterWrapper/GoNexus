@@ -171,7 +171,8 @@ module.exports = function (req, res, url) {
 	ejs.renderFile(`./views/${filename}.ejs`, {
 		title,
 		attrs,
-		params
+		params,
+		flashvarsString: new URLSearchParams(params.flashvars).toString()
 	}, function(err, str){
 		if (err) {
 			console.log(err);
