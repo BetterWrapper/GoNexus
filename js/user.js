@@ -5,21 +5,27 @@
  */
 const auth = firebase.auth();
 auth.onAuthStateChanged(user => {
-  // action it does when the user is logged in.
+    // action it does when the user is logged in.
 });
 function userSignup(email, password) {
-  auth.createUserWithEmailAndPassword(email, password).then(() => {
-    // action it does when the user is signed up.
-  }).catch(e => {
-    console.log(e);
-    // action it does when an error occurs and the error is logged to the console.
-  });
+    auth.createUserWithEmailAndPassword(email, password).then(() => {
+        // action it does when the user is signed up.
+    }).catch(e => {
+        console.log(e);
+        // action it does when an error occurs and the error is logged to the console.
+    });
 }
 function userLogin(email, password) {
-  auth.signInWithEmailAndPassword(email, password).then(() => {
-    // action it does when the user is logged in.
-  }).catch(e => {
-    console.log(e);
-    // action it does when an error occurs and the error is logged to the console.
-  });
+    auth.signInWithEmailAndPassword(email, password).then(() => {
+        // action it does when the user is logged in.
+    }).catch(e => {
+        console.log(e);
+        // action it does when an error occurs and the error is logged to the console.
+    });
+}
+function hideElement(id) {
+    document.getElementById(id).style.display='none';
+}
+function showElement(id) {
+    document.getElementById(id).style.display='block';
 }

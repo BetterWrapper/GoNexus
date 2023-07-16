@@ -20,8 +20,8 @@
                 <img id="logo" src="ui/img/logo_better.png" alt="BetterWrapper">
                 <div style="float: right">
                     <div id="is-guest">
-                        <a class="button_small" id="signup-modal-button">Sign Up</a>
-                        <a class="button_small" id="login-modal-button">Log In</a>
+                        <a class="button_small" onclick="showElement('signup-modal')">Sign Up</a>
+                        <a class="button_small" onclick="showElement('login-modal')">Log In</a>
                     </div>
                     <div id="is-login" style="display: none;">
                         <div class="char_dropdown button_small">
@@ -40,7 +40,7 @@
             <form class="modal-content" action="javascript:;" method="post" id="loginform">
                 <div class="imgcontainer">
                     <center><h1>Log In</h1></center>
-                    <span class="close" id="close-login" title="Close Modal">&times;</span>
+                    <span class="close" onclick="hideElement('login-modal')" title="Close Modal">&times;</span>
                 </div>
                 <div class="form-container">
                     <label for="email"><b>Email Address</b></label>
@@ -60,7 +60,7 @@
                 <div class="form-container">
                     <div class="imgcontainer">
                         <center><h1>Sign Up</h1></center>
-                        <span class="close" id="close-signup" title="Close Modal">&times;</span>
+                        <span class="close" onclick="hideElement('signup-modal')" title="Close Modal">&times;</span>
                     </div>
                     <center><p>Please fill in this form to create an account.</p></center>
                     <label for="email"><b>Email Address</b></label>
@@ -90,21 +90,4 @@
         <br>
         <h3>For updates with BetterWrapper, you may join our <a href="https://discord.gg/2G8caKYmGr">Discord Server</a></h3>
     </body>
-    <script>
-        document.getElementById("login-modal-button").onclick = () => {
-            document.getElementById('login-modal').style.display='block'
-        }
-        document.getElementById("close-login").onclick = () => {
-            document.getElementById('login-modal').style.display='none';
-        }
-        document.getElementById("signup-modal-button").onclick = () => {
-            document.getElementById('signup-modal').style.display='block'
-        }
-        document.getElementById("close-signup").onclick = () => {
-            document.getElementById('signup-modal').style.display='none';
-        }
-        function hideElement(id) {
-            document.getElementById(id).style.display='none';
-        }
-    </script>
 </html>

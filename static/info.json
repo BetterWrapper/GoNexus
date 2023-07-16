@@ -32,7 +32,7 @@
 			"contentReplace": true,
 			"regexLink": "/js/$1",
 			"headers": {
-				"Content-Type": "text/js"
+				"Content-Type": "text/javascript"
 			}
 		},
 		"/ui/css/([^?]+js).*": {
@@ -64,7 +64,7 @@
 		"/js/([^?]+).*": {
 			"regexLink": "/js/$1",
 			"headers": {
-				"Content-Type": "text/js"
+				"Content-Type": "text/javascript"
 			}
 		},
 		"/html/([^?]+).*": {
