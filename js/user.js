@@ -1,5 +1,5 @@
 /**
- * Account System For BetterWrapper
+ * Account System For BetterWrapper.
  * Firebase is required in order to run this file.
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
