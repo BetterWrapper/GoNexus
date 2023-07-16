@@ -29,7 +29,7 @@ auth.onAuthStateChanged(user => {
             hideElement('is-guest');
             showElement('is-login');
             switch (window.location.pathname) {
-                case "/html/list.html": {
+                case "/yourvideos": {
                     $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
                     break;
                 }
