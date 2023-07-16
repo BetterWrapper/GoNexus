@@ -168,7 +168,7 @@ module.exports = function (req, res, url) {
 			return;
 	}
 	Object.assign(params.flashvars, query);
-	ejs.renderFile(`./views/${filename}`, {
+	ejs.renderFile(`./views/${filename}.ejs`, {
 		title,
 		attrs,
 		params
