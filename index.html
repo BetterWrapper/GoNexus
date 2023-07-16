@@ -50,7 +50,7 @@
                     <button class="modal-button" type="submit">Login</button>
                 </div>
                 <div class="form-container" style="background-color:#f1f1f1">
-                    <button type="button" class="modal-button" id="cancelbtn">Cancel</button>
+                    <button type="button" class="modal-button" onclick="hideElement('login-modal')" id="cancelbtn">Cancel</button>
                     <span class="psw">Forgot <a href="/forgotpassword">password?</a></span>
                 </div>
             </form>
@@ -75,7 +75,7 @@
                     <button class="modal-button" type="submit">Sign Up</button>
                 </div>
                 <div class="form-container" style="background-color:#f1f1f1">
-                    <button type="button" class="modal-button" id="cancelbtn">Cancel</button>
+                    <button type="button" class="modal-button" onclick="hideElement('signup-modal')" id="cancelbtn">Cancel</button>
                 </div>
             </form>
         </div>
@@ -103,9 +103,8 @@
         document.getElementById("close-signup").onclick = () => {
             document.getElementById('signup-modal').style.display='none';
         }
-        document.getElementById("cancelbtn").onclick = () => {
-            if (document.getElementById('login-modal').style.display=='block') document.getElementById('login-modal').style.display='none';
-            else if (document.getElementById('signup-modal').style.display=='block') document.getElementById('signup-modal').style.display='none';
+        function hideElement(id) {
+            document.getElementById(id).style.display='none';
         }
     </script>
 </html>
