@@ -172,12 +172,12 @@ module.exports = function (req, res, url) {
 		default:
 			return;
 	}
-	Object.assign(params.flashvars, query);
+	Object.assign(params ? params.flashvars : {}, query);
 	ejs.renderFile(`./views/${filename}.ejs`, {
 		title,
 		attrs,
 		params,
-		flashvarsString: new URLSearchParams(params.flashvars).toString()
+		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString()
 	}, function(err, str){
 		if (err) {
 			console.log(err);
