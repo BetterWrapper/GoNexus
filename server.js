@@ -35,7 +35,11 @@ module.exports = http
 			switch (req.method) {
 				case "GET": {
 					switch (parsedUrl.pathname) {
-						case "/": {
+						case "/api/convertUrlQuery2JSON": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(parsedUrl.query));
+							break;
+						} case "/": {
 							res.setHeader("Content-Type", "text/html; charset=UTF-8");
 							res.end(fs.readFileSync('./index.html'));
 							break;
@@ -44,15 +48,12 @@ module.exports = http
 					break;
 				} default: break;
 			}
-			const found = functions.find((f) => f(req, res, parsedUrl));
-			console.log(req.method, parsedUrl.path);
-			if (!found) {
-				res.statusCode = 404;
-				res.end();
-			}
+			functions.find((f) => f(req, res, parsedUrl));
 		} catch (x) {
-			res.statusCode = 404;
-			res.end();
+			res.statusCode = 500;
+			console.log(x);
+			res.end("Internal Server Error");
 		}
+		console.log(req.method, req.url, '-', res.statusCode);
 	})
 	.listen(env.PORT || env.SERVER_PORT, console.log);

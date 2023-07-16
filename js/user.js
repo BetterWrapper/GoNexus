@@ -4,32 +4,74 @@
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
 const auth = firebase.auth();
+let signupComplete = false;
+let loginComplete = false;
 auth.onAuthStateChanged(user => {
     if (user) {
-        // action it does when the user is logged in.
-    } else {
-        // action it does when the user is not logged in.
+        if (!user.emailVerified) {
+            hideElement('signup-container');
+            showElement('email-verification-signup');
+            hideElement('login-container');
+            showElement('email-verification-login');
+            hideElement('psw');
+            if (signupComplete || loginComplete) {
+                signupComplete = false;
+                loginComplete = false;
+                auth.currentUser.sendEmailVerification().catch(e => {
+                    console.log(e);
+                    alert(e.message);
+                });
+            }
+        } else {
+            hideElement('signup-modal');
+            hideElement('login-modal');
+            hideElement('psw-reset-modal');
+            hideElement('is-guest');
+            showElement('is-login');
+            switch (window.location.pathname) {
+                case "/html/list.html": {
+                    $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
+                    break;
+                }
+            }
+        }
+    } else switch (window.location.pathname) {
+        case "/": {
+            hideElement('is-login');
+            showElement('is-guest');
+            break;
+        } default: {
+            window.location.href = '/';
+            break;
+        }
     }
 });
 function userSignup(email, password) {
-    auth.createUserWithEmailAndPassword(email, password).then(() => {
-        // action it does when the user is signed up.
-    }).catch(e => {
+    signupComplete = true;
+    auth.createUserWithEmailAndPassword(email, password).catch(e => {
         console.log(e);
-        // action it does when an error occurs and the error is logged to the console.
+        addText2Element('error-message-signup', e.message);
     });
 }
 function userLogin(email, password) {
-    auth.signInWithEmailAndPassword(email, password).then(() => {
-        // action it does when the user is logged in.
-    }).catch(e => {
+    loginComplete = true;
+    auth.signInWithEmailAndPassword(email, password).catch(e => {
         console.log(e);
-        // action it does when an error occurs and the error is logged to the console.
+        addText2Element('error-message-login', e.message);
+    });
+}
+function userLogout() {
+    auth.signOut().catch(e => {
+        console.log(e);
+        alert(e.message);
     });
 }
 function hideElement(id) {
-    document.getElementById(id).style.display='none';
+    if (document.getElementById(id)) document.getElementById(id).style.display='none';
 }
 function showElement(id) {
-    document.getElementById(id).style.display='block';
+    if (document.getElementById(id)) document.getElementById(id).style.display='block';
+}
+function addText2Element(id, text) {
+    if (document.getElementById(id)) document.getElementById(id).innerHTML = text;
 }

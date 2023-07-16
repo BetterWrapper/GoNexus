@@ -8,6 +8,10 @@ input[type=password] {
     border: 1px solid #ccc;
     box-sizing: border-box;
 }
+
+#logout-button {
+    color: #f44336;
+}
   
 /* Set a style for all buttons */
 .modal-button {

@@ -8,19 +8,28 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
         <link rel="icon" type="image/x-icon" href="/ui/img/icon/favicon.ico">
         <link rel="stylesheet" href="/ui/css/better-global.css">
-	<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+		<link rel="stylesheet" href="/ui/css/user.css">
+		<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-        <script src="js/user.js"></script>
+		<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+        <script src="/js/user.js"></script>
     </head>
     <body>
         <div class="header">
             <header>
                 <img id="logo" src="/ui/img/logo_better.png" alt="BetterWrapper"/>
 				<div style="float: right">
-					<a class="button_small" onclick="document.getElementById('file').click()">UPLOAD A MOVIE</a>
 					<div class="char_dropdown button_small">
-						<div>CREATE A CHARACTER</div>
+						<div>Your Account</div>
+						<menu>
+							<a href="/html/list.html">Your Videos</a>
+							<a href="javascript:;" id="logout-button" onclick="userLogout()">Log Out</a>
+						</menu>
+					</div>
+					<a class="button_small" onclick="document.getElementById('file').click()">Upload A Movie</a>
+					<div class="char_dropdown button_small">
+						<div>Create A Character</div>
 						<menu>
 							<a href="/cc?themeId=family&bs=adam">Adam</a>
 							<a href="/cc?themeId=family&bs=eve">Eve</a>
@@ -41,7 +50,7 @@
 						</menu>
 					</div>
 					<div class="char_dropdown button_small">
-						<div>BROWSE CHARACTERS</div>
+						<div>Browse Characters</div>
 						<menu>
 							<a href="/cc_browser?themeId=family">Comedy World</a>
 							<a href="/cc_browser?themeId=anime">Anime</a>
@@ -51,10 +60,11 @@
 							<a href="/cc_browser?themeId=ninja">Chibi Ninjas</a>
 						</menu>
 					</div>
-					<a href="/go_full" class="button_big">MAKE A VIDEO</a>
+					<a href="/go_full" class="button_big">Make A Video</a>
 				</div>
 			</header>
 		</div>
+		<center>Your Videos: <span id="video-count"></span></center>
 		<table>
 			<thead>
 				<tr>
@@ -66,31 +76,25 @@
 			</thead>
 			<tbody></tbody>
 		</table>
+		<center id="no-videos" style="display: none;">No Videos</center>
 		<form enctype='multipart/form-data' action='/upload_movie' method='post'>
 			<input id='file' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
 		</form>
 		<script>
-		// TODO: make all of this use jquery instead of this document shit.
-		var json;
 		var tbody = document.getElementsByTagName('tbody')[0];
-		var loadMore = document.getElementById('load_more');
-		const listReq = new XMLHttpRequest();
-		listReq.open('GET', '/movieList');
-		listReq.send();
 
-		function loadRows() {
+		function loadRows(json) {
+			let hasContent = false;
+			let count = 0;
 			for (const tbl of json) {
+				count++
+				hasContent = true;
 				const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
 				tbody.insertAdjacentHTML('beforeend',
 					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div></div></td><td><span>' + date + '</span></td><td><a href="javascript:;" onclick="popup(\'' + tbl.id + '\')"></a><a href="/go_full?movieId=' + tbl.id + '"></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"></a></td></tr>');
 			}
-		}
-
-		loadMore.onclick = loadRows;
-		listReq.onreadystatechange = function (e) {
-			if (listReq.readyState != 4) return;
-			json = JSON.parse(listReq.responseText);
-			loadRows();
+			if (!hasContent) showElement('no-videos');
+			addText2Element('video-count', count);
 		}
 
 		function popup(id) {
