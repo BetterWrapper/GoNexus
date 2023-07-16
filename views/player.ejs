@@ -42,7 +42,10 @@ var user_role = null;
 var I18N_LANG = 'en_US';
 var GT = new Gettext({'locale_data': json_locale_data});
 </script>
-
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+<script src="/js/user.js"></script>
 <script src="https://web.archive.org/web/20191104072153js_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/js/jquery/jquery-ui-1.10.4/jquery.ui.core.min.js.gz.js"></script>
 <script src="https://web.archive.org/web/20191104072153js_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/js/jquery/jquery-ui-1.10.4/jquery.ui.widget.min.js.gz.js"></script>
 <script src="https://web.archive.org/web/20191104072153js_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/js/jquery/jquery-ui-1.10.4/jquery.ui.position.min.js.gz.js"></script>
@@ -146,8 +149,25 @@ if (self !== top) {
         e.stopPropagation();
     });
 </script>
-                    <li><a href="/?action=signup">Sign Up</a></li>
-                    <li><a href="/?action=login">Login</a></li>
+<li id="signup-button"><a href="/?action=signup">Sign Up</a></li>
+<li id="login-button"><a href="/?action=login">Login</a></li>
+<li id="is-login" class="dropdown" style="display: none;">
+    <a class="dropdown-toggle" href="/profile" data-toggle="dropdown">Your Account<span class="dropdown-caret"></span></a>
+    <ul class="dropdown-menu dropdown-menu-user">
+        <li><a href="/profile">Profile Settings</a></li>
+        <!--<li><a href="/users/list">Users</a></li>-->
+        <li><a href="/yourvideos">Your Videos</a></li>
+        <!--<li><a href="https://app.vyond.com/v2/subscription">Subscription</a></li>
+        <li class="divider"></li>
+        <li><a href="https://wrapper-duked.herokuapp.com/videomaker/full">Go to Vyond Studio</a></li>-->
+        <li class="divider"></li>
+        <li><a class="gtm-logout logout-link">Log Out</a></li>
+    </ul>
+</li>
+<li id="make-a-video-is-login" style="display: none;">
+    <a class="hidden-sm hidden-md hidden-lg" href="/go_full">Make a Video</a>
+    <span class="site-nav-btn hidden-xs"><a class="btn btn-orange" href="/go_full">Make a Video</a></span>
+</li>
                 </ul>
             </div>
     </div>
@@ -156,6 +176,7 @@ if (self !== top) {
 <script>
     jQuery('.logout-link').click(function(){
         amplitudeTrackEvent(AMPLITUDE_EVENT.LOGOUT, null);
+        userLogout();
     });
     </script>
 

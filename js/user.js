@@ -3,17 +3,19 @@
  * Firebase is required in order to run this file.
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
+const params = new URLSearchParams(window.location.search);
 const auth = firebase.auth();
 let signupComplete = false;
 let loginComplete = false;
 auth.onAuthStateChanged(user => {
     if (user) {
+        console.log(user);
         if (!user.emailVerified) {
             hideElement('signup-container');
             showElement('email-verification-signup');
             hideElement('login-container');
+            showElement('logout-link');
             showElement('email-verification-login');
-            hideElement('psw');
             if (signupComplete || loginComplete) {
                 signupComplete = false;
                 loginComplete = false;
@@ -22,12 +24,26 @@ auth.onAuthStateChanged(user => {
                     alert(e.message);
                 });
             }
+            switch (window.location.pathname) {
+                case "/yourvideos": {
+                    window.location.href = '/';
+                    break;
+                } case "/": {
+                    if (params.get("action")) showElement(`${params.get("action")}-modal`);
+                    addText2Element('psw', '<a href="javascript:userLogout()">Logout</a>');
+                }
+            }
         } else {
             hideElement('signup-modal');
             hideElement('login-modal');
+            hideElement('signup-button');
+            hideElement('login-button');
             hideElement('psw-reset-modal');
             hideElement('is-guest');
             showElement('is-login');
+            showElement('make-a-video-is-login');
+            createImgElement('profile-image', user.photoURL, user.displayName);
+            addText2Element('user-name', user.displayName)
             switch (window.location.pathname) {
                 case "/yourvideos": {
                     $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
@@ -35,14 +51,25 @@ auth.onAuthStateChanged(user => {
                 }
             }
         }
-    } else switch (window.location.pathname) {
-        case "/": {
-            hideElement('is-login');
-            showElement('is-guest');
-            break;
-        } default: {
-            window.location.href = '/';
-            break;
+    } else {
+        hideElement('logout-link');
+        hideElement('make-a-video-is-login');
+        hideElement('is-login');
+        showElement('signup-button');
+        showElement('login-button');
+        showElement('is-guest');
+        showElement('signup-container');
+        hideElement('email-verification-signup');
+        showElement('login-container');
+        hideElement('email-verification-login');
+        addText2Element('psw', 'Forgot <a href="javascript:;" onclick="showElement(\'psw-reset-modal\')">password?</a>');
+        switch (window.location.pathname) {
+            case "/yourvideos": {
+                window.location.href = '/';
+                break;
+            } case "/": {
+                if (params.get("action")) showElement(`${params.get("action")}-modal`);
+            }
         }
     }
 });
@@ -74,4 +101,10 @@ function showElement(id) {
 }
 function addText2Element(id, text) {
     if (document.getElementById(id)) document.getElementById(id).innerHTML = text;
+}
+function createImgElement(id, url, text) {
+    if (document.getElementById(id)) {
+        document.getElementById(id).src = url;
+        document.getElementById(id).alt = text;
+    }
 }

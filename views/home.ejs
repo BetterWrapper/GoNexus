@@ -44,6 +44,9 @@
                         <center><h1>Log In</h1></center>
                         <span class="close" onclick="hideElement('login-modal')" title="Close Modal">&times;</span>
                     </div>
+                    <center>
+                        <p id="error-message-login"></p>
+                    </center>
                     <label for="email"><b>Email Address</b></label>
                     <input type="email" placeholder="Enter Email Address" name="email" required>
                     <label for="password"><b>Password</b></label>
@@ -57,7 +60,7 @@
                     </div>
                     <center>
                         <p>Please verify your email address in order to use BetterWrapper</p><br><br>
-                        <p class="error-message"></p>
+                        <p id="error-message-verify"></p>
                     </center>
                 </div>
                 <div class="form-container" style="background-color:#f1f1f1">
@@ -72,7 +75,10 @@
                     <center><h1>Reset Your Password</h1></center>
                     <span class="close" onclick="hideElement('psw-reset-modal')" title="Close Modal">&times;</span>
                 </div>
-                <center><p>Please enter your email address in order to reset your password.</p></center>
+                <center>
+                    <p>Please enter your email address in order to reset your password.</p>
+                    <p id="error-message-psw-reset"></p>
+                </center>
                 <div class="form-container">
                     <label for="email"><b>Email Address</b></label>
                     <input type="email" placeholder="Enter Email Address" name="email" required>
@@ -117,6 +123,7 @@
                 </div>
                 <div class="form-container" style="background-color:#f1f1f1">
                     <button type="button" class="modal-button" onclick="hideElement('signup-modal')" id="cancelbtn">Cancel</button>
+                    <span class="password" style="display: none" id="logout-link"><a href="javascript:userLogout()">Logout</a></span>
                 </div>
             </form>
         </div>
