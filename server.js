@@ -45,7 +45,12 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/getAllUsers": {
+						case "/api/redirect": {
+							res.statusCode = 302;
+							res.setHeader("Location", "/");
+							res.end();
+							break;
+						} case "/api/getAllUsers": {
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./users.json')).users));
 							break;
 						} case "/api/check4SavedUserInfo": {

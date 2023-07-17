@@ -48,7 +48,15 @@ module.exports = {
 							this.meta(mId).then(m => {
 								const json = JSON.parse(fs.readFileSync("./users.json"));
 								const meta = json.users.find(i => i.id == data.userId);
-								meta.movies.unshift(m);
+								const mMeta = meta.movies.find(i => i.id == m.id);
+								if (!mMeta) meta.movies.unshift(m);
+								else {
+									for (const stuff in m) {
+										if (m[stuff] != mMeta[stuff]) {
+											mMeta[stuff] = m[stuff];
+										}
+									}
+								}
 								fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
 								res(m.id);
 							}).catch(rej);

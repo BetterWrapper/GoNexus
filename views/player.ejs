@@ -282,7 +282,7 @@ if (self !== top) {
                     <div class="settings-label hidden-xs">Share</div>
                     <div class="using-draft"><span class="icon glyph-pro glyph-lock inline"></span>Draft</div>
                     <div class="using-private"><span class="icon glyph-pro glyph-lock inline"></span>Private</div>
-                    <div class="using-password-protected"><span class="icon glyph-pro glyph-lock inline"></span>Password-Protected</div>
+                    <div class="using-public"><span class="icon glyph-pro glyph-unlock inline"></span>Public</div>
                 </div>
             </div>
         </div>
@@ -439,15 +439,15 @@ if (self !== top) {
         for (const meta of json) {
             const m = meta.movies.find(i => i.id == '<%= params.flashvars.movieId %>');
             if (m) {
-                $(".title").text(m.title);
-                $(".description").text(m.desc);
-                document.getElementById('user-link').href = `/user/${meta.id}`;
+                document.getElementsByClassName("title")[0].innerHTML = m.title;
+                document.getElementsByClassName("description")[0].innerHTML = m.desc;
+                document.getElementById('user-link').href = `/user?id=${meta.id}`;
                 $("#user-link").text(meta.name);
                 $(".privacy").addClass(m.publishStatus);
                 $("#date").text(m.date);
                 $("#itemProp-meta").html(`<link itemprop="url" href="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>"><meta itemprop="name" content="${m.title}"><meta itemprop="description" content="${m.desc}"><meta itemprop="duration" content="${m.duration}"><meta itemprop="uploadDate" content="${m.date}"><meta itemprop="thumbnailUrl" content="${window.location.origin}/movie_thumbs/${m.id}.png"><meta itemprop="embedURL" content="${window.location.origin}/player?embed=true&movieId=${m.id}">`);
                 $(".video-title, .visible-xs").text(m.title);
-                document.getElementById("user-link-headline").href = `/user/${meta.id}`;
+                document.getElementById("user-link-headline").href = `/user?id=${meta.id}`;
                 $("#user-link-headline").text(meta.name);
                 flashPlayerVars.movieOwner = meta.name.split(" ").join("+");
                 flashPlayerVars.movieOwnerId = meta.id;

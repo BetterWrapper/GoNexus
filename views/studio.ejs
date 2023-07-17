@@ -414,7 +414,7 @@
     
     
                 $('div#studioBlock').css('height', '0px');
-                $('#studio_holder').flash(studio_data);
+                setTimeout(() => $('#studio_holder').flash(studio_data), 1);
                 full_screen_studio();
     
                 ajust_studio();

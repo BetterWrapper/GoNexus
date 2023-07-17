@@ -12,7 +12,9 @@ module.exports = function (req, res, url) {
 	if (req.method != "GET" || url.pathname != "/movieList") return;
 	res.setHeader("Content-Type", "application/json");
 	if (url.query.uid && JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == url.query.uid)) {
-		res.end(JSON.stringify(JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == url.query.uid).movies));
+		const a = JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == url.query.uid).movies;
+		const sorted = a.sort((a, b) => b.id - a.id);
+		res.end(JSON.stringify(sorted));
 	} else res.end(JSON.stringify([]));
 	return true;
 };

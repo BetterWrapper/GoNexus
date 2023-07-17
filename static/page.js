@@ -1,5 +1,5 @@
 const fUtil = require("../misc/file");
-const stuff = require("./info");
+const fs = require("fs");
 const http = require("http");
 const ejs = require('ejs');
 const { existsSync } = require("fs");
@@ -79,6 +79,15 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
+		case "/user": {
+			const json = JSON.parse(fs.readFileSync('./users.json'));
+			if (json.users.find(i => i.id == url.query.id)) {
+				if (url.query.filename == "user-videos") filename = "user-videos";
+				else filename = "user";
+			} else filename = "profile-error";
+			break;
+		}
+
 		case "/cc_browser": {
 			title = "CC Browser";
 			filename = "cc_browser";
@@ -144,7 +153,7 @@ module.exports = function (req, res, url) {
 					goteam_draft_only: 1,
 					isWide: 1,
 					collab: 0,
-					nextUrl: "/html/list.html",
+					nextUrl: "/api/redirect",
 				},
 				allowScriptAccess: "always",
 			};
