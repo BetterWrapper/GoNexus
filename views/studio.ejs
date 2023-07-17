@@ -47,7 +47,10 @@
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/cookie.js.gz.js"></script>
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/Gettext.js.gz.js"></script>
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/email.js.gz.js"></script>
-    
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+    <script src="/js/user.js"></script>
     <script type="text/javascript" src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/../po/goserver_js-en_US.json.gz.json"></script>
     <script type="text/javascript">
     var I18N_LANG = 'en_US';
@@ -347,7 +350,10 @@
             });    
             var _ccad = null;
     
-            function proceedWithFullscreenStudio() {
+            function proceedWithFullscreenStudio(user) {
+                studio_data.flashvars.userId = user.uid;
+                studio_data.flashvars.username = user.displayName;
+                studio_data.flashvars.uemail = user.email;
                 // These should be executed only when we are really ready to show the studio
                 window.onbeforeunload = function(e) {
                     var e = e || window.event;
@@ -408,7 +414,7 @@
     
     
                 $('div#studioBlock').css('height', '0px');
-                setTimeout(() => $('#studio_holder').flash(studio_data), 1);
+                $('#studio_holder').flash(studio_data);
                 full_screen_studio();
     
                 ajust_studio();
@@ -499,58 +505,7 @@
     
             var videoTutorial = null;
     
-            $(document).ready(function() {
-                if (enable_full_screen) {
-    
-                    if (!false) {
-                        $('#studio_container').css('top', '0px');
-                    }
-                    $('#studio_container').show();
-                    $('.site-footer').hide();
-                    $('#studioBlock').css('height', '1800px');
-    
-                    if (false) {
-                        checkCopyMovie('javascript:proceedWithFullscreenStudio()', '');
-                    } else if (false) {
-                        checkEditMovie('');
-                    } else {
-                        proceedWithFullscreenStudio();
-                    }
-    
-                    $(window).on('resize', function() {
-                        ajust_studio();
-                    });
-                    $(window).on('studio_resized', function() {
-                        if (show_cc_ad) {
-                            _ccad.refreshThumbs();
-                        }
-                    });
-    
-                    if (studioApiReady) {
-                        var api = studioApi($('#studio_holder'));
-                        api.bindStudioEvents();
-                        studioModule = new StudioModule();
-                    }
-    
-                    $('.ga-importer').prependTo($('#studio_container'));
-                } else {
-                    setTimeout(() => ('#studioBlock').flash(studio_data), 1);
-                }
-    
-                // Video Tutorial
-                videoTutorial = new VideoTutorial($("#video-tutorial"));
-            })
-            // restore studio when upsell overlay hidden
-            .on('hidden.bs.modal', '#upsell-modal', function(e) {
-                if ($(e.target).attr('id') == 'upsell-modal') {
-                    restoreStudio();
-                }
-            })
-            .on('studioApiReady', function() {
-                var api = studioApi($('#studio_holder'));
-                api.bindStudioEvents();
-                studioModule = new StudioModule();
-            })
+            // user.js is controlling how the document loads.
     
         var previewPlayer = new PreviewPlayer("wss://preview.vyond.com", true),
             previewPlayerRetryCount = 5;

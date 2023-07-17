@@ -4,8 +4,18 @@ const fUtil = require("../misc/file");
 const nodezip = require("node-zip");
 const parse = require("./parse");
 const fs = require("fs");
+const path = require("path");
+const https = require("https");
 
 module.exports = {
+	genImage() {
+		return new Promise((res, rej) => {
+			https.get('https://upload.wikimedia.org/wikipedia/en/0/01/Sans_undertale.jpg', (r) => {
+				const buffers = [];
+				r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+			}).on("error", rej);
+		});
+	},
 	/**
 	 *
 	 * @param {Buffer} movieZip
@@ -13,35 +23,55 @@ module.exports = {
 	 * @param {string} oldId
 	 * @returns {Promise<string>}
 	 */
-	save(movieZip, thumb, oldId, nëwId = oldId) {
-		// Saves the thumbnail of the respective video.
-		if (thumb && nëwId.startsWith("m-")) {
-			const n = Number.parseInt(nëwId.substr(2));
-			const thumbFile = fUtil.getFileIndex("thumb-", ".png", n);
-			fs.writeFileSync(thumbFile, thumb);
-		}
-
+	save(movieZip, thumb, data) {
 		return new Promise(async (res, rej) => {
-			caché.transfer(oldId, nëwId);
-			var i = nëwId.indexOf("-");
-			var prefix = nëwId.substr(0, i);
-			var suffix = nëwId.substr(i + 1);
+			// Saves the thumbnail of the respective video.
+			const mId = data.movieId || data.presaveId;
+			if (thumb) {
+				const n = Number.parseInt(mId.substr(2));
+				let thumbFile;
+				if (mId.startsWith("m-")) thumbFile = fUtil.getFileIndex("thumb-", ".png", n);
+				else if (mId.startsWith("s-")) thumbFile = fUtil.getFileIndex("starter-", ".png", n);
+				fs.writeFileSync(thumbFile, thumb);
+			}
+			var i = mId.indexOf("-");
+			var prefix = mId.substr(0, i);
+			var suffix = mId.substr(i + 1);
 			var zip = nodezip.unzip(movieZip);
 			switch (prefix) {
 				case "m": {
 					var path = fUtil.getFileIndex("movie-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
-					var assetBuffers = caché.loadTable(nëwId);
-					parse.unpackMovie(zip, thumb, assetBuffers).then((data) => {
+					parse.unpackMovie(zip, thumb).then((buffer) => {
+						writeStream.write(buffer, () => {
+							writeStream.close();
+							this.meta(mId).then(m => {
+								const json = JSON.parse(fs.readFileSync("./users.json"));
+								const meta = json.users.find(i => i.id == data.userId);
+								meta.movies.unshift(m);
+								fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+								res(m.id);
+							}).catch(rej);
+						});
+					}).catch(rej);
+					break;
+				} case "s": {
+					var path = fUtil.getFileIndex("starter-", ".xml", suffix);
+					var writeStream = fs.createWriteStream(path);
+					parse.unpackMovie(zip, thumb).then((data) => {
 						writeStream.write(data, () => {
 							writeStream.close();
-							res(nëwId);
+							this.meta(mId).then(m => {
+								const json = JSON.parse(fs.readFileSync("./users.json"));
+								const meta = json.users.find(i => i.id == data.userId);
+								meta.assets.unshift(m);
+								fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+								res(m.id);
+							}).catch(rej);
 						});
-					});
+					}).catch(rej);
 					break;
 				}
-				default:
-					rej();
 			}
 		});
 	},
@@ -130,32 +160,54 @@ module.exports = {
 	},
 	meta(movieId) {
 		return new Promise(async (res, rej) => {
-			if (!movieId.startsWith("m-")) return;
-			const n = Number.parseInt(movieId.substr(2));
-			const fn = fUtil.getFileIndex("movie-", ".xml", n);
-
-			const fd = fs.openSync(fn, "r");
-			const buffer = Buffer.alloc(256);
-			fs.readSync(fd, buffer, 0, 256, 0);
-			const begTitle = buffer.indexOf("<title>") + 16;
-			const endTitle = buffer.indexOf("]]></title>");
-			const title = buffer.slice(begTitle, endTitle).toString().trim();
-
-			const begDuration = buffer.indexOf('duration="') + 10;
-			const endDuration = buffer.indexOf('"', begDuration);
-			const duration = Number.parseFloat(buffer.slice(begDuration, endDuration));
-			const min = ("" + ~~(duration / 60)).padStart(2, "0");
-			const sec = ("" + ~~(duration % 60)).padStart(2, "0");
-			const durationStr = `${min}:${sec}`;
-
-			fs.closeSync(fd);
-			res({
-				date: fs.statSync(fn).mtime,
-				durationString: durationStr,
-				duration: duration,
-				title: title,
-				id: movieId,
-			});
+			try {
+				let fn;
+				const n = Number.parseInt(movieId.substr(2));
+				if (movieId.startsWith("m-")) fn = fUtil.getFileIndex("movie-", ".xml", n);
+				else if (movieId.startsWith("s-")) fn = fUtil.getFileIndex("starter-", ".xml", n);
+				const buffer = fs.readFileSync(fn);
+				const begTitle = buffer.indexOf("<title>") + 16;
+				const endTitle = buffer.indexOf("]]></title>");
+				const title = buffer.slice(begTitle, endTitle).toString();
+				const begDesc = buffer.indexOf("<desc>") + 15;
+				const endDesc = buffer.indexOf("]]></desc>");
+				const desc = buffer.slice(begDesc, endDesc).toString();
+				const begTag = buffer.indexOf("<tag>") + 14;
+				const endTag = buffer.indexOf("]]></tag>");
+				const tags = buffer.slice(begTag, endTag).toString();
+				const begDuration = buffer.indexOf('duration="') + 10;
+				const endDuration = buffer.indexOf('"', begDuration);
+				const duration = Number.parseFloat(buffer.slice(begDuration, endDuration));
+				const min = ("" + ~~(duration / 60)).padStart(2, "0");
+				const sec = ("" + ~~(duration % 60)).padStart(2, "0");
+				const durationStr = `${min}:${sec}`;
+				const begPublic = buffer.indexOf('published="') + 11;
+				const endPublic = buffer.indexOf('"', begPublic);
+				const public = buffer.slice(begPublic, endPublic).toString();
+				function getPublishStatus() {
+					const begPrivate = buffer.indexOf('pshare="') + 8;
+					const endPrivate = buffer.indexOf('"', begPrivate);
+					const private = buffer.slice(begPrivate, endPrivate).toString();
+					if (public == "0" && private == "0") return "draft";
+					if (public == "1" && private == "0") return "public";
+					if (public == "0" && private == "1") return "private";
+				}
+				res({
+					desc,
+					date: fs.statSync(fn).mtime,
+					durationString: durationStr,
+					duration,
+					title: title || "Untitled Video",
+					published: public,
+					tags,
+					publishStatus: getPublishStatus(),
+					id: movieId,
+					enc_asset_id: movieId,
+					file: fn.substr(fn.lastIndexOf("/") + 1)
+				});
+			} catch (e) {
+				rej(e);
+			}
 		});
 	},
 };

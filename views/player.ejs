@@ -136,7 +136,7 @@ if (self !== top) {
                                 <div class="video-player-wrapper embed-responsive embed-responsive-16by9">
                                     <div class="embed-responsive-item hidden" id="flash-player">
                                         <div class="no-flash-player">
-                                            You can't use Vyond because Flash might be disabled. <a href="https://web.archive.org/web/20191104072153/https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                                            You can't use BetterWrapper because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                                         </div>
                                     </div>
 
@@ -268,14 +268,7 @@ if (self !== top) {
 
 <div class="video-top">
 
-    <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-        <link itemprop="url" href="">
-        <meta itemprop="name" content="">
-        <meta itemprop="description" content="">
-        <meta itemprop="duration" content="">
-        <meta itemprop="thumbnailUrl" content="">
-        <meta itemprop="uploadDate" content="">
-        <meta itemprop="embedURL" content="">
+    <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject" id="itemProp-meta">
         <meta itemprop="playerType" content="HTML5 Flash">
         <meta itemprop="videoQuality" content="HD">
         <meta itemprop="height" content="720">
@@ -440,7 +433,37 @@ if (self !== top) {
     }
 </script>
 
-
+<script>
+    $.post("/api/getAllUsers", (d) => {
+        const json = JSON.parse(d);
+        for (const meta of json) {
+            const m = meta.movies.find(i => i.id == '<%= params.flashvars.movieId %>');
+            if (m) {
+                $(".title").text(m.title);
+                $(".description").text(m.desc);
+                document.getElementById('user-link').href = `/user/${meta.id}`;
+                $("#user-link").text(meta.name);
+                $(".privacy").addClass(m.publishStatus);
+                $("#date").text(m.date);
+                $("#itemProp-meta").html(`<link itemprop="url" href="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>"><meta itemprop="name" content="${m.title}"><meta itemprop="description" content="${m.desc}"><meta itemprop="duration" content="${m.duration}"><meta itemprop="uploadDate" content="${m.date}"><meta itemprop="thumbnailUrl" content="${window.location.origin}/movie_thumbs/${m.id}.png"><meta itemprop="embedURL" content="${window.location.origin}/player?embed=true&movieId=${m.id}">`);
+                $(".video-title, .visible-xs").text(m.title);
+                document.getElementById("user-link-headline").href = `/user/${meta.id}`;
+                $("#user-link-headline").text(meta.name);
+                flashPlayerVars.movieOwner = meta.name.split(" ").join("+");
+                flashPlayerVars.movieOwnerId = meta.id;
+                flashPlayerVars.movieTitle = m.title.split(" ").join("+");
+                flashPlayerVars.movieDesc = m.desc.split(" ").join("+");
+                flashPlayerVars.s3base = window.location.origin + '/';
+                flashPlayerVars.duration = m.duration;
+                flashPlayerVars.thumbnailURL = window.location.origin + '/movie_thumbs/<%= params.flashvars.movieId %>.png';
+                flashPlayerVars.isPublished = m.published;
+                flashPlayerVars.is_private_shared = m.publishStatus == "private" ? "1" : "0";
+                $("#copyable-url").val(window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>')
+                break;
+            }
+        }
+    });
+</script>
 
 <script>
 $(window).on('amplitude_loaded', function() {
@@ -453,11 +476,7 @@ $(window).on('amplitude_loaded', function() {
 
 <!-- FOOTER -->
 
-<footer class="site-footer">
-    <div class="container">
-        Vyond&trade; is a trademark of GoAnimate, Inc. &copy; 2019 GoAnimate, Inc. <a href="https://web.archive.org/web/20191104072153/https://www.vyond.com/terms">Terms of Service</a> | <a href="https://web.archive.org/web/20191104072153/https://www.vyond.com/privacy">Privacy Policy</a> | <a href="https://web.archive.org/web/20191104072153/https://www.vyond.com/cookies">Cookies Policy</a>
-    </div>
-</footer>
+<%- include('includes/footer-legacy.ejs', {}); %>
 
 
 <div id="studio_container" style="display: none;">

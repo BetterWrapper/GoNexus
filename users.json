@@ -1,0 +1,32 @@
+{
+	"users": [
+		{
+			"name": "Joseph Animate 2021 // The Main Channel",
+			"id": "NbJn8ePSi2eV4VvMQOlIWD7aYLH3",
+			"email": "jackiecrosman@gmail.com",
+			"movies": [],
+			"assets": []
+		},
+		{
+			"name": "Joseph",
+			"id": "i67NMuIVRXVqUhVRStNKqYZlVfB3",
+			"email": "cafecar755@msback.com",
+			"movies": [
+				{
+					"desc": "",
+					"date": "2023-07-17T05:30:03.352Z",
+					"durationString": "00:05",
+					"duration": 5,
+					"title": "test",
+					"published": "0",
+					"tags": "",
+					"id": "m-0",
+					"enc_asset_id": "m-0",
+					"file": "movie-0000000.xml",
+					"publishStatus": "draft"
+				}
+			],
+			"assets": []
+		}
+	]
+}

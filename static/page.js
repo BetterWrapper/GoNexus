@@ -2,6 +2,7 @@ const fUtil = require("../misc/file");
 const stuff = require("./info");
 const http = require("http");
 const ejs = require('ejs');
+const { existsSync } = require("fs");
 
 function toAttrString(table) {
 	return typeof table == "object"
@@ -151,8 +152,10 @@ module.exports = function (req, res, url) {
 		}
 
 		case "/player": {
+			const path = fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(url.query.movieId.lastIndexOf("-") + 1));
+			if (url.query.movieId.startsWith("m-") && existsSync(path)) filename = "player";
+			else filename = "video-error";
 			title = "Player";
-			filename = "player";
 			attrs = {
 				data: process.env.SWF_URL + "/player.swf",
 				type: "application/x-shockwave-flash",
@@ -161,13 +164,39 @@ module.exports = function (req, res, url) {
 			};
 			params = {
 				flashvars: {
+					movieLid: "0",
+					ut: "-1",
+					numContact: "",
 					apiserver: "/",
+					playcount: 1,
+					ctc: "go",
+					tlang: "en_US",
+					autostart: "0",
+					appCode: "go",
+					is_slideshow: "0",
+					originalId: "0Y7-ebJ36Ip4",
+					is_emessage: "0",
 					storePath: process.env.STORE_URL + "/<store>",
-					ut: 60,
-					autostart: 1,
-					isWide: 1,
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+					animationPath: process.env.SWF_URL + "/",
+					isEmbed: "0",
+					refuser: null,
+					utm_source: null,
+					uid: null,
+					isTemplate: "0",
+					showButtons: "1",
+					chain_mids: "",
+					averageRating: 5,
+					ratingCount: "1",
+					fb_app_url: "/",
+					ad: 1,
+					endStyle: 0,
+					isWide: "1",
+					pwm: 1,
+					initcb: "flashPlayerLoaded",
+					showshare: false
 				},
+
 				allowScriptAccess: "always",
 				allowFullScreen: "true",
 			};

@@ -7,9 +7,18 @@ const params = new URLSearchParams(window.location.search);
 const auth = firebase.auth();
 let signupComplete = false;
 let loginComplete = false;
+let displayName = null;
 auth.onAuthStateChanged(user => {
     if (user) {
-        console.log(user);
+        $.post("/api/check4SavedUserInfo", {
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid
+        });
+        if (displayName != null) auth.currentUser.updateProfile({displayName}).catch(e => {
+            console.log(e);
+            alert(e.message);
+        });
         if (!user.emailVerified) {
             hideElement('signup-container');
             showElement('email-verification-signup');
@@ -48,6 +57,63 @@ auth.onAuthStateChanged(user => {
                 case "/yourvideos": {
                     $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
                     break;
+                } case "/go_full": {
+                    $(document).ready(function() {
+                        if (enable_full_screen) {
+                            if (!false) {
+                                $('#studio_container').css('top', '0px');
+                            }
+                            $('#studio_container').show();
+                            $('.site-footer').hide();
+                            $('#studioBlock').css('height', '1800px');
+            
+                            if (false) {
+                                checkCopyMovie('javascript:proceedWithFullscreenStudio(\'' + JSON.stringify(user) + '\', \'isJson\')', '');
+                            } else if (false) {
+                                checkEditMovie('');
+                            } else {
+                                proceedWithFullscreenStudio(user);
+                            }
+            
+                            $(window).on('resize', function() {
+                                ajust_studio();
+                            });
+                            $(window).on('studio_resized', function() {
+                                if (show_cc_ad) {
+                                    _ccad.refreshThumbs();
+                                }
+                            });
+            
+                            if (studioApiReady) {
+                                var api = studioApi($('#studio_holder'));
+                                api.bindStudioEvents();
+                                studioModule = new StudioModule();
+                            }
+            
+                            $('.ga-importer').prependTo($('#studio_container'));
+                        } else {
+                            setTimeout(() => ('#studioBlock').flash(studio_data), 1);
+                        }
+            
+                        // Video Tutorial
+                        videoTutorial = new VideoTutorial($("#video-tutorial"));
+                    })
+                    // restore studio when upsell overlay hidden
+                    .on('hidden.bs.modal', '#upsell-modal', function(e) {
+                        if ($(e.target).attr('id') == 'upsell-modal') {
+                            restoreStudio();
+                        }
+                    })
+                    .on('studioApiReady', function() {
+                        var api = studioApi($('#studio_holder'));
+                        api.bindStudioEvents();
+                        studioModule = new StudioModule();
+                    })
+                    break;
+                } case "/player": {
+                    flashPlayerVars.userId = user.uid;
+                    flashPlayerVars.username = user.displayName;
+                    flashPlayerVars.uemail = user.email;
                 }
             }
         }
@@ -73,8 +139,9 @@ auth.onAuthStateChanged(user => {
         }
     }
 });
-function userSignup(email, password) {
+function userSignup(email, password, name) {
     signupComplete = true;
+    displayName = name;
     auth.createUserWithEmailAndPassword(email, password).catch(e => {
         console.log(e);
         addText2Element('error-message-signup', e.message);

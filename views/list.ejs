@@ -9,6 +9,7 @@
         <link rel="icon" type="image/x-icon" href="/ui/img/icon/favicon.ico">
         <link rel="stylesheet" href="/ui/css/better-global.css">
 		<link rel="stylesheet" href="/ui/css/user.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 		<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
@@ -44,7 +45,7 @@
 				hasContent = true;
 				const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
 				tbody.insertAdjacentHTML('beforeend',
-					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div></div></td><td><span>' + date + '</span></td><td><a href="/player?movieId=' + tbl.id + '"></a><a href="/go_full?movieId=' + tbl.id + '"></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"></a></td></tr>');
+					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div><div>' + tbl.desc + '</div></td><td><span>' + date + '</span></td><td><a href="/player?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-play"></span></a><a href="/go_full?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-pencil"></span></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"><span class="glyphicon glyphicon-download-alt"></span></a><a href="javascript:shareMovie(\'' + tbl.id + '\')"><span class="glyphicon glyphicon-share"></span></a><a href="javascript:moreOptions(\'' + tbl.id + '\')"><span class="glyphicon glyphicon-option-horizontal"></span></a></td></tr>');
 			}
 			if (!hasContent) showElement('no-videos');
 			addText2Element('video-count', count);
@@ -171,7 +172,7 @@
 			text-decoration: none;
 			padding-top: 5px;
 			font-size: 14px;
-			width: 80px;
+			width: 1000px;
 		}
 
 		tr>:nth-child(4)>a {
@@ -183,18 +184,6 @@
 
 		tr>:nth-child(4)>a:hover {
 			color: #d85e27;
-		}
-
-		tr>:nth-child(4)>:nth-child(1)::before {
-			content: '\E174';
-		}
-
-		tr>:nth-child(4)>:nth-child(2)::before {
-			content: '\E235';
-		}
-
-		tr>:nth-child(4)>:nth-child(3)::before {
-			content: '\E182';
 		}
 
 		tfoot>tr>td {
@@ -211,44 +200,6 @@
 		form {
 			display: none;
 		}
-
-		@font-face {
-			font-family: 'Sailec';
-			font-weight: 100;
-			src: url('/html/Sailec-Thin.woff') format('woff');
-		}
-
-		@font-face {
-			font-family: 'Sailec';
-			font-weight: 200;
-			src: url('/html/Sailec-Light.woff') format('woff');
-		}
-
-		@font-face {
-			font-family: 'Sailec';
-			font-weight: 400;
-			src: url('/html/Sailec-Regular.woff') format('woff');
-		}
-
-		@font-face {
-			font-family: 'Sailec';
-			font-weight: 500;
-			src: url('/html/Sailec-Medium.woff') format('woff');
-		}
-
-		/* font weight 500 and font weight 700 (bold) are the same for better integration support */
-		@font-face {
-			font-family: 'Sailec';
-			font-weight: 700;
-			src: url('/html/Sailec-Medium.woff') format('woff');
-		}
-
-		@font-face {
-			font-family: 'GlyphiconsRegular';
-			src: url('/html/glyphicons-regular.woff') format('woff');
-			font-weight: normal;
-			font-style: normal;
-		}
 		</style>
 	</body>
-</html>
+<html>

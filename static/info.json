@@ -49,10 +49,23 @@
 				"Content-Type": "image/png"
 			}
 		},
+		"/ui/fonts/([^?]+js).*": {
+			"contentReplace": true,
+			"regexLink": "/ui/fonts/$1",
+			"headers": {
+				"Content-Type": "application/font-woff; charset=UTF-8"
+			}
+		},
+		"/ui/fonts([^?]+).*": {
+			"regexLink": "/ui/fonts/$1",
+			"headers": {
+				"Content-Type": "application/font-woff; charset=UTF-8"
+			}
+		},
 		"/ui/img/([^?]+).*": {
 			"regexLink": "/ui/img/$1",
 			"headers": {
-				"Content-Type": "text/css"
+				"Content-Type": "image/png"
 			}
 		},
 		"/ui/css/([^?]+).*": {

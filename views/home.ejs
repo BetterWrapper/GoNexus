@@ -81,6 +81,9 @@
                         <p>Please fill in this form to create an account.</p><br><br>
                         <p id="error-message-signup"></p>
                     </center>
+                    <label for="text"><b>Display Name</b></label>
+                    <input type="text" placeholder="Enter Display Name" name="username" required>
+
                     <label for="email"><b>Email Address</b></label>
                     <input type="email" placeholder="Enter Email Address" name="email" required>
           
@@ -124,7 +127,7 @@
             $("#error-message-signup").css("color", "red").html("");
             $.getJSON(`/api/convertUrlQuery2JSON?${$('#signupform').serialize()}`, (d) => {
                 if (d.password != d.psw_repeat) $("#error-message-signup").html("Your Password And Repeat Password Must Match.");
-                else userSignup(d.email, d.password);
+                else userSignup(d.email, d.password, d.username);
             });
         })
         $("#loginform").submit(() => {

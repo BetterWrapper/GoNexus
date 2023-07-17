@@ -1,5 +1,6 @@
 const movie = require("./main");
 const http = require("http");
+const fs = require("fs");
 
 /**
  * @param {http.IncomingMessage} req
@@ -9,6 +10,9 @@ const http = require("http");
  */
 module.exports = function (req, res, url) {
 	if (req.method != "GET" || url.pathname != "/movieList") return;
-	Promise.all(movie.list().map(movie.meta)).then((a) => res.end(JSON.stringify(a)));
+	res.setHeader("Content-Type", "application/json");
+	if (url.query.uid && JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == url.query.uid)) {
+		res.end(JSON.stringify(JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == url.query.uid).movies));
+	} else res.end(JSON.stringify([]));
 	return true;
 };

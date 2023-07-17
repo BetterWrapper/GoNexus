@@ -1,5 +1,6 @@
 const movie = require("./main");
 const http = require("http");
+const fs = require("fs");
 
 /**
  * @param {http.IncomingMessage} req
@@ -9,12 +10,12 @@ const http = require("http");
  */
 module.exports = function (req, res, url) {
 	if (req.method != "GET" || !url.pathname.startsWith("/meta")) return;
-	movie
-		.meta(url.path.substr(url.path.lastIndexOf("/") + 1))
-		.then((v) => res.end(JSON.stringify(v)))
-		.catch(() => {
-			res.statusCode = 404;
-			res.end();
-		});
+	const json = JSON.parse(fs.readFileSync('./users.json'));
+	const mId = url.pathname.substr(url.pathname.lastIndexOf("/") + 1)
+	for (const meta of json.users) {
+		const m = meta.movies.find(i => i.id == mId);
+		if (m) return res.end(JSON.stringify(m));
+	}
+	res.end(JSON.stringify({}));
 	return true;
 };

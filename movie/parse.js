@@ -1,15 +1,17 @@
-var themeFolder = process.env.THEME_FOLDER;
 var mp3Duration = require("mp3-duration");
 var char = require("../character/main");
 var ttsInfo = require("../tts/info");
-var source = process.env.CLIENT_URL;
-var header = process.env.XML_HEADER;
 var get = require("../misc/get");
 var fUtil = require("../misc/file");
 var nodezip = require("node-zip");
-var store = process.env.STORE_URL;
 var xmldoc = require("xmldoc");
 var fs = require("fs");
+const {
+	THEME_FOLDER: themeFolder,
+	CLIENT_URL2: source,
+	XML_HEADER: header,
+	STORE_URL2: store
+} = process.env;
 
 function name2Font(font) {
 	switch (font) {
