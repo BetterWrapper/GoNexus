@@ -20,7 +20,7 @@ function stream2Buffer(stream) {
 }
 module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.path != "/goapi/saveSound/") return;
-    new formidable.IncomingForm().parse(req, async (e, f, files) => {
+	new formidable.IncomingForm().parse(req, async (e, f, files) => {
         let response;
         if (f.bytes) {
             await new Promise(resolve => { 
