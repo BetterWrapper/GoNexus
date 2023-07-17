@@ -16,26 +16,7 @@
         <script src="js/user.js"></script>
     </head>
     <body>
-        <div class="header">
-            <header>
-                <img id="logo" src="ui/img/logo_better.png" alt="BetterWrapper">
-                <div style="float: right">
-                    <div id="is-guest">
-                        <a class="button_small" onclick="showElement('signup-modal')">Sign Up</a>
-                        <a class="button_small" onclick="showElement('login-modal')">Log In</a>
-                    </div>
-                    <div id="is-login" style="display: none;">
-                        <div class="char_dropdown button_small">
-                            <div>Your Account</div>
-                            <menu>
-                                <a href="/yourvideos">Your Videos</a>
-                                <a href="javascript:;" id="logout-button" onclick="userLogout()">Log Out</a>
-                            </menu>
-                        </div>
-                    </div>
-				</div>
-            </header>
-        </div>
+        <%- include('includes/header.ejs', {}); %>
         <!-- modals. (Mostly for the account system and nothing else) -->
         <div id="login-modal" class="modal">
             <form class="modal-content" action="javascript:;" method="post" id="loginform">
