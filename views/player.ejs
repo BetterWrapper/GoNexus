@@ -112,74 +112,7 @@ if (self !== top) {
 <div class="page-container">
 
 
-<div class="site-header">
-    <div class="navbar site-nav site-nav--legacy" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </button>
-                  <a class="navbar-brand" href="https://web.archive.org/web/20191104072153/https://ga.vyond.com/yourvideos" title="Vyond">
-                      <img alt="Vyond" src="https://web.archive.org/web/20191104072153im_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/img/vyond/vyond_logo_legacy.png">
-                  </a>
-            </div>
-
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav navbar-right">
-<li class="dropdown">
-    <a class="dropdown-toggle" href="https://web.archive.org/web/20191104072153/https://support.vyond.com/" data-toggle="dropdown">Help<span class="dropdown-caret"></span></a>
-    <ul class="dropdown-menu dropdown-menu-help">
-
-        <li>
-            <a href="#" onclick="zE.activate({hideOnClose: true});amplitudeTrackCtaHelp('quick_search');return false;">Quick Search</a>
-        </li>
-        <li>
-            <a href="https://web.archive.org/web/20191104072153/https://support.vyond.com/" onclick="amplitudeTrackCtaHelp('help_center');" target="_blank">Help Center</a>
-        </li>
-        <li>
-            <a href="https://web.archive.org/web/20191104072153/https://product.vyond.com/" onclick="amplitudeTrackCtaHelp('whats_new');" target="_blank">What’s New</a>
-        </li>
-    </ul>
-</li>
-
-<script>
-    $('.dropdown-menu-help').click(function(e) {
-        e.stopPropagation();
-    });
-</script>
-<li id="signup-button"><a href="/?action=signup">Sign Up</a></li>
-<li id="login-button"><a href="/?action=login">Login</a></li>
-<li id="is-login" class="dropdown" style="display: none;">
-    <a class="dropdown-toggle" href="/profile" data-toggle="dropdown">Your Account<span class="dropdown-caret"></span></a>
-    <ul class="dropdown-menu dropdown-menu-user">
-        <li><a href="/profile">Profile Settings</a></li>
-        <!--<li><a href="/users/list">Users</a></li>-->
-        <li><a href="/yourvideos">Your Videos</a></li>
-        <!--<li><a href="https://app.vyond.com/v2/subscription">Subscription</a></li>
-        <li class="divider"></li>
-        <li><a href="https://wrapper-duked.herokuapp.com/videomaker/full">Go to Vyond Studio</a></li>-->
-        <li class="divider"></li>
-        <li><a class="gtm-logout logout-link">Log Out</a></li>
-    </ul>
-</li>
-<li id="make-a-video-is-login" style="display: none;">
-    <a class="hidden-sm hidden-md hidden-lg" href="/go_full">Make a Video</a>
-    <span class="site-nav-btn hidden-xs"><a class="btn btn-orange" href="/go_full">Make a Video</a></span>
-</li>
-                </ul>
-            </div>
-    </div>
-</div>
-
-<script>
-    jQuery('.logout-link').click(function(){
-        amplitudeTrackEvent(AMPLITUDE_EVENT.LOGOUT, null);
-        userLogout();
-    });
-    </script>
-
+<%- include('includes/header-legacy.ejs', {}); %>
 <!-- END OF HEADER -->
 <div id="video-page">
     <input type="hidden" name="ct" value="W6VHc262xvbThXRIZs3WJA5tZUya8_Ug3ENhF3OOdnJnUlP6ajGkOFl4lEjQ06fjzx_mlv5SZqvuJUrGdInUjCamQ_DLpLhyaho41nklEscPFIzJDlTp23aUyAQPINV7LmhMm1ZkYo+qAD14p6PDNe52VEcHh3kqT5113sbHDkiPozs3ja537vulJOh3k0p_OB8XeNNxad_rO8SydsqN9Bn3CUY2L5Xx4+T80wpuWNTC_jHTg="/>
