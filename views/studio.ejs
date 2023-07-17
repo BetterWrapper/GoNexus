@@ -324,7 +324,7 @@
             }
     
             var enable_full_screen = true;
-    
+            var userData = null;
             var studio_data = {
                 id: "Studio",
                 swf: "<%= attrs.data %>",
@@ -349,8 +349,11 @@
                 studio_data.flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
             });    
             var _ccad = null;
-    
+            function getUserData() {
+                return userData;
+            }
             function proceedWithFullscreenStudio(user) {
+                userData = user;
                 studio_data.flashvars.userId = user.uid;
                 studio_data.flashvars.username = user.displayName;
                 studio_data.flashvars.uemail = user.email;
@@ -753,7 +756,7 @@
     </div>
     </script>
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/importer_share.js.gz.js"></script>
-    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/importer.js.gz.js"></script>
+    <script src="/js/importer.js"></script>
     <script>window.searchTermsDataUrl = '/store/3a981f5cb2739137/common/terms.json';</script>
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/search-suggestion.js.gz.js"></script>
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/preview-player-control.js.gz.js"></script>

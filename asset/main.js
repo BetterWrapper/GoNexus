@@ -50,8 +50,8 @@ module.exports = {
 			}
 			case "prop": {
 				xml = `<prop subtype="0" id="${v.id}" name="${v.title}" enable="Y" ${
-					v.ptype ? `${v.ptype}="1"` : ''
-				} placeable="1" facing="left" width="0" height="0"/>`;
+					v.ptype != "placeable" ? `${v.ptype}="1"` : ''
+				} placeable="1" facing="left" width="0" height="0" asset_url="/assets/${v.id}"/>`;
 				break;
 			}
 		}
