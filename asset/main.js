@@ -1,66 +1,60 @@
 const chars = require("../character/main");
 const fUtil = require("../misc/file");
-const caché = require("./caché");
+const fs = require("fs");
 
 module.exports = {
-	load(mId, aId) {
-		return caché.load(mId, aId);
+	load(aId) {
+		return fs.readFileSync(`./_ASSETS/${aId}`);
 	},
-	save(buffer, mId, mode, ext) {
-		var suffix = `-${mode}.${ext}`;
-		return caché.newItem(buffer, mId, "", suffix);
+	generateId() {
+		return ("" + Math.random()).replace(".", "");
 	},
-	list(mId, mode) {
-		var ret = [];
-		var files = caché.list(mId);
-		files.forEach((aId) => {
-			var dot = aId.lastIndexOf(".");
-			var dash = aId.lastIndexOf("-");
-			var name = aId.substr(0, dash);
-			var ext = aId.substr(dot + 1);
-			var fMode = aId.substr(dash + 1, dot - dash - 1);
-			if (fMode == mode) {
-				ret.push({ id: aId, ext: ext, name: name, mode: fMode });
+	save(buffer, meta, data) {
+		meta.enc_asset_id = this.generateId();
+		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
+		fs.writeFileSync(`./_ASSETS/${meta.id}`, buffer);
+		const json = JSON.parse(fs.readFileSync('./users.json'));
+		json.users.find(i => i.id == data.userId).assets.unshift(meta);
+		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+		return meta.id;
+	},
+	list(uId, type, subtype, themeId) {
+		const json = JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == uId);
+		let aList = json.assets.filter(i => i.type == type);
+		if (subtype) aList = aList.filter(i => i.subtype == subtype);
+		if (themeId) aList = aList.filter(i => i.themeId == themeId);
+		return aList;
+	},
+	meta2Xml(v) {
+		let xml;
+		switch (v.type) {
+			case "char": {
+				xml = `<char id="${v.id}" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="/char_thumbs/${
+					v.id
+				}.png" copyable="Y"><tags>${v.tags || ""}</tags></char>`;
+				break;
+			} case "bg": {
+				xml = `<background subtype="0" id="${v.id}" name="${v.title}" enable="Y"/>`;
+				break;
+			} case "sound": {
+				xml = `<sound subtype="${v.subtype}" id="${v.id}" name="${v.title}" enable="Y" duration="${
+					v.duration
+				}" downloadtype="progressive"/>`;
+				break;
+			}	
+			case "movie": {
+				xml = `<movie id="${v.id}" enc_asset_id="${v.id}" path="/_SAVED/${v.id}" numScene="1" title="${
+					v.title
+				}" thumbnail_url="/movie_thumbs/${v.id}.png"><tags></tags></movie>`;
+				break;
 			}
-		});
-		return ret;
-	},
-	listAll(mId) {
-		var ret = [];
-		var files = caché.list(mId);
-		files.forEach((aId) => {
-			var dot = aId.lastIndexOf(".");
-			var dash = aId.lastIndexOf("-");
-			var name = aId.substr(0, dash);
-			var ext = aId.substr(dot + 1);
-			var fMode = aId.substr(dash + 1, dot - dash - 1);
-			ret.push({ id: aId, ext: ext, name: name, mode: fMode });
-		});
-		return ret;
-	},
-	chars(theme) {
-		return new Promise(async (res, rej) => {
-			switch (theme) {
-				case "custom":
-					theme = "family";
-					break;
-				case "action":
-				case "animal":
-				case "space":
-				case "vietnam":
-					theme = "cc2";
-					break;
+			case "prop": {
+				xml = `<prop subtype="0" id="${v.id}" name="${v.title}" enable="Y" ${
+					v.ptype ? `${v.ptype}="1"` : ''
+				} placeable="1" facing="left" width="0" height="0"/>`;
+				break;
 			}
-
-			var table = [];
-			var ids = fUtil.getValidFileIndicies("char-", ".xml");
-			for (const i in ids) {
-				var id = `c-${ids[i]}`;
-				if (!theme || theme == (await chars.getTheme(id))) {
-					table.unshift({ theme: theme, id: id });
-				}
-			}
-			res(table);
-		});
-	},
+		}
+		return xml;
+	}
 };

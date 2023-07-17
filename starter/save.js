@@ -14,7 +14,7 @@ module.exports = function (req, res, url) {
 		try {
 			const body = Buffer.from(data.body_zip, "base64");
 			const thumb = data.thumbnail_large && Buffer.from(data.thumbnail, "base64");
-			res.end(0 + await starter.save(body, thumb, data));
+			res.end(0 + await starter.save(body, thumb, data, true));
 		} catch (e) {
 			console.log(e);
 			res.end("1");

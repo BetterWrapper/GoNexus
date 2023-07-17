@@ -1,5 +1,4 @@
 const exFolder = process.env.EXAMPLE_FOLDER;
-const caché = require("../asset/caché");
 const fUtil = require("../misc/file");
 const nodezip = require("node-zip");
 const parse = require("./parse");
@@ -23,10 +22,10 @@ module.exports = {
 	 * @param {string} oldId
 	 * @returns {Promise<string>}
 	 */
-	save(movieZip, thumb, data) {
+	save(movieZip, thumb, data, isStarter = false) {
 		return new Promise(async (res, rej) => {
 			// Saves the thumbnail of the respective video.
-			const mId = data.movieId || data.presaveId;
+			const mId = data.movieId || !isStarter ? data.presaveId : `s-${fUtil.getNextFileId("starter-", ".xml")}`;
 			if (thumb) {
 				const n = Number.parseInt(mId.substr(2));
 				let thumbFile;
@@ -66,8 +65,8 @@ module.exports = {
 				} case "s": {
 					var path = fUtil.getFileIndex("starter-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
-					parse.unpackMovie(zip, thumb).then((data) => {
-						writeStream.write(data, () => {
+					parse.unpackMovie(zip, thumb).then((buffer) => {
+						writeStream.write(buffer, () => {
 							writeStream.close();
 							this.meta(mId).then(m => {
 								const json = JSON.parse(fs.readFileSync("./users.json"));
@@ -84,38 +83,33 @@ module.exports = {
 		});
 	},
 	loadZip(mId) {
-		return new Promise((res) => {
-			const i = mId.indexOf("-");
-			const prefix = mId.substr(0, i);
-			const suffix = mId.substr(i + 1);
-			switch (prefix) {
-				case "e": {
-					caché.clearTable(mId);
-					let data = fs.readFileSync(`${exFolder}/${suffix}.zip`);
-					res(data.subarray(data.indexOf(80)));
-					break;
-				}
-				case "m": {
-					let numId = Number.parseInt(suffix);
-					if (isNaN(numId)) res();
-					let filePath = fUtil.getFileIndex("movie-", ".xml", numId);
-					if (!fs.existsSync(filePath)) res();
-
-					const buffer = fs.readFileSync(filePath);
-					if (!buffer || buffer.length == 0) res();
-
-					try {
-						parse.packMovie(buffer, mId).then((pack) => {
-							caché.saveTable(mId, pack.caché);
-							res(pack.zipBuf);
-						});
+		return new Promise(async (res, rej) => {
+			try {
+				const i = mId.indexOf("-");
+				const prefix = mId.substr(0, i);
+				const suffix = mId.substr(i + 1);
+				switch (prefix) {
+					case "s":
+					case "m": {
+						let numId = Number.parseInt(suffix);
+						let filePath;
+						switch (prefix) {
+							case "m": {
+								filePath = fUtil.getFileIndex("movie-", ".xml", numId);
+								break;
+							} case "s": {
+								filePath = fUtil.getFileIndex("starter-", ".xml", numId);
+								break;
+							}
+						}
+						const buffer = fs.readFileSync(filePath);
+						const pack = await parse.packMovie(buffer);
+						res(pack.zipBuf);
 						break;
-					} catch (e) {
-						res();
 					}
 				}
-				default:
-					res();
+			} catch (e) {
+				rej(e);
 			}
 		});
 	},
@@ -211,6 +205,7 @@ module.exports = {
 					publishStatus: getPublishStatus(),
 					id: movieId,
 					enc_asset_id: movieId,
+					type: "movie",
 					file: fn.substr(fn.lastIndexOf("/") + 1)
 				});
 			} catch (e) {

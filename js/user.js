@@ -92,7 +92,7 @@ auth.onAuthStateChanged(user => {
             
                             $('.ga-importer').prependTo($('#studio_container'));
                         } else {
-                            setTimeout(() => ('#studioBlock').flash(studio_data), 1);
+                            setTimeout(() => $('#studioBlock').flash(studio_data), 1);
                         }
             
                         // Video Tutorial

@@ -11,18 +11,18 @@ const http = require("http");
 module.exports = function (req, res, url) {
 	switch (req.method) {
 		case "GET": {
-			const match = req.url.match(/\/assets\/([^/]+)\/([^.]+)(?:\.xml)?$/);
+			const match = req.url.match(/\/assets\/([^/]+)$/);
 			if (!match) return;
 
-			const mId = match[1];
-			const aId = match[2];
-			const b = asset.load(mId, aId);
-			if (b) {
+			const aId = match[1];
+			try {
+				const b = asset.load(aId);
 				res.statusCode = 200;
 				res.end(b);
-			} else {
+			} catch (e) {
 				res.statusCode = 404;
-				res.end(e);
+				console.log(e);
+				res.end("Not found");
 			}
 			return true;
 		}
@@ -31,16 +31,17 @@ module.exports = function (req, res, url) {
 			switch (url.pathname) {
 				case "/goapi/getAsset/":
 				case "/goapi/getAssetEx/": {
-					loadPost(req, res).then(([data, mId]) => {
+					loadPost(req, res).then(([data]) => {
 						const aId = data.assetId || data.enc_asset_id;
 
-						const b = asset.load(mId, aId);
-						if (b) {
+						try {
+							const b = asset.load(aId);
 							res.setHeader("Content-Length", b.length);
 							res.setHeader("Content-Type", "audio/mp3");
 							res.end(b);
-						} else {
+						} catch (e) {
 							res.statusCode = 404;
+							console.log(e);
 							res.end();
 						}
 					});
