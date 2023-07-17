@@ -20,7 +20,7 @@ module.exports = function (req, res, url) {
 			res.end(0 + await movie.save(body, thumb, data));
 		} catch (e) {
 			console.log(e);
-			res.end("1");
+			res.end(1 + `<error><code>ERR_ASSET_404</code><message>${e}</message><text></text></error>`);
 		}
 	});
 	return true;

@@ -3,110 +3,136 @@ const qs = require("querystring");
 const brotli = require("brotli");
 const https = require("https");
 const md5 = require("js-md5");
-const http = require("http");
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
+var ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 
-// Fallback option for compatibility between Wrapper and https://github.com/Windows81/Text2Speech-Haxxor-JS.
-let get;
-try {
-	get = require("../misc/get");
-} catch {
-	get = require("./get");
-}
-
-module.exports = (voiceName, text) => {
+module.exports = (voiceName, rawText) => {
 	return new Promise(async (res, rej) => {
-		const voice = voices[voiceName];
-		switch (voice.source) {
-			case "nextup": {
-				https.get("https://nextup.com/ivona/index.html", (r) => {
-					var q = qs.encode({
-						voice: voice.arg,
-						language: `${voice.language}-${voice.country}`,
-						text: text,
-					});
-					var buffers = [];
-					https.get(`https://nextup.com/ivona/php/nextup-polly/CreateSpeech/CreateSpeechGet3.php?${q}`, (r) => {
-						r.on("data", (d) => buffers.push(d));
-						r.on("end", () => {
-							const loc = Buffer.concat(buffers).toString();
-							if (!loc.startsWith("http")) rej();
-							get(loc).then(res).catch(rej);
-						});
-						r.on("error", rej);
-					});
-				});
-				break;
+		try {
+			const voice = voices[voiceName];
+			let flags = {};
+			const pieces = rawText.split("#%");
+			let text = pieces.pop().substring(0, 180);
+			for (const rawFlag of pieces) {
+				const index = rawFlag.indexOf("=");
+				if (index == -1) continue;
+				const name = rawFlag.substring(0, index);
+				const value = rawFlag.substring(index + 1);
+				flags[name] = value;
 			}
-			case "polly": {
-				var buffers = [];
-				var req = https.request(
-					{
-						hostname: "pollyvoices.com",
-						port: "443",
-						path: "/api/sound/add",
-						method: "POST",
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-					},
-					(r) => {
-						r.on("data", (b) => buffers.push(b));
-						r.on("end", () => {
-							var json = JSON.parse(Buffer.concat(buffers));
-							if (json.file) get(`https://pollyvoices.com${json.file}`).then(res);
-							else rej();
-						});
-					}
-				);
-				req.write(qs.encode({ text: text, voice: voice.arg }));
-				req.end();
-				break;
-			}
-			case "cepstral":
-			case "voiceforge": {
-				https.get("https://www.voiceforge.com/demo", (r) => {
-					const cookie = r.headers["set-cookie"];
-					var q = qs.encode({
+			if (!voice) rej("The selected voice does not exist.");
+			else switch (voice.source) {
+				case "voiceforge": {
+					const q = qs.encode({						
+						msg: text,
 						voice: voice.arg,
-						voiceText: text,
+						email: "null"
 					});
-					var buffers = [];
-					https.get(
-						{
-							host: "www.voiceforge.com",
-							path: `/demos/createAudio.php?${q}`,
-							headers: { Cookie: cookie },
-						},
-						(r) => {
-							r.on("data", (b) => buffers.push(b));
-							r.on("end", () => {
-								const html = Buffer.concat(buffers);
-								const beg = html.indexOf('id="mp3Source" src="') + 20;
-								const end = html.indexOf('"', beg);
-								const loc = html.subarray(beg, end).toString();
-								get(`https://www.voiceforge.com${loc}`).then(res).catch(rej);
-							});
+					
+					https.get({
+						hostname: "api.voiceforge.com",
+						path: `/swift_engine?${q}`,
+						headers: { 
+							"User-Agent": "just_audio/2.7.0 (Linux;Android 11) ExoPlayerLib/2.15.0",
+							"HTTP_X_API_KEY": "8b3f76a8539",
+							"Accept-Encoding": "identity",
+							"Icy-Metadata": "1",
 						}
-					);
-				});
-				break;
-			}
-			case "vocalware": {
-				var [eid, lid, vid] = voice.arg;
-				var cs = md5(`${eid}${lid}${vid}${text}1mp35883747uetivb9tb8108wfj`);
-				var q = qs.encode({
-					EID: voice.arg[0],
-					LID: voice.arg[1],
-					VID: voice.arg[2],
-					TXT: text,
-					EXT: "mp3",
-					IS_UTF8: 1,
-					ACC: 5883747,
-					cache_flag: 3,
-					CS: cs,
-				});
-				var req = https.get(
-					{
+					}, (r) => {
+						const stream = ffmpeg(r).inputFormat('wav').toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+							rej(`Encoding Error: ${error.message}`);
+						}).pipe();
+						const buffers = [];
+						stream.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+					}).on("error", rej);
+					break;
+				} case "polly": {
+					const body = qs.encode({
+						msg: text,
+						lang: voice.arg,
+						source: "ttsmp3"
+					});
+					https.request({
+						hostname: "ttsmp3.com",
+						path: "/makemp3_new.php",
+						method: "POST",
+						headers: { 
+							"Content-Length": body.length,
+							"Content-type": "application/x-www-form-urlencoded"
+						}
+					}, (r) => {
+						let body = "";
+						r.on("data", (c) => body += c).on("end", () => {
+							const json = JSON.parse(body);
+							if (json.Error == 1) return rej(json.Text);
+							https.get(json.URL, (r) => {
+								var buffers = [];
+								r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+							}).on("error", rej);
+						}).on("error", rej);
+					}).on("error", rej).end(body);
+					break;
+				} case "cepstral": {
+					let pitch;
+					if (flags.pitch) {
+						pitch = +flags.pitch;
+						pitch /= 100;
+						pitch *= 4.6;
+						pitch -= 0.4;
+						pitch = Math.round(pitch * 10) / 10;
+					} else {
+						pitch = 1;
+					}
+					https.get("https://www.cepstral.com/en/demos", async (r) => {
+						const cookie = r.headers["set-cookie"];
+						const q = qs.encode({
+							voiceText: text,
+							voice: voice.arg,
+							createTime: 666,
+							rate: 170,
+							pitch: pitch,
+							sfx: "none"
+						});
+
+						https.get(
+							{
+								hostname: "www.cepstral.com",
+								path: `/demos/createAudio.php?${q}`,
+								headers: { Cookie: cookie }
+							},
+							(r) => {
+								let body = "";
+								r.on("data", (b) => body += b);
+								r.on("end", () => {
+									const json = JSON.parse(body);
+
+									https
+										.get(`https://www.cepstral.com${json.mp3_loc}`, (r) => {
+											var buffers = [];
+											r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+										}).on("error", rej);
+								});
+								r.on("error", rej);
+							}
+						).on("error", rej);
+					}).on("error", rej);
+					break;
+				} case "vocalware": {
+					var [eid, lid, vid] = voice.arg;
+					var cs = md5(`${eid}${lid}${vid}${text}1mp35883747uetivb9tb8108wfj`);
+					var q = qs.encode({
+						EID: voice.arg[0],
+						LID: voice.arg[1],
+						VID: voice.arg[2],
+						TXT: text,
+						EXT: "mp3",
+						IS_UTF8: 1,
+						ACC: 5883747,
+						cache_flag: 3,
+						CS: cs,
+					});
+					https.get({
 						host: "cache-a.oddcast.com",
 						path: `/tts/gen.php?${q}`,
 						headers: {
@@ -115,124 +141,132 @@ module.exports = (voiceName, text) => {
 							"User-Agent":
 								"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 						},
-					},
-					(r) => {
+					}, (r) => {
 						var buffers = [];
 						r.on("data", (d) => buffers.push(d));
 						r.on("end", () => res(Buffer.concat(buffers)));
 						r.on("error", rej);
-					}
-				);
-				break;
-			}
-			case "voicery": {
-				var q = qs.encode({
-					text: text,
-					speaker: voice.arg,
-					ssml: text.includes("<"),
-					//style: 'default',
-				});
-				https.get(
-					{
-						host: "www.voicery.com",
-						path: `/api/generate?${q}`,
-					},
-					(r) => {
-						var buffers = [];
-						r.on("data", (d) => buffers.push(d));
-						r.on("end", () => res(Buffer.concat(buffers)));
-						r.on("error", rej);
-					}
-				);
-				break;
-			}
-			case "watson": {
-				var q = qs.encode({
-					text: text,
-					voice: voice.arg,
-					download: true,
-					accept: "audio/mp3",
-				});
-				https.get(
-					{
-						host: "text-to-speech-demo.ng.bluemix.net",
-						path: `/api/v1/synthesize?${q}`,
-					},
-					(r) => {
-						var buffers = [];
-						r.on("data", (d) => buffers.push(d));
-						r.on("end", () => res(Buffer.concat(buffers)));
-						r.on("error", rej);
-					}
-				);
-				break;
-			}
-			case "acapela": {
-				var q = qs.encode({
-					cl_login: "VAAS_MKT",
-					req_snd_type: "",
-					req_voice: voice.arg,
-					cl_app: "seriousbusiness",
-					req_text: text,
-					cl_pwd: "M5Awq9xu",
-				});
-				http.get(
-					{
-						host: "vaassl3.acapela-group.com",
-						path: `/Services/AcapelaTV/Synthesizer?${q}`,
-					},
-					(r) => {
-						var buffers = [];
-						r.on("data", (d) => buffers.push(d));
-						r.on("end", () => {
-							const html = Buffer.concat(buffers);
-							const beg = html.indexOf("&snd_url=") + 9;
-							const end = html.indexOf("&", beg);
-							const sub = html.subarray(beg + 4, end).toString();
-							if (!sub.startsWith("://")) return rej();
-							get(`https${sub}`).then(res).catch(rej);
-						});
-						r.on("error", rej);
-					}
-				);
-				break;
-			}
-			case "readloud": {
-				const req = https.request(
-					{
-						host: "readloud.net",
-						path: voice.arg,
-						method: "POST",
-						port: "443",
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded",
+					}).on("error", rej);
+					break;
+				} case "acapela": {
+					let acapelaArray = [];
+					for (let c = 0; c < 15; c++) acapelaArray.push(~~(65 + Math.random() * 26));
+					const email = `${String.fromCharCode.apply(null, acapelaArray)}@gmail.com`;
+
+					let req = https.request(
+						{
+							hostname: "acapelavoices.acapela-group.com",
+							path: "/index/getnonce",
+							method: "POST",
+							headers: {
+								"Content-Type": "application/x-www-form-urlencoded",
+							},
 						},
-					},
-					(r) => {
-						var buffers = [];
-						r.on("data", (d) => buffers.push(d));
-						r.on("end", () => {
-							const html = Buffer.concat(buffers);
-							const beg = html.indexOf("/tmp/");
-							const end = html.indexOf(".mp3", beg) + 4;
-							const sub = html.subarray(beg, end).toString();
-							const loc = `https://readloud.net${sub}`;
-							get(loc).then(res).catch(rej);
-						});
-						r.on("error", rej);
-					}
-				);
-				req.end(
-					qs.encode({
-						but1: text,
-						but: "Enviar",
-					})
-				);
-				break;
-			}
-			case "cereproc": {
-				const req = https.request(
-					{
+						(r) => {
+							let buffers = [];
+							r.on("data", (b) => buffers.push(b));
+							r.on("end", () => {
+								const nonce = JSON.parse(Buffer.concat(buffers)).nonce;
+								let req = https.request(
+									{
+										hostname: "acapela-group.com",
+										port: "8443",
+										path: "/Services/Synthesizer",
+										method: "POST",
+										headers: {
+											"Content-Type": "application/x-www-form-urlencoded",
+										},
+									},
+									(r) => {
+										let buffers = [];
+										r.on("data", (d) => buffers.push(d));
+										r.on("end", () => {
+											const html = Buffer.concat(buffers);
+											const beg = html.indexOf("&snd_url=") + 9;
+											const end = html.indexOf("&", beg);
+											const sub = html.subarray(beg, end).toString();
+
+											https.get(sub, (r) => {
+												var buffers = [];
+												r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+											}).on("error", rej);
+										});
+										r.on("error", rej);
+									}
+								).on("error", rej);
+								req.end(
+									qs.encode({
+										req_voice: voice.arg,
+										cl_pwd: "",
+										cl_vers: "1-30",
+										req_echo: "ON",
+										cl_login: "AcapelaGroup",
+										req_comment: `{"nonce":"${nonce}","user":"${email}"}`,
+										req_text: text,
+										cl_env: "ACAPELA_VOICES",
+										prot_vers: 2,
+										cl_app: "AcapelaGroup_WebDemo_Android",
+									})
+								);
+							});
+						}
+					).on("error", rej);
+					req.end(
+						new URLSearchParams({
+							json: `{"googleid":"${email}"`,
+						}).toString()
+					);
+					break;
+				} case "readloud": {
+					const req = https.request(
+						{
+							hostname: "101.99.94.14",														
+							path: voice.arg,
+							method: "POST",
+							headers: { 			
+								Host: "gonutts.net",					
+								"Content-Type": "application/x-www-form-urlencoded"
+							}
+						},
+						(r) => {
+							let buffers = [];
+							r.on("data", (b) => buffers.push(b));
+							r.on("end", () => {
+								const html = Buffer.concat(buffers);
+								const beg = html.indexOf("/tmp/");
+								const end = html.indexOf("mp3", beg) + 3;
+								const path = html.subarray(beg, end).toString();
+
+								if (path.length > 0) {
+									https.get({
+										hostname: "101.99.94.14",	
+										path: `/${path}`,
+										headers: {
+											Host: "gonutts.net"
+										}
+									}, (r) => {
+										var buffers = [];
+										r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+									}).on("error", rej);
+								} else {
+									return rej("Could not find voice clip file in response.");
+								}
+							});
+						}
+					);
+					req.on("error", rej);
+					req.end(
+						qs.encode({
+							but1: text,
+							butS: 0,
+							butP: 0,
+							butPauses: 0,
+							but: "Submit",
+						})
+					);
+					break;
+				} case "cereproc": {
+					https.request({
 						hostname: "www.cereproc.com",
 						path: "/themes/benchpress/livedemo.php",
 						method: "POST",
@@ -244,8 +278,7 @@ module.exports = (voiceName, text) => {
 							"x-requested-with": "XMLHttpRequest",
 							cookie: "Drupal.visitor.liveDemo=666",
 						},
-					},
-					(r) => {
+					}, (r) => {
 						var buffers = [];
 						r.on("data", (d) => buffers.push(d));
 						r.on("end", () => {
@@ -253,16 +286,20 @@ module.exports = (voiceName, text) => {
 							const beg = xml.indexOf("https://cerevoice.s3.amazonaws.com/");
 							const end = xml.indexOf(".mp3", beg) + 4;
 							const loc = xml.substr(beg, end - beg).toString();
-							get(loc).then(res).catch(rej);
+							https.get(loc, (r) => {
+								var buffers = [];
+								r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+							}).on("error", rej);
 						});
 						r.on("error", rej);
-					}
-				);
-				req.end(
-					`<speakExtended key='666'><voice>${voice.arg}</voice><text>${text}</text><audioFormat>mp3</audioFormat></speakExtended>`
-				);
-				break;
+					}).end(`<speakExtended key='666'><voice>${voice.arg}</voice><text>${
+						text
+					}</text><audioFormat>mp3</audioFormat></speakExtended>`);
+					break;
+				} default: rej("The source for the selected voice does not exist.");
 			}
+		} catch (e) {
+			rej(e);
 		}
 	});
 };

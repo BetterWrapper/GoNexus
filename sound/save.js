@@ -27,9 +27,8 @@ module.exports = function (req, res, url) {
                 try {
                     fs.writeFileSync('./_CACHÉ/recording.ogg', Buffer.from(f.bytes, "base64"));
                     const stream = fs.createReadStream('./_CACHÉ/recording.ogg');
-                    const buffer = ffmpeg(stream).inputFormat('ogg').audioQuality(96).toFormat("mp3").on('error', (error) => {
-                        console.log(`Encoding Error: ${error.message}`);
-                        return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${error}</message><text></text></error>`);
+                    const buffer = ffmpeg(stream).inputFormat('ogg').toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+                        rej(`Encoding Error: ${error.message}`);
                     }).pipe();
                     const buffers = [];
                     buffer.on("data", (b) => buffers.push(b)).on("end", () => mp3Duration(Buffer.concat(buffers), (e, d) => {
@@ -67,17 +66,16 @@ module.exports = function (req, res, url) {
         } else {
             await new Promise(async resolve => {
                 try {
-                    const {path, name} = files.Filedata;
+                    const {filepath, path, name} = files.Filedata;
                     const ext = name.substr(name.lastIndexOf(".") + 1);
                     let buffer;
                     if (ext != "mp3") {
-                        const stream = ffmpeg(fs.createReadStream(path)).inputFormat(ext).audioQuality(96).toFormat("mp3").on('error', (error) => {
-                            console.log(`Encoding Error: ${error.message}`);
-                            return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${error}</message><text></text></error>`);
+                        const stream = ffmpeg(fs.createReadStream(filepath || path)).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+                            rej(`Encoding Error: ${error.message}`);
                         }).pipe();
                         buffer = await stream2Buffer(stream);
                     } else {
-                        buffer = fs.readFileSync(path);
+                        buffer = fs.readFileSync(filepath || path);
                     }
                     mp3Duration(buffer, (e, d) => {
                         var dur = d * 1e3;
