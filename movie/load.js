@@ -20,14 +20,9 @@ module.exports = function (req, res, url) {
 			switch (ext) {
 				case "zip":
 					res.setHeader("Content-Type", "application/zip");
-					movie.loadZip({movieId: id}, {movieOwner: url.query.movieOwnerId}).then((v) => {
-						if (v) {
-							res.statusCode = 200;
-							res.end(v);
-						} else {
-							res.statusCode = 404;
-							res.end();
-						}
+					movie.loadZip({movieId: id}, {movieOwnerId: url.query.movieOwnerId}).then((v) => res.end(v)).catch(e => {
+						console.log(e);
+						res.end("404 Not Found");
 					});
 					break;
 				default:

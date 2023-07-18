@@ -1,10 +1,50 @@
-const chars = require("../character/main");
 const fUtil = require("../misc/file");
 const fs = require("fs");
 
 module.exports = {
+	folder: './_ASSETS',
 	load(aId) {
-		return fs.readFileSync(`./_ASSETS/${aId}`);
+		return fs.readFileSync(`${this.folder}/${aId}`);
+	},
+	update(data) {
+		const meta = {
+			title: true,
+			tags: true
+		};
+		const json = JSON.parse(fs.readFileSync('./users.json'));
+		const userInfo = json.users.find(i => i.id == data.userId);
+		const info = userInfo.assets.find(i => i.id == data.assetId);
+		for (const stuff in data) {
+			if (meta[stuff]) {
+				info[stuff] = data[stuff];
+			}
+		}
+		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+	},
+	delete(data) {
+		const json = JSON.parse(fs.readFileSync('./users.json'));
+		const userInfo = json.users.find(i => i.id == data.userId);
+		let info, index;
+		if (data.id && data.id != "null") {
+			info = userInfo.assets.find(i => i.enc_asset_id == data.id);
+			index = userInfo.assets.findIndex(i => i.enc_asset_id == data.id);
+		} else if (data.templateId && data.templateId != "null") {
+			info = userInfo.assets.find(i => i.enc_asset_id == data.templateId);
+			index = userInfo.assets.findIndex(i => i.enc_asset_id == data.templateId);
+		} else if (data.assetId && data.assetId != "null") {
+			info = userInfo.assets.find(i => i.id == data.assetId);
+			index = userInfo.assets.findIndex(i => i.id == data.assetId);
+		}
+		if (info.id.startsWith("s-")) {
+			const paths = [
+				fUtil.getFileIndex("starter-", ".xml", info.id.substr(2)),
+				fUtil.getFileIndex("starter-", ".png", info.id.substr(2))
+			];
+			for (const path of paths) fs.unlinkSync(path);
+		}
+		else fs.unlinkSync(`${this.folder}/${info.id}`);
+		userInfo.assets.splice(index, 1);
+		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
 	},
 	generateId() {
 		return ("" + Math.random()).replace(".", "");
@@ -12,7 +52,7 @@ module.exports = {
 	save(buffer, meta, data) {
 		meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
-		fs.writeFileSync(`./_ASSETS/${meta.id}`, buffer);
+		fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
 		const json = JSON.parse(fs.readFileSync('./users.json'));
 		json.users.find(i => i.id == data.userId).assets.unshift(meta);
 		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));

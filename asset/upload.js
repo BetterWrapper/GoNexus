@@ -29,7 +29,12 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.pathname != "/ajax/saveUserProp") return;
 	new formidable.IncomingForm().parse(req, async (e, f, files) => {
 		try {
-			if (e) {
+			if (!f.subtype) {
+				return res.end(JSON.stringify({
+					suc: false,
+					msg: `Missing one or more fields`
+				}));
+			} else if (e) {
 				res.end(JSON.stringify({
 					suc: false, 
 					msg: e

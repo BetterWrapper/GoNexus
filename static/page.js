@@ -3,6 +3,7 @@ const fs = require("fs");
 const http = require("http");
 const ejs = require('ejs');
 const { existsSync } = require("fs");
+const { join } = require("path");
 
 function toAttrString(table) {
 	return typeof table == "object"
@@ -197,7 +198,7 @@ module.exports = function (req, res, url) {
 			params = {
 				flashvars: {
 					movieLid: "0",
-					ut: "-1",
+					ut: "23",
 					numContact: "",
 					apiserver: "/",
 					playcount: 1,
@@ -211,7 +212,7 @@ module.exports = function (req, res, url) {
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
 					animationPath: process.env.SWF_URL + "/",
-					isEmbed: "0",
+					isEmbed: !url.query.isEmbed ? "0" : "1",
 					refuser: null,
 					utm_source: null,
 					uid: null,
@@ -232,6 +233,25 @@ module.exports = function (req, res, url) {
 				allowScriptAccess: "always",
 				allowFullScreen: "true",
 			};
+			if (url.query.isEmbed) {
+				if (url.query.movieId.startsWith("m-") && existsSync(path)) {
+					for (const user of JSON.parse(fs.readFileSync('./users.json')).users) {
+						const json = user.movies.find(i => i.id == url.query.movieId);
+						if (json) {
+							params.flashvars.movieOwner = user.name.split(" ").join("+");
+							params.flashvars.movieOwnerId = user.id;
+							params.flashvars.movieTitle = json.title.split(" ").join("+");
+							params.flashvars.movieDesc = json.desc.split(" ").join("+");
+							params.flashvars.duration = json.duration;
+							params.flashvars.isPublished = json.published;
+							params.flashvars.is_private_shared = json.publishStatus == "private" ? "1" : "0";
+						}
+					}
+					filename = url.query.filename == "player-embed-h5" ? "player-embed-h5" : "player-embed-legacy";
+				} else {
+					filename = "player-embed-error";
+				}
+			}
 			break;
 		}
 
@@ -243,7 +263,8 @@ module.exports = function (req, res, url) {
 		title,
 		attrs,
 		params,
-		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString()
+		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString(),
+		object: toObjectString
 	}, function(err, str){
 		if (err) {
 			console.log(err);

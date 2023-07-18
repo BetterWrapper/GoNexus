@@ -390,7 +390,12 @@ if (self !== top) {
                 switchToFlashPlayer();
                 break;
             } case "h5": {
-                switchToH5Player();
+                if ($(".video-player-viewport").hasClass("using-flash")) {
+                    $(".video-player-viewport").removeClass("using-flash");
+                    $(".player-container > .notification").addClass("hidden").filter(".using-h5").removeClass("hidden");
+                    $(".shortcut-instruction").removeClass("hidden");
+                    $("#flash-player").addClass("hidden")
+                }
                 break;
             }
         }

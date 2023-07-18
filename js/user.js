@@ -62,6 +62,7 @@ auth.onAuthStateChanged(user => {
                     addLink2Element('user-link', `/user?id=${user.uid}`);
                     switch (window.location.pathname) { 
                         case "/yourvideos": {
+                            sendUserData(user);
                             $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
                             break;
                         }
@@ -102,7 +103,7 @@ auth.onAuthStateChanged(user => {
             
                             $('.ga-importer').prependTo($('#studio_container'));
                         } else {
-                            setTimeout(() => $('#studioBlock').flash(studio_data), 1);
+                            setTimeout(() => $('#studioBlock').flash(getStudioData()), 1);
                         }
             
                         // Video Tutorial

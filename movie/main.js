@@ -143,7 +143,9 @@ module.exports = {
 		return new Promise(async (res, rej) => {
 			try {
 				const n = Number.parseInt(movieId.substr(2));
-				const fn = fUtil.getFileIndex("thumb-", ".png", n);
+				let fn;
+				if (movieId.startsWith("m-")) fn = fUtil.getFileIndex("thumb-", ".png", n);
+				else if (movieId.startsWith("s-")) fn = fUtil.getFileIndex("starter-", ".png", n);
 				res(fs.readFileSync(fn));
 			} catch (e) {
 				rej(e);

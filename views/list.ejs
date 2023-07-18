@@ -18,6 +18,18 @@
     </head>
     <body>
         <%- include('includes/header.ejs', {}); %>
+		<div id="movie-modal" class="modal">
+            <div class="modal-content">
+                <div class="form-container">
+                    <div class="imgcontainer">
+                        <center><h1 id="modal-title"></h1></center>
+                        <span class="close" onclick="hideElement('movie-modal')" title="Close Modal">&times;</span>
+                    </div>
+                    <div id="modal-body"></div>
+                </div>
+                <div class="form-container" style="background-color:#f1f1f1" id="modal-footer"></div>
+            </div>
+        </div>
 		<center>Your Videos: <span id="video-count"></span></center>
 		<table>
 			<thead>
@@ -36,7 +48,10 @@
 		</form>
 		<script>
 		var tbody = document.getElementsByTagName('tbody')[0];
-
+		var userData = null;
+		function sendUserData(user) {
+			userData = user;
+		}
 		function loadRows(json) {
 			let hasContent = false;
 			let count = 0;
@@ -49,6 +64,20 @@
 			}
 			if (!hasContent) showElement('no-videos');
 			addText2Element('video-count', count);
+		}
+		function showModal(title, content, footerstuff) {
+			if (userData) {
+				document.getElementById('modal-title').innerText = title || "";
+				document.getElementById('modal-body').innerHTML = content || "";
+				document.getElementById('modal-footer').innerHTML = footerstuff || "";
+				document.getElementById('movie-modal').style.display = 'block';
+			}
+		}
+		function moreOptions(id) {
+			showModal('Movie Actions', `<center><a class="btn btn-info" href="/movies/${id}.zip?movieOwnerId=${
+				userData.uid
+			}"><span class="glyphicon glyphicon-download"></span> Download Movie As A Zip File
+			</a><br><br><a href="javascript:deleteMovie('${id}')" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a></center>`);
 		}
 		</script>
 		<style>
