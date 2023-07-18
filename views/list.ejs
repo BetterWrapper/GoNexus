@@ -74,10 +74,15 @@
 			}
 		}
 		function moreOptions(id) {
-			showModal('Movie Actions', `<center><a class="btn btn-info" href="/movies/${id}.zip?movieOwnerId=${
-				userData.uid
-			}"><span class="glyphicon glyphicon-download"></span> Download Movie As A Zip File
-			</a><br><br><a href="javascript:deleteMovie('${id}')" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a></center>`);
+			showModal('Movie Actions', `<center><a class="btn btn-info" href="javascript:downloadMovieAsZip('${id}')">
+				<span class="glyphicon glyphicon-download"></span> Download Movie As A Zip File
+				</a><br><br><a href="javascript:deleteMovie('${id}')" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> 
+				Delete</a></center>`);
+		}
+		function downloadMovieAsZip(id) {
+			$.post("/api/sendUserInfo", {userId: userData.uid}).done(() => {
+				location.href = `/movies/${id}.zip`;
+			});
 		}
 		</script>
 		<style>

@@ -81,7 +81,7 @@ module.exports = {
 			}
 		});
 	},
-	loadZip(query, data) {
+	loadZip(query, data, packThumb = false) {
 		return new Promise(async (res, rej) => {
 			try {
 				const mId = query.movieId;
@@ -103,7 +103,7 @@ module.exports = {
 							}
 						}
 						const buffer = fs.readFileSync(filePath);
-						const pack = await parse.packMovie(buffer, data.movieOwnerId || query.userId);
+						const pack = await parse.packMovie(buffer, data.movieOwnerId || query.userId, packThumb, query.movieId);
 						res(pack);
 						break;
 					}

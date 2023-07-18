@@ -2,6 +2,7 @@ const movie = require("./main");
 const base = Buffer.alloc(1, 0);
 const http = require("http");
 const loadPost = require("../misc/post_body");
+let userId = null;
 
 /**
  * @param {http.IncomingMessage} req
@@ -12,50 +13,66 @@ const loadPost = require("../misc/post_body");
 module.exports = function (req, res, url) {
 	switch (req.method) {
 		case "GET": {
-			const match = req.url.match(/\/movies\/([^.]+)(?:\.(zip|xml))?$/);
-			if (!match) return;
-
-			var id = match[1];
-			var ext = match[2];
-			switch (ext) {
-				case "zip":
-					res.setHeader("Content-Type", "application/zip");
-					movie.loadZip({movieId: id}, {movieOwnerId: url.query.movieOwnerId}).then((v) => res.end(v)).catch(e => {
-						console.log(e);
-						res.end("404 Not Found");
-					});
-					break;
-				default:
-					res.setHeader("Content-Type", "text/xml");
-					movie.loadXml(id).then((v) => {
-						if (v) {
-							res.statusCode = 200;
-							res.end(v);
-						} else {
-							res.statusCode = 404;
-							res.end();
+			switch (url.pathname) {
+				default: {
+					const match = req.url.match(/\/movies\/([^/]+)$/);
+					if (!match) return;
+					const id = match[1].substr(0, match[1].lastIndexOf("."));
+					const ext = match[1].substr(match[1].lastIndexOf(".") + 1);
+					switch (ext) {
+						case "xml": {
+							res.setHeader("Content-Type", "text/xml");
+							movie.loadXml(id).then((v) => res.end(v)).catch(e => {
+								console.log(e);
+								res.end("Not Found");
+							});
+							break;
+						} case "zip": {
+							res.setHeader("Content-Type", "application/zip");
+							movie.loadZip({
+								movieId: id,
+							}, {
+								movieOwnerId: userId
+							}, true).then(v => res.end(v)).catch(e => {
+								console.log(e);
+								res.end("Not Found");
+							});
+							break;
 						}
-					});
+					}
 					break;
+				}
 			}
-			return true;
+			break;
 		}
 
 		case "POST": {
-			if (!url.path.startsWith("/goapi/getMovie/")) return;
-			res.setHeader("Content-Type", "application/zip");
-			loadPost(req, res).then(async ([data]) => {
-				try {
-					const b = await movie.loadZip(url.query, data);
-					res.end(Buffer.concat([base, b]));
-				} catch (e) {
-					console.log(e);
-					res.end(1 + e);
+			switch (url.pathname) {
+				case "/api/sendUserInfo": {
+					function sendUserInfo() {
+						return new Promise(async resolve => {
+							const [data] = await loadPost(req, res)
+							userId = data.userId;
+							resolve();
+						});
+					}
+					sendUserInfo().then(() => res.end());
+					break;
+				} case "/goapi/getMovie/": {
+					res.setHeader("Content-Type", "application/zip");
+					loadPost(req, res).then(async ([data]) => {
+						try {
+							const b = await movie.loadZip(url.query, data);
+							res.end(Buffer.concat([base, b]));
+						} catch (e) {
+							console.log(e);
+							res.end(1 + e);
+						}
+					});
+					break;
 				}
-			});
-			return true;
-		}
-		default:
-			return;
+			}
+			break;
+		} default: return;
 	}
 };
