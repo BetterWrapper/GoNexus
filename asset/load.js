@@ -51,7 +51,7 @@ module.exports = function (req, res, url) {
 							fs.unlinkSync(`./_ASSETS/${info.id}`);
 							userInfo.assets.splice(index, 1);
 							fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
-							res.end("1");
+							res.end("0");
 						} catch (e) {
 							console.log(e);
 							res.end("1");
