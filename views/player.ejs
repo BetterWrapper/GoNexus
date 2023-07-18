@@ -141,6 +141,7 @@ if (self !== top) {
                                     </div>
 
                                     <video class="embed-responsive-item hidden" id="h5-player">
+                                        <source src="/movies/<%= params.flashvars.movieId %>.mp4" type="video/mp4">
                                     </video>
                                 </div>
                                 <div class="video-info hidden-xs" data-video-id="<%= params.flashvars.movieId %>" data-is-owner="" data-owner="" data-duration="">
@@ -258,7 +259,7 @@ if (self !== top) {
                                     </div>
                                     <div class="list-container"></div>
                                 </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -320,46 +321,24 @@ if (self !== top) {
     <div class="settings social grey">
         <div class="container">
             <div class="settings-row">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <input id="copyable-url" class="form-control gtm-ga-event" type="url" readonly="true" value="" onclick="this.select()" data-gtmv-action="Share - Click text field" data-gtmv-category="" data-gtmv-label="25238467 - Guest">
-                        </div>
-                        <div class="col-sm-6 socials-icons">
-                            <ul class="socials-sharing">
-                                <li>
-                                    <a class="glyph-pro glyph-embed-close" data-remote="/ajax/getEmbedOverlay/<%= params.flashvars.movieId %>" data-action="video-embed" title="Embed code">
-                                        <span class="sr-only sr-only-focusable">Embed code</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <input id="copyable-url" class="form-control gtm-ga-event" type="url" readonly="true" value="" onclick="this.select()" data-gtmv-action="Share - Click text field" data-gtmv-category="" data-gtmv-label="25238467 - Guest">
                     </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="export disabled" id="export">
-        <div class="container">
-            <div class="title-row">
-                <h3 class="title">Export</h3>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="export-option" id="download-export" data-type="Download">
-                        <div class="icon"></div>
-                        <button class="toggle-trigger"><span class="glyph-halfling glyph-chevron-down"></span></button>
-                        <div class="option-name">Download<br><span class="text-uppercase">Video</span></div>
-                        <div class="description">
-                            Up to 1080p Full HD.                            <a class="for-unavailable" href="https://web.archive.org/web/20191104072153/https://www.vyond.com/pricing" target="_blank"><br>View plans</a>
-                        </div>
-                        <div class="toggle-content"></div>
-                        <div class="spin"></div>
+                    <div class="col-sm-6 socials-icons">
+                        <ul class="socials-sharing">
+                            <li>
+                                <a class="glyph-pro glyph-embed-close" data-remote="/ajax/getEmbedOverlay/<%= params.flashvars.movieId %>" data-action="video-embed" title="Embed code">
+                                    <span class="sr-only sr-only-focusable">Embed code</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <div class="shortcut-instruction hidden-xs hidden-sm">
         <div class="container">
@@ -384,8 +363,7 @@ if (self !== top) {
         </div>
     </div>
 </div>
-<input id="embed_code_field" type="hidden" value="<iframe scrolling=&quot;no&quot; allowTransparency=&quot;true&quot; allowfullscreen frameborder=&quot;0&quot; width=&quot;640&quot; height=&quot;360&quot; src=&quot;https://ga.vyond.com/player/embed/09NT7zVNrDlw&quot; ></iframe>
-"/>
+<input id="embed_code_field" type="hidden"/>
 <script>
     var flashPlayerUrl = '<%= attrs.data %>';
     var flashPlayerVars;
@@ -403,23 +381,9 @@ if (self !== top) {
 <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page_player_control.js.gz.js"></script>
 <script>
     var videoPage = new VideoPage("<%= params.flashvars.movieId %>"),
-        previewPlayer,
-        flashVar = {
-            duration: 3        
-        };
-    var videoCopyableUrl = '';
+        flashVar = {};
+    var videoCopyableUrl = window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>&utm_source=linkshare&utm_medium=linkshare&utm_campaign=usercontent';
 
-    function setupPreviewPlayer() {
-        var previewPlayerRetryCount = 5;
-        var video = document.getElementById('h5-player');
-
-        video.innerHTML = '';
-
-        previewPlayer = new PreviewPlayer("wss://preview.vyond.com", "<%= params.flashvars.movieId %>", true);
-        previewPlayer.setVideoElement(video);
-        previewPlayer.setUserAuthenticationToken('1:8af7a0920360fc523946b7fa20900d37c9cdc60ca8b684356b0030822c0b9e10:1Q/Zr1DXah/msl7S8mCq++RTQtqE6rntMS7j8S1GfqQ=');
-        previewPlayer.setFromPptConversion(false);
-    }
     function switchPlayers(type) {
         switch (type) {
             case "flash": {
@@ -432,7 +396,6 @@ if (self !== top) {
         }
     }
 </script>
-
 <script>
     $.post("/api/getAllUsers", (d) => {
         const json = JSON.parse(d);
@@ -445,7 +408,7 @@ if (self !== top) {
                 $("#user-link").text(meta.name);
                 $(".privacy").addClass(m.publishStatus);
                 $("#date").text(m.date);
-                $("#itemProp-meta").html(`<link itemprop="url" href="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>"><meta itemprop="name" content="${m.title}"><meta itemprop="description" content="${m.desc}"><meta itemprop="duration" content="${m.duration}"><meta itemprop="uploadDate" content="${m.date}"><meta itemprop="thumbnailUrl" content="${window.location.origin}/movie_thumbs/${m.id}.png"><meta itemprop="embedURL" content="${window.location.origin}/player?embed=true&movieId=${m.id}">`);
+                $("#itemProp-meta").html(`<link itemprop="url" href="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>"><meta itemprop="name" content="${m.title}"><meta itemprop="description" content="${m.desc}"><meta itemprop="duration" content="${m.duration}"><meta itemprop="uploadDate" content="${m.date}"><meta itemprop="thumbnailUrl" content="${window.location.origin}/movie_thumbs/${m.id}.png"><meta itemprop="embedURL" content="${window.location.origin}/player?isEmbed=true&movieId=${m.id}">`);
                 $(".video-title, .visible-xs").text(m.title);
                 document.getElementById("user-link-headline").href = `/user?id=${meta.id}`;
                 $("#user-link-headline").text(meta.name);
@@ -458,7 +421,9 @@ if (self !== top) {
                 flashPlayerVars.thumbnailURL = window.location.origin + '/movie_thumbs/<%= params.flashvars.movieId %>.png';
                 flashPlayerVars.isPublished = m.published;
                 flashPlayerVars.is_private_shared = m.publishStatus == "private" ? "1" : "0";
-                $("#copyable-url").val(window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>')
+                $("#copyable-url").val(videoCopyableUrl);
+                $("#embed_code_field").val(`<iframe scrolling="no" allowTransparency="true" allowfullscreen frameborder="0" width="640" height="360" src="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>&isEmbed=true"></iframe>`);
+                flashVar.duration = m.duration;
                 break;
             }
         }

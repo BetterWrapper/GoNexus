@@ -1,6 +1,7 @@
 const movie = require("./main");
 const base = Buffer.alloc(1, 0);
 const http = require("http");
+const loadPost = require("../misc/post_body");
 
 /**
  * @param {http.IncomingMessage} req
@@ -19,7 +20,7 @@ module.exports = function (req, res, url) {
 			switch (ext) {
 				case "zip":
 					res.setHeader("Content-Type", "application/zip");
-					movie.loadZip(id).then((v) => {
+					movie.loadZip({movieId: id}, {movieOwner: url.query.movieOwnerId}).then((v) => {
 						if (v) {
 							res.statusCode = 200;
 							res.end(v);
@@ -48,11 +49,15 @@ module.exports = function (req, res, url) {
 		case "POST": {
 			if (!url.path.startsWith("/goapi/getMovie/")) return;
 			res.setHeader("Content-Type", "application/zip");
-
-			movie
-				.loadZip(url.query.movieId)
-				.then((b) => res.end(Buffer.concat([base, b])))
-				.catch(() => res.end("1"));
+			loadPost(req, res).then(async ([data]) => {
+				try {
+					const b = await movie.loadZip(url.query, data);
+					res.end(Buffer.concat([base, b]));
+				} catch (e) {
+					console.log(e);
+					res.end(1 + e);
+				}
+			});
 			return true;
 		}
 		default:

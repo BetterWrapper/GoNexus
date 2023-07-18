@@ -45,7 +45,7 @@
 				hasContent = true;
 				const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
 				tbody.insertAdjacentHTML('beforeend',
-					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div><div>' + tbl.desc + '</div></td><td><span>' + date + '</span></td><td><a href="/player?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-play"></span></a><a href="/go_full?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-pencil"></span></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"><span class="glyphicon glyphicon-download-alt"></span></a><a href="javascript:shareMovie(\'' + tbl.id + '\')"><span class="glyphicon glyphicon-share"></span></a><a href="javascript:moreOptions(\'' + tbl.id + '\')"><span class="glyphicon glyphicon-option-horizontal"></span></a></td></tr>');
+					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div><div>' + tbl.desc + '</div></td><td><span>' + date + '</span></td><td><a href="/player?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-play"></span></a><a href="/go_full?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-pencil"></span></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"><span class="glyphicon glyphicon-download-alt"></span></a><a href="javascript:moreOptions(\'' + tbl.id + '\')"><span class="glyphicon glyphicon-option-horizontal"></span></a></td></tr>');
 			}
 			if (!hasContent) showElement('no-videos');
 			addText2Element('video-count', count);

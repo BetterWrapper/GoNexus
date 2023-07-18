@@ -21,6 +21,7 @@ const mvL = require("./movie/list");
 const mvm = require("./movie/meta");
 const mvs = require("./movie/save");
 const mvt = require("./movie/thmb");
+const ebd = require("./movie/embed");
 const thL = require("./theme/list");
 const thl = require("./theme/load");
 const tsv = require("./tts/voices");
@@ -28,7 +29,7 @@ const tsl = require("./tts/load");
 const fs = require("fs");
 const url = require("url");
 
-const functions = [mvL, snd, str, swf, pmc, asl, chl, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
+const functions = [mvL, ebd, snd, str, swf, pmc, asl, chl, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
 
 module.exports = http
 	.createServer((req, res) => {
@@ -57,31 +58,35 @@ module.exports = http
 							break;
 						} case "/api/check4SavedUserInfo": {
 							loadPost(req, res).then(([data]) => {
-								const info = {
-									name: true,
-									id: true,
-									email: true
-								}
-								const json = JSON.parse(fs.readFileSync('./users.json'));
-								const meta = json.users.find(i => i.id == data.uid);
-								if (!meta) {
-									json.users.unshift({
-										name: data.displayName,
-										id: data.uid,
-										email: data.email,
-										movies: [],
-										assets: []
-									});
-								} else {
-									for (const stuff in data) {
-										if (info[stuff]) {
-											if (data[stuff] != meta[stuff]) {
-												meta[stuff] = data[stuff];
+								try {
+									const info = {
+										name: true,
+										id: true,
+										email: true
+									}
+									const json = JSON.parse(fs.readFileSync('./users.json'));
+									const meta = json.users.find(i => i.id == data.uid);
+									if (!meta) {
+										json.users.unshift({
+											name: data.displayName,
+											id: data.uid,
+											email: data.email,
+											movies: [],
+											assets: []
+										});
+									} else {
+										for (const stuff in data) {
+											if (info[stuff]) {
+												if (data[stuff] != meta[stuff]) {
+													meta[stuff] = data[stuff];
+												}
 											}
 										}
 									}
+									fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+								} catch (e) {
+									console.log(e);
 								}
-								fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
 							})
 							break;
 						} default: break;

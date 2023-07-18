@@ -36,12 +36,11 @@ module.exports = {
 			var i = mId.indexOf("-");
 			var prefix = mId.substr(0, i);
 			var suffix = mId.substr(i + 1);
-			var zip = nodezip.unzip(movieZip);
 			switch (prefix) {
 				case "m": {
 					var path = fUtil.getFileIndex("movie-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
-					parse.unpackMovie(zip, thumb).then((buffer) => {
+					parse.unpackMovie(movieZip).then((buffer) => {
 						writeStream.write(buffer, () => {
 							writeStream.close();
 							this.meta(mId).then(m => {
@@ -65,7 +64,7 @@ module.exports = {
 				} case "s": {
 					var path = fUtil.getFileIndex("starter-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
-					parse.unpackMovie(zip, thumb).then((buffer) => {
+					parse.unpackMovie(movieZip).then((buffer) => {
 						writeStream.write(buffer, () => {
 							writeStream.close();
 							this.meta(mId).then(m => {
@@ -82,9 +81,10 @@ module.exports = {
 			}
 		});
 	},
-	loadZip(mId) {
+	loadZip(query, data) {
 		return new Promise(async (res, rej) => {
 			try {
+				const mId = query.movieId;
 				const i = mId.indexOf("-");
 				const prefix = mId.substr(0, i);
 				const suffix = mId.substr(i + 1);
@@ -103,8 +103,8 @@ module.exports = {
 							}
 						}
 						const buffer = fs.readFileSync(filePath);
-						const pack = await parse.packMovie(buffer);
-						res(pack.zipBuf);
+						const pack = await parse.packMovie(buffer, data.movieOwnerId || query.userId);
+						res(pack);
 						break;
 					}
 				}

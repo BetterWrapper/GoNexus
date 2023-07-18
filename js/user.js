@@ -40,6 +40,9 @@ auth.onAuthStateChanged(user => {
                 } case "/": {
                     if (params.get("action")) showElement(`${params.get("action")}-modal`);
                     addText2Element('psw', '<a href="javascript:userLogout()">Logout</a>');
+                } case "/user": {
+                    loadUserContent(user);
+                    break;
                 }
             }
         } else {
@@ -54,8 +57,15 @@ auth.onAuthStateChanged(user => {
             createImgElement('profile-image', user.photoURL, user.displayName);
             addText2Element('user-name', user.displayName)
             switch (window.location.pathname) {
+                case "/":
                 case "/yourvideos": {
-                    $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
+                    addLink2Element('user-link', `/user?id=${user.uid}`);
+                    switch (window.location.pathname) { 
+                        case "/yourvideos": {
+                            $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
+                            break;
+                        }
+                    }
                     break;
                 } case "/go_full": {
                     $(document).ready(function() {
@@ -111,9 +121,13 @@ auth.onAuthStateChanged(user => {
                     })
                     break;
                 } case "/player": {
+                    addLink2Element('user-link-yourprofile', `/user?id=${user.uid}`);
                     flashPlayerVars.userId = user.uid;
                     flashPlayerVars.username = user.displayName;
                     flashPlayerVars.uemail = user.email;
+                } case "/user": {
+                    loadUserContent(user);
+                    break;
                 }
             }
         }
@@ -135,6 +149,9 @@ auth.onAuthStateChanged(user => {
                 break;
             } case "/": {
                 if (params.get("action")) showElement(`${params.get("action")}-modal`);
+            } case "/user": {
+                loadUserContent();
+                break;
             }
         }
     }
@@ -178,9 +195,9 @@ function createImgElement(id, url, text) {
         document.getElementById(id).alt = text;
     }
 }
-switch (window.location.pathname) {
-    case "/user": {
-        $.post("/api/getAllUsers", (d) => setTimeout(() => {
+function loadUserContent(userData) {
+    if (window.location.pathname == "/user") {
+        $.post("/api/getAllUsers", (d) => {
             const json = JSON.parse(d);
             const meta = json.find(i => i.id == params.get("id"));
             if (meta) {
@@ -188,70 +205,60 @@ switch (window.location.pathname) {
                 addText2Element('user-link', meta.name);
                 addLink2Element('user-link', `/user?id=${params.get("id")}`)
                 document.title = `${meta.name} On BetterWrapper`;
-            }
-        }, 1));
-        $.getJSON(`/movieList?uid=${params.get("id")}`, (d) => {
-            if (params.get("filename") != "user-videos") setTimeout(() => {
-                let hasContent = true;
-                var I = 0;
-                let i = I; 
-                I += 6;
-                for (; i < I; i++) {
-                    if (d[i]) $("#profileVideos").append(`<div class="col-sm-6 col-md-4">
-                    <div class="profile-video">
-                        <div class="video-container">
-                            <a class="video-thumbnail" href="${window.location.origin}/player?movieId=${d[i].id}">
+                $.getJSON(`/movieList?uid=${params.get("id")}`, (d) => {
+                    let json;
+                    if (userData && params.get("id") == userData.uid) json = d;
+                    else json = d.filter(i => i.published == "1");
+                    if (!params.get("filename") || params.get("filename") != "user-videos") {
+                        let htmls = "";
+                        for (let i = 0; i < 7; i++) {
+                            if (json[i]) htmls += `<div class="col-sm-6 col-md-4"><div class="profile-video"><div class="video-container">
+                            <a class="video-thumbnail" href="${window.location.origin}/player?movieId=${json[i].id}">
                                 <div class="vthumb vthumb-300">
-                                    <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/${d[i].id}.png" alt="${d[i].title}"/></div></div>
+                                    <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/${json[i].id}.png" alt="${json[i].title}"/></div></div>
                                 </div>
                             </a>
                             <div class="video-desc">
-                                <a class="title" href="${window.location.origin}/player?movieId=${d[i].id}" title="${d[i].title}">${d[i].title}</a>
-                                <span class="duration">${d[i].durationString}</span>
+                                <a class="title" href="${window.location.origin}/player?movieId=${json[i].id}" title="${json[i].title}">${json[i].title}</a>
+                                <span class="duration">${json[i].durationString}</span>
                                 </span>
-                            </div>
-                        </div>
-                    </div></div>`);
-                    else hasContent = false;
-                }
-                if (i == 6) {
-                    addLink2Element('more', `${window.location.origin}/user?id=${params.get("id")}&filename=user-videos`);
-                    $("#more").show();
-                }
-                if (!hasContent) addText2Element('profileVideos', '<center>No videos</center>');
-            }, 1);
-            else setTimeout(() => {
-                var C = 0;
-                function loadRows() {
-                    let c = C; 
-                    C += 12;
-                    for (; c < C; c++) {
-                        if (c > d.length - 1) {
-                            $("#load_more").hide();
-                            break;
+                            </div></div></div></div>`;
+                            else if (i == 7) {
+                                addLink2Element('more', `${window.location.origin}/user?id=${params.get("id")}&filename=user-videos`);
+                                $("#more").show();
+                            }
                         }
-                        $("#userVideos").append(`<div class="col-sm-6 col-md-4">
-                        <div class="profile-video">
-                            <div class="video-container">
-                                <a class="video-thumbnail" href="${window.location.origin}/player?movieId=${d[c].id}">
+                        $("#profileVideos").html(htmls);
+                        if (json.length == 0) addText2Element('profileVideos', '<center>No Videos</center>');
+                    } else {
+                        var C = 0;
+                        function loadRows() {
+                            let c = C; 
+                            C += 12;
+                            for (; c < C; c++) {
+                                if (c > json.length - 1) {
+                                    $("#load_more").hide();
+                                    break;
+                                }
+                                $("#userVideos").append(`<div class="col-sm-6 col-md-4"><div class="profile-video"><div class="video-container">
+                                <a class="video-thumbnail" href="${window.location.origin}/player?movieId=${json[c].id}">
                                     <div class="vthumb vthumb-300">
-                                        <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/${d[c].id}.png" alt="${d[c].title}"/></div></div>
+                                        <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/${json[c].id}.png" alt="${json[c].title}"/></div></div>
                                     </div>
                                 </a>
                                 <div class="video-desc">
-                                    <a class="title" href="${window.location.origin}/player?movieId=${d[c].id}" title="${d[c].title}">${d[c].title}</a>
-                                    <span class="duration">${d[c].durationString}</span>
+                                    <a class="title" href="${window.location.origin}/player?movieId=${json[c].id}" title="${json[c].title}">${json[c].title}</a>
+                                    <span class="duration">${json[c].durationString}</span>
                                     </span>
-                                </div>
-                            </div>
-                        </div></div>`);
+                                </div></div></div></div>`);
+                            }
+                        }
+                        $("#load_more").click(() => loadRows());
+                        loadRows();
+                        addText2Element('video-count', json.length);
                     }
-                }
-                $("#load_more").click(() => loadRows());
-                loadRows();
-                addText2Element('video-count', d.length);
-            }, 1);
+                });
+            }
         });
-        break;
     }
 }
