@@ -342,7 +342,10 @@ module.exports = {
 
 		fUtil.addToZip(zip, 'themelist.xml', Buffer.from(`${header}<themes>${themeKs.map(t => `<theme>${t}</theme>`).join('')}</themes>`));
 		fUtil.addToZip(zip, 'ugc.xml', Buffer.from(ugc + `</theme>`));
-		if (packThumb) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("movie-", ".png", mId.substr(2))));
+		if (packThumb) {
+			if (mId.startsWith("m-")) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("thumb-", ".png", mId.substr(2))));
+			else if (mId.startsWith("s-")) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("starter-", ".png", mId.substr(2))));
+		}
 		return await zip.zip();
 	},
 	/**

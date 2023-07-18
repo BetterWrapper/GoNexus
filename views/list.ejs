@@ -58,12 +58,24 @@
 			for (const tbl of json) {
 				count++
 				hasContent = true;
-				const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
-				tbody.insertAdjacentHTML('beforeend',
-					'<tr><td><img src="/movie_thumbs/' + tbl.id + '.png"></td><td><div>' + tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + '</div><div>' + tbl.durationString + '</div><div>' + tbl.desc + '</div></td><td><span>' + date + '</span></td><td><a href="/player?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-play"></span></a><a href="/go_full?movieId=' + tbl.id + '"><span class="glyphicon glyphicon-pencil"></span></a><a href="/movies/' + tbl.id + '.xml" download="' + tbl.title + '"><span class="glyphicon glyphicon-download-alt"></span></a><a href="javascript:moreOptions(\'' + tbl.id + '\')"><span class="glyphicon glyphicon-option-horizontal"></span></a></td></tr>');
 			}
 			if (!hasContent) showElement('no-videos');
+			else $("tbody").html(json.map(loadHtml).join(""));
 			addText2Element('video-count', count);
+		}
+		function loadHtml(tbl) {
+			const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
+			return `<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${
+				tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+			}</div><div>${tbl.durationString}</div><div>${tbl.desc}</div></td><td><span>${date}</span></td><td><a href="/player?movieId=${
+				tbl.id
+			}"><span class="glyphicon glyphicon-play"></span></a><a href="/go_full?movieId=${
+				tbl.id
+			}"><span class="glyphicon glyphicon-pencil"></span></a><a href="/movies/${tbl.id}.xml" download="${
+				tbl.title
+			}"><span class="glyphicon glyphicon-download-alt"></span></a><a href="javascript:moreOptions('${
+				tbl.id
+			}')"><span class="glyphicon glyphicon-option-horizontal"></span></a></td></tr>`;
 		}
 		function showModal(title, content, footerstuff) {
 			if (userData) {
@@ -74,15 +86,32 @@
 			}
 		}
 		function moreOptions(id) {
-			showModal('Movie Actions', `<center><a class="btn btn-info" href="javascript:downloadMovieAsZip('${id}')">
-				<span class="glyphicon glyphicon-download"></span> Download Movie As A Zip File
-				</a><br><br><a href="javascript:deleteMovie('${id}')" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> 
+			showModal('Movie Actions', `<center><a class="btn btn-success" href="javascript:exporter('movie', '${id}')">
+				<span class="glyphicon glyphicon-export"></span> Export
+				</a><br><br><a class="btn btn-info" href="javascript:downloadMovieAsZip('${id}')">
+				<span class="glyphicon glyphicon-download"></span> Download As A Zip File
+				</a><br><br><a href="javascript:del('movie', '${id}')" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> 
 				Delete</a></center>`);
 		}
 		function downloadMovieAsZip(id) {
 			$.post("/api/sendUserInfo", {userId: userData.uid}).done(() => {
 				location.href = `/movies/${id}.zip`;
 			});
+		}
+		function del(type, id) {
+			const yeaorno = confirm(`Are you sure that you want to delete ${type} ${id}?`);
+			if (yeaorno) {
+				$.post(`/api/${type}/delete`, {id}).done(d => {
+					if (d.success) {
+						$("#movie-modal").hide();
+						$.getJSON(`/movieList?uid=${userData.uid}`, (d) => loadRows(d));
+					}
+				});
+			}
+		}
+		function exporter(type, id) {
+			const yeaorno = confirm(`Are you sure that you want to export ${type} ${id}?`);
+			if (yeaorno) alert("The exporter is in beta right now. don't worry, it will be out soon. i just put that button there to get us started a little bit. -JosephAnimate")
 		}
 		</script>
 		<style>
