@@ -10,9 +10,7 @@ function stream2Buffer(stream) {
 	return new Promise((res, rej) => {
 		try {
 			const buffers = [];
-			stream.on("data", (b) => buffers.push(b)).on("end", () => {
-				res(Buffer.concat(buffers));
-			}).on("error", rej);
+			stream.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 		} catch (e) {
 			rej(e);
 		}
@@ -46,22 +44,26 @@ module.exports = function (req, res, url) {
 				}));
 			} else if (f.userId) {
 				const type = f.subtype == "soundeffect" || f.subtype == "voiceover" || f.subtype == "bgmusic" ? "sound" : f.subtype;
-				const {path, filepath, originalFilename, name: fiieName} = files.file;
+				const {
+					path, 
+					filepath, 
+					originalFilename, 
+					name: fiieName
+				} = files.file;
 				const name = originalFilename || fiieName;
+				const filePath = filepath || path;
 				const dot = name.lastIndexOf(".");
 				const ext = name.substr(dot + 1);
 				let buffer;
 				if (type == "sound" && ext != "mp3") {
-					const stream = ffmpeg(fs.createReadStream(filepath || path)).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+					const stream = ffmpeg(fs.createReadStream(filePath)).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
 						return res.end(JSON.stringify({
 							suc: false,
 							msg: `Encoding Error: ${error.message}`
 						}));
 					}).pipe();
 					buffer = await stream2Buffer(stream);
-				} else {
-					buffer = fs.readFileSync(filepath || path);
-				}
+				} else buffer = fs.readFileSync(filepath || path);
 				const info = {
 					suc: true,
 					asset_type: type,
