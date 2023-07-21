@@ -7,22 +7,17 @@ const asset = require("./main");
 const http = require("http");
 
 async function listAssets(data, makeZip) {
-	var xmlString, files;
+	var files;
 	switch (data.type) {
 		case "char": {
 			files = asset.list(data.userId, "char", 0, data.themeId);
-			xmlString = `${header}<ugc more="0">${
-				files.map(v => `<char id="${v.id}" name="${v.title}" cc_theme_id="${v.themeId}" thumbnail_url="/char_thumbs/${
-					v.id
-				}.png" copyable="Y"><tags/></char>`).join("")
-			}</ugc>`;
 			break;
 		} default: {
 			files = asset.list(data.userId, data.type);
-			xmlString = `${header}<ugc more="0">${files.map(asset.meta2Xml).join("")}</ugc>`;
 			break;
 		}
 	}
+	var xmlString = `${header}<ugc more="0">${files.map(asset.meta2Xml).join("")}</ugc>`;
 
 	if (makeZip) {
 		const zip = nodezip.create();
@@ -38,9 +33,7 @@ async function listAssets(data, makeZip) {
 			}
 		});
 		return await zip.zip();
-	} else {
-		return Buffer.from(xmlString);
-	}
+	} else return Buffer.from(xmlString);
 }
 
 /**
@@ -64,7 +57,7 @@ module.exports = function (req, res, url) {
 	switch (req.method) {
 		case "GET": {
 			var q = url.query;
-			if (q.movieId && q.type) {
+			if (q.userId && q.type) {
 				listAssets(q, makeZip).then((buff) => {
 					const type = makeZip ? "application/zip" : "text/xml";
 					res.setHeader("Content-Type", type);
