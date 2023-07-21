@@ -63,7 +63,7 @@ module.exports = function (req, res, url) {
 						}));
 					}).pipe();
 					buffer = await stream2Buffer(stream);
-				} else buffer = fs.readFileSync(filepath || path);
+				} else buffer = fs.readFileSync(filePath);
 				const info = {
 					suc: true,
 					asset_type: type,
