@@ -264,7 +264,8 @@ module.exports = function (req, res, url) {
 		attrs,
 		params,
 		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString(),
-		object: toObjectString
+		object: toObjectString,
+		parasmString: toParamString
 	}, function(err, str){
 		if (err) {
 			console.log(err);
