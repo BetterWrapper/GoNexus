@@ -120,7 +120,7 @@
 
 
 </head>
-<object id="miniobject" data="/static/animation/exporter.swf" height="0" width="0"></object>
+
 <body class="en_US">
     <script type="text/javascript">
         if (self !== top) {
@@ -140,7 +140,6 @@
 
     <div class="page-container">
 
-
         <%- include('includes/header-legacy.ejs', {}); %>
             <!-- END OF HEADER -->
             <div id="video-page">
@@ -151,6 +150,7 @@
                         style="background-image:url('/movie_thumbs/<%= params.flashvars.movieId %>.png')">
                         <div class="thumbnail-overlay"></div>
                     </div>
+                    <object id="miniobject" data="/static/animation/exporter.swf" height="0" width="0"></object>
                     <div class="container">
                         <div class="row">
                             <div class="player-container col-sm-7">
@@ -180,8 +180,7 @@
                                                 </div>
 
                                                 <video class="embed-responsive-item hidden" id="h5-player">
-                                                    <source src="/movies/<%= params.flashvars.movieId %>.mp4"
-                                                        type="video/mp4">
+                                                    <source id="source" type="video/mp4">
                                                 </video>
                                             </div>
                                             <div class="video-info hidden-xs"
@@ -194,10 +193,10 @@
                                                     <p class="status">Published: <span id="date"></span></p>
                                                 </div>
                                             </div>
-                                            <div class="video-loading" id="video-loading">
-                                                <div class="video-loading-message"></div>
+                                            <div class="video-loading" id="video-loading" style="display: block">
+                                                <div class="video-loading-message">This video is currently loading right now. please wait for a few minutes.</div>
                                             </div>
-                                            <div id="player-control">
+                                            <div id="player-control" style="display: none">
                                                 <div class="seek-bar-container">
                                                     <div class="seek-bar">
                                                         <div class="buffered-bar"></div>
@@ -462,7 +461,10 @@
                                 $(".video-player-viewport").removeClass("using-flash");
                                 $(".player-container > .notification").addClass("hidden").filter(".using-h5").removeClass("hidden");
                                 $(".shortcut-instruction").removeClass("hidden");
-                                $("#flash-player").addClass("hidden")
+                                $("#flash-player").addClass("hidden");
+                                $("#video-loading").show();
+                                $(".video-loading-message").text('This video is currently loading right now. please wait for a few minutes.');
+                                $("#player-control").hide();
                             }
                             break;
                         }

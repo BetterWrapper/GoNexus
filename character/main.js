@@ -6,14 +6,6 @@ const util = require("../misc/util");
 const get = require("../misc/get");
 const fw = process.env.FILE_WIDTH;
 const fs = require("fs");
-const themes = {};
-
-function addTheme(id, buffer) {
-	const beg = buffer.indexOf(`theme_id="`) + 10;
-	const end = buffer.indexOf(`"`, beg);
-	const theme = buffer.subarray(beg, end).toString();
-	return (themes[id] = theme);
-}
 
 function save(id, data) {
 	const i = id.indexOf("-");
@@ -28,10 +20,6 @@ function save(id, data) {
 	addTheme(id, data);
 	return id;
 }
-
-fUtil.getValidFileIndicies("char-", ".xml").map((n) => {
-	return addTheme(`c-${n}`, fs.readFileSync(fUtil.getFileIndex("char-", ".xml", n)));
-});
 
 /**
  * @param {string} id
@@ -71,13 +59,10 @@ module.exports = {
 	 * @param {string} id
 	 * @returns {Promise<string>}
 	 */
-	getTheme(id) {
-		return new Promise((res, rej) => {
-			if (themes[id]) res(themes[id]);
-			this.load(id)
-				.then((b) => res(addTheme(id, b)))
-				.catch(rej);
-		});
+	getTheme(buffer) {
+		const beg = buffer.indexOf(`theme_id="`) + 10;
+		const end = buffer.indexOf(`"`, beg);
+		return buffer.subarray(beg, end).toString();
 	},
 	/**
 	 * @param {string} id
