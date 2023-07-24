@@ -2,6 +2,7 @@ const movie = require("./main");
 const base = Buffer.alloc(1, 0);
 const http = require("http");
 const loadPost = require("../misc/post_body");
+const fUtil = require("../misc/file");
 const formidable = require("formidable");
 let userId = null;
 const path = require("path");
@@ -42,6 +43,11 @@ module.exports = function (req, res, url) {
 								res.end("Not Found");
 							});
 							break;
+						} case "mp4": {
+							if (fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", id.substr(2)))) {
+								res.setHeader("Content-Type", "video/mp4");
+								res.end(fs.readFileSync(fUtil.getFileIndex("movie-", ".mp4", id.substr(2))));
+							} else res.end("Not Found");
 						}
 					}
 					break;
@@ -85,6 +91,7 @@ module.exports = function (req, res, url) {
 						}
 						(ffmpeg().input(base + "/%d.png").on("end", () => {
 							if (fs.existsSync(path.join(base, "output.mp4"))) {
+								fs.writeFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)), fs.readFileSync(path.join(base, "output.mp4")));
 								res.end(JSON.stringify({
 									videoUrl: `/frames/output.mp4`
 								}));
@@ -92,6 +99,12 @@ module.exports = function (req, res, url) {
 						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).size("640x360").run();
 					});
 					break;
+				} case "/api/check4ExportedMovieExistance": {
+					loadPost(req, res).then(([data]) => {
+						res.end(JSON.stringify({
+							exists: fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2)))
+						}))
+					})
 				}
 			}
 			break;

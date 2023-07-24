@@ -79,6 +79,17 @@
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/embed_player.js.gz.js"></script>
 </body>
 <script>
+    function check4FlashPlayer() {
+        try {
+            var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+            if (fo) return true;
+        } catch (e) {
+            if (navigator.mimeTypes && navigator.mimeTypes['application/x-shockwave-flash'] != undefined && navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin) {
+                return true;
+            }
+        }
+        return false;
+    }
     function toAttrString(table) {
         return typeof table == "object"
             ? Object.keys(table)
@@ -138,6 +149,18 @@
                 $("#player-control").show();
             } else $(".video-loading-message").text("could not fetch your video. please try again later.")
         });
+    }
+    if (!check4FlashPlayer()) {
+        $.post("/api/check4ExportedMovieExistance", {id: '<%= params.flashvars.movieId %>'}).done(d => {
+            player.addClass("hidden");
+            const json = JSON.parse(d);
+            if (json.exists) {
+                $("#h5-player").html(`<source src="/movies/<%= params.flashvars.movieId %>.mp4" type="video/mp4">`);
+                $("#video-loading").hide();
+                $(".video-loading-message").text("");
+                $("#player-control").show();
+            } else $(".video-loading-message").html("You don't have adobe flash player and an exported version of this movie does not exist. <br>please ask someone with flash player to export this movie for you.");
+        })
     }
 </script>
 </html>
