@@ -150,7 +150,6 @@
                         style="background-image:url('/movie_thumbs/<%= params.flashvars.movieId %>.png')">
                         <div class="thumbnail-overlay"></div>
                     </div>
-                    <object id="miniobject" data="/static/exporter.swf" height="0" width="0"></object>
                     <div class="container">
                         <div class="row">
                             <div class="player-container col-sm-7">
@@ -176,7 +175,7 @@
                                                             href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                                                     </div>
                                                 </div>
-
+                                                <object id="miniobject" data="/static/exporter.swf" height="360" width="640"></object>
                                                 <video class="embed-responsive-item hidden" id="h5-player"></video>
                                             </div>
                                             <div class="video-info hidden-xs">
@@ -491,6 +490,7 @@
                         contentType: "application/json"
                     }).done((d) => { // notify the h5 player that the video is ready.
                         if (d) {
+                            player.hide();
                             videoLoadingComplete = true;
                             $("#h5-player").html(`<source src="${d.videoUrl}" type="video/mp4">`);
                             $("#video-loading").hide();
