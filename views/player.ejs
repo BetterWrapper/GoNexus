@@ -150,7 +150,7 @@
                         style="background-image:url('/movie_thumbs/<%= params.flashvars.movieId %>.png')">
                         <div class="thumbnail-overlay"></div>
                     </div>
-                    <object id="miniobject" data="/static/animation/exporter.swf" height="0" width="0"></object>
+                    <object id="miniobject" data="/static/exporter.swf" height="0" width="0"></object>
                     <div class="container">
                         <div class="row">
                             <div class="player-container col-sm-7">
@@ -180,7 +180,6 @@
                                                 </div>
 
                                                 <video class="embed-responsive-item hidden" id="h5-player">
-                                                    <source id="source" type="video/mp4">
                                                 </video>
                                             </div>
                                             <div class="video-info hidden-xs"
@@ -447,10 +446,59 @@
             <script
                 src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page_player_control.js.gz.js"></script>
             <script>
+                let videoLoadingComplete = false;
+                const player = $("#miniobject");
                 var videoPage = new VideoPage("<%= params.flashvars.movieId %>"),
                     flashVar = {};
                 var videoCopyableUrl = window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>&utm_source=linkshare&utm_medium=linkshare&utm_campaign=usercontent';
+                player.html(('<%= paramString(exporterParams) %>').split("&#34;").join('"').split("&lt;").join("<").split("&gt;").join(">"));
+                // this is where the exporter does it's job
+                const mspf = 1000 / 24;
+                let currentFrame = 1;
+                function nextFrame() {
+                    player[0].seekFrame(currentFrame++);
+                }
 
+                function playAndPause() {
+                    player[0].play();
+                    setTimeout(() => player[0].pause(), 100)
+                }
+
+                function notifyMovieEnded() {
+                    sendFramesToServer();
+                }
+
+                function sendFramesToServer() {
+                    /* cut out duplicate frames */
+                    /** @type {{
+                     * * 	duration: number
+                     * guid: string
+                     * startFrom: number
+                     * * }[]}
+                     * */
+                    const scenes = player[0].getSceneInfoArray();
+                    /** @type {string[]} */
+                    const frames = player[0].getPhotoArray();
+                    for (const scene of scenes) frames.splice(scene.startFrom, 1);
+                    $.ajax({
+                        url: "/api/videoExport/completed",
+                        method: "POST",
+                        data: JSON.stringify({
+                            frames,
+                            id: '<%= params.flashvars.movieId %>'
+                        }),
+                        dataType: "json",
+                        contentType: "application/json"
+                    }).done((d) => { // notify the h5 player that the video is ready.
+                        if (d) {
+                            videoLoadingComplete = true;
+                            $("#h5-player").html(`<source src="${d.videoUrl}" type="video/mp4">`);
+                            $("#video-loading").hide();
+                            $(".video-loading-message").text("");
+                            $("#player-control").show();
+                        }
+                    });
+                }
                 function switchPlayers(type) {
                     switch (type) {
                         case "flash": {
@@ -462,9 +510,11 @@
                                 $(".player-container > .notification").addClass("hidden").filter(".using-h5").removeClass("hidden");
                                 $(".shortcut-instruction").removeClass("hidden");
                                 $("#flash-player").addClass("hidden");
-                                $("#video-loading").show();
-                                $(".video-loading-message").text('This video is currently loading right now. please wait for a few minutes.');
-                                $("#player-control").hide();
+                                if (!videoLoadingComplete) {
+                                    $("#video-loading").show();
+                                    $(".video-loading-message").text('This video is currently loading right now. please wait for a few minutes.');
+                                    $("#player-control").hide();
+                                }
                             }
                             break;
                         }

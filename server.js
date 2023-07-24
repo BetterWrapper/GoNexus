@@ -26,10 +26,11 @@ const thL = require("./theme/list");
 const thl = require("./theme/load");
 const tsv = require("./tts/voices");
 const tsl = require("./tts/load");
+const fme = require("./static/frames");
 const fs = require("fs");
 const url = require("url");
 
-const functions = [mvL, ebd, snd, str, swf, pmc, asl, chl, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
+const functions = [mvL, ebd, snd, fme, str, swf, pmc, asl, chl, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
 
 module.exports = http
 	.createServer((req, res) => {
@@ -54,7 +55,7 @@ module.exports = http
 							res.end();
 							break;
 						} case "/api/getAllUsers": {
-							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./users.json')).users));
+							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users));
 							break;
 						} case "/api/check4SavedUserInfo": {
 							loadPost(req, res).then(([data]) => {
@@ -64,7 +65,7 @@ module.exports = http
 										id: true,
 										email: true
 									}
-									const json = JSON.parse(fs.readFileSync('./users.json'));
+									const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 									const meta = json.users.find(i => i.id == data.uid);
 									if (!meta) {
 										json.users.unshift({
@@ -83,7 +84,7 @@ module.exports = http
 											}
 										}
 									}
-									fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+									fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 								} catch (e) {
 									console.log(e);
 								}

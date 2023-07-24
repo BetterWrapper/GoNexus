@@ -1,4 +1,5 @@
 const https = require("https");
+const fs = require("fs");
 
 module.exports = (req, res, url) => {
     if (req.method != "GET" || !url.pathname.startsWith("/static")) return;
@@ -22,6 +23,6 @@ module.exports = (req, res, url) => {
             const buffers = [];
             r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
         }).on("error", console.error);
-    }
+    } else res.end(fs.readFileSync(`.${url.pathname}`));
     return true;
 }

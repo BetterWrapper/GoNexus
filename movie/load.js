@@ -2,8 +2,12 @@ const movie = require("./main");
 const base = Buffer.alloc(1, 0);
 const http = require("http");
 const loadPost = require("../misc/post_body");
+const formidable = require("formidable");
 let userId = null;
-
+const path = require("path");
+const ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
+const fs = require("fs");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -68,6 +72,26 @@ module.exports = function (req, res, url) {
 							console.log(e);
 							res.end(1 + e);
 						}
+					});
+					break;
+				} case "/api/videoExport/completed": {
+					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						const frames = f.frames;
+						const base = path.join(__dirname, "../frames");
+						if (!fs.existsSync(base)) fs.mkdirSync(base);
+						for (const i in frames) {
+							const frameData = Buffer.from(frames[i], "base64");
+							fs.writeFileSync(path.join(base, i + ".png"), frameData);
+						}
+
+						(ffmpeg().input(base + "/%d.png").on("end", () => {
+							if (fs.existsSync(path.join(base, "output.mp4"))) {
+								const base64text = fs.readFileSync(path.join(base, "output.mp4")).toString("base64");
+								res.end(JSON.stringify({
+									videoUrl: `/frames/output.mp4`
+								}));
+							}
+						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).run();
 					});
 					break;
 				}
