@@ -86,12 +86,11 @@ module.exports = function (req, res, url) {
 
 						(ffmpeg().input(base + "/%d.png").on("end", () => {
 							if (fs.existsSync(path.join(base, "output.mp4"))) {
-								const base64text = fs.readFileSync(path.join(base, "output.mp4")).toString("base64");
 								res.end(JSON.stringify({
 									videoUrl: `/frames/output.mp4`
 								}));
 							}
-						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).run();
+						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).size("640x360").run();
 					});
 					break;
 				}

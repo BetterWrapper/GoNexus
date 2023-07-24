@@ -179,12 +179,9 @@
                                                     </div>
                                                 </div>
 
-                                                <video class="embed-responsive-item hidden" id="h5-player">
-                                                </video>
+                                                <video class="embed-responsive-item hidden" id="h5-player"></video>
                                             </div>
-                                            <div class="video-info hidden-xs"
-                                                data-video-id="<%= params.flashvars.movieId %>" data-is-owner=""
-                                                data-owner="" data-duration="">
+                                            <div class="video-info hidden-xs">
                                                 <div class="video-info-content">
                                                     <h1 class="title"></h1>
                                                     <p class="description"></p>
@@ -427,11 +424,13 @@
             <input id="embed_code_field" type="hidden" />
             <script>
                 var flashPlayerUrl = '<%= attrs.data %>';
-                var flashPlayerVars;
+                var flashPlayerVars, flashExporterVars;
                 var h5PlayerElem = null;
                 var sceneDetails = {};
                 $.getJSON(`/api/convertUrlQuery2JSON?<%= flashvarsString %>`, (d) => {
                     flashPlayerVars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
+                    flashExporterVars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
+                    flashExporterVars.autostart = "1";
                 });
             </script>
 
@@ -446,12 +445,24 @@
             <script
                 src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page_player_control.js.gz.js"></script>
             <script>
+                function toAttrString(table) {
+                    return typeof table == "object"
+                        ? Object.keys(table)
+                                .filter((key) => table[key] !== null)
+                                .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`)
+                                .join("&")
+                        : table.replace(/"/g, '\\"');
+                }
+                function toParamString(table) {
+                    return Object.keys(table)
+                        .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
+                        .join(" ");
+                }
                 let videoLoadingComplete = false;
                 const player = $("#miniobject");
                 var videoPage = new VideoPage("<%= params.flashvars.movieId %>"),
                     flashVar = {};
                 var videoCopyableUrl = window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>&utm_source=linkshare&utm_medium=linkshare&utm_campaign=usercontent';
-                player.html(('<%= paramString(exporterParams) %>').split("&#34;").join('"').split("&lt;").join("<").split("&gt;").join(">"));
                 // this is where the exporter does it's job
                 const mspf = 1000 / 24;
                 let currentFrame = 1;
@@ -496,7 +507,7 @@
                             $("#video-loading").hide();
                             $(".video-loading-message").text("");
                             $("#player-control").show();
-                        }
+                        } else $(".video-loading-message").text("could not fetch your video. please try again later.")
                     });
                 }
                 function switchPlayers(type) {
@@ -546,10 +557,23 @@
                             flashPlayerVars.thumbnailURL = window.location.origin + '/movie_thumbs/<%= params.flashvars.movieId %>.png';
                             flashPlayerVars.isPublished = m.published;
                             flashPlayerVars.is_private_shared = m.publishStatus == "private" ? "1" : "0";
+                            flashExporterVars.movieOwner = meta.name.split(" ").join("+");
+                            flashExporterVars.movieOwnerId = meta.id;
+                            flashExporterVars.movieTitle = m.title.split(" ").join("+");
+                            flashExporterVars.movieDesc = m.desc.split(" ").join("+");
+                            flashExporterVars.s3base = window.location.origin + '/';
+                            flashExporterVars.duration = m.duration;
+                            flashExporterVars.thumbnailURL = window.location.origin + '/movie_thumbs/<%= params.flashvars.movieId %>.png';
+                            flashExporterVars.isPublished = m.published;
+                            flashExporterVars.is_private_shared = m.publishStatus == "private" ? "1" : "0";
                             $("#copyable-url").val(videoCopyableUrl);
                             $("#embed_code_field").val(`<iframe scrolling="no" allowTransparency="true" allowfullscreen frameborder="0" width="640" height="360" src="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>&isEmbed=true"></iframe>`);
                             flashVar.duration = m.duration;
-                            break;
+                            player.html(toParamString({
+                                flashvars: flashExporterVars,
+                                allowScriptAccess: "always"
+                            }));
+
                         }
                     }
                 });

@@ -34,7 +34,7 @@ module.exports = function (req, res, url) {
 	if (req.method != "GET") return;
 	const query = url.query;
 
-	var attrs, params, title, filename, exporterParams;
+	var attrs, params, title, filename;
 	switch (url.pathname) {
 		case "/cc": {
 			title = "Character Creator";
@@ -233,8 +233,6 @@ module.exports = function (req, res, url) {
 				allowScriptAccess: "always",
 				allowFullScreen: "true",
 			};
-			exporterParams = params;
-			exporterParams.flashvars.autostart = "1";
 			if (url.query.isEmbed) {
 				if (url.query.movieId.startsWith("m-") && existsSync(path)) {
 					for (const user of JSON.parse(fs.readFileSync('./users.json')).users) {
@@ -265,7 +263,6 @@ module.exports = function (req, res, url) {
 		title,
 		attrs,
 		params,
-		exporterParams,
 		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString(),
 		object: toObjectString,
 		paramString: toParamString
