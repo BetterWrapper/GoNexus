@@ -83,7 +83,6 @@ module.exports = function (req, res, url) {
 							const frameData = Buffer.from(frames[i], "base64");
 							fs.writeFileSync(path.join(base, i + ".png"), frameData);
 						}
-
 						(ffmpeg().input(base + "/%d.png").on("end", () => {
 							if (fs.existsSync(path.join(base, "output.mp4"))) {
 								res.end(JSON.stringify({

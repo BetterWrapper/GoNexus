@@ -21,43 +21,20 @@
     <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/embed_player_h5.css.gz.css"
         rel="stylesheet" type="text/css">
 
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-1.11.1.min.js.gz.js"></script>
-    <script>/*
-jQuery.post("/ajax/check4MP4MovieExistance?movieId=<%= params.flashvars.movieId %>", async (d) => {
-    let json = JSON.parse(d);
-    while (!json.exists) json = await check4MP4MovieExistance();
-    if (json.exists) jQuery(".player-container").hide().not("[data-video-converting]").show();
-});
-function check4MP4MovieExistance() {
-    return new Promise(r => jQuery.post("/ajax/check4MP4MovieExistance?movieId=<%= params.flashvars.movieId %>", (d) => r(JSON.parse(d))));
-}*/
-    </script>
+    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-1.11.1.min.js.gz.js"></script>
 </head>
-<object id="miniobject" data="/static/animation/exporter.swf" height="0" width="0"></object>
 <body>
-    <div class="player-container converting" data-video-converting>
-        <div class="video-player-viewport"
-            style="background-image: url('/movie_thumbs/<%= params.flashvars.movieId %>.png');">
-            <div class="video-loading" id="video-loading">
-                <div class="video-loading-message">
-                    This video is currently loading right now. Please wait for a few minutes.
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="player-container" style="display: none;">
+    <div class="player-container">
         <div class="video-player-viewport"
             style="background-image: url('/movie_thumbs/<%= params.flashvars.movieId %>.png');">
             <div class="video-player-wrapper">
-                <video class="hidden" id="h5-player">
-                    <source src="/movies/<%= params.flashvars.movieId %>.mp4" type="video/mp4">
-                </video>
+                <object id="miniobject" data="/static/exporter.swf" height="100%" width="100%"></object>
+                <video class="hidden" id="h5-player"></video>
             </div>
-            <div class="video-loading" id="video-loading">
-                <div class="video-loading-message"></div>
+            <div class="video-loading" id="video-loading" style="display: block;">
+                <div class="video-loading-message">This video is currently loading right now. please wait for a few minutes.</div>
             </div>
-            <div id="player-control">
+            <div id="player-control" style="display: none;">
                 <div class="seek-bar-container">
                     <div class="seek-bar">
                         <div class="buffered-bar"></div>
@@ -101,5 +78,66 @@ function check4MP4MovieExistance() {
 
     <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/embed_player.js.gz.js"></script>
 </body>
+<script>
+    function toAttrString(table) {
+        return typeof table == "object"
+            ? Object.keys(table)
+                    .filter((key) => table[key] !== null)
+                    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`)
+                    .join("&")
+            : table.replace(/"/g, '\\"');
+    }
+    function toParamString(table) {
+        return Object.keys(table)
+            .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
+            .join(" ");
+    }
+    const player = $("#miniobject");
+    let currentFrame = 1;
+    function nextFrame() {
+        player[0].seekFrame(currentFrame++);
+    }
+    $.getJSON(`/api/convertUrlQuery2JSON?<%= flashvarsString %>`, (d) => {
+        const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
+        flashvars.autostart = "1";
+        flashvars.isEmbed = "1";
+        player.html(toParamString({
+            flashvars,
+            allowScriptAccess: "always"
+        }));
+    });
+    function playAndPause() {
+        player[0].play();
+        setTimeout(() => player[0].pause(), 100)
+    }
 
+    function notifyMovieEnded() {
+        sendFramesToServer();
+    }
+
+    function sendFramesToServer() {
+        const scenes = player[0].getSceneInfoArray();
+        const frames = player[0].getPhotoArray();
+        for (const scene of scenes) frames.splice(scene.startFrom, 1);
+        $.ajax({
+            url: "/api/videoExport/completed",
+            method: "POST",
+            data: JSON.stringify({
+                frames,
+                id: '<%= params.flashvars.movieId %>',
+                isEmbed: true
+            }),
+            dataType: "json",
+            contentType: "application/json"
+        }).done((d) => { // notify the h5 player that the video is ready.
+            if (d) {
+                $("#h5-player").html(`<source src="${d.videoUrl}" type="video/mp4">`);
+                player.addClass("hidden");
+                $("#video-loading").hide();
+                $(".video-loading-message").text("");
+                $("#player-control").show();
+            } else $(".video-loading-message").text("could not fetch your video. please try again later.")
+        });
+    }
+</script>
 </html>

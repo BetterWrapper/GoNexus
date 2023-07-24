@@ -155,11 +155,10 @@
                         <div class="row">
                             <div class="player-container col-sm-7">
                                 <div class="notification using-h5">
-                                    <span class="icon glyph-halfling glyph-info-sign"></span>The exporter is currently
-                                    in beta right now and we are planning to use the h5 player to play your exported
-                                    video in html 5 witch is also in beta at the moment. for now, please switch to the
+                                    <span class="icon glyph-halfling glyph-info-sign"></span>The exporter does work, however, due to it being in beta, your video will not play in the correct size.
+                                    to avoid this issue, you may switch to the
                                     <a onclick="switchPlayers('flash')">legacy video player</a> while we are working on
-                                    the exporter.
+                                    on resolving this issue.
                                     <!--<span class="icon glyph-halfling glyph-info-sign"></span> Your video is currently in process of being loaded right now. please wait a few minutes then refresh this page. If you encounter any technical problems, switch to the <a onclick="switchPlayers('flash')">legacy video player</a>.-->
                                 </div>
                                 <div class="notification using-flash hidden">
@@ -464,7 +463,6 @@
                     flashVar = {};
                 var videoCopyableUrl = window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>&utm_source=linkshare&utm_medium=linkshare&utm_campaign=usercontent';
                 // this is where the exporter does it's job
-                const mspf = 1000 / 24;
                 let currentFrame = 1;
                 function nextFrame() {
                     player[0].seekFrame(currentFrame++);
@@ -480,15 +478,7 @@
                 }
 
                 function sendFramesToServer() {
-                    /* cut out duplicate frames */
-                    /** @type {{
-                     * * 	duration: number
-                     * guid: string
-                     * startFrom: number
-                     * * }[]}
-                     * */
                     const scenes = player[0].getSceneInfoArray();
-                    /** @type {string[]} */
                     const frames = player[0].getPhotoArray();
                     for (const scene of scenes) frames.splice(scene.startFrom, 1);
                     $.ajax({

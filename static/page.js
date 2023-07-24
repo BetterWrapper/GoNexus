@@ -81,7 +81,7 @@ module.exports = function (req, res, url) {
 		}
 
 		case "/user": {
-			const json = JSON.parse(fs.readFileSync('./users.json'));
+			const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 			if (json.users.find(i => i.id == url.query.id)) {
 				if (url.query.filename == "user-videos") filename = "user-videos";
 				else filename = "user";
@@ -235,7 +235,7 @@ module.exports = function (req, res, url) {
 			};
 			if (url.query.isEmbed) {
 				if (url.query.movieId.startsWith("m-") && existsSync(path)) {
-					for (const user of JSON.parse(fs.readFileSync('./users.json')).users) {
+					for (const user of JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users) {
 						const json = user.movies.find(i => i.id == url.query.movieId);
 						if (json) {
 							params.flashvars.movieOwner = user.name.split(" ").join("+");
