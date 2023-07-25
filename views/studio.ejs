@@ -235,7 +235,8 @@
                     <h2>Preview Video</h2>
                     <div id="playerdiv"></div>
                     <div id="h5-playerdiv">
-                        <video class="hidden" id="h5-preview-player" width="100%" height="100%"></video>
+                        <object id="miniobject" data="/static/exporter.swf" height="100%" width="100%"></object>
+                        <video class="hidden" id="h5-preview-player" width="100%" height="100%" type="video/mp4"></video>
                         <div class="player-overlay loading">
                             <div class="loading-icon">
                                 <div class="loading-message"></div>
@@ -594,7 +595,19 @@
         </script>
         <script>
             $("#previewPlayerContainer, #video-tutorial").hide();
-
+            function toAttrString(table) {
+                return typeof table == "object"
+                    ? Object.keys(table)
+                            .filter((key) => table[key] !== null)
+                            .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`)
+                            .join("&")
+                    : table.replace(/"/g, '\\"');
+            }
+            function toParamString(table) {
+                return Object.keys(table)
+                    .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
+                    .join(" ");
+            }
             var movieDataXmlStr = null,
                 filmXmlStr = null,
                 previewStartFrame = 0;
@@ -602,7 +615,51 @@
             function checkBrowser() {
                 return window.WebSocket && window.MediaSource;
             }
+            const exporter = $("#miniobject");
+            function nextFrame() {
+                exporter[0].seekFrame(previewStartFrame++);
+            }
 
+            function playAndPause() {
+                exporter[0].play();
+                setTimeout(() => exporter[0].pause(), 100)
+            }
+
+            function notifyMovieEnded() {
+                sendFramesToServer();
+            }
+            function dec2hex(dec) {
+                return dec.toString(16).padStart(2, "0")
+            }
+            function generateId() {
+                var arr = new Uint8Array((7) / 2)
+                window.crypto.getRandomValues(arr)
+                return Array.from(arr, dec2hex).join('')
+            }
+            function sendFramesToServer() {
+                const scenes = exporter[0].getSceneInfoArray();
+                const frames = exporter[0].getPhotoArray();
+                for (const scene of scenes) frames.splice(scene.startFrom, 1);
+                $.ajax({
+                    url: "/api/videoExport/completed",
+                    method: "POST",
+                    data: JSON.stringify({
+                        frames,
+                        id: generateId(),
+                        isPreview: true
+                    }),
+                    dataType: "json",
+                    contentType: "application/json"
+                }).done((d) => { // notify the h5 previewer that the video is ready.
+                    if (d) {
+                        exporter.addClass("hidden");
+                        if ($(".video-controls").hasClass("hidden")) $(".video-controls").removeClass("hidden");
+                        document.getElementById("h5-preview-player").src = d.videoUrl;
+                        $(".player-overlay").removeClass("loading");
+                        document.getElementById("h5-preview-player").play();
+                    } else $(".loading-message").text("could not fetch your video. please try again later.")
+                });
+            }
             function checkTheme(themeList) {
                 if (themeList === undefined) {
                     return true;
@@ -625,36 +682,44 @@
 
                 return true;
             }
-
+            const playerAttrData = ('<%= attrs.data %>').split("/go_full.swf")[0];
+            let playerStorePath = "<%= params.flashvars.storePath %>";
+            playerStorePath = playerStorePath.replace("&lt;", "<");
+            playerStorePath = playerStorePath.replace("&gt;", ">");
+            let playerClientThemePath = "<%= params.flashvars.clientThemePath %>";
+            playerClientThemePath = playerClientThemePath.replace("&lt;", "<");
+            playerClientThemePath = playerClientThemePath.replace("&gt;", ">");
             function checkPreviewServer() {
                 return previewPlayer._connectionState === PreviewPlayerConstants.STATE_READY;
             }
-
             function loadH5Preview() {
                 if (filmXmlStr === null) {
                     return;
                 }
-
+                document.getElementById('h5-preview-player').src = '';
                 $('#h5-playerdiv').data('previewPlayerControl').reset();
-                previewPlayer.preview(filmXmlStr, previewStartFrame);
                 $('#previewPlayer').addClass('using-h5');
+                exporter.html(toParamString({
+                    allowScriptAccess: "always",
+                    flashvars: {
+                        movieOwner: userData.displayName, movieOwnerId: userData.uid, movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
+                        movieLid: "8", movieTitle: "", movieDesc: "", userId: userData.uid, username: userData.displayName, uemail: userData.email,
+                        apiserver: window.location.origin + '/', thumbnailURL: "", copyable: "0", isPublished: "0", ctc: "go", tlang: "en_US", is_private_shared: "0",
+                        autostart: "1", appCode: "go", is_slideshow: "0", originalId: "0", is_emessage: "0", isEmbed: "0", refuser: "",
+                        utm_source: "", uid: "", isTemplate: "1", showButtons: "0", chain_mids: "", showshare: "0", averageRating: "",
+                        s3base: window.location.origin + '/',
+                        ratingCount: "", fb_app_url: window.location.origin + '/', numContact: 0, isInitFromExternal: 1, storePath: playerStorePath, clientThemePath: playerClientThemePath, animationPath: playerAttrData + '/',
+                        startFrame: previewStartFrame
+                    }
+                }));
+                if (exporter.hasClass("hidden")) exporter.removeClass("hidden");
             }
-
             function loadLegacyPreview() {
                 if (movieDataXmlStr === null) {
                     return;
                 }
-
+        
                 pauseH5PreviewPlayer();
-
-                savePreviewData(movieDataXmlStr);
-                const playerAttrData = ('<%= attrs.data %>').split("/go_full.swf")[0];
-                let playerStorePath = "<%= params.flashvars.storePath %>";
-                playerStorePath = playerStorePath.replace("&lt;", "<");
-                playerStorePath = playerStorePath.replace("&gt;", ">");
-                let playerClientThemePath = "<%= params.flashvars.clientThemePath %>";
-                playerClientThemePath = playerClientThemePath.replace("&lt;", "<");
-                playerClientThemePath = playerClientThemePath.replace("&gt;", ">");
                 createPreviewPlayer("playerdiv", {
                     height: 360,
                     width: 640,
@@ -695,19 +760,9 @@
 
                 $("#previewPlayerContainer").show();
 
-                var isThemeSupport = checkTheme(themeList);
+                savePreviewData(movieDataXmlStr);
 
-                if (checkBrowser() && isThemeSupport && checkPreviewServer()) { // Preview with next
-                    loadH5Preview();
-                } else {
-                    // fallback to legacy preview
-                    loadLegacyPreview();
-
-                    if (!checkPreviewServer() && (previewPlayerRetryCount > 0)) { // Retry on WebSocket connection problem
-                        previewPlayer.connect();
-                        previewPlayerRetryCount--;
-                    }
-                }
+                loadH5Preview();
             }
 
             function pauseH5PreviewPlayer() {

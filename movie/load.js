@@ -84,19 +84,31 @@ module.exports = function (req, res, url) {
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						const frames = f.frames;
 						const base = path.join(__dirname, "../frames");
+						const preview = path.join(__dirname, "../previews");
 						if (!fs.existsSync(base)) fs.mkdirSync(base);
+						if (!fs.existsSync(preview)) fs.mkdirSync(preview);
+						fs.readdirSync(base).forEach(file => fs.unlinkSync(path.join(base, file)));
+						fs.readdirSync(preview).forEach(file => fs.unlinkSync(path.join(preview, file)));
 						for (const i in frames) {
 							const frameData = Buffer.from(frames[i], "base64");
 							fs.writeFileSync(path.join(base, i + ".png"), frameData);
 						}
-						(ffmpeg().input(base + "/%d.png").on("end", () => {
+						if (!f.isPreview) (ffmpeg().input(base + "/%d.png").on("end", () => {
 							if (fs.existsSync(path.join(base, "output.mp4"))) {
-								if (!f.isPreview) fs.writeFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)), fs.readFileSync(path.join(base, "output.mp4")));
+								fs.writeFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)), fs.readFileSync(path.join(base, "output.mp4")));
 								res.end(JSON.stringify({
 									videoUrl: `/frames/output.mp4`
 								}));
 							}
 						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).size("640x360").run();
+						else (ffmpeg().input(base + "/%d.png").on("end", () => {
+							if (fs.existsSync(path.join(base, "output.mp4"))) {
+								fs.writeFileSync(path.join(preview, f.id + ".mp4"), fs.readFileSync(path.join(base, "output.mp4")));
+								res.end(JSON.stringify({
+									videoUrl: `/previews/${f.id}.mp4`
+								}));
+							}
+						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).run();
 					});
 					break;
 				} case "/api/check4ExportedMovieExistance": {
