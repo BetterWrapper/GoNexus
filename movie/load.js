@@ -91,7 +91,7 @@ module.exports = function (req, res, url) {
 						}
 						(ffmpeg().input(base + "/%d.png").on("end", () => {
 							if (fs.existsSync(path.join(base, "output.mp4"))) {
-								fs.writeFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)), fs.readFileSync(path.join(base, "output.mp4")));
+								if (!f.isPreview) fs.writeFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)), fs.readFileSync(path.join(base, "output.mp4")));
 								res.end(JSON.stringify({
 									videoUrl: `/frames/output.mp4`
 								}));
