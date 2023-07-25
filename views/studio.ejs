@@ -287,8 +287,7 @@
                 <div class="video-tutorial-body">
                     <h2>&nbsp;</h2>
                     <div class="video-tutorial-player">
-                        <div id="wistia_player" class="wistia_embed" style="width:860px;height:445px">&nbsp;</div>
-                    </div>
+             currentTime = 0       </div>
                     <a class="close_btn" href="#" onclick="return false;">×</a>
                 </div>
                 <div class="video-tutorial-footer clearfix">
@@ -610,7 +609,7 @@
             }
             var movieDataXmlStr = null,
                 filmXmlStr = null,
-                previewStartFrame = 0;
+                previewStartFrame
 
             function checkBrowser() {
                 return window.WebSocket && window.MediaSource;
@@ -653,7 +652,6 @@
                 }).done((d) => { // notify the h5 previewer that the video is ready.
                     if (d) {
                         exporter.addClass("hidden");
-                        if ($(".video-controls").hasClass("hidden")) $(".video-controls").removeClass("hidden");
                         document.getElementById("h5-preview-player").src = d.videoUrl;
                         $(".player-overlay").removeClass("loading");
                         document.getElementById("h5-preview-player").play();
@@ -693,12 +691,13 @@
                 return previewPlayer._connectionState === PreviewPlayerConstants.STATE_READY;
             }
             function loadH5Preview() {
-                if (filmXmlStr === null) {
+                if (movieDataXmlStr === null) {
                     return;
                 }
                 document.getElementById('h5-preview-player').src = '';
                 $('#h5-playerdiv').data('previewPlayerControl').reset();
                 $('#previewPlayer').addClass('using-h5');
+                exporterFrame = 1;
                 exporter.html(toParamString({
                     allowScriptAccess: "always",
                     flashvars: {
@@ -726,8 +725,8 @@
                     player_url: playerAttrData + "/player.swf",
                     quality: "high"
                 }, {
-                    movieOwner: "", movieOwnerId: "", movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
-                    movieLid: "8", movieTitle: "", movieDesc: "", userId: "", username: "", uemail: "",
+                    movieOwner: userData.displayName, movieOwnerId: userData.uid, movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
+                    movieLid: "8", movieTitle: "", movieDesc: "", userId: userData.uid, username: userData.displayName, uemail: userData.email,
                     apiserver: window.location.origin + '/', thumbnailURL: "", copyable: "0", isPublished: "0", ctc: "go", tlang: "en_US", is_private_shared: "0",
                     autostart: "1", appCode: "go", is_slideshow: "0", originalId: "0", is_emessage: "0", isEmbed: "0", refuser: "",
                     utm_source: "", uid: "", isTemplate: "1", showButtons: "0", chain_mids: "", showshare: "0", averageRating: "",
@@ -738,29 +737,16 @@
                 $('#previewPlayer').removeClass('using-h5');
             }
 
-            function initPreviewPlayer(dataXmlStr, startFrame, containsChapter, themeList) {
+            function initPreviewPlayer(dataXmlStr, startFrame) {
                 movieDataXmlStr = dataXmlStr;
-                previewStartFrame = startFrame;
 
-                filmXmlStr = dataXmlStr.split("<filmxml>")[1].split("</filmxml>")[0];
-
-                if (typeof startFrame == 'undefined') {
-                    startFrame = 1;
-                } else {
-                    startFrame = Math.max(1, parseInt(startFrame));
-                }
-
-                if (containsChapter) {
-                    $("#preview-alert-block").show();
-                } else {
-                    $("#preview-alert-block").hide();
-                }
-
+                $("#preview-alert-block").hide();
                 previewSceen();
 
                 $("#previewPlayerContainer").show();
 
                 savePreviewData(movieDataXmlStr);
+                previewStartFrame = startFrame || 1;
 
                 loadH5Preview();
             }

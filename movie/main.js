@@ -44,7 +44,7 @@ module.exports = {
 						writeStream.write(buffer, () => {
 							writeStream.close();
 							this.meta(mId).then(m => {
-								const json = JSON.parse(fs.readFileSync("./users.json"));
+								const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 								const meta = json.users.find(i => i.id == data.userId);
 								const mMeta = meta.movies.find(i => i.id == m.id);
 								if (!mMeta) meta.movies.unshift(m);
@@ -55,7 +55,7 @@ module.exports = {
 										}
 									}
 								}
-								fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 								res(m.id);
 							}).catch(rej);
 						});
@@ -68,10 +68,10 @@ module.exports = {
 						writeStream.write(buffer, () => {
 							writeStream.close();
 							this.meta(mId).then(m => {
-								const json = JSON.parse(fs.readFileSync("./users.json"));
+								const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 								const meta = json.users.find(i => i.id == data.userId);
 								meta.assets.unshift(m);
-								fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 								res(m.id);
 							}).catch(rej);
 						});

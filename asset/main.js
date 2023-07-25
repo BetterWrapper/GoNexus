@@ -11,7 +11,7 @@ module.exports = {
 			title: true,
 			tags: true
 		};
-		const json = JSON.parse(fs.readFileSync('./users.json'));
+		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
 		const userInfo = json.users.find(i => i.id == data.userId);
 		const info = userInfo.assets.find(i => i.id == data.assetId);
 		for (const stuff in data) {
@@ -19,10 +19,10 @@ module.exports = {
 				info[stuff] = data[stuff];
 			}
 		}
-		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+		fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
 	},
 	delete(data) {
-		const json = JSON.parse(fs.readFileSync('./users.json'));
+		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
 		const userInfo = json.users.find(i => i.id == data.userId);
 		let info, index;
 		if (data.id && data.id != "null") {
@@ -44,7 +44,7 @@ module.exports = {
 		}
 		else fs.unlinkSync(`${this.folder}/${info.id}`);
 		userInfo.assets.splice(index, 1);
-		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+		fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
 	},
 	generateId() {
 		return ("" + Math.random()).replace(".", "");
@@ -53,13 +53,13 @@ module.exports = {
 		meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
 		fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
-		const json = JSON.parse(fs.readFileSync('./users.json'));
+		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
 		json.users.find(i => i.id == data.userId).assets.unshift(meta);
-		fs.writeFileSync('./users.json', JSON.stringify(json, null, "\t"));
+		fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
 		return meta.id;
 	},
 	list(uId, type, subtype, themeId) {
-		const json = JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == uId);
+		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`)).users.find(i => i.id == uId);
 		let aList = json.assets.filter(i => i.type == type);
 		if (subtype) aList = aList.filter(i => i.subtype == subtype);
 		if (themeId) aList = aList.filter(i => i.themeId == themeId);
