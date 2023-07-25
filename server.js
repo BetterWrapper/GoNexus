@@ -36,6 +36,9 @@ const functions = [mvL, ebd, pre, snd, fme, str, swf, pmc, asl, chl, thl, thL, c
 module.exports = http
 	.createServer((req, res) => {
 		try {
+			if (!fs.existsSync('./_ASSETS/users.json')) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify({
+				users: []
+			}, null, "\t"));
 			const parsedUrl = url.parse(req.url, true);
 			//pages
 			switch (req.method) {
