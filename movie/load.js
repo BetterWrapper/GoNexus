@@ -117,6 +117,11 @@ module.exports = function (req, res, url) {
 							exists: fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2)))
 						}))
 					})
+					break;
+				} case "/api/savePreviewXml": {
+					req.on('end', () => res.end());
+					movie.previewer.push(req, url.query.videoId);
+					break;
 				}
 			}
 			break;

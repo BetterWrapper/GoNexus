@@ -3,10 +3,24 @@ const fUtil = require("../misc/file");
 const nodezip = require("node-zip");
 const parse = require("./parse");
 const fs = require("fs");
-const path = require("path");
 const https = require("https");
 
 module.exports = {
+	previewer: {
+		folder: './previews',
+		push(dataStr, ip) {
+			const fn = `${this.folder}/${ip}.xml`;
+			const ws = fs.createWriteStream(fn, { flags: 'a' });
+			dataStr.pipe(ws);
+			return ws;
+		},
+		pop(ip) {
+			const fn = `${this.folder}/${ip}.xml`;
+			const stream = fs.createReadStream(fn);
+			stream.on('end', () => fs.unlinkSync(fn));
+			return stream;
+		}
+	},
 	genImage() {
 		return new Promise((res, rej) => {
 			https.get('https://upload.wikimedia.org/wikipedia/en/0/01/Sans_undertale.jpg', (r) => {
