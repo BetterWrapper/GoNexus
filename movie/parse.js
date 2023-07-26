@@ -360,5 +360,21 @@ module.exports = {
 		const readStream = zip["movie.xml"].toReadStream();
 		const buffer = await stream2Buffer(readStream);
 		return buffer;
+	},
+	/**
+	 * @summary Checks to see if any audio exists in the xml as the current exporter does not have audio yet
+	 * @param {Buffer} xml
+	 * @returns {Boolean}
+	 */
+	async check4XmlAudio(xmlBuffer) {
+		if (xmlBuffer.length == 0) throw null;
+
+		const xml = new xmldoc.XmlDocument(xmlBuffer);
+
+		for (const eI in xml.children) {
+			const element = xml.children[eK];
+			if (element.name == "sound") return true;
+			else return false;
+		}
 	}
 };
