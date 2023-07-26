@@ -372,8 +372,8 @@ module.exports = {
 		const xml = new xmldoc.XmlDocument(xmlBuffer);
 
 		for (const eI in xml.children) {
-			const element = xml.children[eK];
-			if (element.name == "sound") return true;
+			const elem = xml.children[eI];
+			if (elem.name == "sound") return true;
 			else return false;
 		}
 	}
