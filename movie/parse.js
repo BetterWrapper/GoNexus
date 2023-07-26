@@ -366,7 +366,7 @@ module.exports = {
 	 * @param {Buffer} xml
 	 * @returns {Boolean}
 	 */
-	async check4XmlAudio(xmlBuffer) {
+	check4XmlAudio(xmlBuffer) {
 		if (xmlBuffer.length == 0) throw null;
 
 		const xml = new xmldoc.XmlDocument(xmlBuffer);

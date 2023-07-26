@@ -137,9 +137,7 @@ module.exports = {
 						break;
 					}
 				}
-				const buffer = fs.readFileSync(filePath);
-				const pack = await parse.check4XmlAudio(buffer);
-				res(pack);
+				res(parse.check4XmlAudio(fs.readFileSync(filePath)));
 			} catch (e) {
 				rej(e);
 			}
