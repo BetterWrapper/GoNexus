@@ -646,7 +646,7 @@
                     method: "POST",
                     data: JSON.stringify({
                         frames,
-                        id: generateId(),
+                        id: previewerVideoId,
                         isPreview: true
                     }),
                     dataType: "json",
@@ -706,10 +706,17 @@
                         method: 'POST',
                         body: splice.join('')
                     }).then(save_preview);
-                    else $.post("/api/checkPreviewXml4Audio", {previewerVideoId}).done(d => {
+                    else $.post("/api/checkXml4Audio", {
+                        videoId: previewerVideoId,
+                        isPreview: '1'
+                    }).done(d => {
                         const json = JSON.parse(d);
-                        if (json.xmlDoesContainAudio) loadLegacyPreview();
-                        else exporter.html(toParamString({
+                        if (json.xmlDoesContainAudio) {
+                            exporter.addClass("hidden");
+                            document.getElementById("h5-preview-player").src = 'https://www.w3schools.com/tags/mov_bbb.mp4';
+                            $(".player-overlay").removeClass("loading");
+                            loadLegacyPreview();
+                        } else exporter.html(toParamString({
                             allowScriptAccess: "always",
                             flashvars: {
                                 movieOwner: userData.displayName, movieOwnerId: userData.uid, movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
@@ -730,7 +737,6 @@
                 if (movieDataXmlStr === null) {
                     return;
                 }
-                exporter.addClass("hidden");
                 pauseH5PreviewPlayer();
                 createPreviewPlayer("playerdiv", {
                     height: 360,
@@ -766,6 +772,7 @@
             }
 
             function pauseH5PreviewPlayer() {
+                $("#h5-preview-player").get(0).play();
                 $("#h5-preview-player").get(0).pause();
             }
 

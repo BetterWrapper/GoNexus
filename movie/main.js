@@ -127,35 +127,25 @@ module.exports = {
 			}
 		});
 	},
-	check4XmlAudio(mId, isPreview = false) {
-		return new Promise(async (res, rej) => {
-			try {
-				const i = mId.indexOf("-");
-				const prefix = mId.substr(0, i);
-				const suffix = mId.substr(i + 1);
+	checkXml4Audio(mId) {
+		const prefix = mId.substr(0, mId.indexOf("-"));
+		switch (prefix) {
+			case "s":
+			case "m": {
+				let numId = Number.parseInt(mId.substr(mId.indexOf("-") + 1));
 				let filePath;
-				if (isPreview) filePath = `./previews/${mId}.mp4`;
-				else switch (prefix) {
-					case "s":
+				switch (prefix) {
 					case "m": {
-						let numId = Number.parseInt(suffix);
-						switch (prefix) {
-							case "m": {
-								filePath = fUtil.getFileIndex("movie-", ".xml", numId);
-								break;
-							} case "s": {
-								filePath = fUtil.getFileIndex("starter-", ".xml", numId);
-								break;
-							}
-						}
+						filePath = fUtil.getFileIndex("movie-", ".xml", numId);
+						break;
+					} case "s": {
+						filePath = fUtil.getFileIndex("starter-", ".xml", numId);
 						break;
 					}
 				}
-				res(parse.check4XmlAudio(fs.readFileSync(filePath)));
-			} catch (e) {
-				rej(e);
+				return parse.check4XmlAudio(fs.readFileSync(filePath));
 			}
-		});
+		}
 	},
 	loadXml(movieId) {
 		return new Promise(async (res, rej) => {

@@ -150,6 +150,13 @@
             } else $(".video-loading-message").text("could not fetch this video. please try again later.")
         });
     }
+    $.post("/api/checkXml4Audio", {
+        videoId: '<%= params.flashvars.movieId %>',
+        isPreview: '0'
+    }).done(d => {
+        const json = JSON.parse(d);
+        if (json.xmlDoesContainAudio) location.href = '/player?movieId=<%= params.flashvars.movieId %>&isEmbed=true';
+    });
     if (!check4FlashPlayer()) {
         $.post("/api/check4ExportedMovieExistance", {id: '<%= params.flashvars.movieId %>'}).done(d => {
             player.addClass("hidden");

@@ -123,17 +123,23 @@ module.exports = function (req, res, url) {
 					req.on('end', () => res.end());
 					movie.previewer.push(req, url.query.videoId);
 					break;
-				} case "/api/checkPreviewXml4Audio": {
-					loadPost(req, res).then(([data]) => {
-						const id = data.previewerVideoId;
-						const buffer = fs.readFileSync(`./previews/${id}.xml`);
-						const filmXml = ( // creates a proper xml for the movie parser to read
-							buffer.slice(buffer.indexOf("<filmxml>") + 9, buffer.indexOf("</filmxml>")).toString("utf8")
-						).split("%3C").join("<").split("%22").join('"').split("%20").join(" ").split("%3E").join(">").split("%3D").join("=").split("%21").join("!").split("%5B").join("[")
-						.split("%5D").join("]").split("%0A").join("");
-						res.end(JSON.stringify({
-							xmlDoesContainAudio: parse.check4XmlAudio(filmXml)
-						}));
+				} case "/api/checkXml4Audio": {
+					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						const id = f.videoId;
+						switch (f.isPreview) {
+							case '0': {
+								res.end(JSON.stringify({xmlDoesContainAudio: movie.checkXml4Audio(id)}));
+								break;
+							} case '1': {
+								const buffer = fs.readFileSync(`./previews/${id}.xml`);
+								const filmXml = ( // creates a proper xml for the movie parser to read
+								buffer.slice(buffer.indexOf("<filmxml>") + 9, buffer.indexOf("</filmxml>")).toString("utf8")
+								).split("%3C").join("<").split("%22").join('"').split("%20").join(" ").split("%3E").join(">").split("%3D").join("=")
+								.split("%21").join("!").split("%5B").join("[").split("%5D").join("]").split("%0A").join("");
+								res.end(JSON.stringify({xmlDoesContainAudio: parse.check4XmlAudio(filmXml)}));
+								break;
+							}
+						}
 					});
 					break;
 				}

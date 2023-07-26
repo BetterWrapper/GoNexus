@@ -175,7 +175,7 @@
                                                             href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                                                     </div>
                                                 </div>
-                                                <object id="miniobject" data="/static/exporter.swf" height="360" width="640"></object>
+                                                <object id="miniobject" data="/static/exporter.swf" height="360" width="640" class="hidden"></object>
                                                 <video class="embed-responsive-item hidden" id="h5-player"></video>
                                             </div>
                                             <div class="video-info hidden-xs">
@@ -487,6 +487,7 @@
                         .join(" ");
                 }
                 let videoLoadingComplete = false;
+                let videoContainsAudio = false;
                 const player = $("#miniobject");
                 var videoPage = new VideoPage("<%= params.flashvars.movieId %>"),
                     flashVar = {};
@@ -505,7 +506,21 @@
                 function notifyMovieEnded() {
                     sendFramesToServer();
                 }
-
+                $.post("/api/checkXml4Audio", {
+                    videoId: '<%= params.flashvars.movieId %>',
+                    isPreview: '0'
+                }).done(d => {
+                    const json = JSON.parse(d);
+                    if (json.xmlDoesContainAudio) {
+                        videoContainsAudio = true;
+                        if (check4FlashPlayer()) {
+                            $(".notification, .using-flash").html(`<span class="icon glyph-halfling glyph-info-sign"></span>Because this video is using audio, 
+                            the legacy player will be loaded by default. Don't worry, we will remove this feature once the exporter works with audio witch it 
+                            currently does not at the moment.`);
+                            switchToFlashPlayer();
+                        } else $(".notification, .using-h5").html(`<span class="icon glyph-halfling glyph-info-sign"></span>This video contains audio and because the exporter cannot handle audio yet, you won't be able to watch this video until the exporter gets functional audio.`)
+                    } else if (check4FlashPlayer()) player.removeClass("hidden");
+                });
                 function sendFramesToServer() {
                     const scenes = player[0].getSceneInfoArray();
                     const frames = player[0].getPhotoArray();
@@ -521,7 +536,7 @@
                         contentType: "application/json"
                     }).done((d) => { // notify the h5 player that the video is ready.
                         if (d) {
-                            player.hide();
+                            player.addClass("hidden");
                             videoLoadingComplete = true;
                             $("#h5-player").html(`<source src="${d.videoUrl}" type="video/mp4">`);
                             $("#video-loading").hide();
@@ -558,7 +573,7 @@
                     $.post("/api/check4ExportedMovieExistance", {id: '<%= params.flashvars.movieId %>'}).done(d => {
                         player.addClass("hidden");
                         const json = JSON.parse(d);
-                        if (json.exists) {
+                        if (json.exists && !videoContainsAudio) {
                             videoLoadingComplete = true;
                             $("#h5-player").html(`<source src="/movies/<%= params.flashvars.movieId %>.mp4" type="video/mp4">`);
                             $("#video-loading").hide();
