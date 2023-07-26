@@ -235,7 +235,7 @@
                     <h2>Preview Video</h2>
                     <div id="playerdiv"></div>
                     <div id="h5-playerdiv">
-                        <object id="miniobject" data="/static/exporter.swf" height="100%" width="100%"></object>
+                        <object id="miniobject" data="/static/exporter.swf" height="100%" width="100%" class="hidden"></object>
                         <video class="hidden" id="h5-preview-player" width="100%" height="100%" type="video/mp4"></video>
                         <div class="player-overlay loading">
                             <div class="loading-icon">
@@ -287,12 +287,13 @@
                 <div class="video-tutorial-body">
                     <h2>&nbsp;</h2>
                     <div class="video-tutorial-player">
-             currentTime = 0       </div>
+                        <div id="wistia_player" class="wistia_embed" style="width:860px;height:445px">&nbsp;</div>
+                    </div>
                     <a class="close_btn" href="#" onclick="return false;">×</a>
                 </div>
                 <div class="video-tutorial-footer clearfix">
                     <button class="tutorial-button" type="button">
-                        Close </button>
+                        Close            </button>
                 </div>
             </div>
             <div class="ga-importer" style="display: none;">
@@ -609,7 +610,8 @@
             }
             var movieDataXmlStr = null,
                 filmXmlStr = null,
-                previewStartFrame
+                previewStartFrame,
+                previewerVideoId
 
             function checkBrowser() {
                 return window.WebSocket && window.MediaSource;
@@ -697,27 +699,38 @@
                 document.getElementById('h5-preview-player').src = '';
                 $('#h5-playerdiv').data('previewPlayerControl').reset();
                 $('#previewPlayer').addClass('using-h5');
-                exporterFrame = 1;
-                exporter.html(toParamString({
-                    allowScriptAccess: "always",
-                    flashvars: {
-                        movieOwner: userData.displayName, movieOwnerId: userData.uid, movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
-                        movieLid: "8", movieTitle: "", movieDesc: "", userId: userData.uid, username: userData.displayName, uemail: userData.email,
-                        apiserver: window.location.origin + '/', thumbnailURL: "", copyable: "0", isPublished: "0", ctc: "go", tlang: "en_US", is_private_shared: "0",
-                        autostart: "1", appCode: "go", is_slideshow: "0", originalId: "0", is_emessage: "0", isEmbed: "0", refuser: "",
-                        utm_source: "", uid: "", isTemplate: "1", showButtons: "0", chain_mids: "", showshare: "0", averageRating: "",
-                        s3base: window.location.origin + '/',
-                        ratingCount: "", fb_app_url: window.location.origin + '/', numContact: 0, isInitFromExternal: 1, storePath: playerStorePath, clientThemePath: playerClientThemePath, animationPath: playerAttrData + '/',
-                        startFrame: previewStartFrame
-                    }
-                }));
-                if (exporter.hasClass("hidden")) exporter.removeClass("hidden");
+                var split = movieDataXmlStr.split('');
+                function save_preview() {
+                    var splice = split.splice(0,5e5);
+                    if (splice.length) fetch(`/api/savePreviewXml?videoId=${previewerVideoId}`, {
+                        method: 'POST',
+                        body: splice.join('')
+                    }).then(save_preview);
+                    else $.post("/api/checkPreviewXml4Audio", {previewerVideoId}).done(d => {
+                        const json = JSON.parse(d);
+                        if (json.xmlDoesContainAudio) loadLegacyPreview();
+                        else exporter.html(toParamString({
+                            allowScriptAccess: "always",
+                            flashvars: {
+                                movieOwner: userData.displayName, movieOwnerId: userData.uid, movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
+                                movieLid: "8", movieTitle: "", movieDesc: "", userId: userData.uid, username: userData.displayName, uemail: userData.email,
+                                apiserver: window.location.origin + '/', thumbnailURL: "", copyable: "0", isPublished: "0", ctc: "go", tlang: "en_US", is_private_shared: "0",
+                                autostart: "1", appCode: "go", is_slideshow: "0", originalId: "0", is_emessage: "0", isEmbed: "0", refuser: "",
+                                utm_source: "", uid: "", isTemplate: "1", showButtons: "0", chain_mids: "", showshare: "0", averageRating: "",
+                                s3base: window.location.origin + '/',
+                                ratingCount: "", fb_app_url: window.location.origin + '/', numContact: 0, isInitFromExternal: 1, storePath: playerStorePath, clientThemePath: playerClientThemePath, animationPath: playerAttrData + '/',
+                                startFrame: previewStartFrame
+                            }
+                        })).removeClass("hidden");
+                    })
+                }
+                save_preview();
             }
             function loadLegacyPreview() {
                 if (movieDataXmlStr === null) {
                     return;
                 }
-        
+                exporter.addClass("hidden");
                 pauseH5PreviewPlayer();
                 createPreviewPlayer("playerdiv", {
                     height: 360,
@@ -739,6 +752,7 @@
 
             function initPreviewPlayer(dataXmlStr, startFrame) {
                 movieDataXmlStr = dataXmlStr;
+                previewerVideoId = generateId();
 
                 $("#preview-alert-block").hide();
                 previewSceen();

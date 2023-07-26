@@ -9,6 +9,7 @@ const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
 const fs = require("fs");
+const parse = require("./parse");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -121,6 +122,19 @@ module.exports = function (req, res, url) {
 				} case "/api/savePreviewXml": {
 					req.on('end', () => res.end());
 					movie.previewer.push(req, url.query.videoId);
+					break;
+				} case "/api/checkPreviewXml4Audio": {
+					loadPost(req, res).then(([data]) => {
+						const id = data.previewerVideoId;
+						const buffer = fs.readFileSync(`./previews/${id}.xml`);
+						const filmXml = ( // creates a proper xml for the movie parser to read
+							buffer.slice(buffer.indexOf("<filmxml>") + 9, buffer.indexOf("</filmxml>")).toString("utf8")
+						).split("%3C").join("<").split("%22").join('"').split("%20").join(" ").split("%3E").join(">").split("%3D").join("=").split("%21").join("!").split("%5B").join("[")
+						.split("%5D").join("]").split("%0A").join("");
+						res.end(JSON.stringify({
+							xmlDoesContainAudio: parse.check4XmlAudio(filmXml)
+						}));
+					});
 					break;
 				}
 			}

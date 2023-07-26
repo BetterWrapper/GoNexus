@@ -374,7 +374,7 @@ module.exports = {
 		for (const eI in xml.children) {
 			const elem = xml.children[eI];
 			if (elem.name == "sound") return true;
-			else return false;
 		}
+		return false;
 	}
 };
