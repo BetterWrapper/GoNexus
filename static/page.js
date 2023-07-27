@@ -70,8 +70,8 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
-		case "/": {
-			filename = "home";
+		case "/public_index": {
+			filename = "index";
 			break;
 		}
 
