@@ -1,5 +1,12 @@
 {
 	"GET": {
+		"/": {
+			"statusCode": 302,
+			"headers": {
+				"Location": "/public_index"
+			},
+			"content": ""
+		},
 		"/goapi/getAssetTags": {
 			"headers": {
 				"Content-Type": "application/json"
