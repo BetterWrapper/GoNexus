@@ -178,7 +178,7 @@ module.exports = {
 					const buffer = asset.load(id);
 
 					// add asset meta
-					ugc += asset.meta2Xml(JSON.parse(fs.readFileSync('./users.json')).users.find(i => i.id == uId).assets.find(i => i.id == id));
+					ugc += asset.meta2Xml(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == uId).assets.find(i => i.id == id));
 					// and add the file
 					fUtil.addToZip(zip, filename, buffer);
 

@@ -513,12 +513,13 @@
                     const json = JSON.parse(d);
                     if (json.xmlDoesContainAudio) {
                         videoContainsAudio = true;
-                        if (check4FlashPlayer()) {
+                        if (check4FlashPlayer()) setTimeout(() => {
                             $(".notification, .using-flash").html(`<span class="icon glyph-halfling glyph-info-sign"></span>Because this video is using audio, 
                             the legacy player will be loaded by default. Don't worry, we will remove this feature once the exporter works with audio witch it 
                             currently does not at the moment.`);
                             switchToFlashPlayer();
-                        } else $(".notification, .using-h5").html(`<span class="icon glyph-halfling glyph-info-sign"></span>This video contains audio and because the exporter cannot handle audio yet, you won't be able to watch this video until the exporter gets functional audio.`)
+                        }, 1000);
+                        else $(".notification, .using-h5").html(`<span class="icon glyph-halfling glyph-info-sign"></span>This video contains audio and because the exporter cannot handle audio yet, you won't be able to watch this video until the exporter gets functional audio.`)
                     } else if (check4FlashPlayer()) player.removeClass("hidden");
                 });
                 function sendFramesToServer() {
