@@ -75,17 +75,18 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
-		case "/yourvideos": {
-			filename = "list";
+		case "/public_signup": {
+			filename = "signup";
 			break;
 		}
 
-		case "/user": {
-			const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-			if (json.users.find(i => i.id == url.query.id)) {
-				if (url.query.filename == "user-videos") filename = "user-videos";
-				else filename = "user";
-			} else filename = "profile-error";
+		case "/login": {
+			filename = "login";
+			break;
+		}
+
+		case "/movies": {
+			filename = "list";
 			break;
 		}
 

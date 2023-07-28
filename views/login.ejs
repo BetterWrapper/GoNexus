@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="dns-prefetch" href="//web.archive.org/web/20160204205817/https://d2qrjeyl4jwu9j.cloudfront.net/">
+
+<title>Login - BetterWrapper</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="BetterWrapper is an LVM project that helps improve the errors Wrapper: Offline has.">
+
+<meta property="og:site_name" content="BetterWrapper">
+<meta property="fb:app_id" content="122508887813978">
+<meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
+
+
+<style>
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+    }
+</style>
+<link rel="stylesheet" href="https://web.archive.org/web/20160204205817cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/fa7317849b7cd47b/school/css/common_combined.css">
+
+<link rel="stylesheet" href="https://web.archive.org/web/20160204205817cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/fa7317849b7cd47b/school/css/public/login.css">
+
+<script>
+var srv_tz_os = -5, view_name = "school", user_cookie_name = "u_info_school";
+var user_country = "US";
+</script> 
+
+<!--[if lt IE 9]>
+<script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/fa7317849b7cd47b/go/js/lib/html5shiv.js"></script>
+<![endif]-->
+<script src="https://web.archive.org/web/20160204205817js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/fa7317849b7cd47b/school/js/common_combined.js"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20160204205817js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/fa7317849b7cd47b/go/po/goserver_js-en_US.json"></script>
+<script type="text/javascript">
+var I18N_LANG = 'en_US';
+var GT = new Gettext({'locale_data': json_locale_data});
+</script>
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//web.archive.org/web/20160204205817/https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-2516970-15');
+
+        ga('send', 'pageview');
+
+ga('require', 'ecommerce');
+
+$(function() {
+    var COOKIE_LAST_URL_LIFETIME = 5,
+        COOKIE_BLOCKER_LIFETIME = 900;
+
+    function setSessionCookie(cookie_name, cookie_value, lifetime) {
+        document.cookie = cookie_name + '=' + escape(cookie_value) + '; path=/; max-age=' + lifetime + ';';
+    }
+    function getSessionCookie(cookie_name) {
+        var results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
+        if (results) {
+            return (unescape(results[2]));
+        } else {
+            return null;
+        }
+    }
+
+    $(window).on({
+        unload: function() {
+            setSessionCookie('lasturl', window.location.href, COOKIE_LAST_URL_LIFETIME);
+        },
+        onbeforeunload: function() {
+            setSessionCookie('lasturl', window.location.href, COOKIE_LAST_URL_LIFETIME);
+        },
+        load: function() {
+            var http_referrer = document.referrer,
+                blocker = getSessionCookie('gasessid');
+
+            if (http_referrer === '') {
+                http_referrer = getSessionCookie('lasturl');
+            }
+            if ((http_referrer === '') || (blocker === null)) {
+                if (typeof(ga) !== 'undefined') {
+                    var currentDate = new Date(),
+                        sessionId,
+                        clientId;
+                    // Get GA Client ID.
+                    ga(function(tracker) {
+                        var currentDate = new Date(),
+                            clientId = tracker.get('clientId'),
+                            sessionId = clientId + '.' + currentDate.getTime();
+                        // Set custom dimension (UniqueID).
+                        ga('set', 'dimension1', clientId);
+                        // Set custom dimension (Session ID).
+                        ga('set', 'dimension2', sessionId);
+                        // Set blocker.
+                        setSessionCookie('gasessid', session_id, COOKIE_BLOCKER_LIFETIME);
+                    });
+                }
+            }
+        }
+    });
+});
+</script>
+
+
+
+<script type="text/javascript" src="https://web.archive.org/web/20160204205817js_/https://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+
+<!-- Google Knowledge Graph -->
+<script type="application/ld+json">
+{
+    "@context": "https://web.archive.org/web/20160204205817/http://schema.org",
+    "@type": "Organization",
+    "name": "GoAnimate",
+    "url": "https://web.archive.org/web/20160204205817/http://goanimate.com",
+    "logo": "https://web.archive.org/web/20160204205817/http://gawpstorage.s3.amazonaws.com/img/google_knowledge_graph_logo.jpg",
+    "sameAs": [
+        "https://web.archive.org/web/20160204205817/http://www.facebook.com/GoAnimateInc",
+        "https://web.archive.org/web/20160204205817/http://twitter.com/GoAnimate",
+        "https://web.archive.org/web/20160204205817/http://www.linkedin.com/company/goanimate",
+        "https://web.archive.org/web/20160204205817/http://plus.google.com/+goanimate",
+        "https://web.archive.org/web/20160204205817/http://www.youtube.com/user/GoAnimate"
+    ]
+}
+</script>
+
+</head>
+<body class="page-action-school">
+ 
+<script type="text/javascript">
+if (self !== top) {
+            jQuery('body').hide();
+    }
+</script>
+
+<%- include("includes/header.ejs", {}); %>
+<div class="hero">
+    <div class="hero-bottom">
+        <div class="landscape"></div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-md-6 col-lg-5 login-col">
+                <div class="floating-form" id="login-container">
+                    <div class="floating-form-body">
+                        <h1>Login</h1>
+                        <form class="login-form" id="login-form" action="javascript:;" method="post" novalidate>
+                            <div class="form-group">
+                                <div class="text-danger" id="login-form-message"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="login-email">Email Address</label>
+                                <input class="form-control" id="login-email" type="email" name="email" maxlength="255" placeholder="Email address" value="" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="login-password">Password</label>
+                                <input class="form-control" id="login-password" type="password" name="password" maxlength="255" placeholder="Password" value="" autocomplete="off" required>
+                            </div>
+
+                            <div class="form-group" id="login_captcha_container"></div>
+
+                            <div class="form-group text-center">
+                                <button class="btn btn-green btn-lg" id="btn-login" type="submit">Login</button>
+
+                                <input type="hidden" name="action" value="login">
+
+<input type="hidden" name="ct" value="20aOrYnnlPfR7eDXEneVKQMpoxyR4tzA3RI+PccCC7uOC7OBl5aPC6gkX9rlu_FhyL5JiqLg32KtDMy+8+uuvxAEDlCjP8jkLR6CwVUxuYYZO3UkJyPN_UHf90nRRoq9aB_8iQxwclwBX1i_Cs6NfVUjnA1VchP8nDnSCZC3VoqFe9PaZskfE60BQsRcbJTn__GSBK+TFFFX0zU5RqPdbrO6RR"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="floating-form-footer">
+                        <h5>Password Help</h5>
+                        <div>Forgot Your Passowrd? <a href="/forgotpassword">Reset it now &gt;</a></div>
+                    </div>
+                    <div class="floating-form-footer text-center">
+                        <a id="googlelogin" style="cursor: pointer;"><span class="si google"></span> Google Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8 col-md-6 col-lg-5 login-col">
+                <div class="floating-form" id="email-verification-container" style="display: none;">
+                    <div class="floating-form-body">
+                        <h1>Email Address Verification</h1>
+                        <p>Please verify your email address in order to use BetterWrapper.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+<script src="/js/user.js"></script>
+<script>
+(function($) {
+var processing = false;
+
+function validateLogin() {
+    var email = $('#login-email'), email_val = $.trim(email.val()), password = $('#login-password');
+
+    formErrorMessage('');
+
+    if (!email_val) {
+        $('#login-email').focus();
+        formErrorMessage('Please enter your email address');
+        return false;
+    }
+
+    if (!password.val()) {
+        $('#login-password').focus();
+        formErrorMessage('Please enter your password');
+        return false;
+    }
+
+    return true;
+}
+
+function formErrorMessage(message) {
+    $('#login-form-message').text(message);
+}
+
+function submitLogin() {
+    if (!validateLogin()) return;
+    if (processing) return;
+
+    processing = true;
+
+    var buttonText = $('#btn-login').text();
+    $('#btn-login').text('Logging in...');
+    userLogin($('#login-email').val(), $('#login-password').val());
+}
+
+$('#login-form').submit(function() {
+    submitLogin();
+    return false;
+});
+
+function showCaptchaWidget() {
+    Recaptcha.destroy();
+    Recaptcha.create("6LdF-sgSAAAAAA_YEaRe4etvtC7jo-N1NtA6lSSo", "login_captcha_container", { theme: "white" });
+    captcha_displayed = true;
+}
+
+if ($('#login-email').val().length) {
+    $('#login-password').focus();
+} else {
+    $('#login-email').focus();
+}
+
+
+})(jQuery);
+</script>
+<%- include('includes/footer.ejs', {}); %>
+
+<div id="studio_container" style="display: none;">
+    <div id="studio_holder"><!-- Full Screen Studio -->
+        <div style="top: 50%; position: relative;">
+            This content requires the Adobe Flash Player 10.3. <a href="https://web.archive.org/web/20160204205817/http://get.adobe.com/flashplayer/">Get Flash</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

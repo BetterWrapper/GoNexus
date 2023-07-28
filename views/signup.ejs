@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="dns-prefetch" href="//web.archive.org/web/20160801025729/https://d2qrjeyl4jwu9j.cloudfront.net/">
+
+<title>Signup - BetterWrapper</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="BetterWrapper is an LVM project that helps improve the errors Wrapper: Offline has.">
+
+<meta property="og:site_name" content="BetterWrapper">
+<meta property="fb:app_id" content="122508887813978">
+<meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
+
+
+<style>
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+    }
+</style>
+<link rel="stylesheet" href="https://web.archive.org/web/20160801025729cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/bd78878c20d6b7fc/school/css/common_combined.css">
+
+<link rel="stylesheet" href="https://web.archive.org/web/20160801025729cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/bd78878c20d6b7fc/school/css/public/order.css">
+
+<script>
+var srv_tz_os = -4, view_name = "school", user_cookie_name = "u_info_school";
+var user_country = "US";
+</script>
+
+<!--[if lt IE 9]>
+<script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/bd78878c20d6b7fc/go/js/lib/html5shiv.js"></script>
+<![endif]-->
+<script src="https://web.archive.org/web/20160801025729js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/bd78878c20d6b7fc/school/js/common_combined.js"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20160801025729js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/bd78878c20d6b7fc/go/po/goserver_js-en_US.json"></script>
+<script type="text/javascript">
+var I18N_LANG = 'en_US';
+var GT = new Gettext({'locale_data': json_locale_data});
+</script>
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//web.archive.org/web/20160801025729/https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-2516970-15');
+
+        ga('send', 'pageview');
+
+ga('require', 'ecommerce');
+
+$(function() {
+    var COOKIE_LAST_URL_LIFETIME = 5,
+        COOKIE_BLOCKER_LIFETIME = 900;
+
+    function setSessionCookie(cookie_name, cookie_value, lifetime) {
+        document.cookie = cookie_name + '=' + escape(cookie_value) + '; path=/; max-age=' + lifetime + ';';
+    }
+    function getSessionCookie(cookie_name) {
+        var results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
+        if (results) {
+            return (unescape(results[2]));
+        } else {
+            return null;
+        }
+    }
+
+    $(window).on({
+        unload: function() {
+            setSessionCookie('lasturl', window.location.href, COOKIE_LAST_URL_LIFETIME);
+        },
+        onbeforeunload: function() {
+            setSessionCookie('lasturl', window.location.href, COOKIE_LAST_URL_LIFETIME);
+        },
+        load: function() {
+            var http_referrer = document.referrer,
+                blocker = getSessionCookie('gasessid');
+
+            if (http_referrer === '') {
+                http_referrer = getSessionCookie('lasturl');
+            }
+            if ((http_referrer === '') || (blocker === null)) {
+                if (typeof(ga) !== 'undefined') {
+                    var currentDate = new Date(),
+                        sessionId,
+                        clientId;
+
+                    // Assume we only have one tracker
+                    try {
+                        var trackers = ga.getAll();
+                        var currentDate = new Date(),
+                            clientId = trackers[0].get('clientId'),
+                            sessionId = clientId + '.' + currentDate.getTime();
+                        // Set custom dimension (UniqueID).
+                        ga('set', 'dimension1', clientId);
+                        // Set custom dimension (Session ID).
+                        ga('set', 'dimension2', sessionId);
+                        // Set blocker.
+                        setSessionCookie('gasessid', sessionId, COOKIE_BLOCKER_LIFETIME);
+                    } catch(e) {}
+                }
+            }
+        }
+    });
+  });
+</script>
+
+
+
+<script type="text/javascript" src="https://web.archive.org/web/20160801025729js_/https://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+
+<!-- Google Knowledge Graph -->
+<script type="application/ld+json">
+{
+    "@context": "https://web.archive.org/web/20160801025729/http://schema.org",
+    "@type": "Organization",
+    "name": "GoAnimate",
+    "url": "https://web.archive.org/web/20160801025729/http://goanimate.com",
+    "logo": "https://web.archive.org/web/20160801025729/http://gawpstorage.s3.amazonaws.com/img/google_knowledge_graph_logo.jpg",
+    "sameAs": [
+        "https://web.archive.org/web/20160801025729/http://www.facebook.com/GoAnimateInc",
+        "https://web.archive.org/web/20160801025729/http://twitter.com/GoAnimate",
+        "https://web.archive.org/web/20160801025729/http://www.linkedin.com/company/goanimate",
+        "https://web.archive.org/web/20160801025729/http://plus.google.com/+goanimate",
+        "https://web.archive.org/web/20160801025729/http://www.youtube.com/user/GoAnimate"
+    ]
+}
+</script>
+
+</head>
+<body class="page-action-public_signup">
+<script type="text/javascript">
+if (self !== top) {
+            jQuery('body').hide();
+    }
+</script>
+
+<%- include("includes/header.ejs", {}); %>
+
+<script>
+var aff_ref = '', currency = 'USD';
+</script>
+
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">Sign Up</li>
+    </ol>
+    <hr>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <form class="form-horizontal" id="signup-form" action="javascript:;" method="post" novalidate>
+                <div class="payment-form-section" id="signup-container">
+                    <div>
+                        <h3>Sign Up</h3><br>
+                        <p>Please fill out this form in order to use BetterWrapper</p><br>
+                        <p id="error-message" class="text-danger"></p>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Display Name<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="display_name" id="display_name" value="" maxlength="25" placeholder="Display name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Email Address<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <input id='email' class="form-control" type="email" name="email" value="" maxlength="100" placeholder="Email address">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Password<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <input id="password" class="form-control" type="text" name="password" value="" maxlength="25">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Confirm Password<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <input id="password2" class="form-control" type="text" name="password2" value="" maxlength="25">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-form-section-footer">
+                        <br>
+                        <button class="btn btn-orange btn-lg" type="submit">Sign Up &gt;</button>
+                    </div>
+                </div>
+                <div class="payment-form-section" id="email-verification-container" style="display: none;">
+                    <div>
+                        <h3>Email Address Verification</h3><br>
+                        <p>Please verify your email address in order to use BetterWrapper</p><br>
+                        <p id="error-message" class="text-danger"></p>
+                    </div>
+                </div>
+            </form>
+            <br><br>
+        </div>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="/js/user.js"></script>
+        <script>
+            $("#signup-form").submit(() => {
+                $("#signup-processing").show();
+                $("#error-message").text('');
+                setTimeout(() => {
+                    if ($('#password').val() != $('#password2').val()) {
+                        $("#error-message").text('Your password and confirm password must match.');
+                        $("#signup-processing").hide();
+                    } else if (!$('#display_name').val()) {
+                        $("#error-message").text('You need to have a display name.');
+                        $("#signup-processing").hide();
+                    } else userSignup($('#email').val(), $('#password').val(), $('#display_name').val());
+                }, 5000);
+            })
+        </script>
+    </div>
+</div>
+
+<div class="modal order-processing-modal" id="signup-processing">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Signing Up..</h3>
+            </div>
+            <div class="modal-body">
+                <br>
+                <p class="text-center h4">we are currently signing you up right now, please wait...</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("includes/footer.ejs", {}); %>
+
+
+<div id="studio_container" style="display: none;">
+    <div id="studio_holder"><!-- Full Screen Studio -->
+        <div style="top: 50%; position: relative;">
+            This content requires the Adobe Flash Player 10.3. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 02:57:29 Aug 01, 2016 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 18:23:34 Jul 27, 2023.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 122.678
+  exclusion.robots: 0.214
+  exclusion.robots.policy: 0.204
+  cdx.remote: 0.068
+  esindex: 0.013
+  LoadShardBlock: 84.872 (3)
+  PetaboxLoader3.datanode: 270.177 (4)
+  load_resource: 994.14
+  PetaboxLoader3.resolve: 805.757
+-->

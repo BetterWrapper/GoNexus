@@ -34,124 +34,58 @@ auth.onAuthStateChanged(user => {
                 });
             }
             switch (window.location.pathname) {
-                case "/yourvideos": {
+                case "/movies": {
                     window.location.href = '/';
                     break;
-                } case "/": {
-                    if (params.get("action")) showElement(`${params.get("action")}-modal`);
-                    addText2Element('psw', '<a href="javascript:userLogout()">Logout</a>');
-                } case "/user": {
-                    loadUserContent(user);
+                }
+                case "/public_signup":
+                case "/login": {
+                    switch (window.location.pathname) {
+                        case "/public_signup": {
+                            $("#signup-container").hide();
+                            $("#signup-processing").hide();
+                            break;
+                        } case "/login": {
+                            $("#login-container").hide();
+                            break;
+                        }
+                    }
+                    $("#email-verification-container").show();
                     break;
                 }
             }
         } else {
-            hideElement('signup-modal');
-            hideElement('login-modal');
             hideElement('signup-button');
             hideElement('login-button');
-            hideElement('psw-reset-modal');
-            hideElement('is-guest');
-            showElement('is-login');
-            showElement('make-a-video-is-login');
-            createImgElement('profile-image', user.photoURL, user.displayName);
-            addText2Element('user-name', user.displayName)
+            showElement('isLogin');
             switch (window.location.pathname) {
                 case "/":
-                case "/yourvideos": {
-                    addLink2Element('user-link', `/user?id=${user.uid}`);
-                    switch (window.location.pathname) { 
-                        case "/yourvideos": {
-                            sendUserData(user);
-                            $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
-                            break;
-                        }
-                    }
+                case "/movies": {
+                    sendUserData(user);
+                    $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
                     break;
                 } case "/go_full": {
-                    $(document).ready(function() {
-                        if (enable_full_screen) {
-                            if (!false) {
-                                $('#studio_container').css('top', '0px');
-                            }
-                            $('#studio_container').show();
-                            $('.site-footer').hide();
-                            $('#studioBlock').css('height', '1800px');
-            
-                            if (false) {
-                                checkCopyMovie('javascript:proceedWithFullscreenStudio(\'' + JSON.stringify(user) + '\', \'isJson\')', '');
-                            } else if (false) {
-                                checkEditMovie('');
-                            } else {
-                                proceedWithFullscreenStudio(user);
-                            }
-            
-                            $(window).on('resize', function() {
-                                ajust_studio();
-                            });
-                            $(window).on('studio_resized', function() {
-                                if (show_cc_ad) {
-                                    _ccad.refreshThumbs();
-                                }
-                            });
-            
-                            if (studioApiReady) {
-                                var api = studioApi($('#studio_holder'));
-                                api.bindStudioEvents();
-                                studioModule = new StudioModule();
-                            }
-            
-                            $('.ga-importer').prependTo($('#studio_container'));
-                        } else {
-                            setTimeout(() => $('#studioBlock').flash(getStudioData()), 1);
-                        }
-            
-                        // Video Tutorial
-                        videoTutorial = new VideoTutorial($("#video-tutorial"));
-                    })
-                    // restore studio when upsell overlay hidden
-                    .on('hidden.bs.modal', '#upsell-modal', function(e) {
-                        if ($(e.target).attr('id') == 'upsell-modal') {
-                            restoreStudio();
-                        }
-                    })
-                    .on('studioApiReady', function() {
-                        var api = studioApi($('#studio_holder'));
-                        api.bindStudioEvents();
-                        studioModule = new StudioModule();
-                    })
                     break;
                 } case "/player": {
-                    addLink2Element('user-link-yourprofile', `/user?id=${user.uid}`);
-                    flashPlayerVars.userId = user.uid;
-                    flashPlayerVars.username = user.displayName;
-                    flashPlayerVars.uemail = user.email;
+                    break;
                 } case "/user": {
                     loadUserContent(user);
+                    break;
+                }
+                case "/login":
+                case "/public_signup": {
+                    location.href = '/movies';
                     break;
                 }
             }
         }
     } else {
-        hideElement('logout-link');
-        hideElement('make-a-video-is-login');
-        hideElement('is-login');
+        hideElement('isLogin');
         showElement('signup-button');
         showElement('login-button');
-        showElement('is-guest');
-        showElement('signup-container');
-        hideElement('email-verification-signup');
-        showElement('login-container');
-        hideElement('email-verification-login');
-        addText2Element('psw', 'Forgot <a href="javascript:;" onclick="showElement(\'psw-reset-modal\')">password?</a>');
         switch (window.location.pathname) {
-            case "/yourvideos": {
+            case "/movies": {
                 window.location.href = '/';
-                break;
-            } case "/": {
-                if (params.get("action")) showElement(`${params.get("action")}-modal`);
-            } case "/user": {
-                loadUserContent();
                 break;
             }
         }
@@ -162,14 +96,17 @@ function userSignup(email, password, name) {
     displayName = name;
     auth.createUserWithEmailAndPassword(email, password).catch(e => {
         console.log(e);
-        addText2Element('error-message-signup', e.message);
+        $("#signup-processing").hide();
+        $("#error-message").text(e.message);
     });
 }
 function userLogin(email, password) {
     loginComplete = true;
     auth.signInWithEmailAndPassword(email, password).catch(e => {
         console.log(e);
-        addText2Element('error-message-login', e.message);
+        processing = false;
+        formErrorMessage(e.message);
+        $('#btn-login').text(buttonText);
     });
 }
 function userLogout() {

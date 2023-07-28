@@ -1,6 +1,6 @@
 {
 	"GET": {
-		"/": {
+		"/$": {
 			"statusCode": 302,
 			"headers": {
 				"Location": "/public_index"
