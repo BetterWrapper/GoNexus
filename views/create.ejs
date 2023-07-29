@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Video Maker - BetterWrapper</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="BetterWrapper is an LVM project that is attempting to fix all of the errors that Wrapper: Offline has right now.">
+        <meta property="og:site_name" content="BetterWrapper">
+        <link rel="stylesheet" href="/ui/css/common_combined.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+        <link rel="stylesheet" href="/ui/css/videomaker.css">
+        <script>
+            var srv_tz_os = -4, view_name = "school", user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <script src="/js/common_combined.js"></script>
+    </head>
+    <body class="page-action-videomaker">
+        <%- include("includes/header.ejs") %>
+        <div class="container">
+            <div class="create-header">
+                <h1 class="h3">Select a Theme</h1>
+            </div>
+            <div class="themes row" id="themes" data-row-1></div>
+            <div class="themes row" id="themes" data-row-2></div>
+        </div>
+        <script>
+            jQuery.getJSON("/api/themes/get", (d) => {
+                let count = 0;
+                for (const theme of d) {
+                    if (count < 3) $("[data-row-1]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
+                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
+                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
+                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                    </div>
+                    </div></div></div></div>`);
+                    else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
+                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
+                        <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
+                        ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                    </div></div></div></div></div>`);
+                    count++
+                }
+            })
+        </script>
+        <%- include("includes/footer.ejs") %>
+    </body>
+</html>

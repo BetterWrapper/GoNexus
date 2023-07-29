@@ -376,5 +376,13 @@ module.exports = {
 			if (elem.name == "sound") return true;
 		}
 		return false;
+	},
+	getThemes() {
+		const xml = new xmldoc.XmlDocument(fs.readFileSync(`${themeFolder}/_themelist.xml`));
+		const themes = [];
+		for (const elem of xml.children) {
+			if (elem.name == "theme") themes.push(elem);
+		}
+		return themes;
 	}
 };

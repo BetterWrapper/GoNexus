@@ -28,6 +28,7 @@ const thl = require("./theme/load");
 const tsv = require("./tts/voices");
 const tsl = require("./tts/load");
 const fme = require("./static/frames");
+const pse = require("./movie/parse");
 const fs = require("fs");
 const url = require("url");
 
@@ -44,7 +45,11 @@ module.exports = http
 			switch (req.method) {
 				case "GET": {
 					switch (parsedUrl.pathname) {
-						case "/api/convertUrlQuery2JSON": {
+						case "/api/themes/get": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(pse.getThemes()));
+							break;
+						} case "/api/convertUrlQuery2JSON": {
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(parsedUrl.query));
 							break;
@@ -107,4 +112,4 @@ module.exports = http
 		}
 		console.log(req.method, req.url, '-', res.statusCode);
 	})
-	.listen(env.PORT || env.SERVER_PORT, console.log);
+	.listen(env.PORT || env.SERVER_PORT, console.timeLog);

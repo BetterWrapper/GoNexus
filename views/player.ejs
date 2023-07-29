@@ -1,97 +1,173 @@
+<!DOCTYPE html>
 <html>
-	<head>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="dns-prefetch" href="//web.archive.org/web/20140701044446/http://lightspeed.goanimate.com/">
         <title><%= title %></title>
-        <link rel="stylesheet" type="text/css" href="/ui/css/common_combined.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
-        <link rel="stylesheet" href="/ui/css/movie.css">
-        <script src="/js/common_combined.js.gz.js"></script>
-        <script src="/js/lvp.js"></script>
-	</head>
-	<body style="margin:0px">
-		<%- include("includes/header.ejs") %>
-        <div id="video-page">
-            <ul class="breadcrumb">
-                <li><a href="/movies">Your Videos</a></li>
-                <li class="active" id="movie-title"></li>
-            </ul>
-            <div class="video-top">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-6 video-left">
-                            <div class="status-container">
-                                <div class="vthumb-container">
-                                    <div class="vthumb">
-                                        <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/<%= params.flashvars.movieId %>.png" id="movie-alt-title"></div></div>
+        <meta name="title" content="<%= title %>">
+        <meta name="video_height" content="354">
+        <meta name="video_width" content="550">
+        <meta name="video_type" content="application/x-shockwave-flash">
+        <meta name="medium" content="video">
+        <meta property="og:type" content="article">
+        <meta property="og:title" content="<%= title %>">
+        <meta property="og:video:height" content="354">
+        <meta property="og:video:width" content="550">
+        <meta property="og:video:type" content="application/x-shockwave-flash">
+        <meta name="twitter:card" content="player">
+        <meta name="twitter:title" content="<%= title %>">
+        <meta name="twitter:player:height" content="349">
+        <meta name="twitter:player:width" content="620">
+        <meta property="og:site_name" content="GoAnimate">
+        <meta property="fb:app_id" content="177116303202">
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        <style>
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+            }
+        </style>
+        <link rel="stylesheet" href="/ui/css/common_combined.css">
+        <link href="https://web.archive.org/web/20140701044446cs_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/css/watermark.css" rel="stylesheet" type="text/css">
+        <link href="/ui/css/movie.css" rel="stylesheet" type="text/css">
+        <link href="https://web.archive.org/web/20140701044446cs_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/css/videos.css" rel="stylesheet" type="text/css">
+        <link href="https://web.archive.org/web/20140701044446cs_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/css/video_export.css" rel="stylesheet" type="text/css">
+        <link href="https://web.archive.org/web/20140701044446cs_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/css/movie_license.css" rel="stylesheet" type="text/css">
+        <link href="https://web.archive.org/web/20140701044446cs_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/css/video_voice_vendor.css" rel="stylesheet" type="text/css">
+        <link href="https://web.archive.org/web/20140701044446cs_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/css/worknote.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript">
+            var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
+        </script>
+        <script src="https://web.archive.org/web/20160724162053js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/js/common_combined.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/go2.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery.blockUI-2.66.0.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery.scrollTo.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/app.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/cookie.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/po/goserver_js-en_US.json"></script>
+        <script type="text/javascript">
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/comments.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery-ui-1.10.4/jquery.ui.core.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery-ui-1.10.4/jquery.ui.widget.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery-ui-1.10.4/jquery.ui.position.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery-ui-1.10.4/jquery.ui.menu.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/jquery/jquery-ui-1.10.4/jquery.ui.autocomplete.min.js"></script>
+        <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/bootstrap/bootstrap-tokenfield.min.js"></script>
+        <script type="text/javascript" src="https://web.archive.org/web/20140701044446js_/http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+        <link href="https://plus.google.com/+goanimate" rel="publisher">
+    </head>
+    <body class="en_US">
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+        </script>
+        <div class="page-container">
+            <!-- HEADER -->
+            <%- include("includes/header.ejs") %>
+            <!-- END OF HEADER -->
+            <div id="video-page">
+                <div class="video-top">
+                    <div class="container">
+                        <div class="row">
+                            <ul class="breadcrumb">
+                                <li><a href="/movies">Your Videos</a></li>
+                                <li class="active" id="movie-title"></li>
+                            </ul>
+                            <div class="col-sm-6 video-left">
+                                <div class="status-container">
+                                    <div class="vthumb-container">
+                                        <div class="vthumb">
+                                            <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/<%= params.flashvars.movieId %>.png" id="movie-alt-title"></div></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="video-top-content clearfix">
-                                <div class="pull-left video-info">
-                                    <h1 id="movie-title-h1"></h1>
-                                    By <a id="user-link"></a>                     
+                                <div class="video-top-content clearfix">
+                                    <div class="pull-left video-info">
+                                        <h1 id="movie-title-h1"></h1>
+                                        By <a id="user-link"></a>                     
+                                    </div>
+                                    <div class="video-top-status"></div>
                                 </div>
-                                <div class="video-top-status"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="video-main">
-                <div class="container">
-                    <div class="video-main-content">
-                        <div class="video-header clearfix noshow"></div>
-                        <div class="video-content">
-                            <div class="player-container">
-                                <meta name="medium" content="video">
-                                <div style="position:relative">
-                                    <div id="playerdiv" align="center" style="width:620px;height:349px;">
-                                        This content requires the Adobe Flash Player 10.3. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                <div class="video-main">
+                    <div class="container">
+                        <div class="video-main-content">
+                            <div class="video-header hide clearfix"></div>
+                            <div class="video-content">
+                                <div class="player-container">
+                                    <meta name="medium" content="video"/>
+                                    <div style="position:relative">
+                                        <div id="playerdiv" align="center" style="width:620px;height:349px;">
+                                            This content requires the Adobe Flash Player 10.3. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                                        </div>
                                     </div>
+                                    <script type="text/javascript">
+                                        var playerApiReady = false;
+                                        function playerLoaded() {
+                                            playerApiReady = true;
+                                            jQuery(document).trigger('playerApiReady');
+                                        };
+                                    </script>				
                                 </div>
-                                <script type="text/javascript">
-                                    var playerApiReady = false;
-                                    function playerLoaded() {
-                                        playerApiReady = true;
-                                        jQuery(document).trigger('playerApiReady');
-                                    };
-                                </script>
+                            </div>
+                            <div class="video-actions">
+                                <span class="divider">|</span>
+                                <a data-remote="/api/videoEdit/<%= params.flashvars.movieid %>" data-action="video-edit">
+                                    <span class="glyphicon glyphicon-edit"></span> Edit
+                                </a>
+                                <span class="divider">|</span>
+                                <a data-remote="/api/videoShare/<%= params.flashvars.movieid %>" data-action="video-share">
+                                    <span class="glyphicon glyphicon-share"></span> Share
+                                </a>
+                                <span class="divider">|</span>
+                                <a data-action="video-delete">
+                                    <span class="glyphicon glyphicon-trash"></span> Delete
+                                </a>
+                                <span class="divider">|</span>
                             </div>
                         </div>
-                        <div class="video-actions">
-                            <span class="divider">|</span>
-                            <button class="button" data-remote="/api/editVideo/<%= params.flashvars.movieId %>" data-action="video-edit"><i class="ico-edit"></i> Edit</button>
-                            <span class="divider">|</span>
-                            <button class="button" data-remote="/api/shareVideo/<%= params.flashvars.movieId %>" data-action="video-share"><i class="ico-share"></i> Share</button>
-                            <span class="divider">|</span>
-                            <button class="button" data-action="video-delete"><i class="ico-delete"></i> Delete</button>
-                            <span class="divider">|</span>
-                        </div>
+                        <div class="video-main-aside" id="player-aside"></div>
                     </div>
-                    <script>
-                        $('.video-actions').toggle($('.video-actions').find('.btn').length > 0);
-                    </script>
-                    <div class="video-main-aside" id="player-aside"></div>
                 </div>
             </div>
-            <div class="container main-container">
-                <div class="row">
-                    <div class="col-md-8">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#video-info" data-toggle="tab">More Info</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="video-info">
-                                <p class="inside">Published on: <span id="date"></span></p>
-                                <p></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 aside video-aside">
-                        <div></div><br>
+            <!-- modals -->
+            <script>
+                // constants defined for movie title prefix editing
+                var MOVIE_TITLE_PREFIX = '';
+                var MOVIE_TITLE = 'Caillou Opens up YouTube Account while Grounded';
+                var MOVIE_USERNAME = 'African Vulture™';
+                var USER_USERNAME = '';
+                var MOVIE_COLLAB_LOCK = false;
+            </script>
+            <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/users.js"></script>
+            <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/video.js"></script>
+            <script src="https://web.archive.org/web/20140701044446js_/http://lightspeed.goanimate.com/static/594e2dd8970e70e1/go/js/videos.js"></script>
+            <!-- FOOTER -->
+            <%- include("includes/footer.ejs") %>
+            <div id="studio_container" style="display: none;">
+                <div id="studio_holder"><!-- Full Screen Studio -->
+                    <div style="top: 50%; position: relative;">
+                        This content requires the Adobe Flash Player 10.3. <a href="https://web.archive.org/web/20140701044446/http://get.adobe.com/flashplayer/">Get Flash</a>
                     </div>
                 </div>
             </div>
         </div>
-        <%- include("includes/footer.ejs") %>
+        <!-- END OF PAGE STRUCTURE -->
     </body>
 </html>

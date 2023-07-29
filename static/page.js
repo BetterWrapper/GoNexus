@@ -80,6 +80,11 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
+		case "/create": {
+			filename = "create";
+			break;
+		}
+
 		case "/login": {
 			filename = "login";
 			break;
