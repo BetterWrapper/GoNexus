@@ -62,7 +62,26 @@ auth.onAuthStateChanged(user => {
                 case "/":
                 case "/movies": {
                     sendUserData(user);
-                    $.getJSON(`/movieList?uid=${user.uid}`, (d) => loadRows(d));
+                    jQuery.get(`/movieList?uid=${user.uid}`, (meta) => {
+                        document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
+                        if (meta == []) {
+                            jQuery("#myvideos").hide();
+                            jQuery("#novideos").show();
+                            jQuery("#allvideos").hide();
+                        } else for (const tbl of meta) {
+                            const date = tbl.date.split("T")[0];
+                            const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
+                            jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${
+                                tbl.durationString
+                            }</div></div></td><td>${usDate}</td><td><a href="/player?movieId=${tbl.id}"></a><a href="/go_full?movieId=${
+                                tbl.id
+                            }"></a><a href="/movies/${
+                                tbl.id
+                            }.zip"></a><a onclick="deleteMovie('${
+                                tbl.id
+                            }')"></a></td></tr>`);
+                        }
+                    })
                     break;
                 } case "/go_full": {
                     break;

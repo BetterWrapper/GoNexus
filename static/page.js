@@ -188,15 +188,23 @@ module.exports = function (req, res, url) {
 		case "/player": {
 			const path = fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(url.query.movieId.lastIndexOf("-") + 1));
 			if (url.query.movieId.startsWith("m-") && existsSync(path)) filename = "player";
-			else filename = "video-error";
+			else {
+				res.statusCode = 302;
+				res.setHeader("Location", "/");
+				res.end();
+			}
 			title = "Player";
-			attrs = {
-				data: process.env.SWF_URL + "/player.swf",
-				type: "application/x-shockwave-flash",
-				width: "100%",
-				height: "100%",
-			};
 			params = {
+				id: "Player",
+				swf: process.env.SWF_URL + "/player.swf",
+				height: 349,
+				width: 620,
+				bgcolor: "#000000",
+				scale: "exactfit",
+				allowScriptAccess: "always",
+				allowFullScreen: "true",
+				wmode: "opaque",
+				hasVersion: "10.3",
 				flashvars: {
 					movieLid: "0",
 					ut: "23",
@@ -230,29 +238,7 @@ module.exports = function (req, res, url) {
 					initcb: "flashPlayerLoaded",
 					showshare: false
 				},
-
-				allowScriptAccess: "always",
-				allowFullScreen: "true",
 			};
-			if (url.query.isEmbed) {
-				if (url.query.movieId.startsWith("m-") && existsSync(path)) {
-					for (const user of JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users) {
-						const json = user.movies.find(i => i.id == url.query.movieId);
-						if (json) {
-							params.flashvars.movieOwner = user.name.split(" ").join("+");
-							params.flashvars.movieOwnerId = user.id;
-							params.flashvars.movieTitle = json.title.split(" ").join("+");
-							params.flashvars.movieDesc = json.desc.split(" ").join("+");
-							params.flashvars.duration = json.duration;
-							params.flashvars.isPublished = json.published;
-							params.flashvars.is_private_shared = json.publishStatus == "private" ? "1" : "0";
-						}
-					}
-					filename = url.query.filename == "player-embed-h5" ? "player-embed-h5" : "player-embed-legacy";
-				} else {
-					filename = "player-embed-error";
-				}
-			}
 			break;
 		}
 

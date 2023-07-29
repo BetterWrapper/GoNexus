@@ -1,699 +1,97 @@
-<!DOCTYPE html>
 <html>
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="dns-prefetch" href="https://web.archive.org/web/20191104072153/https://d2bm7x1jqouzel.cloudfront.net/">
-    <link rel="dns-prefetch" href="//web.archive.org/web/20191104072153/https://d3v4eglovri8yt.cloudfront.net/">
-
-    <title>
-        <%= title %>
-    </title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <meta name="title" content="<%= title %>">
-
-
-    <link href="https://josephanimate2021.github.io/fonts/1/sailec.css" rel="stylesheet" type="text/css">
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/common_combined.css.gz.css"
-        rel="stylesheet" type="text/css">
-
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/watermark.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video.css.gz.css" rel="stylesheet"
-        type="text/css">
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video_export.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/movie_license.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video_voice_vendor.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <link
-        href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/bootstrap/bootstrap-tokenfield.min.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <link
-        href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/bootstrap/bootstrap-tokenfield-addon.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video_page_worknote.css.gz.css"
-        rel="stylesheet" type="text/css">
-    <!--[if lt IE 9]>
-<style text="text/css">
-.top-nav.collapse {height: auto;overflow: visible;}
-</style>
-<![endif]-->
-
-    <script>
-        var srv_tz_os = -5, view_name = "go", user_cookie_name = "u_info";
-        var user_role = null;
-    </script>
-
-    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/common_combined.js.gz.js"></script>
-    <script type="text/javascript"
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/po/goserver_js-en_US.json.gz.json"></script>
-    <script type="text/javascript">
-        var I18N_LANG = 'en_US';
-        var GT = new Gettext({ 'locale_data': json_locale_data });
-    </script>
-    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-    <script src="/js/user.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.10.4/jquery.ui.core.min.js.gz.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.10.4/jquery.ui.widget.min.js.gz.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.10.4/jquery.ui.position.min.js.gz.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.10.4/jquery.ui.menu.min.js.gz.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.10.4/jquery.ui.autocomplete.min.js.gz.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery.waypoints2.min.js.gz.js"></script>
-    <script
-        src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/bootstrap/bootstrap-tokenfield.min.js.gz.js"></script>
-    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/trial_upsell.js.gz.js"></script>
-    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/lib/moment.min.js.gz.js"></script>
-    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/country-options.js.gz.js"></script>
-    <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/amplitude/go_amp.js.gz.js"></script>
-
-    <!-- Vyond Cookie Consent -->
-    <script>(function (v, y, o, n) {
-            v[n] = v[n] || [];
-            var f = y.getElementsByTagName(o)[0], d = y.createElement(o);
-            d.type = 'text/javascript'; d.async = true; d.src =
-                'https://web.archive.org/web/20191104072153/https://ga.vyond.com/ajax/cookie_policy';
-            f.parentNode.insertBefore(d, f);
-        })(window, document, 'script', '_vyccq');</script>
-    <!-- End Vyond Cookie Consent -->
-
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    '//web.archive.org/web/20191104072153/https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-TXV7MD');
-
-        dataLayer.push({ "evergageShowBeacon": true });
-    </script>
-    <!-- Google Tag Manager -->
-
-    <script>
-        dataLayer.push({ 'useQualaroo': 1 });
-
-    </script>
-
-    <!-- Start of Zendesk Widget script -->
-    <script>/*<![CDATA[*/window.zEmbed || function (e, t) { var n, o, d, i, s, a = [], r = document.createElement("iframe"); window.zEmbed = function () { a.push(arguments) }, window.zE = window.zE || window.zEmbed, r.src = "javascript:false", r.title = "", r.role = "presentation", (r.frameElement || r).style.cssText = "display: none", d = document.getElementsByTagName("script"), d = d[d.length - 1], d.parentNode.insertBefore(r, d), i = r.contentWindow, s = i.document; try { o = s } catch (c) { n = document.domain, r.src = 'javascript:var d=document.open();d.domain="' + n + '";void(0);', o = s } o.open()._l = function () { var o = this.createElement("script"); n && (this.domain = n), o.id = "js-iframe-async", o.src = e, this.t = +new Date, this.zendeskHost = t, this.zEQueue = a, this.body.appendChild(o) }, o.write('<body onload="document._l();">'), o.close() }("//web.archive.org/web/20191104072153/https://assets.zendesk.com/embeddable_framework/main.js", "goanimate.zendesk.com");/*]]>*/</script>
-    <!-- End of Zendesk Widget script -->
-    <script>
-        zE(function () {
-            zE.hide();
-        });
-    </script>
-
-
-</head>
-
-<body class="en_US">
-    <script type="text/javascript">
-        if (self !== top) {
-            jQuery('body').hide();
-        }
-    </script>
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe
-            src="https://web.archive.org/web/20191104072153if_/https://www.googletagmanager.com/ns.html?id=GTM-TXV7MD"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
-    <script type="text/javascript">
-        jQuery.extend(CCStandaloneBannerAdUI, { "actionshopSWF": "https:\/\/web.archive.org\/web\/20191104072153\/https:\/\/d3v4eglovri8yt.cloudfront.net\/animation\/66453a3ba2cc5e1b\/actionshop.swf", "apiserver": "https:\/\/web.archive.org\/web\/20191104072153\/http:\/\/ga.vyond.com\/", "clientThemePath": "https:\/\/web.archive.org\/web\/20191104072153\/https:\/\/d3v4eglovri8yt.cloudfront.net\/static\/3862a313e72d6e0a\/<client_theme>", "userId": "" });
-    </script>
-
-    <div class="page-container">
-
-        <%- include('includes/header-legacy.ejs', {}); %>
-            <!-- END OF HEADER -->
-            <div id="video-page">
-                <input type="hidden" name="ct"
-                    value="W6VHc262xvbThXRIZs3WJA5tZUya8_Ug3ENhF3OOdnJnUlP6ajGkOFl4lEjQ06fjzx_mlv5SZqvuJUrGdInUjCamQ_DLpLhyaho41nklEscPFIzJDlTp23aUyAQPINV7LmhMm1ZkYo+qAD14p6PDNe52VEcHh3kqT5113sbHDkiPozs3ja537vulJOh3k0p_OB8XeNNxad_rO8SydsqN9Bn3CUY2L5Xx4+T80wpuWNTC_jHTg=" />
-                <div class="video-content">
-                    <div class="thumbnail-container"
-                        style="background-image:url('/movie_thumbs/<%= params.flashvars.movieId %>.png')">
-                        <div class="thumbnail-overlay"></div>
-                    </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="player-container col-sm-7">
-                                <div class="notification using-h5">
-                                    <span class="icon glyph-halfling glyph-info-sign"></span>The exporter does work, however, due to it being in beta, your video will not play in the correct size.
-                                    to avoid this issue, you may switch to the
-                                    <a onclick="switchPlayers('flash')">legacy video player</a> while we are working on resolving this issue.
-                                    <!--<span class="icon glyph-halfling glyph-info-sign"></span> Your video is currently in process of being loaded right now. please wait a few minutes then refresh this page. If you encounter any technical problems, switch to the <a onclick="switchPlayers('flash')">legacy video player</a>.-->
-                                </div>
-                                <div class="notification using-flash hidden">
-                                    <span class="icon glyph-halfling glyph-info-sign"></span>If your video takes longer
-                                    to load with the legacy player, you can switch to the <a
-                                        onclick="switchPlayers('h5')">h5 video player</a>.
-                                </div>
-                                <div class="video-player">
-                                    <div class="video-player-container">
-                                        <div class="video-player-viewport"
-                                            style="background-image: url('/movie_thumbs/<%= params.flashvars.movieId %>.png');">
-                                            <div class="video-player-wrapper embed-responsive embed-responsive-16by9">
-                                                <div class="embed-responsive-item hidden" id="flash-player">
-                                                    <div class="no-flash-player">
-                                                        You can't use BetterWrapper because Flash might be disabled. <a
-                                                            href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
-                                                    </div>
-                                                </div>
-                                                <object id="miniobject" data="/static/exporter.swf" height="360" width="640" class="hidden"></object>
-                                                <video class="embed-responsive-item hidden" id="h5-player"></video>
-                                            </div>
-                                            <div class="video-info hidden-xs">
-                                                <div class="video-info-content">
-                                                    <h1 class="title"></h1>
-                                                    <p class="description"></p>
-                                                    <p class="creator">Created by <a id="user-link"></a></p>
-                                                    <p class="status">Published: <span id="date"></span></p>
-                                                </div>
-                                            </div>
-                                            <div class="video-loading" id="video-loading" style="display: block">
-                                                <div class="video-loading-message">This video is currently loading right now. please wait for a few minutes.</div>
-                                            </div>
-                                            <div id="player-control" style="display: none">
-                                                <div class="seek-bar-container">
-                                                    <div class="seek-bar">
-                                                        <div class="buffered-bar"></div>
-                                                        <div class="hover-bar"></div>
-                                                        <div class="played-bar"></div>
-                                                        <div class="time-tooltip"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="button-container">
-                                                    <div class="playback-button paused">
-                                                        <div class="play-button"></div>
-                                                        <div class="pause-button"></div>
-                                                        <div class="replay-button"></div>
-                                                    </div>
-                                                    <div class="progress-time-container">
-                                                        <div class="progress-time">00:00 / 00:00</div>
-                                                    </div>
-                                                    <div class="controls-right">
-                                                        <div class="volume-container">
-                                                            <div class="volume-control">
-                                                                <div class="volume-icon">
-                                                                    <div class="volume-up-icon"></div>
-                                                                    <div class="volume-mute-icon"></div>
-                                                                </div>
-                                                                <div class="volume-slider">
-                                                                    <div class="slider-track">
-                                                                        <div class="track-value-bar"></div>
-                                                                    </div>
-                                                                    <div class="slider-thumb"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="fullscreen-container">
-                                                            <div class="fullscreen-button"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="video-player-meta">
-                                            <div class="video-title"></div>
-                                            <div class="video-creator"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="context-menu" class="hidden">
-                                    <div class="click-disabler"></div>
-                                    <ul>
-                                        <li data-player-action="play">Play / Pause</li>
-                                        <li class="divider"></li>
-                                        <li data-player-action="copyUrl">Copy video URL</li>
-                                        <li data-player-action="copyEmbedCode">Copy embed code</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="sidebar col-sm-5 hidden-xs">
-                                <div class="row panel-container">
-                                    <div class="setting-panels">
-                                        <div class="main-panel">
-                                            <div class="setting-title"><span
-                                                    class="glyph-pro glyph-show-thumbnails_with_lines"></span> Settings
-                                            </div>
-                                            <ul class="setting-items">
-
-
-
-
-
-
-                                            </ul>
-                                        </div>
-                                        <div class="sub-panel">
-                                            <div class="panel-item logo-panel">
-                                                <div class="panel-title">
-                                                    <span class="glyph-pro glyph-chevron-left"></span><span
-                                                        class="text">Logo</span>
-                                                </div>
-                                                <div class="list-container">
-                                                    <div class="panel-info">
-                                                        Want to use a brand new logo?<br />
-                                                        <a
-                                                            href="https://web.archive.org/web/20191104072153/https://ga.vyond.com/account/logo">
-                                                            Go to Account settings &gt;
-                                                        </a>
-                                                    </div>
-                                                    <div class="default-logo-list-container">
-                                                        <ul class="logo-list">
-                                                            <li data-watermark="0dhteqDBt5nY"><img
-                                                                    src="https://web.archive.org/web/20191104072153im_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/img/watermark/no_watermark.png">
-                                                            </li>
-                                                            <li data-watermark="0vTLbQy9hG7k"><img
-                                                                    src="https://web.archive.org/web/20191104072153im_/https://d3v4eglovri8yt.cloudfront.net/static/3862a313e72d6e0a/go/img/watermark/vyond.png">
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div class="logo-list-container">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="panel-item history-panel">
-                                                <div class="panel-title">
-                                                    <span class="glyph-pro glyph-chevron-left"></span><span
-                                                        class="text">Revision history</span>
-                                                </div>
-                                                <div class="list-container"></div>
-                                            </div>
-                                            <div class="panel-item notes-panel">
-                                                <div class="panel-title-static">
-                                                    <span class="glyph-pro glyph-blog"></span><span
-                                                        class="text">Notes</span>
-                                                </div>
-                                                <div class="list-container"></div>
-                                            </div>
-                                        </div>
+	<head>
+        <title><%= title %></title>
+        <link rel="stylesheet" type="text/css" href="/ui/css/common_combined.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+        <link rel="stylesheet" href="/ui/css/movie.css">
+        <script src="/js/common_combined.js.gz.js"></script>
+        <script src="/js/lvp.js"></script>
+	</head>
+	<body style="margin:0px">
+		<%- include("includes/header.ejs") %>
+        <div id="video-page">
+            <ul class="breadcrumb">
+                <li><a href="/movies">Your Videos</a></li>
+                <li class="active" id="movie-title"></li>
+            </ul>
+            <div class="video-top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 video-left">
+                            <div class="status-container">
+                                <div class="vthumb-container">
+                                    <div class="vthumb">
+                                        <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/<%= params.flashvars.movieId %>.png" id="movie-alt-title"></div></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="video-top">
-
-                    <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject" id="itemProp-meta">
-                        <meta itemprop="playerType" content="HTML5 Flash">
-                        <meta itemprop="videoQuality" content="HD">
-                        <meta itemprop="height" content="720">
-                        <meta itemprop="width" content="1280">
-                    </div>
-
-                    <div class="settings privacy hidden-xs">
-                        <div class="container">
-                            <div class="row settings-row">
-                                <div class="col-sm-9">
-                                    <div class="settings-label hidden-xs">Share</div>
-                                    <div class="using-draft"><span class="icon glyph-pro glyph-lock inline"></span>Draft
-                                    </div>
-                                    <div class="using-private"><span
-                                            class="icon glyph-pro glyph-lock inline"></span>Private</div>
-                                    <div class="using-public"><span
-                                            class="icon glyph-pro glyph-unlock inline"></span>Public</div>
+                            <div class="video-top-content clearfix">
+                                <div class="pull-left video-info">
+                                    <h1 id="movie-title-h1"></h1>
+                                    By <a id="user-link"></a>                     
                                 </div>
+                                <div class="video-top-status"></div>
                             </div>
                         </div>
-                        <div id="autosave-overlay" class="modal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button class="close" type="button" data-dismiss="modal"
-                                            aria-hidden="true">×</button>
-                                        <h3 class="modal-title">Your video was autosaved</h3>
-                                    </div>
-                                    <div class="modal-body">
-                                        <span class="autosave-message"></span>
-                                        <a class="history-toggle" data-dismiss="modal">View revision history.</a>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-default text-uppercase" id="load-manual-save">Manually
-                                            saved</button>
-                                        <button class="load-autosave btn btn-default btn-orange text-uppercase">Load
-                                            autosaved</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings headline">
-                        <div class="container">
-                            <div class="settings-row">
-                                <h1 class="video-title visible-xs"></h1>
-                                <p>Created by <a id="user-link-headline"></a></p>
-
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="settings social grey">
-                        <div class="container">
-                            <div class="settings-row">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <input id="copyable-url" class="form-control gtm-ga-event" type="url"
-                                            readonly="true" value="" onclick="this.select()"
-                                            data-gtmv-action="Share - Click text field" data-gtmv-category=""
-                                            data-gtmv-label="25238467 - Guest">
-                                    </div>
-                                    <div class="col-sm-6 socials-icons">
-                                        <ul class="socials-sharing">
-                                            <li>
-                                                <a class="glyph-pro glyph-embed-close"
-                                                    data-remote="/ajax/getEmbedOverlay/<%= params.flashvars.movieId %>"
-                                                    data-action="video-embed" title="Embed code">
-                                                    <span class="sr-only sr-only-focusable">Embed code</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="export" id="export" style="display: none">
-                    <div class="container">
-                        <div class="title-row">
-                            <h3 class="title">Export</h3>
-                        </div>
-                        <div class="row">
-                            <a class="col-lg-3 col-md-4 col-sm-6" id="video-download" target="_blank">
-                                <div class="export-option" id="download-export" data-type="Download">
-                                    <div class="icon"></div>
-                                    <button class="toggle-trigger"><span class="glyph-halfling glyph-chevron-up"></span></button>
-                                    <div class="option-name">Download<br><span class="text-uppercase">Video</span></div>
-                                    <div class="description">
-                                        Up to 1080p Full HD.                            
-                                    </div>
-                                    <div class="toggle-content"></div>
-                                    <div class="spin"></div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="shortcut-instruction hidden-xs hidden-sm">
-                    <div class="container">
-                        <ul>
-                            <li>
-                                <div class="key play"></div>
-                                <div class="name">Play / Pause</div>
-                            </li>
-                            <li>
-                                <div class="key back-forward"></div>
-                                <div class="name">Back/forward 5 secs</div>
-                            </li>
-                            <li>
-                                <div class="key full-screen"></div>
-                                <div class="name">Full Screen</div>
-                            </li>
-                            <li>
-                                <div class="key exit-full-screen"></div>
-                                <div class="name">Exit Full Screen</div>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
-            <input id="embed_code_field" type="hidden" />
-            <script>
-                var flashPlayerUrl = '<%= attrs.data %>';
-                var flashPlayerVars, flashExporterVars;
-                var h5PlayerElem = null;
-                var sceneDetails = {};
-                $.getJSON(`/api/convertUrlQuery2JSON?<%= flashvarsString %>`, (d) => {
-                    flashPlayerVars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
-                    flashExporterVars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
-                    flashExporterVars.autostart = "1";
-                });
-            </script>
-
-            <script
-                src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/h5preview/media-controller.js.gz.js"></script>
-            <script
-                src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page.js.gz.js"></script>
-            <script
-                src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page_worknote.js.gz.js"></script>
-            <script
-                src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page_player.js.gz.js"></script>
-            <script
-                src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video_page_player_control.js.gz.js"></script>
-            <script>
-                function check4FlashPlayer() {
-                    try {
-                        var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-                        if (fo) return true;
-                    } catch (e) {
-                        if (navigator.mimeTypes && navigator.mimeTypes['application/x-shockwave-flash'] != undefined && navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                function toAttrString(table) {
-                    return typeof table == "object"
-                        ? Object.keys(table)
-                                .filter((key) => table[key] !== null)
-                                .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`)
-                                .join("&")
-                        : table.replace(/"/g, '\\"');
-                }
-                function toParamString(table) {
-                    return Object.keys(table)
-                        .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
-                        .join(" ");
-                }
-                let videoLoadingComplete = false;
-                let videoContainsAudio = false;
-                const player = $("#miniobject");
-                var videoPage = new VideoPage("<%= params.flashvars.movieId %>"),
-                    flashVar = {};
-                var videoCopyableUrl = window.location.origin + window.location.pathname + '?movieId=<%= params.flashvars.movieId %>&utm_source=linkshare&utm_medium=linkshare&utm_campaign=usercontent';
-                // this is where the exporter does it's job
-                let currentFrame = 1;
-                function nextFrame() {
-                    player[0].seekFrame(currentFrame++);
-                }
-
-                function playAndPause() {
-                    player[0].play();
-                    setTimeout(() => player[0].pause(), 100)
-                }
-
-                function notifyMovieEnded() {
-                    sendFramesToServer();
-                }
-                $.post("/api/checkXml4Audio", {
-                    videoId: '<%= params.flashvars.movieId %>',
-                    isPreview: '0'
-                }).done(d => {
-                    const json = JSON.parse(d);
-                    if (json.xmlDoesContainAudio) {
-                        videoContainsAudio = true;
-                        if (check4FlashPlayer()) setTimeout(() => {
-                            $(".notification, .using-flash").html(`<span class="icon glyph-halfling glyph-info-sign"></span>Because this video is using audio, 
-                            the legacy player will be loaded by default. Don't worry, we will remove this feature once the exporter works with audio witch it 
-                            currently does not at the moment.`);
-                            switchToFlashPlayer();
-                        }, 1000);
-                        else $(".notification, .using-h5").html(`<span class="icon glyph-halfling glyph-info-sign"></span>This video contains audio and because the exporter cannot handle audio yet, you won't be able to watch this video until the exporter gets functional audio.`)
-                    } else if (check4FlashPlayer()) player.removeClass("hidden");
-                });
-                function sendFramesToServer() {
-                    const scenes = player[0].getSceneInfoArray();
-                    const frames = player[0].getPhotoArray();
-                    for (const scene of scenes) frames.splice(scene.startFrom, 1);
-                    $.ajax({
-                        url: "/api/videoExport/completed",
-                        method: "POST",
-                        data: JSON.stringify({
-                            frames,
-                            id: '<%= params.flashvars.movieId %>'
-                        }),
-                        dataType: "json",
-                        contentType: "application/json"
-                    }).done((d) => { // notify the h5 player that the video is ready.
-                        if (d) {
-                            player.addClass("hidden");
-                            videoLoadingComplete = true;
-                            $("#h5-player").html(`<source src="${d.videoUrl}" type="video/mp4">`);
-                            $("#video-loading").hide();
-                            $(".video-loading-message").text("");
-                            $("#player-control").show();
-                            document.getElementById('video-download').download = flashExporterVars.movieTitle.split("+").join(" ") + ".mp4";
-                            document.getElementById('video-download').href = d.videoUrl;
-                            $("#export").show();
-                        } else $(".video-loading-message").text("could not fetch this video. please try again later.")
-                    });
-                }
-                function switchPlayers(type) {
-                    switch (type) {
-                        case "flash": {
-                            switchToFlashPlayer();
-                            break;
-                        } case "h5": {
-                            if ($(".video-player-viewport").hasClass("using-flash")) {
-                                $(".video-player-viewport").removeClass("using-flash");
-                                $(".player-container > .notification").addClass("hidden").filter(".using-h5").removeClass("hidden");
-                                $(".shortcut-instruction").removeClass("hidden");
-                                $("#flash-player").addClass("hidden");
-                                if (!videoLoadingComplete) {
-                                    $("#video-loading").show();
-                                    $(".video-loading-message").text('This video is currently loading right now. please wait for a few minutes.');
-                                    $("#player-control").hide();
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-                if (!check4FlashPlayer()) { // flash player is required in order to export a movie. if it's non existant, just check for an already exported movie.
-                    $.post("/api/check4ExportedMovieExistance", {id: '<%= params.flashvars.movieId %>'}).done(d => {
-                        player.addClass("hidden");
-                        const json = JSON.parse(d);
-                        if (json.exists && !videoContainsAudio) {
-                            videoLoadingComplete = true;
-                            $("#h5-player").html(`<source src="/movies/<%= params.flashvars.movieId %>.mp4" type="video/mp4">`);
-                            $("#video-loading").hide();
-                            $(".video-loading-message").text("");
-                            $("#player-control").show();
-                            setTimeout(() => {
-                                document.getElementById('video-download').download = flashExporterVars.movieTitle.split("+").join(" ");
-                                document.getElementById('video-download').href = '/movies/<%= params.flashvars.movieId %>.mp4';
-                                $("#export").show();
-                            }, 500);
-                        } else $(".video-loading-message").html("You don't have adobe flash player and an exported version of this movie does not exist. <br>please ask someone with flash player to export this movie for you.");
-                    })
-                }
-            </script>
-            <script>
-                $.post("/api/getAllUsers", (d) => {
-                    const json = JSON.parse(d);
-                    for (const meta of json) {
-                        const m = meta.movies.find(i => i.id == '<%= params.flashvars.movieId %>');
-                        if (m) {
-                            document.getElementsByClassName("title")[0].innerHTML = m.title;
-                            document.getElementsByClassName("description")[0].innerHTML = m.desc;
-                            document.getElementById('user-link').href = `/user?id=${meta.id}`;
-                            $("#user-link").text(meta.name);
-                            $(".privacy").addClass(m.publishStatus);
-                            $("#date").text(m.date);
-                            $("#itemProp-meta").html(`<link itemprop="url" href="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>"><meta itemprop="name" content="${m.title}"><meta itemprop="description" content="${m.desc}"><meta itemprop="duration" content="${m.duration}"><meta itemprop="uploadDate" content="${m.date}"><meta itemprop="thumbnailUrl" content="${window.location.origin}/movie_thumbs/${m.id}.png"><meta itemprop="embedURL" content="${window.location.origin}/player?isEmbed=true&movieId=${m.id}">`);
-                            $(".video-title, .visible-xs").text(m.title);
-                            document.getElementById("user-link-headline").href = `/user?id=${meta.id}`;
-                            $("#user-link-headline").text(meta.name);
-                            flashPlayerVars.movieOwner = meta.name.split(" ").join("+");
-                            flashPlayerVars.movieOwnerId = meta.id;
-                            flashPlayerVars.movieTitle = m.title.split(" ").join("+");
-                            flashPlayerVars.movieDesc = m.desc.split(" ").join("+");
-                            flashPlayerVars.s3base = window.location.origin + '/';
-                            flashPlayerVars.duration = m.duration;
-                            flashPlayerVars.thumbnailURL = window.location.origin + '/movie_thumbs/<%= params.flashvars.movieId %>.png';
-                            flashPlayerVars.isPublished = m.published;
-                            flashPlayerVars.is_private_shared = m.publishStatus == "private" ? "1" : "0";
-                            flashExporterVars.movieOwner = meta.name.split(" ").join("+");
-                            flashExporterVars.movieOwnerId = meta.id;
-                            flashExporterVars.movieTitle = m.title.split(" ").join("+");
-                            flashExporterVars.movieDesc = m.desc.split(" ").join("+");
-                            flashExporterVars.s3base = window.location.origin + '/';
-                            flashExporterVars.duration = m.duration;
-                            flashExporterVars.thumbnailURL = window.location.origin + '/movie_thumbs/<%= params.flashvars.movieId %>.png';
-                            flashExporterVars.isPublished = m.published;
-                            flashExporterVars.is_private_shared = m.publishStatus == "private" ? "1" : "0";
-                            $("#copyable-url").val(videoCopyableUrl);
-                            $("#embed_code_field").val(`<iframe scrolling="no" allowTransparency="true" allowfullscreen frameborder="0" width="640" height="360" src="${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>&isEmbed=true"></iframe>`);
-                            flashVar.duration = m.duration;
-                            player.html(toParamString({
-                                flashvars: flashExporterVars,
-                                allowScriptAccess: "always"
-                            }));
-
-                        }
-                    }
-                });
-            </script>
-
-            <script>
-                $(window).on('amplitude_loaded', function () {
-                    amplitudeTrackEvent(AMPLITUDE_EVENT.VISIT_VIDEO_PAGE, { "movie": "<%= params.flashvars.movieId %>", "owner": 0, "editor": 0, "duration": "3", "creator_plan": "gopublish", "referral": null, "login_status": "no", "video_status": "", "manage_end_date": "" });
-                });
-            </script>
-
-
-
-
-            <!-- FOOTER -->
-
-            <%- include('includes/footer-legacy.ejs', {}); %>
-
-
-                <div id="studio_container" style="display: none;">
-                    <div id="studio_holder"><!-- Full Screen Studio -->
-                        <div style="top: 50%; position: relative;">
-                            You can't use Vyond because Flash might be disabled. <a
-                                href="https://web.archive.org/web/20191104072153/https://get.adobe.com/flashplayer/">Enable
-                                Flash</a>.
+            <div class="video-main">
+                <div class="container">
+                    <div class="video-main-content">
+                        <div class="video-header clearfix noshow"></div>
+                        <div class="video-content">
+                            <div class="player-container">
+                                <meta name="medium" content="video">
+                                <div style="position:relative">
+                                    <div id="playerdiv" align="center" style="width:620px;height:349px;">
+                                        This content requires the Adobe Flash Player 10.3. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    var playerApiReady = false;
+                                    function playerLoaded() {
+                                        playerApiReady = true;
+                                        jQuery(document).trigger('playerApiReady');
+                                    };
+                                </script>
+                            </div>
+                        </div>
+                        <div class="video-actions">
+                            <span class="divider">|</span>
+                            <button class="button" data-remote="/api/editVideo/<%= params.flashvars.movieId %>" data-action="video-edit"><i class="ico-edit"></i> Edit</button>
+                            <span class="divider">|</span>
+                            <button class="button" data-remote="/api/shareVideo/<%= params.flashvars.movieId %>" data-action="video-share"><i class="ico-share"></i> Share</button>
+                            <span class="divider">|</span>
+                            <button class="button" data-action="video-delete"><i class="ico-delete"></i> Delete</button>
+                            <span class="divider">|</span>
                         </div>
                     </div>
+                    <script>
+                        $('.video-actions').toggle($('.video-actions').find('.btn').length > 0);
+                    </script>
+                    <div class="video-main-aside" id="player-aside"></div>
                 </div>
-
-    </div>
-    <!-- END OF PAGE STRUCTURE -->
-
-
-
-    <div id="offer_container">
-    </div>
-    <script type="text/javascript">
-    </script>
-
-    <script type="text/javascript">
-
-    </script>
-
-</body>
-
+            </div>
+            <div class="container main-container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#video-info" data-toggle="tab">More Info</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="video-info">
+                                <p class="inside">Published on: <span id="date"></span></p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 aside video-aside">
+                        <div></div><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include("includes/footer.ejs") %>
+    </body>
 </html>
-<!--
-     FILE ARCHIVED ON 07:21:53 Nov 04, 2019 AND RETRIEVED FROM THE
-     INTERNET ARCHIVE ON 19:21:18 Jul 16, 2023.
-     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
-
-     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
-     SECTION 108(a)(3)).
--->
-<!--
-playback timings (ms):
-  captures_list: 333.292
-  exclusion.robots: 0.358
-  exclusion.robots.policy: 0.342
-  cdx.remote: 0.143
-  esindex: 0.014
-  LoadShardBlock: 274.126 (3)
-  PetaboxLoader3.datanode: 78.399 (4)
-  load_resource: 142.02
-  PetaboxLoader3.resolve: 67.946
--->

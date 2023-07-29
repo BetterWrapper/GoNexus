@@ -1,268 +1,444 @@
-<!DOCTYPE html>
 <html>
-
 <head>
-	<title>Your Videos | BetterWrapper</title>
-	<meta name="description"
-		content="The website for BetterWrapper, a project that helps improve the errors Wrapper: Offline has.">
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
-	<link rel="icon" type="image/x-icon" href="/ui/img/icon/favicon.ico">
-	<link rel="stylesheet" href="/ui/css/better-global.css">
-	<link rel="stylesheet" href="/ui/css/user.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-	<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-	<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-	<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-	<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-	<script src="/js/user.js"></script>
-</head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<body>
-	<%- include('includes/header.ejs', {}); %>
-		<div id="movie-modal" class="modal">
-			<div class="modal-content">
-				<div class="form-container">
-					<div class="imgcontainer">
-						<center>
-							<h1 id="modal-title"></h1>
-						</center>
-						<span class="close" onclick="hideElement('movie-modal')" title="Close Modal">&times;</span>
-					</div>
-					<div id="modal-body"></div>
-				</div>
-				<div class="form-container" style="background-color:#f1f1f1" id="modal-footer"></div>
-			</div>
-		</div>
-		<center>Your Videos: <span id="video-count"></span></center>
-		<table>
-			<thead>
-				<tr>
-					<td></td>
-					<td>Video Title</td>
-					<td>Last Modified</td>
-					<td></td>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<center id="no-videos" style="display: none;">No Videos</center>
-		<form enctype='multipart/form-data' action='/upload_movie' method='post'>
-			<input id='file' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
-		</form>
-		<script>
-			var tbody = document.getElementsByTagName('tbody')[0];
-			var userData = null;
-			function sendUserData(user) {
-				userData = user;
-			}
-			function loadRows(json) {
-				let hasContent = false;
-				let count = 0;
-				for (const tbl of json) {
-					count++
-					hasContent = true;
-				}
-				if (!hasContent) showElement('no-videos');
-				else $("tbody").html(json.map(loadHtml).join(""));
-				addText2Element('video-count', count);
-			}
-			function loadHtml(tbl) {
-				const date = tbl.date.substr(0, 10) + ' ' + tbl.date.substr(11);
-				return `<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-					}</div><div>${tbl.durationString}</div><div>${tbl.desc}</div></td><td><span>${date}</span></td><td><a href="/player?movieId=${tbl.id
-					}"><span class="glyphicon glyphicon-play"></span></a><a href="/go_full?movieId=${tbl.id
-					}"><span class="glyphicon glyphicon-pencil"></span></a><a href="/movies/${tbl.id}.xml" download="${tbl.title
-					}"><span class="glyphicon glyphicon-download-alt"></span></a><a href="javascript:moreOptions('${tbl.id
-					}')"><span class="glyphicon glyphicon-option-horizontal"></span></a></td></tr>`;
-			}
-			function showModal(title, content, footerstuff) {
-				if (userData) {
-					document.getElementById('modal-title').innerText = title || "";
-					document.getElementById('modal-body').innerHTML = content || "";
-					document.getElementById('modal-footer').innerHTML = footerstuff || "";
-					document.getElementById('movie-modal').style.display = 'block';
-				}
-			}
-			function moreOptions(id) {
-				showModal('Movie Actions', `<center><a class="btn btn-success" href="javascript:exporter('movie', '${id}')">
-				<span class="glyphicon glyphicon-export"></span> Export
-				</a><br><br><a class="btn btn-info" href="javascript:downloadMovieAsZip('${id}')">
-				<span class="glyphicon glyphicon-download"></span> Download As A Zip File
-				</a><br><br><a href="javascript:del('movie', '${id}')" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> 
-				Delete</a></center>`);
-			}
-			function downloadMovieAsZip(id) {
-				$.post("/api/sendUserInfo", { userId: userData.uid }).done(() => {
-					location.href = `/movies/${id}.zip`;
-				});
-			}
-			function del(type, id) {
-				const yeaorno = confirm(`Are you sure that you want to delete ${type} ${id}?`);
-				if (yeaorno) {
-					$.post(`/api/${type}/delete`, { id }).done(d => {
-						if (d.success) {
-							$("#movie-modal").hide();
-							$.getJSON(`/movieList?uid=${userData.uid}`, (d) => loadRows(d));
-						}
-					});
-				}
-			}
-			function exporter(type, id) {
-				const yeaorno = confirm(`Are you sure that you want to export ${type} ${id}?`);
-				if (yeaorno) alert("The exporter is in beta right now. don't worry, it will be out soon. i just put that button there to get us started a little bit. -JosephAnimate")
-			}
-		</script>
-		<style>
-			table {
-				width: 100%;
-				max-width: 100%;
-				margin-bottom: 127px;
-				margin-right: auto;
-				margin-left: auto;
-				margin-top: 70px;
-				background-color: transparent;
-				border-collapse: collapse;
-				border-spacing: 0;
-				font-size: 14px;
-			}
+<title>Your Videos on BetterWrapper</title>
 
-			@media(min-width: 768px) {
-				table {
-					width: 750px;
-				}
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-				tr>:nth-child(2)>* {
-					width: 350px;
-				}
-			}
+<meta name="description" content="">
+<meta property="og:site_name" content="Vyond">
+<meta property="fb:app_id" content="177116303202">
 
-			@media(min-width: 992px) {
-				table {
-					width: 970px;
-				}
+<meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
 
-				tr>:nth-child(2)>* {
-					width: 580px;
-				}
-			}
 
-			@media (min-width: 1030px) {
-				header>:nth-child(1) {
-					padding-bottom: 0;
-					height: 44px;
-				}
+<style>
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+    }
+</style>
+<link rel="stylesheet" href="https://web.archive.org/web/20160724162053cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/css/common_combined.css">
+<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/watermark.css.gz.css" rel="stylesheet" type="text/css">
+<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video.css.gz.css" rel="stylesheet" type="text/css">
+<link href="/ui/css/mymovies.css" rel="stylesheet" type="text/css">
+<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video_export.css.gz.css" rel="stylesheet" type="text/css">
+<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/vm5_alpha/banner.css.gz.css" rel="stylesheet" type="text/css">
+<!--[if lt IE 9]>
+<style text="text/css">
+.top-nav.collapse {height: auto;overflow: visible;}
+</style>
+<![endif]-->
 
-				header>:nth-child(1)>:nth-child(2) {
-					clear: none;
-					float: right;
-				}
-			}
+<script>
+var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
+var user_role = 9;
+</script>
 
-			@media(min-width: 1200px) {
-				table {
-					width: 1170px;
-				}
+<script src="https://web.archive.org/web/20160724162053js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/js/common_combined.js"></script>
+<script type="text/javascript" src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/../po/goserver_js-en_US.json.gz.json"></script>
+<script type="text/javascript">
+var I18N_LANG = 'en_US';
+var GT = new Gettext({'locale_data': json_locale_data});
+</script>
 
-				tr>:nth-child(2)>* {
-					width: 780px;
-				}
-			}
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.9.2.custom-core-interactions.min.js.gz.js"></script>
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery.tmpl.min.js.gz.js"></script>
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/trial_upsell.js.gz.js"></script>
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/lib/moment.min.js.gz.js"></script>
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/sessionChecker.js.gz.js"></script>
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/amplitude/go_amp.js.gz.js"></script>
 
-			thead {
-				font-weight: 200;
-			}
 
-			td {
-				padding: 8px;
-				vertical-align: middle;
-				line-height: 1.42857143;
-			}
 
-			thead {
-				border-bottom: 2px solid #ddd;
-				border-top: 1px solid #ddd;
-			}
 
-			tbody>tr {
-				border-top: 0;
-				border-bottom: 1px solid #ddd;
-			}
 
-			tbody>tr:hover {
-				background-color: #f5f5f5;
-			}
 
-			tr>:nth-child(1) {
-				width: 64px;
-			}
 
-			tr>:nth-child(1)>img {
-				height: 36px;
-			}
 
-			tr>:nth-child(1) {
-				word-break: break-word;
-			}
 
-			tr>:nth-child(2) {
-				color: #999;
-			}
+<script type="text/javascript">
+if (self !== top) {
+            jQuery('body').hide();
+    }
+</script>
 
-			tr>:nth-child(2)>:nth-child(1) {
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
 
-			tr>:nth-child(2)>:nth-child(2) {
-				font-family: monospace;
-			}
+<script type="text/javascript">
+        jQuery.extend(CCStandaloneBannerAdUI, {"actionshopSWF":"https:\/\/d3v4eglovri8yt.cloudfront.net\/animation\/66453a3ba2cc5e1b\/actionshop.swf","apiserver":"http:\/\/ga.vyond.com\/","clientThemePath":"https:\/\/d3v4eglovri8yt.cloudfront.net\/html\/204877ced07e5539\/<client_theme>","userId":"0AxjAaQrlscE"});
+</script>
 
-			tr>:nth-child(3) {
-				width: 200px;
-			}
+<div class="page-container">
 
-			tr>:nth-child(3)>* {
-				font-family: monospace;
-				display: inline-block;
-				text-align: center;
-				font-size: 14px;
-			}
 
-			tr>:nth-child(4) {
-				font-family: 'GlyphiconsRegular';
-				text-decoration: none;
-				padding-top: 5px;
-				font-size: 14px;
-				width: 200px;
-			}
+<div class="site-header">
+	<%- include("includes/header.ejs") %>
+<script>
+    jQuery('.logout-link').click(function(){
+        amplitudeTrackEvent(AMPLITUDE_EVENT.LOGOUT, null);
+    });
+    </script>
 
-			tr>:nth-child(4)>a {
-				display: inline-block;
-				text-decoration: none;
-				padding-right: 10px;
-				color: #474747;
-			}
+<!-- END OF HEADER -->
 
-			tr>:nth-child(4)>a:hover {
-				color: #d85e27;
-			}
+<div class="alert alert-danger">
+	<div class="alert-content text-center">BetterWrapper is currently under development right now. things like video importing and eta does not work yet. <a href="https://github.com/lunastar67/betterwrapper" target="_blank">GITHUB LINK</a>.
+            </div>
+        </div>
 
-			tfoot>tr>td {
-				text-align: center;
-				border: none;
-			}
 
-			tfoot>tr>td>a {
-				text-decoration: none;
-				color: #474747;
-				font-size: 14px;
-			}
 
-			form {
-				display: none;
-			}
-		</style>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="h2">
+            <ol class="breadcrumb video-breadcrumb">
+                <li class="base" data-folder-id="" data-category="all" data-page="1" data-sort-by="lastmod" data-status="" data-keyword="" data-folder-name="">Your Videos</li>
+            </ol>
+        </h1>
+    </div>
+
+    <div class="row" id="video-listing">
+        <div class="col-md-4 col-md-push-8">
+            <div id="videos-nav" class="list-group folder-list folder-access">
+                <div class="list-group-item folder-item active" data-folder-id="" data-category="all" data-page="1" data-sort-by="lastmod" data-status="" data-keyword="" data-folder-name="">
+                    <span class="title folder-name">Your Videos</span>
+                    (<span class="video-count count-all">0</span>)
+                </div>
+
+                <div id="videos-folders-nav" class="list-group-item sub-folder-list"></div>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
+            <input type="hidden" name="ct" value="FqKXQlssBymA4syBJy5c1wqQq5_QLuWMrWvTH07Cdtp05gvmlOvqho7pEGo4ljDAD6KcXYaTaoxjtjrkZUaCo0PNrF5PQDFOgKmpXlBNwsYkKBnK7efEphlvMXfG8wdYyzzH+TXCmkMJEWo+yA3ADlgAN8mTBUOqO0tZi5Mx1QWH+cuVVyihsSmXtpoa0NYHq8f3HwFfmhuo71WHPtH8lSTwNcvGX5Q96YPHhSuqk=">
+
+<div class="grid video-listing-grid hide-folders folder-access" id="video-listing-grid">
+
+    <div class="grid-viewport video-listing" id="videos">
+        <table class="table table-hover table-generic" id="novideos" style="display:none">
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <div class="emptystate">
+                            <img class="emptystate-image" src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/img/myvideos/chair_empty.png">
+                            <p>No videos</p>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <table class="table table-hover table-generic" id="myvideos">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Video Title</td>
+                    <td>Last Modified</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody id="allvideos"></tbody>
+        </table>
+    </div>
+
+
+</div>
+
+<div id="autosave-overlay" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Your video was autosaved</h3>
+            </div>
+            <div class="modal-body">
+                <span class="autosave-message"></span>
+            </div>
+            <div class="modal-footer">
+                <button class="load-manualsave btn btn-default text-uppercase">Manually saved</button>
+                <button class="load-autosave btn btn-default btn-orange text-uppercase">Load autosaved</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+
+<!-- modals -->
+<div class="modal" id="export-details" role="dialog" aria-hidden="true" style="z-index:1050;">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header has-back">
+        <button class="close" type="button" data-dismiss="modal" aria-hidden="true">×</button>
+        <button class="modal-back" title="Back" data-dismiss="modal" aria-hidden="true">&lt;</button>
+        <h3 class="modal-title">Video formats comparison</h3>
+    </div>
+    <div class="modal-body">
+
+            <table id="video-comparison-table">
+                <tbody><tr>
+                    <td style="width:50px;"></td>
+                    <td style="width:70px;"></td>
+                    <td style="width:140px;"><div class="head">360p</div></td>
+                    <td style="width:140px;"><div class="head">HD 720p</div></td>
+                    <td style="width:140px;"><div class="head">Full HD 1080p</div></td>
+                </tr>
+                <tr>
+                    <td rowspan="4" style="border-right:1px solid #ccc"><h5>Video</h5></td>
+                    <td style="text-align:left;"><strong>Resolution</strong></td>
+                    <td><strong>640 x 360</strong></td>
+                    <td><strong>1280 x 720</strong></td>
+                    <td><strong>1920 x 1080</strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">Encoding</td>
+                    <td>H.264</td>
+                    <td>H.264</td>
+                    <td>H.264</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">Bit rate</td>
+                    <td>3,200 kbps</td>
+                    <td>3,200 kbps</td>
+                    <td>3,200 kbps</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">Frame rate</td>
+                    <td>24 frames / sec</td>
+                    <td>24 frames / sec</td>
+                    <td>24 frames / sec</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td rowspan="4" style="border-right:1px solid #ccc"><h5>Audio</h5></td>
+                    <td style="text-align:left;">Encoding</td>
+                    <td>AAC</td>
+                    <td>AAC</td>
+                    <td>AAC</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">Sampling rate</td>
+                    <td>44.1 kHz</td>
+                    <td>44.1 kHz</td>
+                    <td>44.1 kHz</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;"><strong>Bit rate</strong></td>
+                    <td><strong>192 kbps</strong></td>
+                    <td><strong>192 kbps</strong></td>
+                    <td><strong>192 kbps</strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">Channels</td>
+                    <td>Stereo</td>
+                    <td>Stereo</td>
+                    <td>Stereo</td>
+                </tr>
+            </tbody></table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+    </div>
+</div>
+<form enctype='multipart/form-data' action='/ajax/movie/upload' method='post' style="display:none">
+    <input id='movie' type="file" onchange="this.form.submit()" name='import' accept=".zip" />
+</form>
+<form enctype='multipart/form-data' action='/ajax/char/upload' method='post' style="display:none">
+    <input id='char' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
+</form>
+<script>
+var videoCounts = {"all":"0","trash":"0"};
+
+// Folder counts. To be updated by myvideos.js.
+var folderCounts = 0;
+var userData;
+
+function sendUserData(userInfo) {
+    userData = userInfo;
+}
+function refreshMovieList() {
+    jQuery.get(`/movieList?uid=${userData.uid}`, (meta) => {
+		document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
+        if (meta == []) {
+            jQuery("#myvideos").hide();
+            jQuery("#novideos").show();
+            jQuery("#allvideos").hide();
+        }
+    })
+}
+function deleteMovie(mId) {
+    const yesorno = confirm(`Are you sure that you want to delete movie #${mId.split("-")[1]}?`);
+    if (yesorno) $.post('/api/movie/delete', {mId}).done(d => {
+        const meta = JSON.parse(d);
+        switch (meta.status) {
+            case "error": {
+                alert(`The Movie: ${mId} cannot be deleted because something has happened in the server witch caused problems. please try again later.`);
+                break;
+            } case "ok": {
+                window.location.reload();
+                break;
+            }
+        }
+    })
+}
+</script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+<script src="/js/user.js"></script>
+<style>
+thead {
+	border-bottom: 2px solid #ddd;
+	border-top: 1px solid #ddd;
+}
+
+tbody>tr {
+	border-top: 0;
+	border-bottom: 1px solid #ddd;
+}
+
+tbody>tr:hover {
+	background-color: #f5f5f5;
+}
+
+tr>:nth-child(1) {
+	width: 64px;
+}
+
+tr>:nth-child(1)>img {
+	height: 36px;
+}
+
+tr>:nth-child(1) {
+	word-break: break-word;
+}
+
+tr>:nth-child(2) {
+	color: #999;
+}
+
+tr>:nth-child(2)>:nth-child(1) {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+tr>:nth-child(2)>:nth-child(2) {
+	font-family: monospace;
+}
+
+tr>:nth-child(3) {
+	width: 200px;
+}
+
+tr>:nth-child(3)>* {
+	font-family: monospace;
+	display: inline-block;
+	text-align: center;
+	font-size: 14px;
+}
+
+tr>:nth-child(4) {
+	font-family: 'GlyphiconsRegular';
+	text-decoration: none;
+	padding-top: 5px;
+	font-size: 14px;
+	width: 122px;
+}
+
+tr>:nth-child(4)>a {
+	display: inline-block;
+	text-decoration: none;
+	padding-right: 10px;
+	color: #474747;
+}
+
+tr>:nth-child(4)>a:hover {
+	color: #2d9e88;
+}
+
+tr>:nth-child(4)>:nth-child(1)::before {
+	content: '\E174';
+}
+
+tr>:nth-child(4)>:nth-child(2)::before {
+	content: '\E235';
+}
+
+tr>:nth-child(4)>:nth-child(3)::before {
+	content: '\E182';
+}
+tr>:nth-child(4)>:nth-child(4)::before {
+	content: '\E017';
+}
+@font-face {
+    font-family: 'GlyphiconsRegular';
+    src: url('/html/fonts/glyphicons-regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+</style>
+<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video.js.gz.js"></script>
+<script src="/js/mymovies.js"></script>
+
+<div class="modal fade" id="modal-alpha-vm5" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3 class="modal-title">Before You Head To Vyond Studio</h3>
+            </div>
+            <div class="modal-body">
+                <img class="center-block img-responsive" src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/img/vm5_alpha/video_copy.png" srcset="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/img/vm5_alpha/video_copy.png 1x, https://josephanimate2021.github.io/static/55910a7cd204c37c/go/img/vm5_alpha/video_copy_2x.png 2x"><br>
+                <p>
+                    There may be content in this video that is not compatible with Vyond Studio (e.g. imported videos, PPT files, retired content, retired music).                </p>
+                <p>
+                    Your original video will not be impacted by making this copy to Vyond Studio. Videos created and edited in Vyond Studio cannot be copied to Legacy Video Maker.                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default text-uppercase" href="#" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-orange text-uppercase proceed-migration" href="#" target="_blank">Proceed</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- FOOTER -->
+
+<%- include("includes/footer.ejs") %>
+
+<div id="studio_container" style="display: none;">
+    <div id="studio_holder"><!-- Full Screen Studio -->
+        <div style="top: 50%; position: relative;">
+            You can't use Vyond because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+        </div>
+    </div>
+</div>
 </body>
-<html>
+</html>
