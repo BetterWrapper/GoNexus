@@ -12,7 +12,7 @@ module.exports = (req, res, url) => {
             r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
         }).on("error", console.error);
     } else if (url.pathname.includes("/go/") || url.pathname.includes("/client_theme/")) {
-        https.get(`https://goanimate-wrapper.github.io/GoAnimate-Assets/static/ad44370a650793d9${url.pathname.split("/static")[1]}`, (r) => {
+        https.get(`https://josephanimate2021.github.io/static/ad44370a650793d9${url.pathname.split("/static")[1]}`, (r) => {
             const buffers = [];
             r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
         }).on("error", console.error);
