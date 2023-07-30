@@ -60,7 +60,10 @@ module.exports = function (req, res, url) {
 		case "POST": {
 			switch (url.pathname) {
 				case "/ajax/previewText2Video": {
-					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+					new formidable.IncomingForm().parse(req, async (e, f, files) => { 
+						/* if i am correct, the opening and closing stuff is pretty much for characters, so we need to find a way to fit the correct emotions into the characters 
+						and also lipsync the text to the characters. */
+						if (e) return res.end(JSON.stringify({error: e}));
 						console.log(f);
 					});
 					break;
@@ -78,8 +81,11 @@ module.exports = function (req, res, url) {
 					res.setHeader("Content-Type", "application/zip");
 					loadPost(req, res).then(async ([data]) => {
 						try {
-							const b = await movie.loadZip(url.query, data);
-							res.end(Buffer.concat([base, b]));
+							if (movieId != "templatePreview") {
+								const b = await movie.loadZip(url.query, data);
+								res.end(Buffer.concat([base, b]));
+							} else { // what we should do during a template preview.
+							}
 						} catch (e) {
 							console.log(e);
 							res.end(1 + e);
