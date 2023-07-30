@@ -59,7 +59,12 @@ module.exports = function (req, res, url) {
 
 		case "POST": {
 			switch (url.pathname) {
-				case "/api/sendUserInfo": {
+				case "/ajax/previewText2Video": {
+					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						console.log(f);
+					});
+					break;
+				} case "/api/sendUserInfo": {
 					function sendUserInfo() {
 						return new Promise(async resolve => {
 							const [data] = await loadPost(req, res)

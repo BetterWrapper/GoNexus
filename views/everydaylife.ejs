@@ -1,11 +1,10 @@
-<!-- saved from url=(0089) -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html><head>
 
-
-<title>Comedy World Template | Slices of Daily Life | BetterWrapper</title>
+<meta charset="utf-8">
+<title>Comedy World Template | Slices of Daily Life | GoAnimate for Schools</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<meta name="description" content="With BetterWrapper's QVM, you can make your own video with just a few clicks and some typing on your keyboard. It&#39;s dead simple and fun!">
+<meta name="description" content="With GoAnimate Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
 
 <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
 
@@ -13,7 +12,7 @@
 <link href="/qvm_files/everydaylife.css.gz.css" rel="stylesheet" type="text/css">
 <link href="/qvm_files/school_golite.css.gz.css" rel="stylesheet" type="text/css">
 <link href="/qvm_files/voiceselectionwidget.css.gz.css" rel="stylesheet" type="text/css">
-<link href="/qvm_files/css" rel="stylesheet" type="text/css">
+<link href="//web.archive.org/web/20191027000220cs_/http://fonts.googleapis.com/css?family=Droid+Sans:bold|Anton" rel="stylesheet" type="text/css">
 <!--[if lt IE 9]>
 <link href="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/css/script2cartoon/ie.css.gz.css" rel="stylesheet" type="text/css">
 <![endif]-->
@@ -26,7 +25,7 @@
 <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
 <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
 <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
-<script type="text/javascript" src="/qvm_files/goserver_js-en_US.json.gz.json"></script>
+<script type="text/javascript" src="https://web.archive.org/web/20191027000220js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/po/goserver_js-en_US.json.gz.json"></script>
 <script type="text/javascript">
 var srv_tz_os = -4;
 var view_name = "school";
@@ -42,20 +41,21 @@ var GT = new Gettext({'locale_data': json_locale_data});
 <body id="school">
 <script type="text/javascript">
 GoLite.settings.player = {
-    swf: "/static/animation/player.swf",
+    swf: "https://web.archive.org/web/20191027000220/https://d2qrjeyl4jwu9j.cloudfront.net/animation/cce25167cb1d3404/player.swf",
     height: 384,
     width: 550
 }
 GoLite.settings.thumbnailChooser = {
-    swf: "/static/thumbnailChooser.swf",
+    swf: "https://web.archive.org/web/20191027000220/https://d2qrjeyl4jwu9j.cloudfront.net/animation/cce25167cb1d3404/thumbnailChooser.swf",
     height: 170,
     width: 295
 }
 
 VoiceRecorder.defaultSettings.swf = "https://web.archive.org/web/20191027000220/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/common/dialog/MyMicRecorder.swf";
 jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
-    apiserver: "/",
-    clientThemePath: "/static/<client_theme>"
+    apiserver: "https://web.archive.org/web/20191027000220/https://goanimate4schools.com/",
+    clientThemePath: "https://web.archive.org/web/20191027000220/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/<client_theme>",
+    u_info_school: "OjI6eThLWkNlQzFaNm12ekJUdUNrNmpSQURJdDltalRQWmhrdDlnWE5xVklubXVXejJGblhMQjZOTm1vbGVUNzlhYW5yblAwOFR0Yjk0WUZ0NUFaOWhBUE9hVE4wdWE4cGhNck9BQXB3bTMrVGV6MDVOK3hkd1ZjPQ=="
 });
 
 // scroll to target step
@@ -77,13 +77,13 @@ function stepTo(step) {
 <div id="nav_links" style="display: block;">
     <div class="inside">
         <ul>
-            <li class="home" title="Back to Home"><a href="https://web.archive.org/web/20191027000220/http://vyondhoster.000webhostapp.com/create" onclick="return confirm(&#39;You will lose your work if you leave this page. Are you sure?&#39;);">Home</a></li>
+            <li class="home" title="Back to Home"><a href="/web/20191027000220/http://vyondhoster.000webhostapp.com/create" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');">Home</a></li>
             <li class="seperate">&nbsp;</li>
-            <li class="intro on"><a onclick="stepTo(&#39;#intro&#39;)">0</a></li>
-            <li class="step1"><a onclick="stepTo(&#39;#step1&#39;);">1</a></li>
-            <li class="step2"><a onclick="stepTo(&#39;#step2&#39;);">2</a></li>
-            <li class="step3"><a onclick="stepTo(&#39;#step3&#39;);">3</a></li>
-            <li class="step4"><a onclick="GoLite.preview();stepTo(&#39;#step4&#39;);">4</a></li>
+            <li class="intro"><a onclick="stepTo('#intro')">0</a></li>
+            <li class="step1"><a onclick="stepTo('#step1');">1</a></li>
+            <li class="step2"><a onclick="stepTo('#step2');">2</a></li>
+            <li class="step3 on"><a onclick="stepTo('#step3');">3</a></li>
+            <li class="step4"><a onclick="GoLite.preview();stepTo('#step4');">4</a></li>
             <li class="seperate">&nbsp;</li>
             <li class="next" title="Next step"><a>Next</a></li>
             <li class="prev" title="Previous step"><a>Previous</a></li>
@@ -100,7 +100,7 @@ function stepTo(step) {
         <p>The drill? 1. Select a template / 2. Choose characters / 3. Pull a script out of your best life observations / 4. Watch your masterpiece!</p>
     </div>
 
-    <a class="btn_next" href="#step1" onclick="stepTo(&#39;#step1&#39;); return false;">Next</a>
+    <a class="btn_next" href="#step1" onclick="stepTo('#step1'); return false;">Next</a>
 </div>
 
 <div id="seperator0"></div>
@@ -108,7 +108,7 @@ function stepTo(step) {
 <div id="step1" class="section">
     <h2>1. Choose a Setting</h2>
 
-    <a class="previous_step" href="#intro" onclick="stepTo(&#39;#intro&#39;); return false;">Back</a>
+    <a class="previous_step" href="#intro" onclick="stepTo('#intro'); return false;">Back</a>
 
     <div class="inside">
         <div id="template_name">Chilling Out in the Office</div>
@@ -116,60 +116,60 @@ function stepTo(step) {
         <div id="templates" class="item_selector">
             <a class="select_button prev" href="#">&lt;</a>
             <div class="items">
-                <div class="item" data-tid="0RQRwrb_54Us" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124123.jpg" title="Honey. We have to talk..." data-desc="It&#39;s time for serious couple talk... or maybe not. This is just a bedroom chat." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg01_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg01_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg01.jpg">
+                <div class="item" data-tid="0RQRwrb_54Us" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124123.jpg" title="Honey. We have to talk..." data-desc="It's time for serious couple talk... or maybe not. This is just a bedroom chat." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg01_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg01_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg01.jpg">
                 </div>
-                <div class="item" data-tid="0l87L_vwbfMM" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124124.jpg" title="You forgot the eggs, didn&#39;t you!?" data-desc="Get imaginative. You need to deal with this kitchen face-off." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg02_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg02_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg02.jpg">
+                <div class="item" data-tid="0l87L_vwbfMM" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124124.jpg" title="You forgot the eggs, didn't you!?" data-desc="Get imaginative. You need to deal with this kitchen face-off." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg02_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg02_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg02.jpg">
                 </div>
                 <div class="item selected" data-tid="0nZrWjgxqytA" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124125.jpg" title="Chilling Out in the Office" data-desc="Your characters are taking a break from a stressful day in the pantry. Now what could they be talking about?!" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg03_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg03_b.jpg">
-                    <img src="/qvm_files/bg03.jpg">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg03.jpg">
                 </div>
                 <div class="item" data-tid="0ksXlNHEjspI" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124126.jpg" title="B.F.D.E.?" data-desc="Is this going to be the best or the worst first date ever? Or... is it just not a first date at all? Up to you!" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg05_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg05_b.jpg">
-                    <img src="/qvm_files/bg05.jpg">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg05.jpg">
                 </div>
-                <div class="item" data-tid="09QnavQrm0dU" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124127.jpg" title="I&#39;ll get a small latte..." data-desc="Small? You mean tall, right? Or maybe you want to spend a little more for a Grande?!" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg08_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg08_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg08.jpg">
+                <div class="item" data-tid="09QnavQrm0dU" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124127.jpg" title="I'll get a small latte..." data-desc="Small? You mean tall, right? Or maybe you want to spend a little more for a Grande?!" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg08_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg08_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg08.jpg">
                 </div>
-                <div class="item" data-tid="0xflAvM8ERQQ" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124128.jpg" title="Emergency coffee shop meeting" data-desc="A friend in distress asked to meet in a coffee shop. Now, what&#39;s all this about?" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg09_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg09_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg09.jpg">
+                <div class="item" data-tid="0xflAvM8ERQQ" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124128.jpg" title="Emergency coffee shop meeting" data-desc="A friend in distress asked to meet in a coffee shop. Now, what's all this about?" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg09_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg09_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg09.jpg">
                 </div>
                 <!--<div class="item" data-tid="0BVv0No9N3qI" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124129.jpg" title="A round for everyone!" data-desc="Why is it that everyone loves to tell their life story to bartenders?" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg10_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg10_b.jpg" data-plus="true">
                     <img src="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg10.jpg">
                 </div>-->
-                <div class="item" data-tid="0uXrmLS6VVUg" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124130.jpg" title="Done your homework?" data-desc="The bell has rung, but the teacher won&#39;t end class until the students answer some tough questions." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg15_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg15_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg15.jpg">
+                <div class="item" data-tid="0uXrmLS6VVUg" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124130.jpg" title="Done your homework?" data-desc="The bell has rung, but the teacher won't end class until the students answer some tough questions." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg15_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg15_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step01/bg15.jpg">
                 </div>
                 <div class="item" data-tid="0H2Frh7BBGmA" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124131.jpg" title="Subway Encounter" data-desc="Talking to strangers in the subway sounds like a great idea... NOT! Well. It happens anyways..." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg16_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg16_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg16.jpg">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg16.jpg">
                 </div>
-                <div class="item" data-tid="0uVFaGOBrfHI" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124132.jpg" title="The President" data-desc="It&#39;s the oval office. It&#39;s time to let the president know what you really think... Let it all out." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg04_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg04_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg04.jpg">
+                <div class="item" data-tid="0uVFaGOBrfHI" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124132.jpg" title="The President" data-desc="It's the oval office. It's time to let the president know what you really think... Let it all out." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg04_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg04_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg04.jpg">
                 </div>
-                <div class="item" data-tid="0NQ88JTAJm4I" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124133.jpg" title="Got any grapes?" data-desc="Now what&#39;s with that customer again. Some kind of weird request?" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg06_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg06_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg06.jpg">
+                <div class="item" data-tid="0NQ88JTAJm4I" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124133.jpg" title="Got any grapes?" data-desc="Now what's with that customer again. Some kind of weird request?" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg06_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg06_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg06.jpg">
                 </div>
                 <!--<div class="item" data-tid="0OgqovHxGjZI" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124134.jpg" title="Do not disturb..." data-desc="Imagine sitting on a toilet and someone bursts into the bathroom!... Done? Now, animate the conversation!" data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg07_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg07_b.jpg" data-plus="true">
                     <img src="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg07.jpg">
                 </div>-->
                 <div class="item" data-tid="0vq8xZhq6D5g" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124135.jpg" title="Are you on the list?" data-desc="Striking a conversation while queuing up to get into the new trendy place in town." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg11_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg11_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg11.jpg">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg11.jpg">
                 </div>
                 <div class="item" data-tid="0J4ki2ZURTVY" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124136.jpg" title="Step aside, Sir!" data-desc="A passenger sets the alarm off at the airport security check. Animate the ensuing discussion with the security officer." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg12_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg12_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg12.jpg">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg12.jpg">
                 </div>
-                <div class="item" data-tid="0VqO7WZa6s6U" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124137.jpg" title="She looks better on TV" data-desc="Watching the latest performance from a popular singer, it&#39;s hard not to make comments throughout the show." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg13_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg13_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg13.jpg">
+                <div class="item" data-tid="0VqO7WZa6s6U" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124137.jpg" title="She looks better on TV" data-desc="Watching the latest performance from a popular singer, it's hard not to make comments throughout the show." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg13_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg13_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg13.jpg">
                 </div>
-                <div class="item" data-tid="06K7KyoeDc_c" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124138.jpg" title="Where&#39;s the pilot?" data-desc="Flying in a 747 commercial airplane across the world is piece of cake... as long as you&#39;re not in the pilot seat. Oh boy!..." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg14_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg14_b.jpg" data-plus="true">
-                    <img src="/qvm_files/bg14.jpg">
+                <div class="item" data-tid="06K7KyoeDc_c" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/movie/532/60532/124138.jpg" title="Where's the pilot?" data-desc="Flying in a 747 commercial airplane across the world is piece of cake... as long as you're not in the pilot seat. Oh boy!..." data-char-thumb-a="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg14_a.jpg" data-char-thumb-b="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/school/img/script2cartoon/everydaylife/step02/thumbs/bg14_b.jpg" data-plus="true">
+                    <img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step01/bg14.jpg">
                 </div>
             </div>
             <a class="select_button next" href="#">&gt;</a>
         </div>
     </div>
 
-    <a class="btn_next" href="#step2" onclick="stepTo(&#39;#step2&#39;); return false;">Next</a>
+    <a class="btn_next" href="#step2" onclick="stepTo('#step2'); return false;">Next</a>
     <div class="upgrade" style="display: none;">
         <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
 <div class="buttontitle">Upgrade Now</div>
@@ -182,38 +182,38 @@ function stepTo(step) {
 <div id="step2" class="section">
     <h2>2. Select Your Actors</h2>
 
-    <a class="previous_step" href="#step1" onclick="stepTo(&#39;#step1&#39;); return false;">Back</a>
+    <a class="previous_step" href="#step1" onclick="stepTo('#step1'); return false;">Back</a>
 
     <div class="inside">
         <div class="character">
-            <div id="character1_title" class="title"><img src="/qvm_files/bg03_a.jpg" alt=""></div>
+            <div id="character1_title" class="title"><img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step02/thumbs/bg03_a.jpg" alt=""></div>
             <div id="character1" class="item_selector character_selector">
                 <a class="select_button prev" href="#">&lt;</a>
                 <div class="items">
-                    <div class="item selected" data-cid="0C8xO7kYl65U" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487299.png"><span><img src="/qvm_files/2487299.png" alt=""></span></div>
-                    <div class="item" data-cid="0z1JxKx6sGek" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487300.png"><span><img src="/qvm_files/2487300.png" alt=""></span></div>
-                    <div class="item" data-cid="0a6L9Az1X_7U" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487301.png"><span><img src="/qvm_files/2487301.png" alt=""></span></div>
-                    <div class="item" data-cid="0Z6jBNZQ0Eac" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487302.png"><span><img src="/qvm_files/2487302.png" alt=""></span></div>
-                    <div class="item" data-cid="0QZgCi2tZf2E" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487303.png"><span><img src="/qvm_files/2487303.png" alt=""></span></div>
-                    <div class="item" data-cid="0hxu4pGuL0ns" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487304.png"><span><img src="/qvm_files/2487304.png" alt=""></span></div>
-                    <div class="item" data-cid="0803WH6cvZug" data-name="" data-voice="jennifer" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487305.png"><span><img src="/qvm_files/2487305.png" alt=""></span></div>
-                    <div class="item" data-cid="0o8Yyunbixs4" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487306.png"><span><img src="/qvm_files/2487306.png" alt=""></span></div>
-                    <div class="item" data-cid="0-EftFs07HKM" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487307.png"><span><img src="/qvm_files/2487307.png" alt=""></span></div>
-                    <div class="item" data-cid="0jvXC7ies6p8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487308.png"><span><img src="/qvm_files/2487308.png" alt=""></span></div>
-                    <div class="item" data-cid="0Xay3rNbNiqY" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487309.png"><span><img src="/qvm_files/2487309.png" alt=""></span></div>
-                    <div class="item" data-cid="0x1VUfBwAUUk" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487310.png"><span><img src="/qvm_files/2487310.png" alt=""></span></div>
-                    <div class="item" data-cid="0P-T7QnCDoh8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487311.png"><span><img src="/qvm_files/2487311.png" alt=""></span></div>
-                    <div class="item" data-cid="0pyRezQ1El6k" data-name="" data-voice="kendra" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487312.png"><span><img src="/qvm_files/2487312.png" alt=""></span></div>
-                    <div class="item" data-cid="0i5nxYaBNv54" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487313.png"><span><img src="/qvm_files/2487313.png" alt=""></span></div>
-                    <div class="item" data-cid="0bn3URIMd9Ys" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487314.png"><span><img src="/qvm_files/2487314.png" alt=""></span></div>
-                    <div class="item" data-cid="0_PllkZdhn-o" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487317.png"><span><img src="/qvm_files/2487317.png" alt=""></span></div>
-                    <div class="item" data-cid="0KXVWGDHGVqI" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487318.png"><span><img src="/qvm_files/2487318.png" alt=""></span></div>
-                    <div class="item" data-cid="09y_C1g2vRvI" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487319.png"><span><img src="/qvm_files/2487319.png" alt=""></span></div>
-                    <div class="item" data-cid="02DzR0IbvoAg" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487320.png"><span><img src="/qvm_files/2487320.png" alt=""></span></div>
-                    <div class="item" data-cid="0jHfmHZDbd4k" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487321.png"><span><img src="/qvm_files/2487321.png" alt=""></span></div>
-                    <div class="item" data-cid="0i3FiP4mEBI4" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487322.png"><span><img src="/qvm_files/2487322.png" alt=""></span></div>
-                    <div class="item" data-cid="0yeqP-cf9peg" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487323.png"><span><img src="/qvm_files/2487323.png" alt=""></span></div>
-                    <div class="item" data-cid="0wXKa9CK1ZiE" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487324.png"><span><img src="/qvm_files/2487324.png" alt=""></span></div>
+                    <div class="item selected" data-cid="0C8xO7kYl65U" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487299.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487299.png" alt=""></span></div>
+                    <div class="item" data-cid="0z1JxKx6sGek" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487300.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487300.png" alt=""></span></div>
+                    <div class="item" data-cid="0a6L9Az1X_7U" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487301.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487301.png" alt=""></span></div>
+                    <div class="item" data-cid="0Z6jBNZQ0Eac" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487302.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487302.png" alt=""></span></div>
+                    <div class="item" data-cid="0QZgCi2tZf2E" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487303.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487303.png" alt=""></span></div>
+                    <div class="item" data-cid="0hxu4pGuL0ns" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487304.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487304.png" alt=""></span></div>
+                    <div class="item" data-cid="0803WH6cvZug" data-name="" data-voice="jennifer" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487305.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487305.png" alt=""></span></div>
+                    <div class="item" data-cid="0o8Yyunbixs4" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487306.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487306.png" alt=""></span></div>
+                    <div class="item" data-cid="0-EftFs07HKM" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487307.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487307.png" alt=""></span></div>
+                    <div class="item" data-cid="0jvXC7ies6p8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487308.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487308.png" alt=""></span></div>
+                    <div class="item" data-cid="0Xay3rNbNiqY" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487309.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487309.png" alt=""></span></div>
+                    <div class="item" data-cid="0x1VUfBwAUUk" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487310.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487310.png" alt=""></span></div>
+                    <div class="item" data-cid="0P-T7QnCDoh8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487311.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487311.png" alt=""></span></div>
+                    <div class="item" data-cid="0pyRezQ1El6k" data-name="" data-voice="kendra" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487312.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487312.png" alt=""></span></div>
+                    <div class="item" data-cid="0i5nxYaBNv54" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487313.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487313.png" alt=""></span></div>
+                    <div class="item" data-cid="0bn3URIMd9Ys" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487314.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487314.png" alt=""></span></div>
+                    <div class="item" data-cid="0_PllkZdhn-o" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487317.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487317.png" alt=""></span></div>
+                    <div class="item" data-cid="0KXVWGDHGVqI" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487318.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487318.png" alt=""></span></div>
+                    <div class="item" data-cid="09y_C1g2vRvI" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487319.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487319.png" alt=""></span></div>
+                    <div class="item" data-cid="02DzR0IbvoAg" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487320.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487320.png" alt=""></span></div>
+                    <div class="item" data-cid="0jHfmHZDbd4k" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487321.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487321.png" alt=""></span></div>
+                    <div class="item" data-cid="0i3FiP4mEBI4" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487322.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487322.png" alt=""></span></div>
+                    <div class="item" data-cid="0yeqP-cf9peg" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487323.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487323.png" alt=""></span></div>
+                    <div class="item" data-cid="0wXKa9CK1ZiE" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487324.png"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487324.png" alt=""></span></div>
                 </div>
                 <a class="select_button next" href="#">&gt;</a>
             </div>
@@ -222,34 +222,34 @@ function stepTo(step) {
         </div>
 
         <div class="character">
-            <div id="character2_title" class="title"><img src="/qvm_files/bg03_b.jpg" alt=""></div>
+            <div id="character2_title" class="title"><img src="https://web.archive.org/web/20191027000220im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/img/script2cartoon/everydaylife/step02/thumbs/bg03_b.jpg" alt=""></div>
             <div id="character2" class="item_selector character_selector">
                 <a class="select_button prev" href="#">&lt;</a>
                 <div class="items">
-                    <div class="item" data-cid="0C8xO7kYl65U" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487299.png" style="display: none;"><span><img src="/qvm_files/2487299.png" alt=""></span></div>
-                    <div class="item selected" data-cid="0x2VZE0YmXys" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/2132/1352132/51287869.png" style="display: none;"><span><img src="/qvm_files/51287869.png" alt=""></span></div>
-                    <div class="item" data-cid="0PF9tkqs1aLY" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/2132/1352132/51288759.png" style="display: block;"><span><img src="/qvm_files/51288759.png" alt=""></span></div>
-                    <div class="item" data-cid="0Z6jBNZQ0Eac" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487302.png" style="display: none;"><span><img src="/qvm_files/2487302.png" alt=""></span></div>
-                    <div class="item" data-cid="0QZgCi2tZf2E" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487303.png" style="display: none;"><span><img src="/qvm_files/2487303.png" alt=""></span></div>
-                    <div class="item" data-cid="0hxu4pGuL0ns" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487304.png" style="display: none;"><span><img src="/qvm_files/2487304.png" alt=""></span></div>
-                    <div class="item" data-cid="0803WH6cvZug" data-name="" data-voice="jennifer" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487305.png" style="display: none;"><span><img src="/qvm_files/2487305.png" alt=""></span></div>
-                    <div class="item" data-cid="0o8Yyunbixs4" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487306.png" style="display: none;"><span><img src="/qvm_files/2487306.png" alt=""></span></div>
-                    <div class="item" data-cid="0-EftFs07HKM" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487307.png" style="display: none;"><span><img src="/qvm_files/2487307.png" alt=""></span></div>
-                    <div class="item" data-cid="0jvXC7ies6p8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487308.png" style="display: none;"><span><img src="/qvm_files/2487308.png" alt=""></span></div>
-                    <div class="item" data-cid="0Xay3rNbNiqY" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487309.png" style="display: none;"><span><img src="/qvm_files/2487309.png" alt=""></span></div>
-                    <div class="item" data-cid="0x1VUfBwAUUk" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487310.png" style="display: none;"><span><img src="/qvm_files/2487310.png" alt=""></span></div>
-                    <div class="item" data-cid="0P-T7QnCDoh8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487311.png" style="display: none;"><span><img src="/qvm_files/2487311.png" alt=""></span></div>
-                    <div class="item" data-cid="0pyRezQ1El6k" data-name="" data-voice="kendra" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487312.png" style="display: none;"><span><img src="/qvm_files/2487312.png" alt=""></span></div>
-                    <div class="item" data-cid="0i5nxYaBNv54" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487313.png" style="display: none;"><span><img src="/qvm_files/2487313.png" alt=""></span></div>
-                    <div class="item" data-cid="0bn3URIMd9Ys" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487314.png" style="display: none;"><span><img src="/qvm_files/2487314.png" alt=""></span></div>
-                    <div class="item" data-cid="0_PllkZdhn-o" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487317.png" style="display: none;"><span><img src="/qvm_files/2487317.png" alt=""></span></div>
-                    <div class="item" data-cid="0KXVWGDHGVqI" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487318.png" style="display: none;"><span><img src="/qvm_files/2487318.png" alt=""></span></div>
-                    <div class="item" data-cid="09y_C1g2vRvI" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487319.png" style="display: none;"><span><img src="/qvm_files/2487319.png" alt=""></span></div>
-                    <div class="item" data-cid="02DzR0IbvoAg" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487320.png" style="display: none;"><span><img src="/qvm_files/2487320.png" alt=""></span></div>
-                    <div class="item" data-cid="0jHfmHZDbd4k" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487321.png" style="display: none;"><span><img src="/qvm_files/2487321.png" alt=""></span></div>
-                    <div class="item" data-cid="0i3FiP4mEBI4" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487322.png" style="display: none;"><span><img src="/qvm_files/2487322.png" alt=""></span></div>
-                    <div class="item" data-cid="0yeqP-cf9peg" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487323.png" style="display: none;"><span><img src="/qvm_files/2487323.png" alt=""></span></div>
-                    <div class="item" data-cid="0wXKa9CK1ZiE" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487324.png" style="display: none;"><span><img src="/qvm_files/2487324.png" alt=""></span></div>
+                    <div class="item" data-cid="0C8xO7kYl65U" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487299.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487299.png" alt=""></span></div>
+                    <div class="item selected" data-cid="0x2VZE0YmXys" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/2132/1352132/51287869.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/2132/1352132/51287869.png" alt=""></span></div>
+                    <div class="item" data-cid="0PF9tkqs1aLY" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/2132/1352132/51288759.png" style="display: block;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/2132/1352132/51288759.png" alt=""></span></div>
+                    <div class="item" data-cid="0Z6jBNZQ0Eac" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487302.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487302.png" alt=""></span></div>
+                    <div class="item" data-cid="0QZgCi2tZf2E" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487303.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487303.png" alt=""></span></div>
+                    <div class="item" data-cid="0hxu4pGuL0ns" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487304.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487304.png" alt=""></span></div>
+                    <div class="item" data-cid="0803WH6cvZug" data-name="" data-voice="jennifer" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487305.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487305.png" alt=""></span></div>
+                    <div class="item" data-cid="0o8Yyunbixs4" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487306.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487306.png" alt=""></span></div>
+                    <div class="item" data-cid="0-EftFs07HKM" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487307.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487307.png" alt=""></span></div>
+                    <div class="item" data-cid="0jvXC7ies6p8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487308.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487308.png" alt=""></span></div>
+                    <div class="item" data-cid="0Xay3rNbNiqY" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487309.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487309.png" alt=""></span></div>
+                    <div class="item" data-cid="0x1VUfBwAUUk" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487310.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487310.png" alt=""></span></div>
+                    <div class="item" data-cid="0P-T7QnCDoh8" data-name="" data-voice="joey" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487311.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487311.png" alt=""></span></div>
+                    <div class="item" data-cid="0pyRezQ1El6k" data-name="" data-voice="kendra" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487312.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487312.png" alt=""></span></div>
+                    <div class="item" data-cid="0i5nxYaBNv54" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487313.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487313.png" alt=""></span></div>
+                    <div class="item" data-cid="0bn3URIMd9Ys" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487314.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487314.png" alt=""></span></div>
+                    <div class="item" data-cid="0_PllkZdhn-o" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487317.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487317.png" alt=""></span></div>
+                    <div class="item" data-cid="0KXVWGDHGVqI" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487318.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487318.png" alt=""></span></div>
+                    <div class="item" data-cid="09y_C1g2vRvI" data-name="" data-voice="kimberly" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487319.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487319.png" alt=""></span></div>
+                    <div class="item" data-cid="02DzR0IbvoAg" data-name="" data-voice="amy" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487320.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487320.png" alt=""></span></div>
+                    <div class="item" data-cid="0jHfmHZDbd4k" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487321.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487321.png" alt=""></span></div>
+                    <div class="item" data-cid="0i3FiP4mEBI4" data-name="" data-voice="eric" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487322.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487322.png" alt=""></span></div>
+                    <div class="item" data-cid="0yeqP-cf9peg" data-name="" data-voice="emma" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487323.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487323.png" alt=""></span></div>
+                    <div class="item" data-cid="0wXKa9CK1ZiE" data-name="" data-voice="brian" data-thumb="https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487324.png" style="display: none;"><span><img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/ccthumb/532/60532/2487324.png" alt=""></span></div>
                 </div>
                 <a class="select_button next" href="#">&gt;</a>
             </div>
@@ -257,6 +257,7 @@ function stepTo(step) {
 
         </div>
     </div>
+
     <div class="snippets" style="display: none">
         <strong class="plus-char-txt">GoPlus Character</strong>
         <div class="plus-cover"><div><strong>GoPlus Template</strong> Upgrade to GoPlus to go to the next step.</div></div>
@@ -477,7 +478,7 @@ var VoiceCatalog = (function() {
     </div>
 </script>
 
-    <a class="btn_next" href="#step3" onclick="stepTo(&#39;#step3&#39;); return false;">Next</a>
+    <a class="btn_next" href="#step3" onclick="stepTo('#step3'); return false;">Next</a>
     <div class="upgrade" style="display: none;">
         <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
 <div class="buttontitle">Upgrade Now</div>
@@ -490,14 +491,14 @@ var VoiceCatalog = (function() {
 <div id="step3" class="section">
     <h2><span>3. Type in or Record Your dialog</span></h2>
 
-    <a class="previous_step" href="#step2" onclick="stepTo(&#39;#step2&#39;); return false;">Back</a>
+    <a class="previous_step" href="#step2" onclick="stepTo('#step2'); return false;">Back</a>
 
     <div id="dialog_wrapper">
     <div id="dialogs">
         <div class="dialog focus" data-charid="0" data-facial="default">
             <div class="num">1</div>
             <div class="char_thumb">
-                <img src="/qvm_files/2487299(1).png" alt="">
+                <img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/532/60532/2487299.png" alt="">
                 <a class="switch">Switch</a>
                 <div class="tips">Switch Actor</div>
             </div>
@@ -529,7 +530,7 @@ var VoiceCatalog = (function() {
         </div>
         <div class="dialog fake" data-charid="1">
             <div class="char_thumb">
-                <img src="/qvm_files/51287869(1).png" alt="">
+                <img src="https://web.archive.org/web/20191027000220im_/https://s3.amazonaws.com/fs.goanimate4schools.com/files/thumbnails/cchead/2132/1352132/51288759.png" alt="">
             </div>
             <div class="box">
                 <div class="dialog_input_wrapper">
@@ -548,7 +549,7 @@ var VoiceCatalog = (function() {
 
     <div class="footer">
         <div class="bottom"></div>
-        <a class="btn_next" onclick="GoLite.preview();stepTo(&#39;#step4&#39;);">Preview</a>
+        <a class="btn_next" onclick="GoLite.preview();stepTo('#step4');">Preview</a>
 
         <div class="upgrade" style="display: none;">
             <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
@@ -606,7 +607,7 @@ jQuery('#dialogs .dialog').scriptDialog();
 <div id="step4" class="section">
     <h2>4. Preview Your Video</h2>
 
-    <a class="previous_step" href="#step3" onclick="stepTo(&#39;#step3&#39;); return false;">Back</a>
+    <a class="previous_step" href="#step3" onclick="stepTo('#step3'); return false;">Back</a>
 
     <div class="inside">
         <div class="upgrade" style="display:none">
@@ -616,24 +617,24 @@ jQuery('#dialogs .dialog').scriptDialog();
 <div class="buttontitle">Upgrade Now</div>
 </a>
         </div>
-        <div class="generate" style="display: block;">
+        <div class="generate">
             <a class="btn_preview" href="#" onclick="GoLite.preview(); return false;">Generate Preview</a>
             <p>You made all the changes you wanted to your video?<br>
             Let's see how it looks like then!</p>
         </div>
-        <div class="loading" style="display: none;"></div>
+        <div class="loading"></div>
         <div class="preview" style="display:none">
             <div id="player_container">
-                You can't use GoAnimate because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                You can't use GoAnimate because Flash might be disabled. <a href="https://web.archive.org/web/20191027000220/https://get.adobe.com/flashplayer/">Enable Flash</a>.
             </div>
-            <a id="btn_save" href="#" onclick="jQuery(document).trigger(&#39;GoLite.stateChange&#39;, [&#39;save&#39;]); return false;">Save Now</a>
+            <a id="btn_save" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['save']); return false;">Save Now</a>
         </div>
 
         <div class="save" style="display:none">
             <div class="thumbnail">
                 Choose your thumbnail
                 <div id="thumb_chooser_container">
-                    You can't use GoAnimate because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                    You can't use GoAnimate because Flash might be disabled. <a href="https://web.archive.org/web/20191027000220/https://get.adobe.com/flashplayer/">Enable Flash</a>.
                 </div>
             </div>
 
@@ -655,7 +656,7 @@ jQuery('#dialogs .dialog').scriptDialog();
             </div>
             <div class="clear"></div>
 
-            <a id="back_preview" href="#" onclick="jQuery(document).trigger(&#39;GoLite.stateChange&#39;, [&#39;preview&#39;]); return false;">&lt; Back to Preview</a>
+            <a id="back_preview" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']); return false;">&lt; Back to Preview</a>
         </div>
     </div>
 </div>
@@ -702,8 +703,25 @@ jQuery('#upgrade_confirm, #upgrade .close_btn').click(function(e) {
 <script type="text/javascript" src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
 <script type="text/javascript">
 jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+
+var customCC_model = [];
+var reloadCCList = function() {
+    // jQuery.ajax({
+        // url: '/ajax/getCCCharacters',
+        // type: 'POST',
+        // data: { cc_theme_id: 'family', tags: '' },
+        // dataType: 'json',
+        // success: function(data, dummy1, dummy2) {
+            // customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });
+            // jQuery('div.character .customlink').addClass('ready');
+        // }
+    // });
+};
+
 (function($) {
 $(document).ready(function() {
+    reloadCCList();
+
     var next = 'step1', prev = '';
 
     $('#nav_links .next').click(function(e) {
@@ -761,12 +779,47 @@ $(document).ready(function() {
         .find('.' + id).addClass('on');
     });
 
+    if ($('#login_bar').length) {
+        $('#seperator0').waypoint(function(e) {
+            $('#login_bar').slideDown();
+        }, {offset: 'bottom-in-view', triggerOnce: true});
+
+        $(document).bind('user.signup user.login', function(e) {
+            GoLite.updateUserState(function(userState) {
+                if (userState == 2) reloadCCList();
+                $(document).trigger('GoLite.stateChange', ['']);
+                $('#login_bar').slideUp();
+                showNotice('You are now logged in to GoAnimate');
+            });
+        });
+    }
+
     jQuery('#movie_title, #movie_description').placeholder();
 });
 $(window).load(function() {$('#nav_links').fadeIn();});
 })(jQuery);
 </script>
 
+<script type="text/javascript">
+    var customCCHeadsBaseUrl = '/char_heads/';
+    var customCCThumbsBaseUrl = '/char_thumbs/';
 
 
-</body></html>
+    var goliteEditorMode = 'new';
+
+</script>
+
+
+
+<!--
+playback timings (ms):
+  captures_list: 71.632
+  exclusion.robots: 0.247
+  exclusion.robots.policy: 0.229
+  RedisCDXSource: 0.582
+  esindex: 0.011
+  LoadShardBlock: 47.623 (3)
+  PetaboxLoader3.datanode: 85.469 (4)
+  load_resource: 358.356
+  PetaboxLoader3.resolve: 306.734
+-->
