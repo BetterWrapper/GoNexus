@@ -65,6 +65,9 @@ module.exports = function (req, res, url) {
 						and also lipsync the text to the characters. */
 						if (e) return res.end(JSON.stringify({error: e}));
 						console.log(f);
+						res.end(JSON.stringify({
+							error: "the golite movie preview system is in beta right now. please check back later."
+						}))
 					});
 					break;
 				} case "/api/sendUserInfo": {
