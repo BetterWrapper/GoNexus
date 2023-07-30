@@ -85,6 +85,15 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
+		case "/quickvideo": {
+			const quickvideoThemeids = {
+				everydaylife: true
+			};
+			if (quickvideoThemeids[url.query.filename]) filename = url.query.filename;
+			else return res.end('This theme has not been added to the server. Current Theme: ' + url.query.filename);
+			break;
+		}
+
 		case "/login": {
 			filename = "login";
 			break;

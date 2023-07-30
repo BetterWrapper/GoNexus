@@ -28,6 +28,7 @@
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                          <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
                          ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
                     </div>
                     </div></div></div></div>`);
                     else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
@@ -35,10 +36,11 @@
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                        ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
                     </div></div></div></div></div>`);
                     count++
                 }
-            })
+            });
         </script>
         <%- include("includes/footer.ejs") %>
     </body>

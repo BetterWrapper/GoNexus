@@ -63,6 +63,19 @@
 				"Content-Type": "application/font-woff; charset=UTF-8"
 			}
 		},
+		"/ui/gifs/([^?]+js).*": {
+			"contentReplace": true,
+			"regexLink": "/ui/gifs/$1",
+			"headers": {
+				"Content-Type": "image/gif"
+			}
+		},
+		"/ui/gifs([^?]+).*": {
+			"regexLink": "/ui/gifs/$1",
+			"headers": {
+				"Content-Type": "image/gif"
+			}
+		},
 		"/ui/fonts([^?]+).*": {
 			"regexLink": "/ui/fonts/$1",
 			"headers": {
