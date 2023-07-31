@@ -75,6 +75,18 @@ module.exports = function (req, res, url) {
 								"1": "AVATOR134",
 								"2": "AVATOR135"
 							};
+							const bgIds = {
+								"0nZrWjgxqytA": [
+									"custom.cbg_office_pentry",
+									"cbg_office_pentry_BG102",
+									"custom.office_pentry_bg.swf"
+								],
+								"0l87L_vwbfMM": [
+									"custom.cbg_sittingroom",
+									"cbg_sittingroom_BG260",
+									"custom.sitting_room_bg.swf"
+								]
+							}
 							const flashvars = new URLSearchParams({
 								movieId: "templatePreview",
 								movieOwnerId: "0j9k0au9jjgp",
@@ -119,7 +131,7 @@ module.exports = function (req, res, url) {
 						    </sound>`;
 							let movieXml = `<film copyable="0" published="0" pshare="0" isWide="1">
 							<meta>
-							  <title><![CDATA[qvm template]]></title>
+							  <title><![CDATA[]]></title>
 							  <tag><![CDATA[]]></tag>
 							  <hiddenTag><![CDATA[]]></hiddenTag>
 							  <desc><![CDATA[]]></desc>
@@ -150,7 +162,7 @@ module.exports = function (req, res, url) {
 								currentXMLMovieSounds: 2
 						    }
 						    for (const data in f) { // characters
-								if (!data.includes(`script[${counts.chars}]`)) return res.end(JSON.stringify({
+								if (!data.includes(`script[1]`)) return res.end(JSON.stringify({
 									error: "Your video must have 2 characters talking to one another. please fix any errors you made and preview your video again."
 								}));
 							    if (data.includes(`characters[${counts.chars}][`) && counts.chars < 2) {
@@ -158,10 +170,10 @@ module.exports = function (req, res, url) {
 								    counts.chars++
 							    }
 							}
-							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="custom.cbg_office_pentry">
+							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="${bgIds[f.enc_tid][0]}">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
-							<bg id="cbg_office_pentry_BG102" index="0">
-							  <file>custom.office_pentry_bg.swf</file>
+							<bg id="${bgIds[f.enc_tid][1]}" index="0">
+							  <file>${bgIds[f.enc_tid][2]}</file>
 							</bg>
 							<char id="AVATOR134" index="3" raceCode="1">
 							  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
@@ -220,8 +232,8 @@ module.exports = function (req, res, url) {
 						  </scene>
 						  <scene id="SCENE3" adelay="60" lock="N" index="1" color="16777215" guid="00B05EB3-659F-8443-CB11-9C8DCF276579">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
-							<bg id="cbg_office_pentry_BG102" index="0">
-							  <file>custom.office_pentry_bg.swf</file>
+							<bg id="${bgIds[f.enc_tid][1]}" index="0">
+							  <file>${bgIds[f.enc_tid][2]}</file>
 							</bg>
 							<char id="AVATOR134" index="3" raceCode="1">
 							  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
