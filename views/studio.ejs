@@ -31,10 +31,10 @@
         src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
     }
 </style>
-<link rel="stylesheet" href="/lvm_files/common_combined.css.gz.css">
+<link rel="stylesheet" href="/lvm_files/school/css/common_combined.css.gz.css">
 
-<link rel="stylesheet" href="/lvm_files/importer.css.gz.css">
-<link rel="stylesheet" href="/lvm_files/studio.css.gz.css">
+<link rel="stylesheet" href="/lvm_files/go/css/importer.css.gz.css">
+<link rel="stylesheet" href="/lvm_files/school/css/studio.css.gz.css">
 
 <script>
 var srv_tz_os = -4, view_name = "school", user_cookie_name = "u_info_school";
@@ -44,17 +44,17 @@ var user_country = "US";
 <!--[if lt IE 9]>
 <script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/a58ff843b3f92207/go/js/lib/html5shiv.js.gz.js"></script>
 <![endif]-->
-<script src="/lvm_files/common_combined.js.gz.js"></script>
-<script type="text/javascript" src="/lvm_files/goserver_js-en_US.json.gz.json"></script>
+<script src="/lvm_files/school/js/common_combined.js.gz.js"></script>
+<script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json.gz.json"></script>
 <script type="text/javascript">
 var I18N_LANG = 'en_US';
 var GT = new Gettext({'locale_data': json_locale_data});
 </script>
-<script src="/lvm_files/movie.js.gz.js"></script>
-<script src="/lvm_files/cookie.js.gz.js"></script>
-<script src="/lvm_files/studio.js.gz.js"></script>
-<script src="/lvm_files/jquery.tmpl.min.js.gz.js"></script>
-<script src="/lvm_files/studio.js.gz(1).js"></script>
+<script src="/lvm_files/go/js/movie.js.gz.js"></script>
+<script src="/lvm_files/go/js/cookie.js.gz.js"></script>
+<script src="/lvm_files/go/js/studio.js.gz.js"></script>
+<script src="/lvm_files/go/js/jquery/jquery.tmpl.min.js.gz.js"></script>
+<script src="/lvm_files/school/js/studio.js.gz.js"></script>
 
 
 
@@ -66,7 +66,7 @@ if (self !== top) {
     }
 </script>
 
-<%- include("includes/header.js", {
+<%- include("includes/header.ejs", {
     isVideoList: true
 })%>
 
@@ -227,9 +227,6 @@ if (self !== top) {
 
     function proceedWithFullscreenStudio(user) {
         userData = user;
-        studio_data.flashvars.userId = userData.uid;
-        studio_data.flashvars.username = userData.displayName;
-        studio_data.flashvars.uemail = userData.email;
         // These should be executed only when we are really ready to show the studio
         window.onbeforeunload = function(e) {
             var e = e || window.event;
@@ -240,6 +237,9 @@ if (self !== top) {
             if (msg != null) return msg;
         };
         setTimeout(() => {
+            studio_data.flashvars.userId = userData.uid;
+            studio_data.flashvars.username = userData.displayName;
+            studio_data.flashvars.uemail = userData.email;
             $('div#studioBlock').css('height', '0px');
             $('#studio_holder').flash(studio_data);
             full_screen_studio();
@@ -260,7 +260,10 @@ if (self !== top) {
 
     function initPreviewPlayer(dataXmlStr, startFrame) {
         savePreviewData(dataXmlStr);
-
+        const paths = {
+            storePath: ('<%= params.flashvars.storePath %>').split("&lt;").join("<").split("&gt;").join(">"),
+            clientThemePath: ('<%= params.flashvars.clientThemePath %>').split("&lt;").join("<").split("&gt;").join(">"),
+        }
         if (typeof startFrame == 'undefined') {
             startFrame = 1;
         } else {
@@ -276,14 +279,12 @@ if (self !== top) {
             player_url: ('<%= attrs.data %>').split("go_full").join("player"),
             quality: "high"
         }, {
-            movieOwner: "", movieOwnerId: "", movieId: "<%= params.flashvars.presaveId %>", ut: "-1",
-            movieLid: "8", movieTitle: "", movieDesc: "", userId: "", username: "", uemail: "",
+            movieOwner: "", movieOwnerId: "", movieId: "<%= params.flashvars.presaveId %>", ut: "23", movieLid: "8", movieTitle: "", movieDesc: "", userId: "", username: "", uemail: "",
             apiserver: "/", thumbnailURL: "", copyable: "0", isPublished: "0", ctc: "go", tlang: "en_US", is_private_shared: "0",
             autostart: "1", appCode: "go", is_slideshow: "0", originalId: "0", is_emessage: "0", isEmbed: "0", refuser: "",
             utm_source: "", uid: "", isTemplate: "1", showButtons: "0", chain_mids: "", showshare: "0", averageRating: "",
-                        s3base: window.location.origin + '/',
-                        ratingCount: "", fb_app_url: "/", numContact: 0, isInitFromExternal: 1, storePath: "/store/3a981f5cb2739137/<store>", clientThemePath: "/static/ad44370a650793d9/<client_theme>", animationPath: "/animation/414827163ad4eb60/",
-            startFrame: startFrame
+            s3base: window.location.origin + '/', ratingCount: "", fb_app_url: window.location.origin + "/", numContact: 0, isInitFromExternal: 1, 
+            storePath: paths.storePath, clientThemePath: paths.clientThemePath, animationPath: ('<%= attrs.data %>').split("go_full")[0], startFrame: startFrame
         });
     }
     function switchBackToStudio() {
@@ -356,9 +357,9 @@ if (self !== top) {
         </ul>
     </div>
 </script>
-<script src="/lvm_files/importer.js.gz.js"></script>
-<script>window.searchTermsDataUrl = '/html/terms.json';</script>
-<script src="/lvm_files/search-suggestion.js.gz.js"></script>
+<script src="/lvm_files/school/js/importer.js.gz.js"></script>
+<script>window.searchTermsDataUrl = '/lvm_files/terms.json';</script>
+<script src="/lvm_files/go/js/search-suggestion.js.gz.js"></script>
 
 <script>
 ImporterFile.defaults.options.accept_mime = ["image/png","image/jpeg","image/gif","image/bmp","audio/mpeg","audio/wav","audio/x-wav","audio/vnd.wave","audio/wave","audio/mp3","audio/mp4","audio/ogg","audio/vorbis","audio/aac","audio/m4a","audio/x-m4a","application/x-shockwave-flash","video/mp4","video/mpeg4","video/x-flv","video/x-ms-wmv","application/mp4"];
