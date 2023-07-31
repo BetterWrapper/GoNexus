@@ -84,6 +84,54 @@ auth.onAuthStateChanged(user => {
                     })
                     break;
                 } case "/go_full": {
+                    $(document).ready(function() {
+                        if (enable_full_screen) {
+                
+                            if (!true) {
+                                $('#studio_container').css('top', '0px');
+                            }
+                            $('#studio_container').show();
+                            $('.site-footer').hide();
+                            $('#studioBlock').css('height', '1800px');
+                
+                            if (false) {
+                                checkCopyMovie(`javascript:proceedWithFullscreenStudio('${JSON.stringify(user)}', 'isJson')`, '');
+                            } else if (false) {
+                                checkEditMovie('');
+                            } else {
+                                proceedWithFullscreenStudio(user);
+                            }
+                
+                            $(window).on('resize', function() {
+                                ajust_studio();
+                            });
+                            $(window).on('studio_resized', function() {
+                                if (show_cc_ad) {
+                                    _ccad.refreshThumbs();
+                                }
+                            });
+                
+                            if (studioApiReady) {
+                                var api = studioApi($('#studio_holder'));
+                                api.bindStudioEvents();
+                            }
+                            $('.ga-importer').prependTo($('#studio_container'));
+                        } else setTimeout(() => {
+                            $('#studioBlock').flash(studio_data);
+                        }, 1);
+                        // Video Tutorial
+                        videoTutorial = new VideoTutorial($("#video-tutorial"));
+                    })
+                    // restore studio when upsell overlay hidden
+                    .on('hidden', '#upsell-modal', function(e) {
+                        if ($(e.target).attr('id') == 'upsell-modal') {
+                            restoreStudio();
+                        }
+                    })
+                    .on('studioApiReady', function() {
+                        var api = studioApi($('#studio_holder'));
+                        api.bindStudioEvents();
+                    })
                     break;
                 } case "/player": {
                     break;

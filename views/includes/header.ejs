@@ -39,6 +39,12 @@
                         <li><a href="/public_faq">FAQ</a></li>
                     </ul>
                 </li>
+                <% if (isVideoList) { %>
+                    <li>
+                        <a class="hidden-sm hidden-md hidden-lg" href="/create">Make a Video</a>
+                        <span class="site-nav-btn hidden-xs"><a class="btn btn-green" href="/create">Make a Video</a></span>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </div>

@@ -76,16 +76,16 @@ module.exports = function (req, res, url) {
 								"2": "AVATOR135"
 							};
 							const bgIds = {
-								"0nZrWjgxqytA": [
-									"custom.cbg_office_pentry",
-									"cbg_office_pentry_BG102",
-									"custom.office_pentry_bg.swf"
-								],
-								"0l87L_vwbfMM": [
-									"custom.cbg_sittingroom",
-									"cbg_sittingroom_BG260",
-									"custom.sitting_room_bg.swf"
-								]
+								"0nZrWjgxqytA": {
+									combgId: "custom.cbg_office_pentry",
+									id: "cbg_office_pentry_BG102",
+									file: "custom.office_pentry_bg.swf"
+								},
+								"0l87L_vwbfMM": {
+									combgId: "custom.cbg_sittingroom",
+									id: "cbg_sittingroom_BG260",
+									file: "custom.sitting_room_bg.swf"
+								}
 							}
 							const flashvars = new URLSearchParams({
 								movieId: "templatePreview",
@@ -170,10 +170,10 @@ module.exports = function (req, res, url) {
 								    counts.chars++
 							    }
 							}
-							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="${bgIds[f.enc_tid][0]}">
+							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="${bgIds[f.enc_tid].combgId}">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
-							<bg id="${bgIds[f.enc_tid][1]}" index="0">
-							  <file>${bgIds[f.enc_tid][2]}</file>
+							<bg id="${bgIds[f.enc_tid].id}" index="0">
+							  <file>${bgIds[f.enc_tid].file}</file>
 							</bg>
 							<char id="AVATOR134" index="3" raceCode="1">
 							  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
@@ -232,8 +232,8 @@ module.exports = function (req, res, url) {
 						  </scene>
 						  <scene id="SCENE3" adelay="60" lock="N" index="1" color="16777215" guid="00B05EB3-659F-8443-CB11-9C8DCF276579">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
-							<bg id="${bgIds[f.enc_tid][1]}" index="0">
-							  <file>${bgIds[f.enc_tid][2]}</file>
+							<bg id="${bgIds[f.enc_tid].id}" index="0">
+							  <file>${bgIds[f.enc_tid].file}</file>
 							</bg>
 							<char id="AVATOR134" index="3" raceCode="1">
 							  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>

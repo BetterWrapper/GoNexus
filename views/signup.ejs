@@ -10,7 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="BetterWrapper is an LVM project that helps improve the errors Wrapper: Offline has.">
+<meta name="description" content="BetterWrapper is an LVM project that helps improve the errors Wrapper: Offline has right now.">
 
 <meta property="og:site_name" content="BetterWrapper">
 <meta property="fb:app_id" content="122508887813978">
@@ -150,7 +150,9 @@ if (self !== top) {
     }
 </script>
 
-<%- include("includes/header.ejs", {}); %>
+<%- include("includes/header.ejs", {
+    isVideoList: false
+}); %>
 
 <script>
 var aff_ref = '', currency = 'USD';

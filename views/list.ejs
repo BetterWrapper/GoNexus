@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="">
+<meta name="description" content="BetterWrapper is an LVM project that helps improve the errors Wrapper: Offline has right now.">
 <meta property="og:site_name" content="Vyond">
 <meta property="fb:app_id" content="177116303202">
 
@@ -82,7 +82,9 @@ if (self !== top) {
 
 
 <div class="site-header">
-	<%- include("includes/header.ejs") %>
+	<%- include("includes/header.ejs", {
+        isVideoList: true
+    }) %>
 <script>
     jQuery('.logout-link').click(function(){
         amplitudeTrackEvent(AMPLITUDE_EVENT.LOGOUT, null);
