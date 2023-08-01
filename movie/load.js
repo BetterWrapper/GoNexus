@@ -14,6 +14,7 @@ ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
 const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
+const templateAssets = [];
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -69,8 +70,11 @@ module.exports = function (req, res, url) {
 							/* if i am correct, the opening and closing stuff is pretty much for characters, so we need to find a way to fit the correct 
 							emotions into the characters and also lipsync the text to the characters. */
 							if (e) return res.end(JSON.stringify({error: e}));
-							console.log(f);// writes the preview xml
+							const enc_mid = asset.generateId();
 							// 0j9k0au9jjgp will be used for templates.
+							if (!f['script[1][cid]']) return res.end(JSON.stringify({
+								error: "Your video must have 2 characters talking to one another. please fix any errors you made and preview your video again."
+							}));
 							const charIdsXML = {
 								"1": "AVATOR134",
 								"2": "AVATOR135"
@@ -87,7 +91,24 @@ module.exports = function (req, res, url) {
 									file: "custom.sitting_room_bg.swf"
 								}
 							}
-							const flashvars = new URLSearchParams({
+							const propIds = {
+								"0nZrWjgxqytA": {
+									"1": {
+										id: "cbg_office_pentry_PROP71",
+										file: "custom.office_pentry_water_dispenser.swf"
+									},
+									"2": {
+										id: "cbg_office_pentry_PROP72",
+										file: "custom.office_pentry_coffee.swf"
+									}
+								},
+								"0l87L_vwbfMM": {
+									combgId: "custom.cbg_sittingroom",
+									id: "cbg_sittingroom_BG260",
+									file: "custom.sitting_room_bg.swf"
+								}
+							}
+							const flashvars = {
 								movieId: "templatePreview",
 								movieOwnerId: "0j9k0au9jjgp",
 							    movieLid: "0",
@@ -121,7 +142,7 @@ module.exports = function (req, res, url) {
 							    pwm: 1,
 							    initcb: "flashPlayerLoaded",
 							    showshare: false
-							}).toString();
+							};
 							let soundXml = `<sound id="SOUND0" index="0" track="0" vol="1" tts="0">
 							<sfile>common.Sunshine.mp3</sfile>
 							<start>1</start>
@@ -162,38 +183,57 @@ module.exports = function (req, res, url) {
 								currentXMLMovieSounds: 2
 						    }
 						    for (const data in f) { // characters
-								if (!data.includes(`script[1]`)) return res.end(JSON.stringify({
-									error: "Your video must have 2 characters talking to one another. please fix any errors you made and preview your video again."
-								}));
 							    if (data.includes(`characters[${counts.chars}][`) && counts.chars < 2) {
 								    charIds.push(data.split(`characters[${counts.chars}][`)[1].split("]")[0]);
 								    counts.chars++
 							    }
+							}
+							const charActionsXML = {
+								"0nZrWjgxqytA": {
+									scene1: `<char id="AVATOR134" index="3" raceCode="1">
+									<action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
+									<x>230.8333333</x>
+									<y>241.05</y>
+									<xscale>1</xscale>
+									<yscale>1</yscale>
+									<rotation>0</rotation>
+								  </char>
+								  <char id="AVATOR135" index="4" raceCode="1">
+									<action face="1,1" motionface="1">ugc.${charIds[1]}.walk.xml</action>
+									<x>661.05,427.9376291</x>
+									<y>240.7,238.95</y>
+									<xscale>1,1</xscale>
+									<yscale>1,1</yscale>
+									<rotation>0,0</rotation>
+									<assetMotion ver="2"/>
+								  </char>`,
+								  scene2: `<char id="AVATOR134" index="3" raceCode="1">
+								  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
+								  <x>230.8333333</x>
+								  <y>241.05</y>
+								  <xscale>1</xscale>
+								  <yscale>1</yscale>
+								  <rotation>0</rotation>
+								</char>
+								<char id="AVATOR135" index="4" raceCode="1">
+								  <action face="1" motionface="1">ugc.${charIds[1]}.stand2.xml</action>
+								  <x>427.9376291</x>
+								  <y>238.95</y>
+								  <xscale>1</xscale>
+								  <yscale>1</yscale>
+								  <rotation>0</rotation>
+								</char>`
+								},
+								"0l87L_vwbfMM": {}
 							}
 							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="${bgIds[f.enc_tid].combgId}">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
 							<bg id="${bgIds[f.enc_tid].id}" index="0">
 							  <file>${bgIds[f.enc_tid].file}</file>
 							</bg>
-							<char id="AVATOR134" index="3" raceCode="1">
-							  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
-							  <x>230.8333333</x>
-							  <y>241.05</y>
-							  <xscale>1</xscale>
-							  <yscale>1</yscale>
-							  <rotation>0</rotation>
-							</char>
-							<char id="AVATOR135" index="4" raceCode="1">
-							  <action face="1,1" motionface="1">ugc.${charIds[1]}.walk.xml</action>
-							  <x>661.05,427.9376291</x>
-							  <y>240.7,238.95</y>
-							  <xscale>1,1</xscale>
-							  <yscale>1,1</yscale>
-							  <rotation>0,0</rotation>
-							  <assetMotion ver="2"/>
-							</char>
-							<prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
-							  <file>custom.office_pentry_coffee.swf</file>
+							${charActionsXML[f.enc_tid].scene1}
+							<prop id="${propIds[f.enc_tid]["1"].id}" index="1" attached="Y">
+							  <file>${propIds[f.enc_tid]["1"].file}</file>
 							  <x>120</x>
 							  <y>190</y>
 							  <xscale>1</xscale>
@@ -201,8 +241,8 @@ module.exports = function (req, res, url) {
 							  <face>1</face>
 							  <rotation>0</rotation>
 							</prop>
-							<prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
-							  <file>custom.office_pentry_water_dispenser.swf</file>
+							<prop id="${propIds[f.enc_tid]["2"].id}" index="2" attached="Y">
+							  <file>${propIds[f.enc_tid]["2"].file}</file>
 							  <x>445</x>
 							  <y>245</y>
 							  <xscale>1</xscale>
@@ -226,33 +266,18 @@ module.exports = function (req, res, url) {
 							  <height>354</height>
 							  <speech>0</speech>
 							</effectAsset>
-							<aTranList>
+							${f.enc_tid == "0nZrWjgxqytA" ? `<aTranList>
 							  <aTran id="0" target="AVATOR135" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
-							</aTranList>
+							</aTranList>` : ''}
 						  </scene>
 						  <scene id="SCENE3" adelay="60" lock="N" index="1" color="16777215" guid="00B05EB3-659F-8443-CB11-9C8DCF276579">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
 							<bg id="${bgIds[f.enc_tid].id}" index="0">
 							  <file>${bgIds[f.enc_tid].file}</file>
 							</bg>
-							<char id="AVATOR134" index="3" raceCode="1">
-							  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
-							  <x>230.8333333</x>
-							  <y>241.05</y>
-							  <xscale>1</xscale>
-							  <yscale>1</yscale>
-							  <rotation>0</rotation>
-							</char>
-							<char id="AVATOR135" index="4" raceCode="1">
-							  <action face="1" motionface="1">ugc.${charIds[1]}.stand2.xml</action>
-							  <x>427.9376291</x>
-							  <y>238.95</y>
-							  <xscale>1</xscale>
-							  <yscale>1</yscale>
-							  <rotation>0</rotation>
-							</char>
-							<prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
-							  <file>custom.office_pentry_coffee.swf</file>
+							${charActionsXML[f.enc_tid].scene2}
+							<prop id="${propIds[f.enc_tid]["1"].id}" index="1" attached="Y">
+							  <file>${propIds[f.enc_tid]["1"].file}</file>
 							  <x>120</x>
 							  <y>190</y>
 							  <xscale>1</xscale>
@@ -260,8 +285,8 @@ module.exports = function (req, res, url) {
 							  <face>1</face>
 							  <rotation>0</rotation>
 							</prop>
-							<prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
-							  <file>custom.office_pentry_water_dispenser.swf</file>
+							<prop id="${propIds[f.enc_tid]["2"].id}" index="2" attached="Y">
+							  <file>${propIds[f.enc_tid]["2"].file}</file>
 							  <x>445</x>
 							  <y>245</y>
 							  <xscale>1</xscale>
@@ -282,30 +307,30 @@ module.exports = function (req, res, url) {
 								if (f[`script[${i}][text]`]) {
 									const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 									const title = `[${ttsInfo.voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
-									function getAssetId() {
-										return new Promise(resolve => {
-											mp3Duration(buffer, (e, d) => {
-												var dur = d * 1e3;
-												if (e || !dur) return res.end(JSON.stringify({
-													error: e || "Unable to retrieve MP3 stream."
-												}));
-												resolve(asset.save(buffer, {
-													type: "sound",
-													subtype: "tts",
-													title,
-													published: 0,
-													tags: "",
-													duration: dur,
-													downloadtype: "progressive",
-													ext: "mp3"
-												}, {
-													userId: "0j9k0au9jjgp",
-													isTemplate: true
-												}));
-											});
+									await new Promise(resolve => {
+										mp3Duration(buffer, (e, d) => {
+											var dur = d * 1e3;
+											if (e || !dur) return res.end(JSON.stringify({
+												error: e || "Unable to retrieve an MP3 stream for TTS."
+											}));
+											templateAssets.unshift(asset.save(buffer, {
+												orderNum: i,
+												type: "sound",
+												subtype: "tts",
+												title,
+												published: 0,
+												tags: "",
+												duration: dur,
+												downloadtype: "progressive",
+												ext: "mp3"
+											}, {
+												userId: "0j9k0au9jjgp",
+												isTemplate: true
+											}));
+											resolve();
 										});
-									}
-									const assetId = await getAssetId();
+									});
+									const assetId = templateAssets.find(d => d.orderNum == i).id;
 									sceneXml += `<scene id="SCENE${counts.currentXMLMovieScenes}" adelay="60" lock="N" index="2" color="16777215" guid="40D8714F-274B-7750-3F6C-12AB71F88763">
 										<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
 										<bg id="cbg_office_pentry_BG102" index="0">
@@ -367,12 +392,19 @@ module.exports = function (req, res, url) {
 									    </ttsdata>
 									  </sound>
 									  <linkage>SOUND${counts.currentXMLMovieSounds},~~~${charIdsXML[f[`script[${i}][char_num]`]]},SCENE${counts.currentXMLMovieScenes}~~~</linkage>`;
-									console.log(sceneXml, soundXml);
+									  counts.currentXMLMovieScenes++
+									  counts.currentXMLMovieSounds++
+								} else { // for those who used mic recording.
+
 								}
 						    }
-						    res.end(JSON.stringify({
-							    error: "the golite movie preview system is in beta right now. please check back later."
-						    }))
+							fs.writeFileSync("./previews/template.xml", `${movieXml}${sceneXml}${soundXml}</film>`);
+							res.end(JSON.stringify({
+							    player_object: flashvars,
+								enc_mid,
+								opening_closing: "",
+								script: ""
+						    }));
 						} catch (e) {
 							console.log(e);
 							res.end(JSON.stringify({

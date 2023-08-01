@@ -82,10 +82,7 @@ module.exports = {
 	 */
 	getValidFileIndicies(s, suf = ".xml", l = 7) {
 		const regex = new RegExp(`${s}[0-9]{${l}}${suf}$`);
-		return fs
-			.readdirSync(folder)
-			.filter((v) => v && regex.test(v))
-			.map((v) => Number.parseInt(v.substr(s.length, l)));
+		return fs.readdirSync(folder).filter((v) => v && regex.test(v)).map((v) => Number.parseInt(v.substr(s.length, l)));
 	},
 	/**
 	 * @param {string} s

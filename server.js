@@ -6,6 +6,7 @@ const pmc = require("./character/premade");
 const chl = require("./character/load");
 const chs = require("./character/save");
 const cht = require("./character/thmb");
+const chh = require("./character/head");
 const mvu = require("./movie/upload");
 const asu = require("./asset/upload");
 const swf = require("./static/swf");
@@ -33,7 +34,7 @@ const pse = require("./movie/parse");
 const fs = require("fs");
 const url = require("url");
 
-const functions = [mvL, qvm, ebd, pre, snd, fme, str, swf, pmc, asl, chl, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
+const functions = [mvL, qvm, ebd, pre, snd, fme, str, swf, pmc, asl, chl, chh, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
 
 module.exports = http
 	.createServer((req, res) => {
@@ -46,6 +47,11 @@ module.exports = http
 			switch (req.method) {
 				case "GET": {
 					switch (parsedUrl.pathname) {
+						case "/api/getTTSVoices": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./tts/info.json'))));
+							break;
+						}
 						case "/api/themes/get": {
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(pse.getThemes()));

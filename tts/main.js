@@ -22,7 +22,7 @@ module.exports = (voiceName, rawText) => {
 				flags[name] = value;
 			}
 			if (!voice) rej("The selected voice does not exist.");
-			else switch (voice.source) {
+			else switch (voice.source.toLowerCase()) {
 				case "voiceforge": {
 					const q = qs.encode({						
 						msg: text,

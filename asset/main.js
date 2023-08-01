@@ -53,10 +53,13 @@ module.exports = {
 		meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
 		fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
-		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
-		json.users.find(i => i.id == data.userId).assets.unshift(meta);
-		fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
-		return meta.id;
+		if (data.userId == "0j9k0au9jjgp" && data.isTemplate) return meta;
+		else {
+			const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
+			json.users.find(i => i.id == data.userId).assets.unshift(meta);
+			fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
+			return meta.id;
+		}
 	},
 	list(uId, type, subtype, themeId) {
 		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`)).users.find(i => i.id == uId);
