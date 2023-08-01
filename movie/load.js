@@ -178,27 +178,15 @@ module.exports = function (req, res, url) {
 						    const charIds = [];
 						    const counts = {
 							    chars: 0,
-							    scripts: 0,
 								currentXMLMovieScenes: 4,
 								currentXMLMovieSounds: 2
 						    }
-<<<<<<< HEAD
 						    for (const data in f) { // characters
-=======
-							let has2chars = false;
-							let counter = 0;
-							let scriptscene = 0;
-						    for (const data in f) { // characters & script timings
-								console.warn(f);
-								if (data.includes(`script[1]`)) has2chars = true;
-								if (data.includes(`script[${scriptscene}]`)) scriptscene++; counter++;
->>>>>>> 25963cdfa6017697f4a1f62be5385e14640047d1
 							    if (data.includes(`characters[${counts.chars}][`) && counts.chars < 2) {
 								    charIds.push(data.split(`characters[${counts.chars}][`)[1].split("]")[0]);
 								    counts.chars++
 							    }
 							}
-<<<<<<< HEAD
 							const charActionsXML = {
 								"0nZrWjgxqytA": {
 									scene1: `<char id="AVATOR134" index="3" raceCode="1">
@@ -236,13 +224,6 @@ module.exports = function (req, res, url) {
 								</char>`
 								},
 								"0l87L_vwbfMM": {}
-=======
-							if (!has2chars)
-							{
-								return res.end(JSON.stringify({
-									error: "Your video must have 2 characters talking to one another. please fix any errors you made and preview your video again."
-								}))
->>>>>>> 25963cdfa6017697f4a1f62be5385e14640047d1
 							}
 							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="${bgIds[f.enc_tid].combgId}">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -327,7 +308,6 @@ module.exports = function (req, res, url) {
 									const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 									console.log(buffer);
 									const title = `[${ttsInfo.voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
-<<<<<<< HEAD
 									await new Promise(resolve => {
 										mp3Duration(buffer, (e, d) => {
 											var dur = d * 1e3;
@@ -349,29 +329,6 @@ module.exports = function (req, res, url) {
 												isTemplate: true
 											}));
 											resolve();
-=======
-									function getAssetId() {
-										return new Promise(resolve => {
-											mp3Duration(buffer, (e, d) => {
-												var dur = d * 1e3;
-												if (e || !dur) return res.end(JSON.stringify({
-													error: e || "Unable to retrieve MP3 stream."
-												}));
-												resolve(asset.save(buffer, {
-													type: "sound",
-													subtype: "tts",
-													title,
-													published: 0,
-													tags: "",
-													duration: dur,
-													downloadtype: "progressive",
-													ext: "mp3"
-												}, {
-													userId: "daQxxxCDZVfzUcKqq577U4rE3ir1",
-													isTemplate: true
-												}));
-											});
->>>>>>> 25963cdfa6017697f4a1f62be5385e14640047d1
 										});
 									});
 									const assetId = templateAssets.find(d => d.orderNum == i).id;
@@ -442,7 +399,6 @@ module.exports = function (req, res, url) {
 
 								}
 						    }
-<<<<<<< HEAD
 							fs.writeFileSync("./previews/template.xml", `${movieXml}${sceneXml}${soundXml}</film>`);
 							res.end(JSON.stringify({
 							    player_object: flashvars,
@@ -450,46 +406,6 @@ module.exports = function (req, res, url) {
 								opening_closing: "",
 								script: ""
 						    }));
-=======
-						    res.end(JSON.stringify({script: f, player_object:{
-								movieId: "templatePreview",
-								movieOwnerId: "0j9k0au9jjgp",
-								  movieLid: "0",
-								  ut: "23",
-								  numContact: "",
-								  apiserver: "/",
-								  playcount: 1,
-								  ctc: "go",
-								  userId: "daQxxxCDZVfzUcKqq577U4rE3ir1",
-								  isWide: "0",
-								  tlang: "en_US",
-								  autostart: "1",
-								  appCode: "go",
-								  is_slideshow: "0",
-								  originalId: "0Y7-ebJ36Ip4",
-								  is_emessage: "0",
-								  storePath: process.env.STORE_URL + "/<store>",
-								  clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
-								  animationPath: process.env.SWF_URL + "/",
-								  isEmbed: "0",
-								  refuser: null,
-								  utm_source: null,
-								  uid: null,
-								  isTemplate: "1",
-								  showButtons: "1",
-								  chain_mids: "",
-								  averageRating: 5,
-								  ratingCount: "1",
-								  fb_app_url: "/",
-								  ad: 1,
-								  endStyle: 0,
-								  isWide: "1",
-								  pwm: 1,
-								  initcb: "flashPlayerLoaded",
-								  showshare: false
-							  }}))
-							  fs.writeFileSync("./previews/template.xml", movieXml+sceneXml+soundXml+"</film>");
->>>>>>> 25963cdfa6017697f4a1f62be5385e14640047d1
 						} catch (e) {
 							console.log(e);
 							res.end(JSON.stringify({
@@ -515,7 +431,7 @@ module.exports = function (req, res, url) {
 							if (url.query.movieId != "templatePreview") {
 								const b = await movie.loadZip(url.query, data);
 								res.end(Buffer.concat([base, b]));
-							} else res.end(Buffer.concat([base, await parse.packMovie(fs.readFileSync("./previews/template.xml"), "daQxxxCDZVfzUcKqq577U4rE3ir1")]));
+							} else res.end(Buffer.concat([base, await parse.packMovie(fs.readFileSync("./previews/template.xml"),  "0j9k0au9jjgp", templateAssets)]));
 						} catch (e) {
 							console.log(e);
 							res.end(1 + e);
