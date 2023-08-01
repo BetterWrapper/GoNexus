@@ -1,5 +1,5 @@
 {
-	"name": "betterwrapper",
+	"name": "betterwrapper-ga4s",
 	"version": "0.0.1",
 	"scripts": {
 		"start": "node main.js"
