@@ -27,11 +27,18 @@
         font-weight: 700;
         src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
     }
+    @font-face {
+			font-family: 'GlyphiconsRegular';
+            font-style: normal;
+            font-weight: normal;
+			src: url('/ui/fonts/glyphicons-regular.woff') format('woff');
+	}
 </style>
-<link rel="stylesheet" href="https://web.archive.org/web/20160724162053cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/css/common_combined.css">
+</body>
+<link rel="stylesheet" href="../ui/css/common_combined.css">
 <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/watermark.css.gz.css" rel="stylesheet" type="text/css">
 <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video.css.gz.css" rel="stylesheet" type="text/css">
-<link href="/ui/css/mymovies.css" rel="stylesheet" type="text/css">
+<link href="../ui/css/mymovies.css" rel="stylesheet" type="text/css">
 <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video_export.css.gz.css" rel="stylesheet" type="text/css">
 <link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/vm5_alpha/banner.css.gz.css" rel="stylesheet" type="text/css">
 <!--[if lt IE 9]>
@@ -45,7 +52,7 @@ var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
 var user_role = 9;
 </script>
 
-<script src="https://web.archive.org/web/20160724162053js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/js/common_combined.js"></script>
+<script src="../js/common_combined.js"></script>
 <script type="text/javascript" src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/../po/goserver_js-en_US.json.gz.json"></script>
 <script type="text/javascript">
 var I18N_LANG = 'en_US';
@@ -117,8 +124,6 @@ if (self !== top) {
                     <span class="title folder-name">Your Videos</span>
                     (<span class="video-count count-all">0</span>)
                 </div>
-
-                <div id="videos-folders-nav" class="list-group-item sub-folder-list"></div>
             </div>
         </div>
 
