@@ -58,6 +58,7 @@ auth.onAuthStateChanged(user => {
             hideElement('signup-button');
             hideElement('login-button');
             showElement('isLogin');
+            showElement('exploreTab');
             switch (window.location.pathname) {
                 case "/":
                 case "/movies": {
@@ -148,6 +149,7 @@ auth.onAuthStateChanged(user => {
         }
     } else {
         hideElement('isLogin');
+        hideElement('exploreTab');
         showElement('signup-button');
         showElement('login-button');
         switch (window.location.pathname) {
