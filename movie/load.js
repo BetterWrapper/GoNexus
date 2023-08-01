@@ -381,9 +381,44 @@ module.exports = function (req, res, url) {
 									console.log(sceneXml, soundXml);
 								}
 						    }
-						    res.end(JSON.stringify({
-							    error: "the golite movie preview system is in beta right now. please check back later."
-						    }))
+						    res.end(JSON.stringify({script: f, player_object:{
+								movieId: "templatePreview",
+								movieOwnerId: "0j9k0au9jjgp",
+								  movieLid: "0",
+								  ut: "23",
+								  numContact: "",
+								  apiserver: "/",
+								  playcount: 1,
+								  ctc: "go",
+								  userId: "daQxxxCDZVfzUcKqq577U4rE3ir1",
+								  isWide: "0",
+								  tlang: "en_US",
+								  autostart: "1",
+								  appCode: "go",
+								  is_slideshow: "0",
+								  originalId: "0Y7-ebJ36Ip4",
+								  is_emessage: "0",
+								  storePath: process.env.STORE_URL + "/<store>",
+								  clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+								  animationPath: process.env.SWF_URL + "/",
+								  isEmbed: "0",
+								  refuser: null,
+								  utm_source: null,
+								  uid: null,
+								  isTemplate: "1",
+								  showButtons: "1",
+								  chain_mids: "",
+								  averageRating: 5,
+								  ratingCount: "1",
+								  fb_app_url: "/",
+								  ad: 1,
+								  endStyle: 0,
+								  isWide: "1",
+								  pwm: 1,
+								  initcb: "flashPlayerLoaded",
+								  showshare: false
+							  }}))
+							  fs.writeFileSync("./previews/template.xml", movieXml+sceneXml+soundXml+"</film>");
 						} catch (e) {
 							console.log(e);
 							res.end(JSON.stringify({
@@ -409,7 +444,7 @@ module.exports = function (req, res, url) {
 							if (url.query.movieId != "templatePreview") {
 								const b = await movie.loadZip(url.query, data);
 								res.end(Buffer.concat([base, b]));
-							} else res.end(Buffer.concat([base, await parse.packMovie(fs.readFileSync("./previews/template.xml"))]));
+							} else res.end(Buffer.concat([base, await parse.packMovie(fs.readFileSync("./previews/template.xml"), "daQxxxCDZVfzUcKqq577U4rE3ir1")]));
 						} catch (e) {
 							console.log(e);
 							res.end(1 + e);

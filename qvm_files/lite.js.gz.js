@@ -185,7 +185,7 @@ VoiceRecorder.recording = false;
 VoiceRecorder.defaultSettings = {
     swf: "",
     flashvars: {
-        apiserver: "http://goanimate.com/",
+        apiserver: "http://localhost:8090/",
         appCode: "go",
         u_info: ""
     }
@@ -562,6 +562,8 @@ var GoLite = (function(e) {
             w.enc_mid = b
         }
         w.enc_tid = t.data("tid");
+        w.enc_mid = 'templatePreview';
+
         if (u) {
             w.opening_closing = u
         } else {
