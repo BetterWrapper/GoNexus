@@ -161,14 +161,23 @@ module.exports = function (req, res, url) {
 								currentXMLMovieScenes: 4,
 								currentXMLMovieSounds: 2
 						    }
-						    for (const data in f) { // characters
-								if (!data.includes(`script[1]`)) return res.end(JSON.stringify({
-									error: "Your video must have 2 characters talking to one another. please fix any errors you made and preview your video again."
-								}));
+							let has2chars = false;
+							let counter = 0;
+							let scriptscene = 0;
+						    for (const data in f) { // characters & script timings
+								console.warn(f);
+								if (data.includes(`script[1]`)) has2chars = true;
+								if (data.includes(`script[${scriptscene}]`)) scriptscene++; counter++;
 							    if (data.includes(`characters[${counts.chars}][`) && counts.chars < 2) {
 								    charIds.push(data.split(`characters[${counts.chars}][`)[1].split("]")[0]);
 								    counts.chars++
 							    }
+							}
+							if (!has2chars)
+							{
+								return res.end(JSON.stringify({
+									error: "Your video must have 2 characters talking to one another. please fix any errors you made and preview your video again."
+								}))
 							}
 							let sceneXml = `<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="E74BC5F9-ABF7-1E20-43DE-E7D6C961146C" combgId="${bgIds[f.enc_tid].combgId}">
 							<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -278,9 +287,11 @@ module.exports = function (req, res, url) {
 							  <speech>0</speech>
 							</effectAsset>
 						    </scene>`;
-						    for (var i = 0; i < 30; i++) { // scripts
+						    for (var i = 0; i < counter; i++) { // scripts
 								if (f[`script[${i}][text]`]) {
+									console.log(f[`script[${i}][voice]`]);
 									const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
+									console.log(buffer);
 									const title = `[${ttsInfo.voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
 									function getAssetId() {
 										return new Promise(resolve => {
@@ -299,7 +310,7 @@ module.exports = function (req, res, url) {
 													downloadtype: "progressive",
 													ext: "mp3"
 												}, {
-													userId: "0j9k0au9jjgp",
+													userId: "daQxxxCDZVfzUcKqq577U4rE3ir1",
 													isTemplate: true
 												}));
 											});
