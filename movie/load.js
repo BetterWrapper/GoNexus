@@ -187,7 +187,9 @@ module.exports = function (req, res, url) {
 									<speech>0</speech>
 								  </effectAsset>
 								  <aTranList>
-									<aTran id="0" target="AVATOR267" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
+									<aTran id="0" target="${
+										avatarIds[f[`characters[1][${charIds[1]}]`]]
+									}" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
 								  </aTranList>
 								</scene>
 								<scene id="SCENE1" adelay="60" lock="N" index="1" color="16777215" guid="312C5B42-02B3-FAA4-C8D8-239EB712D4D6">
@@ -238,7 +240,7 @@ module.exports = function (req, res, url) {
 									<speech>0</speech>
 								  </effectAsset>
 								</scene>`;
-								for (var i = 0; i < counts.scripts; i++) {
+								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
 										const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 										const dur = await getMp3Duration(buffer);
@@ -256,10 +258,12 @@ module.exports = function (req, res, url) {
 										}, {
 											isTemplate: true
 										}));
-										const id = templateAssets.find(s => s.orderNum == i).id;
+										const meta = templateAssets.find(s => s.orderNum == i);
 										switch (f[`script[${i}][char_num]`]) {
 											case "1": {
-												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="60" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(
+													Math.round(counts.sounds + 1) * 24) + (counts.sounds * 24) + 96
+												}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="D13D4A19-8247-704D-7D92-54C7E96875B9">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -311,7 +315,9 @@ module.exports = function (req, res, url) {
 											  </scene>`;
 											  break;
 											} case "2": {
-												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="60" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(
+													Math.round(counts.sounds + 1) * 24) + (counts.sounds * 24) + 96
+												}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="65B686F6-7257-FBA7-2397-2B22E0F82023">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -359,15 +365,14 @@ module.exports = function (req, res, url) {
 												  <width>167.483871</width>
 												  <height>107.7987097</height>
 												  <speech>0</speech>
-												</effectAsset>
-											  </scene>`;
+												</effectAsset></scene>`;
 												break;
 											}
 										}
-										soundXml += `<sound id="SOUND${counts.sounds}" index="0" track="0" vol="1" tts="1"><sfile>ugc.${id}</sfile><start>${(
+										soundXml += `<sound id="SOUND${counts.sounds}" index="${counts.sounds}" track="0" vol="1" tts="1"><sfile>ugc.${meta.id}</sfile><start>${(
 											Math.round(counts.sounds) * 24) + 96
 										}</start><stop>${(
-											Math.round(counts.sounds + 1) * 24) + (counts.sounds * 24) + 96
+											Math.round(meta.duration) * 24) + 96
 										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
@@ -376,6 +381,11 @@ module.exports = function (req, res, url) {
 									}
 									counts.scenes++
 									counts.sounds++
+								} catch (e) {
+									console.log(e);
+									res.end(JSON.stringify({
+										error: e
+									}));
 								}
 								movieXml += `${sceneXml}<scene id="SCENE${counts.scenes + 1}" adelay="${Math.round(counts.scenes) * 24}" lock="N" index="${
 									counts.scenes + 1
@@ -384,7 +394,7 @@ module.exports = function (req, res, url) {
 								<bg id="cbg_office_pentry_BG102" index="0">
 								  <file>custom.office_pentry_bg.swf</file>
 								</bg>
-								<char id="AVATOR266" index="3" raceCode="1">
+								<char id="${avatarIds[f[`characters[0][${charIds[0]}]`]]}" index="3" raceCode="1">
 								  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
 								  <x>200.1</x>
 								  <y>237.4933025</y>
@@ -392,7 +402,7 @@ module.exports = function (req, res, url) {
 								  <yscale>1</yscale>
 								  <rotation>0</rotation>
 								</char>
-								<char id="AVATOR267" index="4" raceCode="1">
+								<char id="${avatarIds[f[`characters[1][${charIds[1]}]`]]}" index="4" raceCode="1">
 								  <action face="-1,-1" motionface="-1">ugc.${charIds[1]}.walk.xml</action>
 								  <x>422.0256752,635.5756752</x>
 								  <y>238.975,244.975</y>
@@ -442,6 +452,7 @@ module.exports = function (req, res, url) {
 							  break;
 							}
 						}
+						console.log(counts);
 						if (!fs.existsSync(`./previews`)) fs.mkdirSync(`./previews`);
 						fs.writeFileSync(`./previews/template.xml`, movieXml);
 						res.end(JSON.stringify({
