@@ -240,8 +240,10 @@ module.exports = function (req, res, url) {
 									<speech>0</speech>
 								  </effectAsset>
 								</scene>`;
+								const texts = {};
 								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
+										texts[i] = f[`script[${i}][text]`];
 										const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 										const dur = await getMp3Duration(buffer);
 										const title = `[${voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
@@ -261,7 +263,7 @@ module.exports = function (req, res, url) {
 										const meta = templateAssets.find(s => s.orderNum == i);
 										switch (f[`script[${i}][char_num]`]) {
 											case "1": {
-												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(Math.round(counts.scenes - i) * 24)}" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(Math.round(texts[i].length) * 7) + 7}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="D13D4A19-8247-704D-7D92-54C7E96875B9">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -270,6 +272,8 @@ module.exports = function (req, res, url) {
 												</bg>
 												<char id="${avatarIds[f[`characters[0][${charIds[0]}]`]]}" index="3" raceCode="1">
 												  <action face="-1" motionface="1">ugc.${charIds[0]}.stand2.xml</action>
+												  ${f[`script[${i}][facial][${f[`characters[0][${charIds[0]}]`]}]`] != "default" ? `<head id="PROP3" raceCode="1"><file>ugc.${
+													charIds[0]}.head.head_${f[`script[${i}][facial][${f[`characters[0][${charIds[0]}]`]}]`]}.xml</file></head>` : ''}
 												  <x>200.1</x>
 												  <y>237.4933025</y>
 												  <xscale>1</xscale>
@@ -313,7 +317,7 @@ module.exports = function (req, res, url) {
 											  </scene>`;
 											  break;
 											} case "2": {
-												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(Math.round(counts.scenes - i) * 24)}" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(Math.round(texts[i].length) * 7) + 7}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="65B686F6-7257-FBA7-2397-2B22E0F82023">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -330,6 +334,8 @@ module.exports = function (req, res, url) {
 												</char>
 												<char id="${avatarIds[f[`characters[1][${charIds[1]}]`]]}" index="4" raceCode="1">
 												  <action face="1" motionface="1">ugc.${charIds[1]}.stand2.xml</action>
+												  ${f[`script[${i}][facial][${f[`characters[1][${charIds[1]}]`]}]`] != "default" ? `<head id="PROP3" raceCode="1"><file>ugc.${
+													charIds[1]}.head.head_${f[`script[${i}][facial][${f[`characters[1][${charIds[1]}]`]}]`]}.xml</file></head>` : ''}
 												  <x>422.0256752</x>
 												  <y>238.975</y>
 												  <xscale>1</xscale>
@@ -366,10 +372,9 @@ module.exports = function (req, res, url) {
 											}
 										}
 										soundXml += `<sound id="SOUND${counts.sounds}" index="${counts.sounds}" track="0" vol="1" tts="1"><sfile>ugc.${meta.id}</sfile><start>${
-											(Math.round(counts.sounds + i) * 24) + 96
-										}</start><stop>${
-											(Math.round(counts.sounds + i + 1) * 24) + (counts.sounds + i * 24) + 96
-										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
+											(Math.round(counts.scenes) * 24) + 96}</start><stop>${
+												(Math.round(counts.scenes + 1) * 24) + (counts.scenes * 24) + 96
+											}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
 										lipsyncXml += `<linkage>SOUND${counts.sounds},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.scenes}~~~</linkage>`;
@@ -383,7 +388,7 @@ module.exports = function (req, res, url) {
 										error: e
 									}));
 								}
-								movieXml += `${sceneXml}<scene id="SCENE${counts.scenes + 1}" adelay="${Math.round(counts.scenes) * 24}" lock="N" index="${
+								movieXml += `${sceneXml}<scene id="SCENE${counts.scenes + 1}" adelay="60" lock="N" index="${
 									counts.scenes + 1
 								}" color="16777215" guid="0D194FFF-1C84-FB94-B753-C981425ABF9D">
 								<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
