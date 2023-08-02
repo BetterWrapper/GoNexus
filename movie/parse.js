@@ -149,10 +149,13 @@ module.exports = {
 	/**
 	 * @summary Reads an XML buffer, decodes the elements, and returns a PK stream the LVM can parse.
 	 * @param {Buffer} xmlBuffer
+	 * @param {string} uId
+	 * @param {Buffer} packThumb
 	 * @param {string} mId
-	 * @returns {Promise<{zipBuf:Buffer,caché:{[aId:string]:Buffer}}>}
+	 * @param {string} ownAssets
+	 * @returns {Buffer}
 	 */
-	async packMovie(xmlBuffer, uId, packThumb, mId) {
+	async packMovie(xmlBuffer, uId, packThumb, mId, ownAssets) {
 		if (xmlBuffer.length == 0) throw null;
 
 		const zip = nodezip.create();
@@ -178,7 +181,7 @@ module.exports = {
 					const buffer = asset.load(id);
 
 					// add asset meta
-					ugc += asset.meta2Xml(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == uId).assets.find(i => i.id == id));
+					ugc += asset.meta2Xml(ownAssets ? ownAssets.find(i => i.id == id) : JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == uId).assets.find(i => i.id == id));
 					// and add the file
 					fUtil.addToZip(zip, filename, buffer);
 
@@ -342,7 +345,7 @@ module.exports = {
 
 		fUtil.addToZip(zip, 'themelist.xml', Buffer.from(`${header}<themes>${themeKs.map(t => `<theme>${t}</theme>`).join('')}</themes>`));
 		fUtil.addToZip(zip, 'ugc.xml', Buffer.from(ugc + `</theme>`));
-		if (packThumb) {
+		if (packThumb != false) {
 			if (mId.startsWith("m-")) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("thumb-", ".png", mId.substr(2))));
 			else if (mId.startsWith("s-")) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("starter-", ".png", mId.substr(2))));
 		}

@@ -31,7 +31,7 @@
         src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
     }
 </style>
-<link rel="stylesheet" href="https://web.archive.org/web/20160724162053cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/css/common_combined.css">
+<link rel="stylesheet" href="/lvm_files/school/css/common_combined.css">
 
 <link rel="stylesheet" href="https://web.archive.org/web/20160724162053cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/css/public/index.css">
 <link rel="stylesheet" href="https://web.archive.org/web/20160724162053cs_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/css/owl.carousel.css">
@@ -45,105 +45,13 @@ var user_country = "US";
 <!--[if lt IE 9]>
 <script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/go/js/lib/html5shiv.js"></script>
 <![endif]-->
-<script src="https://web.archive.org/web/20160724162053js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/js/common_combined.js"></script>
-<script type="text/javascript" src="https://web.archive.org/web/20160724162053js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/go/po/goserver_js-en_US.json"></script>
+<script src="/lvm_files/school/js/common_combined.js"></script>
+<script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json"></script>
 <script type="text/javascript">
 var I18N_LANG = 'en_US';
 var GT = new Gettext({'locale_data': json_locale_data});
 </script>
 <script src="https://web.archive.org/web/20160724162053js_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/js/owl.carousel.min.js"></script>
-
-
-
-<script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//web.archive.org/web/20160724162053/https://www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-2516970-15');
-
-        ga('send', 'pageview');
-
-ga('require', 'ecommerce');
-
-$(function() {
-    var COOKIE_LAST_URL_LIFETIME = 5,
-        COOKIE_BLOCKER_LIFETIME = 900;
-
-    function setSessionCookie(cookie_name, cookie_value, lifetime) {
-        document.cookie = cookie_name + '=' + escape(cookie_value) + '; path=/; max-age=' + lifetime + ';';
-    }
-    function getSessionCookie(cookie_name) {
-        var results = document.cookie.match('(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
-        if (results) {
-            return (unescape(results[2]));
-        } else {
-            return null;
-        }
-    }
-
-    $(window).on({
-        unload: function() {
-            setSessionCookie('lasturl', window.location.href, COOKIE_LAST_URL_LIFETIME);
-        },
-        onbeforeunload: function() {
-            setSessionCookie('lasturl', window.location.href, COOKIE_LAST_URL_LIFETIME);
-        },
-        load: function() {
-            var http_referrer = document.referrer,
-                blocker = getSessionCookie('gasessid');
-
-            if (http_referrer === '') {
-                http_referrer = getSessionCookie('lasturl');
-            }
-            if ((http_referrer === '') || (blocker === null)) {
-                if (typeof(ga) !== 'undefined') {
-                    var currentDate = new Date(),
-                        sessionId,
-                        clientId;
-
-                    // Assume we only have one tracker
-                    try {
-                        var trackers = ga.getAll();
-                        var currentDate = new Date(),
-                            clientId = trackers[0].get('clientId'),
-                            sessionId = clientId + '.' + currentDate.getTime();
-                        // Set custom dimension (UniqueID).
-                        ga('set', 'dimension1', clientId);
-                        // Set custom dimension (Session ID).
-                        ga('set', 'dimension2', sessionId);
-                        // Set blocker.
-                        setSessionCookie('gasessid', sessionId, COOKIE_BLOCKER_LIFETIME);
-                    } catch(e) {}
-                }
-            }
-        }
-    });
-  });
-</script>
-
-
-
-<script type="text/javascript" src="https://web.archive.org/web/20160724162053js_/https://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
-
-<!-- Google Knowledge Graph -->
-<script type="application/ld+json">
-{
-    "@context": "https://web.archive.org/web/20160724162053/http://schema.org",
-    "@type": "Organization",
-    "name": "GoAnimate",
-    "url": "https://web.archive.org/web/20160724162053/http://goanimate.com",
-    "logo": "https://web.archive.org/web/20160724162053/http://gawpstorage.s3.amazonaws.com/img/google_knowledge_graph_logo.jpg",
-    "sameAs": [
-        "https://web.archive.org/web/20160724162053/http://www.facebook.com/GoAnimateInc",
-        "https://web.archive.org/web/20160724162053/http://twitter.com/GoAnimate",
-        "https://web.archive.org/web/20160724162053/http://www.linkedin.com/company/goanimate",
-        "https://web.archive.org/web/20160724162053/http://plus.google.com/+goanimate",
-        "https://web.archive.org/web/20160724162053/http://www.youtube.com/user/GoAnimate"
-    ]
-}
-</script>
 
 </head>
 <body class="page-action-public_index">

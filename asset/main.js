@@ -53,7 +53,7 @@ module.exports = {
 		meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
 		fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
-		if (data.userId == "0j9k0au9jjgp" && data.isTemplate) return meta;
+		if (data.isTemplate) return meta;
 		else {
 			const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
 			json.users.find(i => i.id == data.userId).assets.unshift(meta);

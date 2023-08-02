@@ -1984,13 +1984,13 @@
 			"arg": "/english/american/49-funny-toy-voice-skippy-the-chipmunk.html",
 			"desc": "Skippy"
 		},
-		"ivy1": {
+		"ivy": {
 			"country": "US",
 			"language": "en",
 			"gender": "F",
 			"source": "ReadLoud",
 			"arg": "/english/american/25-child-s-girl-voice-ivy.html",
-			"desc": "Ivy (Old)"
+			"desc": "Ivy"
 		},
 		"joey": {
 			"country": "US",
@@ -2000,29 +2000,29 @@
 			"arg": "/english/american/29-male-voice-joey.html",
 			"desc": "Joey"
 		},
-		"brian1": {
+		"brian": {
 			"country": "GB",
 			"language": "en",
 			"gender": "M",
 			"source": "ReadLoud",
 			"arg": "/english/british/1-male-voice-brian.html",
-			"desc": "Brian (Old)"
+			"desc": "Brian"
 		},
-		"kimberly1": {
+		"kimberly": {
 			"country": "US",
 			"language": "en",
 			"gender": "F",
 			"source": "ReadLoud",
 			"arg": "/english/american/33-female-voice-kimberly.html",
-			"desc": "Kimberly (Old)"
+			"desc": "Kimberly"
 		},
-		"kendra1": {
+		"kendra": {
 			"country": "US",
 			"language": "en",
 			"gender": "F",
 			"source": "ReadLoud",
 			"arg": "/english/american/32-female-voice-kendra.html",
-			"desc": "Kendra (Old)"
+			"desc": "Kendra"
 		},
 		"amy4": {
 			"country": "GB",

@@ -68,10 +68,9 @@
         }
 
         VoiceRecorder.defaultSettings.swf = "/static/MyMicRecorder.swf";
-        jQuery.extend(VoiceRecorder.defaultSettings.flashvars, { // user id will be 0j9k0au9jjgp for templates. all guests are allowed access to the QVM. you still need to be logged in in order to use the full video maker or saving your changes.
+        jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
             apiserver: "/",
             clientThemePath: "/static/<client_theme>",
-            userId: "0j9k0au9jjgp",
             isTemplate: true
         });
 
@@ -377,49 +376,122 @@
 
                         <h2>2. Select a voice for your character:</h2>
                         <script type="text/javascript">
-                            var lang_model = {};
-                            jQuery.post("/api/getTTSVoices", (d) => {
-                                for (const model of d) {
-                                    for (const stuff in model) {
-                                        lang_model[stuff] = model[stuff];
-                                    }
-                                }
-                            });
-                            var VoiceCatalog = {
-                                getModel() {
-                                    if (!lang_model) window.location.reload();
-                                    return lang_model;
-                                },
-                                lookupVoiceInfo(voice_id) {
-                                    if (!lang_model) window.location.reload();
-                                    for (var langId in lang_model) {
-                                        var voice_count = lang_model[langId]['options'].length;
-                                        for (var i = 0; i < voice_count; i++) if (lang_model[langId]['options'][i]) {
-                                            if (lang_model[langId]['options'][i].id == voice_id) {
-                                                return {
-                                                    desc: lang_model[langId]['options'][i].desc,
-                                                    sex: lang_model[langId]['options'][i].sex,
-                                                    plus: lang_model[langId]['options'][i].plus,
-                                                    locale: { id: langId, lang: lang_model[langId]['options'][i].lang, country: lang_model[langId]['options'][i].country, desc: lang_model[langId].desc }
-                                                };
+                            var VoiceCatalog = (function() {
+                                var lang_model = {
+                                    en: {
+                                        desc: "English",
+                                        options: [{
+                                            "id": "jennifer",
+                                            "country": "US",
+                                            "lang": "en",
+                                            "sex": "F",
+                                            "vendor": "ReadLoud",
+                                            "desc": "Jennifer",
+                                            "plus": false
+                                        }, {
+                                            "id": "ivy",
+                                            "country": "US",
+                                            "lang": "en",
+                                            "sex": "F",
+                                            "vendor": "ReadLoud",
+                                            "desc": "Ivy",
+                                            "plus": false
+                                        }, {
+                                            "id": "joey",
+                                            "country": "US",
+                                            "lang": "en",
+                                            "sex": "M",
+                                            "vendor": "ReadLoud",
+                                            "desc": "Joey",
+                                            "plus": false
+                                        }, {
+                                            "id": "brian",
+                                            "country": "GB",
+                                            "lang": "en",
+                                            "sex": "M",
+                                            "vendor": "ReadLoud",
+                                            "desc": "Brian",
+                                            "plus": false
+                                        }, {
+                                            "id": "kimberly",
+                                            "country": "US",
+                                            "lang": "en",
+                                            "sex": "F",
+                                            "vendor": "ReadLoud",
+                                            "plus": false,
+                                            "desc": "Kimberly"
+                                        }, {
+                                            "id": "kendra",
+                                            "country": "US",
+                                            "lang": "en",
+                                            "sex": "F",
+                                            "vendor": "ReadLoud",
+                                            "plus": false,
+                                            "desc": "Kendra"
+                                        }, {
+                                            "id": "justin",
+                                            "country": "US",
+                                            "lang": "en",
+                                            "sex": "M",
+                                            "vendor": "ReadLoud",
+                                            "plus": false,
+                                            "desc": "Justin"
+                                        }]
+                                    },
+                                    el: {
+                                        desc: "Greek",
+                                        options: [{
+                                            "id": "afroditi",
+                                            "country": "el",
+                                            "lang": "el",
+                                            "sex": "F",
+                                            "plus": false,
+                                            "vendor": "Oddcast",
+                                            "desc": "Afroditi"
+                                        }, {
+                                            "id": "nikos",
+                                            "country": "el",
+                                            "lang": "el",
+                                            "sex": "M",
+                                            "plus": false,
+                                            "vendor": "Oddcast",
+                                            "desc": "Nikos"
+                                        }]
+                                    }  
+                                };                             
+                                return {
+                                    getModel: function() {
+                                        return lang_model;
+                                    },
+                                    lookupVoiceInfo: function(voice_id) {
+                                        for (var langId in lang_model) {
+                                            var voice_count = lang_model[langId]['options'].length;
+                                            for (var i = 0; i < voice_count; i++) {
+                                                if (lang_model[langId]['options'][i].id == voice_id) {
+                                                    return {
+                                                        desc: lang_model[langId]['options'][i].desc,
+                                                        sex: lang_model[langId]['options'][i].sex,
+                                                        plus: lang_model[langId]['options'][i].plus,
+                                                        locale: { id: langId, lang: lang_model[langId]['options'][i].lang, country: lang_model[langId]['options'][i].country, desc: lang_model[langId].desc }
+                                                    };
+                                                }
                                             }
-                                        } else window.location.reload();
-                                    }
-                                    return null;
-                                },
-                                getDefaultVoice() {
-                                    if (!lang_model) window.location.reload();
-                                    for (var langId in lang_model) {
-                                        var voice_count = lang_model[langId]['options'].length;
-                                        for (var i = 0; i < voice_count; i++) if (lang_model[langId]['options'][i]) {
-                                            if (typeof lang_model[langId]['options'][i].id === 'string') {
-                                                return lang_model[langId]['options'][i].id;
+                                        }
+                                        return null;
+                                    },
+                                    getDefaultVoice: function() {
+                                        for (var langId in lang_model) {
+                                            var voice_count = lang_model[langId]['options'].length;
+                                            for (var i = 0; i < voice_count; i++) {
+                                                if (typeof lang_model[langId]['options'][i].id === 'string') {
+                                                    return lang_model[langId]['options'][i].id;
+                                                }
                                             }
-                                        } else window.location.reload();
+                                        }
+                                        return null;
                                     }
-                                    return null;
-                                }
-                            };
+                                };
+                            })();
                         </script>
                         <div class="voiceselectorwidget">
                             <div class="voiceselector">
@@ -835,9 +907,6 @@
     <script type="text/javascript">
         jQuery('#upgrade_confirm, #upgrade .close_btn').click(function (e) {
             e.preventDefault();
-            GoLite.updateUserState(function (userState) {
-                if (userState == 2) reloadCCList();
-            });
             jQuery.unblockUI();
         });
     </script>
@@ -848,23 +917,9 @@
     <script type="text/javascript">
         jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
 
-        var customCC_model = [];
-        var reloadCCList = function () {
-            // jQuery.ajax({
-            // url: '/ajax/getCCCharacters',
-            // type: 'POST',
-            // data: { cc_theme_id: 'family', tags: '' },
-            // dataType: 'json',
-            // success: function(data, dummy1, dummy2) {
-            // customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });
-            // jQuery('div.character .customlink').addClass('ready');
-            // }
-            // });
-        };
-
         (function ($) {
             $(document).ready(function () {
-                reloadCCList();
+                
 
                 var next = 'step1', prev = '';
 
@@ -930,7 +985,6 @@
 
                     $(document).bind('user.signup user.login', function (e) {
                         GoLite.updateUserState(function (userState) {
-                            if (userState == 2) reloadCCList();
                             $(document).trigger('GoLite.stateChange', ['']);
                             $('#login_bar').slideUp();
                             showNotice('You are now logged in to GoAnimate');
