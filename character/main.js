@@ -21,18 +21,31 @@ function save(id, data) {
 	return id;
 }
 let ejsFile = '<% if (themeId == "family") { %>'
-let charCount = 0;
 for (const c of fUtil.getValidFileIndicies("char-", ".xml")) {
 	const buffer = fs.readFileSync(getCharPath(`c-${c}`));
 	const beg = buffer.indexOf(`theme_id="`) + 10;
 	const end = buffer.indexOf(`"`, beg);
 	const theme = buffer.subarray(beg, end).toString();
 	if (theme == "family") ejsFile += `<div class="item${
-		charCount < 1 ? ' selected' : ''
+		c < 1 ? ' selected' : ''
 	}" data-cid="c-${c}" data-name="" data-voice="joey" data-thumb="/char_heads/c-${c}.png"><span><img src="/char_thumbs/c-${c}.png" alt="Untitled"></span></div>`;
-	charCount++
 }
 fs.writeFileSync(`./views/qvm/chars.ejs`, ejsFile + `<% } %>`);
+let ejsFile1 = '<% if (themeId == "family") { %>'
+for (const c of fUtil.getValidFileIndicies("char-", ".xml")) {
+	const buffer = fs.readFileSync(getCharPath(`c-${c}`));
+	const beg = buffer.indexOf(`theme_id="`) + 10;
+	const end = buffer.indexOf(`"`, beg);
+	const theme = buffer.subarray(beg, end).toString();
+	if (theme == "family") {
+		if (c == 1) ejsFile1 += 
+		`<div class="item selected" data-cid="c-1" data-name="" data-voice="joey" data-thumb="/char_heads/c-1.png"><span><img src="/char_thumbs/c-1.png" alt="Untitled"></span></div>`;
+		else ejsFile1 += `<div class="item" data-cid="c-${c}" data-name="" data-voice="joey" data-thumb="/char_heads/c-${c}.png"><span><img src="/char_thumbs/c-${
+			c
+		}.png" alt="Untitled"></span></div>`;
+	}
+}
+fs.writeFileSync(`./views/qvm/chars1.ejs`, ejsFile1 + `<% } %>`);
 /**
  * @param {string} id
  * @returns {string}

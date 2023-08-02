@@ -372,9 +372,10 @@ module.exports = function (req, res, url) {
 											}
 										}
 										soundXml += `<sound id="SOUND${counts.sounds}" index="${counts.sounds}" track="0" vol="1" tts="1"><sfile>ugc.${meta.id}</sfile><start>${
-											(Math.round(counts.scenes) * 24) + 96}</start><stop>${
-												(Math.round(counts.scenes + 1) * 24) + (counts.scenes * 24) + 96
-											}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
+											(Math.round(counts.sounds) * 24) + 96
+										}</start><stop>${
+											(Math.round(counts.sounds + i) * 24) + (counts.sounds * 24) + 96
+										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
 										lipsyncXml += `<linkage>SOUND${counts.sounds},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.scenes}~~~</linkage>`;
@@ -453,7 +454,7 @@ module.exports = function (req, res, url) {
 							  break;
 							} default: {
 								return res.end(JSON.stringify({
-									error: "This scene does not exist on our database. please try a different scene."
+									error: "The scene that you picked in step 1 does not exist on our database. please go back to step 1 and pick a different scene."
 								}));
 							}
 						}
