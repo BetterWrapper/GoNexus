@@ -119,4 +119,4 @@ module.exports = http
 		}
 		console.log(req.method, req.url, '-', res.statusCode);
 	})
-	.listen(env.PORT || env.SERVER_PORT, console.timeLog);
+	.listen(env.PORT || env.SERVER_PORT, console.error);
