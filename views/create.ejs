@@ -33,7 +33,7 @@
                         <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                          <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
-                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
                          ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
                     </div>
                     </div></div></div></div>`);
@@ -41,7 +41,7 @@
                         <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
-                        ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                        ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
                     </div></div></div></div></div>`);
                     count++

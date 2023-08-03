@@ -65,11 +65,7 @@ module.exports = {
 		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`)).users.find(i => i.id == uId);
 		let aList = json.assets.filter(i => i.type == type);
 		if (subtype) aList = aList.filter(i => i.subtype == subtype);
-		if (themeId) {
-			aList = aList.filter(i => i.themeId == themeId);
-			aList.thumb_url = `/char_thumbs/${aList.id}.png`;
-			aList.head_url = `/char_heads/${aList.id}.png`;
-		}
+		if (themeId) aList = aList.filter(i => i.themeId == themeId);
 		return aList;
 	},
 	meta2Xml(v) {

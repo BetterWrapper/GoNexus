@@ -1,4 +1,5 @@
 const fUtil = require("../misc/file");
+const { getThemes } = require("../movie/parse");
 const fs = require("fs");
 const http = require("http");
 const ejs = require('ejs');
@@ -23,6 +24,24 @@ function toObjectString(attrs, params) {
 		.map((key) => `${key}="${attrs[key].replace(/"/g, '\\"')}"`)
 		.join(" ")}>${toParamString(params)}</object>`;
 }
+function fetchCharOrder(themeId, pathname) {
+	const json = {};
+	for (const themes of getThemes()) {
+		if (themeId == themes.attr.cc_theme_id) {
+			switch (pathname) {
+				case "/cc": {
+					json.html = `<li><a href="/cc_browser?themeId=${themeId}">${themes.attr.name} Characters</a></li><li class="active">Create a new character</li>`;
+					break;
+				} case "/cc_browser": {
+					json.html = `<li class="active">${themes.attr.name} Characters</li>`;
+					json.msg = `Browse characters already available in the ${themes.attr.name} theme and use them as a starting point to create new custom characters.`;
+					break;
+				}
+			}
+		}
+	}
+	return json;
+}
 
 /**
  * @param {http.IncomingMessage} req
@@ -34,27 +53,27 @@ module.exports = function (req, res, url) {
 	if (req.method != "GET") return;
 	const query = url.query;
 
-	var attrs, params, title, filename;
+	var attrs, params, title, filename, charOrder = '';
 	switch (url.pathname) {
 		case "/cc": {
 			title = "Character Creator";
 			filename = "cc";
+			charOrder = fetchCharOrder(url.query.themeId || "family", "/cc");
 			attrs = {
 				data: process.env.SWF_URL + "/cc.swf", // data: 'cc.swf',
 				type: "application/x-shockwave-flash",
 				id: "char_creator",
-				width: "100%",
-				height: "100%",
+				width: "960",
+				height: "600",
 			};
 			params = {
 				flashvars: {
 					apiserver: "/",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
-					original_asset_id: query["id"] || null,
-					themeId: "business",
+					themeId: "family",
 					ut: 60,
-					bs: "default",
+					bs: "adam",
 					appCode: "go",
 					page: "",
 					siteId: "go",
@@ -106,20 +125,20 @@ module.exports = function (req, res, url) {
 
 		case "/cc_browser": {
 			title = "CC Browser";
-			filename = "cc_browser";
+			filename = "cc";
+			charOrder = fetchCharOrder(url.query.themeId || "family", "/cc_browser");
 			attrs = {
 				data: process.env.SWF_URL + "/cc_browser.swf", // data: 'cc_browser.swf',
 				type: "application/x-shockwave-flash",
-				id: "char_creator",
-				width: "100%",
-				height: "100%",
+				id: "ccbrowser",
+				width: "960",
+				height: "1200",
 			};
 			params = {
 				flashvars: {
 					apiserver: "/",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
-					original_asset_id: query["id"] || null,
 					themeId: "family",
 					ut: 60,
 					appCode: "go",
@@ -264,6 +283,7 @@ module.exports = function (req, res, url) {
 		title,
 		attrs,
 		params,
+		charOrder,
 		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString(),
 		object: toObjectString,
 		paramString: toParamString

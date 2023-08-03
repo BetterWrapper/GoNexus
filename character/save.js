@@ -1,6 +1,7 @@
 const loadPost = require("../misc/post_body");
 const character = require("./main");
 const http = require("http");
+const fs = require("fs");
 
 /**
  * @param {http.IncomingMessage} req
@@ -18,6 +19,22 @@ module.exports = function (req, res, url) {
 					var head = Buffer.from(data.imagedata, "base64");
 					character.saveThumb(thumb, id);
 					character.saveHead(head, id);
+					const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
+					const json = userFile.users.find(i => i.id == data.userId);
+					json.assets.unshift({
+						id,
+						enc_asset_id: id,
+						file: id + ".xml",
+						head_url: `/char_heads/${id}.png`,
+						thumb_url: `/char_thumbs/${id}.png`,
+						type: "char",
+						subtype: 0,
+						title: "Untitled",
+						published: 0,
+						tags: "",
+						themeId: data.themeId
+					});
+					fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(userFile, null, "\t"));
 					res.end(`0${id}`);
 				}).catch(e => {
 					console.log(e);

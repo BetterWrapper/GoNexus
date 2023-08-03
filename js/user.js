@@ -34,8 +34,14 @@ auth.onAuthStateChanged(user => {
                 });
             }
             switch (window.location.pathname) {
+                case "/cc_browser": 
+                case "/cc": 
+                case "/go_full": 
                 case "/movies": {
                     window.location.href = '/';
+                    break;
+                } case "/quickvideo": {
+                    jQuery("#login_bar").not("[login]").show();
                     break;
                 }
                 case "/public_signup":
@@ -149,6 +155,11 @@ auth.onAuthStateChanged(user => {
                     location.href = '/movies';
                     break;
                 }
+                case "/cc_browser": 
+                case "/cc":  {
+                    loadCC(user);
+                    break;
+                }
             }
         }
     } else {
@@ -157,11 +168,15 @@ auth.onAuthStateChanged(user => {
         showElement('signup-button');
         showElement('login-button');
         switch (window.location.pathname) {
+            case "/cc_browser": 
+            case "/cc": 
+            case "/go_full": 
             case "/movies": {
                 window.location.href = '/';
                 break;
             } case "/quickvideo": {
-                jQuery("#login_bar").show();
+                jQuery("#login_bar").not("[email-verification]").show();
+                break;
             }
         }
     }

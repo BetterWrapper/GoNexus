@@ -804,7 +804,13 @@
                 },
                 dataType: 'json',
                 success: function(data) {
-                    customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });
+                    console.log(data);
+                    customCC_model = jQuery.grep(data, function(cc) { 
+                        console.log(cc);
+                        if (!cc.error) {
+                            return (cc.head_url && cc.thumb_url);
+                        } else showNotice(cc.error, true);
+                    });
                     jQuery('div.character .customlink').addClass('ready');
                 }
             });
