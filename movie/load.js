@@ -73,8 +73,60 @@ module.exports = function (req, res, url) {
 
 		case "POST": {
 			switch (url.pathname) {
-				case "/ajax/previewText2Video": {
-					new formidable.IncomingForm().parse(req, async (e, f, files) => { // setup all of the functions for the xml generator
+				case "/ajax/saveText2Video": { // save a qvm video (requires a user to be logged in)
+					loadPost(req, res).then(([data]) => {
+						console.log(data, templateAssets);
+						if (!data.userId) return res.end(JSON.stringify({
+							error: "You need to be logged in to your account in order to save your video."
+						}));
+						let movieXml = fs.readFileSync(`./previews/template.xml`, 'utf8');
+						movieXml = movieXml.replace(`<film isWide="1">`, `<film copyable="0" published="0" pshare="0" isWide="1">`);
+						movieXml = movieXml.replace(`<title><![CDATA[]]></title>`, `<title><![CDATA[${data.title}]]></title>`);
+						movieXml = movieXml.replace(`<desc><![CDATA[]]></desc>`, `<desc><![CDATA[${data.desc}]]></desc>`);
+						const mId = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
+						const mIdParts = {
+							prefix: mId.substr(0, mId.lastIndexOf("-")),
+							suffix: mId.substr(mId.lastIndexOf("-") + 1)
+						};
+						let thumb;
+						if (data.thumbnail) { // if there was a thumbnail in the video
+
+						} else switch (data.enc_tid){ // generate a thumbnail from the enc_tid param.
+							case "0nZrWjgxqytA": {
+								thumb = fs.readFileSync(`./qvm_files/bg03.jpg`);
+								break;
+							} default: {
+								return res.end(JSON.stringify({
+									error: "A thumbnail does not exist for this id. because of that, your video could not be saved. if you think that this is a bug, please contact lunabril#7273 on discord and let him know about this bug."
+								}));
+							}
+						}
+						const thumbpath = fUtil.getFileIndex("thumb-", ".png", mIdParts.suffix);
+						const filepath = fUtil.getFileIndex("movie-", ".xml", mIdParts.suffix);
+						fs.writeFileSync(thumbpath, thumb);
+						fs.writeFileSync(filepath, movieXml);
+						const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`))
+						const json = user.users.find(i => i.id == data.userId);
+						let metaCount;
+						for (const meta of templateAssets) {
+							metaCount = meta.orderNum;
+							metaCount++
+							json.assets.unshift(meta);
+							for (let i = 0; i < metaCount; i++) {
+								const index = templateAssets.findIndex(d => d.orderNum == i);
+								templateAssets.splice(index, 1);
+							}
+						}
+						fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(user, null, "\t"));
+						console.log(templateAssets);
+						res.end(JSON.stringify({
+							url: `/player?movieId=${mId}`
+						}));
+					});
+					break;
+				} case "/ajax/previewText2Video": { // loads qvm preview
+					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						// setup all of the functions for the xml generator
 						console.log(f);
 						if (!f["script[1][char_num]"]) return res.end(JSON.stringify({
 							error: "Your video has to contain 2 characters talking to one another. please fix all of the errors you made and preview this video again."
@@ -102,8 +154,8 @@ module.exports = function (req, res, url) {
 							}
 						}
 						console.log(charIds, counts);
-						const enc_mid = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
-						switch (f.enc_tid) { // and finally, generate the xml
+						// and finally, generate the xml
+						switch (f.enc_tid) {
 							case "0nZrWjgxqytA": {
 								movieXml += `<film isWide="1">
 								<meta>
@@ -263,7 +315,9 @@ module.exports = function (req, res, url) {
 										const meta = templateAssets.find(s => s.orderNum == i);
 										switch (f[`script[${i}][char_num]`]) {
 											case "1": {
-												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(Math.round(texts[i].length) * 7) + 7}" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${
+													(Math.round(texts[i].length) * 24) + (texts[i].length * 24) + 96
+												}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="D13D4A19-8247-704D-7D92-54C7E96875B9">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -317,7 +371,9 @@ module.exports = function (req, res, url) {
 											  </scene>`;
 											  break;
 											} case "2": {
-												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${(Math.round(texts[i].length) * 7) + 7}" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${
+													(Math.round(texts[i].length) * 24) + (texts[i].length * 24) + 96
+												}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="65B686F6-7257-FBA7-2397-2B22E0F82023">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
@@ -372,9 +428,9 @@ module.exports = function (req, res, url) {
 											}
 										}
 										soundXml += `<sound id="SOUND${counts.sounds}" index="${counts.sounds}" track="0" vol="1" tts="1"><sfile>ugc.${meta.id}</sfile><start>${
-											(Math.round(counts.sounds) * 24) + 96
+											(Math.round(texts[i].length) * 24) + 96
 										}</start><stop>${
-											(Math.round(counts.sounds + i) * 24) + (counts.sounds * 24) + 96
+											(Math.round(texts[i].length) * 24) + (texts[i].length * 24) + 96
 										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
@@ -462,7 +518,6 @@ module.exports = function (req, res, url) {
 						if (!fs.existsSync(`./previews`)) fs.mkdirSync(`./previews`);
 						fs.writeFileSync(`./previews/template.xml`, movieXml);
 						res.end(JSON.stringify({
-							enc_mid,
 							script: f,
 							player_object: {
 								movieId: "templatePreview",
@@ -476,7 +531,7 @@ module.exports = function (req, res, url) {
 						}))
 					});
 					break;
-				} case "/api/sendUserInfo": {
+				} case "/api/sendUserInfo": { // sends the user info firebase provides to the server
 					function sendUserInfo() {
 						return new Promise(async resolve => {
 							const [data] = await loadPost(req, res)
@@ -486,7 +541,7 @@ module.exports = function (req, res, url) {
 					}
 					sendUserInfo().then(() => res.end());
 					break;
-				} case "/goapi/getMovie/": {
+				} case "/goapi/getMovie/": { // loads a movie using the parse.js file
 					res.setHeader("Content-Type", "application/zip");
 					loadPost(req, res).then(async ([data]) => {
 						try {
@@ -500,7 +555,7 @@ module.exports = function (req, res, url) {
 						}
 					});
 					break;
-				} case "/api/videoExport/completed": {
+				} case "/api/videoExport/completed": { // converts the video frames into an actual video.
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						const frames = f.frames;
 						const base = path.join(__dirname, "../frames");
@@ -531,18 +586,18 @@ module.exports = function (req, res, url) {
 						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).run();
 					});
 					break;
-				} case "/api/check4ExportedMovieExistance": {
+				} case "/api/check4ExportedMovieExistance": { // checks for an existing exported video.
 					loadPost(req, res).then(([data]) => {
 						res.end(JSON.stringify({
 							exists: fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2)))
 						}))
 					})
 					break;
-				} case "/api/savePreviewXml": {
+				} case "/api/savePreviewXml": { // sends the preview xml to the server
 					req.on('end', () => res.end());
 					movie.previewer.push(req, url.query.videoId);
 					break;
-				} case "/api/checkXml4Audio": {
+				} case "/api/checkXml4Audio": { // checks for any audio included in the movie xml.
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						const id = f.videoId;
 						switch (f.isPreview) {
@@ -561,7 +616,7 @@ module.exports = function (req, res, url) {
 						}
 					});
 					break;
-				}
+				} default: return;
 			}
 			break;
 		} default: return;

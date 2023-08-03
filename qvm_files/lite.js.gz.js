@@ -1,21 +1,7 @@
-var _kmq = _kmq || [],
-    _kmtracked = _kmtracked || {};
-
-function kisstrack(a) {}
-
-function gatrack(a) {
-return "poop";
+var userData;
+function sendUserData(user) {
+    userData = user;
 }
-
-function errortrack(a) {
-    if (!a.url) {
-        a.url = document.location.href
-    }
-    jQuery.post("/ajax/errorlog", {
-        error: a
-    }, jQuery.noop)
-}
-
 function ItemSelector(c) {
     var b = 0,
         d = 0;
@@ -185,7 +171,7 @@ VoiceRecorder.recording = false;
 VoiceRecorder.defaultSettings = {
     swf: "",
     flashvars: {
-        apiserver: "http://localhost:8090/",
+        apiserver: "/",
         appCode: "go",
         u_info: ""
     }
@@ -533,7 +519,7 @@ function updatePhotoArray() {
             photoArray = a.getPhotoArray()
         }
     } catch (b) {
-        gatrack("error/photoArray")
+        showNotice(b, true);
     }
 }
 
@@ -562,7 +548,6 @@ var GoLite = (function(e) {
             w.enc_mid = b
         }
         w.enc_tid = t.data("tid");
-        w.enc_mid = 'templatePreview';
 
         if (u) {
             w.opening_closing = u
@@ -670,7 +655,6 @@ var GoLite = (function(e) {
             if ("preview" == w) {
                 e("#step4 .preview").css("display", "block");
                 e("#step4 .previous_step").css("display", "block");
-                kisstrack("GoLitePreview")
             } else {
                 if ("save" == w) {
                     e("#step4 .save").fadeIn();
@@ -679,7 +663,6 @@ var GoLite = (function(e) {
                     k("thumb_chooser_container", {
                         templateThumbnail: t.data("thumb")
                     });
-                    kisstrack("GoLiteSavePanel")
                 } else {
                     if ("upgrade" == w) {
                         e("#step4 .upgrade").show()
@@ -958,12 +941,6 @@ var GoLite = (function(e) {
                 error: function(y, A, z) {
                     o = false;
                     e(document).trigger("GoLite.stateChange", [""]);
-                    gatrack("error/" + A);
-                    errortrack({
-                        type: A,
-                        message: z,
-                        input: w
-                    })
                 }
             });
             o = true;
@@ -972,7 +949,6 @@ var GoLite = (function(e) {
                 if (y.error) {
                     showNotice(y.error, true);
                     e(document).trigger("GoLite.stateChange", [""]);
-                    gatrack("error/normal");
                     return
                 }
                 b = y.enc_mid;
@@ -1021,8 +997,13 @@ var GoLite = (function(e) {
                 if (w.length) {
                     w = w[0]
                 }
-            } catch (z) {}
+            } catch (z) {
+                showNotice(z, true);
+            }
             var y = f();
+            if (userData) {
+                y.userId = userData.uid;
+            }
             y.tag = "";
             y.title = B;
             y.desc = A;
@@ -1039,12 +1020,6 @@ var GoLite = (function(e) {
                 error: function(G, I, H) {
                     o = false;
                     e(document).trigger("GoLite.stateChange", [""]);
-                    gatrack("error/" + I);
-                    errortrack({
-                        type: I,
-                        message: H,
-                        input: y
-                    })
                 }
             });
             o = true;
@@ -1054,10 +1029,8 @@ var GoLite = (function(e) {
                 if (G.error) {
                     e.unblockUI();
                     showNotice(G.error, true);
-                    gatrack("error/normal");
                     return
                 }
-                kisstrack("GoLitePublished");
                 window.location = G.url
             }, "json");
             e.ajaxSetup({

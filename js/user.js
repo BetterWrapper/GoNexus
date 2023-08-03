@@ -10,7 +10,7 @@ let loginComplete = false;
 let displayName = null;
 auth.onAuthStateChanged(user => {
     if (user) {
-        $.post("/api/check4SavedUserInfo", {
+        jQuery.post("/api/check4SavedUserInfo", {
             displayName: user.displayName,
             email: user.email,
             uid: user.uid
@@ -60,6 +60,10 @@ auth.onAuthStateChanged(user => {
             showElement('isLogin');
             showElement('exploreTab');
             switch (window.location.pathname) {
+                case "/quickvideo": {
+                    sendUserData(user);
+                    break;
+                }
                 case "/":
                 case "/movies": {
                     sendUserData(user);
