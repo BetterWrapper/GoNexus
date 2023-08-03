@@ -3,11 +3,11 @@
 <head>
 
     <meta charset="utf-8">
-    <title>Comedy World Template | Slices of Daily Life | GoAnimate for Schools</title>
+    <title>Comedy World Template | Slices of Daily Life | BetterWrapper</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
     <meta name="description"
-        content="With GoAnimate Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
+        content="With The QVM, you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
 
     <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
 
@@ -38,6 +38,10 @@
     <script type="text/javascript" src="/qvm_files/jquery.scrollTo.min.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/jquery.jplayer.min.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/jquery.tmpl.min.js.gz.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+    <script src="/js/user.js"></script>
     <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
@@ -86,7 +90,9 @@
             }
             jQuery.scrollTo(step, settings);
         }
-
+        function showLogin() {
+            jQuery("#login").show();
+        }
     </script>
     <div id="bg"></div>
     <div id="container">
@@ -108,6 +114,13 @@
             </div>
         </div>
 
+        <div id="login_bar" style="display: none">
+            <div class="inside">You'll need to signup to use your own characters and save changes to your video.		<div class="options">
+                    <a id="login_link" href="/login">Login</a> -
+                    <a id="signup_link" href="/signup">Sign up</a>
+                </div>
+            </div>
+        </div>
 
         <div id="intro" class="section">
             <div class="inside">
@@ -166,201 +179,182 @@
 
         <div id="step2" class="section">
             <h2>2. Select Your Actors</h2>
-
+        
             <a class="previous_step" href="#step1" onclick="stepTo('#step1'); return false;">Back</a>
-
+        
             <div class="inside">
                 <div class="character">
-                    <div id="character1_title" class="title"><img
-                            src="/qvm_files/bg03_a.jpg"
-                            alt=""></div>
+                    <div id="character1_title" class="title"><img src="/qvm_files/bg03_a.jpg" alt=""></div>
                     <div id="character1" class="item_selector character_selector">
                         <a class="select_button prev" href="#">&lt;</a>
-                        <div class="items"><%- include("qvm/chars.ejs", {
-                            themeId: "family"
-                        }) %></div>
+                        <div class="items">
+                            <div class="item selected" data-cid="53774620" data-name="" data-voice="joey" data-thumb="/char_heads/53774620.png" style="display: block;"><span><img src="/char_thumbs/53774620.png" alt=""></span></div>
+                            <div class="item" data-cid="51900632" data-name="" data-voice="amy" data-thumb="/char_heads/51900632.png" style="display: none;"><span><img src="/char_thumbs/51900632.png" alt=""></span></div>
+                            <div class="item" data-cid="51288759" data-name="" data-voice="brian" data-thumb="/char_heads/51288759.png" style="display: none;"><span><img src="/char_thumbs/51288759.png" alt=""></span></div>
+                        </div>
                         <a class="select_button next" href="#">&gt;</a>
                     </div>
                     <div class="name"></div>
-
+                    <div class="customlink">
+                        <a href="javascript:detectLogin('customchars')">Use your own character</a>
+                    </div>
                 </div>
-
+        
                 <div class="character">
-                    <div id="character2_title" class="title"><img
-                            src="/qvm_files/bg03_b.jpg"
-                            alt=""></div>
+                    <div id="character2_title" class="title"><img src="/qvm_files/bg03_b.jpg" alt=""></div>
                     <div id="character2" class="item_selector character_selector">
                         <a class="select_button prev" href="#">&lt;</a>
-                        <div class="items"><%- include("qvm/chars1.ejs", {
-                            themeId: "family"
-                        }) %></div>
+                        <div class="items">
+                            <div class="item" data-cid="53774620" data-name="" data-voice="joey" data-thumb="/char_heads/53774620.png" style="display: none;"><span><img src="/char_thumbs/53774620.png" alt=""></span></div>
+                            <div class="item selected" data-cid="51900632" data-name="" data-voice="amy" data-thumb="/char_heads/51900632.png" style="display: block;"><span><img src="/char_thumbs/51900632.png" alt=""></span></div>
+                            <div class="item" data-cid="51288759" data-name="" data-voice="brian" data-thumb="/char_heads/51288759.png" style="display: none;"><span><img src="/char_thumbs/51288759.png" alt=""></span></div>
+                        </div>
                         <a class="select_button next" href="#">&gt;</a>
                     </div>
                     <div class="name"></div>
-
+                    <div class="customlink">
+                        <a href="javascript:detectLogin('customchars')">Use your own character</a>
+                    </div>
                 </div>
             </div>
-
+        
             <div class="snippets" style="display: none">
                 <strong class="plus-char-txt">GoPlus Character</strong>
                 <div class="plus-cover">
-                    <div><strong>GoPlus Template</strong> Upgrade to GoPlus to go to the next step.</div>
+                    <div>
+                        <strong>GoPlus Template</strong> Upgrade to GoPlus to go to the next step.
+                    </div>
                 </div>
-                <div class="item" data-cid="" data-name="" data-voice="amy" data-thumb=""><span><img alt=""></span>
+                <div class="item" data-cid="" data-name="" data-voice="amy" data-thumb="">
+                    <span>
+                        <img alt="">
+                    </span>
                 </div>
                 <div class="selectccoverlay lightbox" style="display:none">
                     <div class="lightbox_wrapper">
                         <h2>1. Select your character:</h2>
-
                         <style type="text/css">
-                            .selectccoverlay h2 {
-                                margin-left: 66px;
-                                margin-bottom: 0em;
-                                font-size: 18px;
+                            .selectccoverlay h2 { 
+                                margin-left: 66px; 
+                                margin-bottom: 0em; 
+                                font-size: 18px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer {
-                                width: 545px;
-                                height: 210px;
-                                padding: 5px 0px;
-                                margin-left: 33px;
+                            .selectccoverlay .ccbrowsercontainer { 
+                                width: 545px; 
+                                height: 210px; 
+                                padding: 5px 0px; 
+                                margin-left: 33px; 
                             }
-
-                            .selectccoverlay .voiceselectorwidget {
-                                margin-left: 92px;
+                            .selectccoverlay .voiceselectorwidget { 
+                                margin-left: 92px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .leftarrow,
-                            .rightarrow {
-                                position: relative;
-                                margin-left: auto;
-                                margin-right: auto;
-                                top: 72px;
-                                width: 11px;
-                                height: 28px;
+                            .selectccoverlay .ccbrowsercontainer .leftarrow, .rightarrow { 
+                                position: relative; 
+                                margin-left: auto; 
+                                margin-right: auto; 
+                                top: 72px; 
+                                width: 11px; 
+                                height: 28px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .leftarrow {
-                                background: url('/ui/img/btn_arrow_l.png') no-repeat 0px 0px;
-                                cursor: pointer;
+                            .selectccoverlay .ccbrowsercontainer .leftarrow { 
+                                background: url('/ui/img/btn_arrow_l.png') no-repeat 0px 0px; 
+                                cursor: pointer; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .disabled .leftarrow {
-                                background: none;
-                                cursor: default;
+                            .selectccoverlay .ccbrowsercontainer .disabled .leftarrow { 
+                                background: none; 
+                                cursor: default; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .disabled .leftarrow:hover {
-                                background: none;
-                                cursor: default;
+                            .selectccoverlay .ccbrowsercontainer .disabled .leftarrow:hover { 
+                                background: none; 
+                                cursor: default; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .leftarrow:hover {
-                                background: url('/ui/img/btn_arrow_l.png') no-repeat 0px -28px;
+                            .selectccoverlay .ccbrowsercontainer .leftarrow:hover { 
+                                background: url('/ui/img/btn_arrow_l.png') no-repeat 0px -28px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .rightarrow {
-                                background: url('/ui/img/btn_arrow_r.png') no-repeat 0px 0px;
-                                cursor: pointer;
+                            .selectccoverlay .ccbrowsercontainer .rightarrow { 
+                                background: url('/ui/img/btn_arrow_r.png') no-repeat 0px 0px; 
+                                cursor: pointer; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .disabled .rightarrow {
-                                background: none;
-                                cursor: default;
+                            .selectccoverlay .ccbrowsercontainer .disabled .rightarrow { 
+                                background: none; 
+                                cursor: default; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .disabled .rightarrow:hover {
-                                background: none;
-                                cursor: default;
+                            .selectccoverlay .ccbrowsercontainer .disabled .rightarrow:hover { 
+                                background: none; 
+                                cursor: default; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .rightarrow:hover {
-                                background: url('/ui/img/btn_arrow_r.png') no-repeat 0px -28px;
+                            .selectccoverlay .ccbrowsercontainer .rightarrow:hover { 
+                                background: url('/ui/img/btn_arrow_r.png') no-repeat 0px -28px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .leftarrowcontainer {
-                                float: left;
-                                height: 175px;
-                                width: 25px;
-                                margin-right: 10px;
+                            .selectccoverlay .ccbrowsercontainer .leftarrowcontainer { 
+                                float: left; 
+                                height: 175px; 
+                                width: 25px; 
+                                margin-right: 10px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .rightarrowcontainer {
-                                float: right;
-                                height: 175px;
-                                width: 25px;
-                                margin-left: 5px;
+                            .selectccoverlay .ccbrowsercontainer .rightarrowcontainer { 
+                                float: right; 
+                                height: 175px; 
+                                width: 25px; 
+                                margin-left: 5px; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .selectedcc {
-                                border-width: 3px;
-                                border-style: solid;
-                                border-color: #999999 !important;
+                            .selectccoverlay .ccbrowsercontainer .selectedcc { 
+                                border-width: 3px; 
+                                border-style: solid; 
+                                border-color: #999999 !important; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .cc {
-                                overflow: hidden;
-                                position: relative;
-                                border-radius: 5px;
-                                -moz-border-radius: 5px;
-                                -webkit-border-radius: 5px;
-                                background-color: #dddddd;
-                                width: 85px;
-                                height: 85px;
-                                float: left;
-                                margin-right: 5px;
-                                margin-bottom: 5px;
-                                border-width: 3px;
-                                border-color: #dddddd;
-                                border-style: solid;
+                            .selectccoverlay .ccbrowsercontainer .cc { 
+                                overflow: hidden; 
+                                position: relative; 
+                                border-radius: 5px; 
+                                -moz-border-radius: 5px; 
+                                -webkit-border-radius: 5px; 
+                                background-color: #dddddd; 
+                                width: 85px; 
+                                height: 85px; 
+                                float: left; 
+                                margin-right: 5px; 
+                                margin-bottom: 5px; 
+                                border-width: 3px; 
+                                border-color: #dddddd; 
+                                border-style: solid; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .cc.enabled {
-                                cursor: pointer;
+                            .selectccoverlay .ccbrowsercontainer .cc.enabled { 
+                                cursor: pointer; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .cc.enabled:hover {
-                                background-color: #eeeeee;
-                                border-color: #eeeeee;
+                            .selectccoverlay .ccbrowsercontainer .cc.enabled:hover { 
+                                background-color: #eeeeee; 
+                                border-color: #eeeeee; 
                             }
-
-                            .selectccoverlay .ccbrowsercontainer .cc img {
-                                position: absolute;
+                            .selectccoverlay .ccbrowsercontainer .cc img { 
+                                position: absolute; 
                             }
-
-                            .selectccoverlay .pagenumdisplay {
-                                text-align: center;
-                                margin-bottom: 1em;
-                                clear: both;
-                                font-size: 14px;
-                                font-weight: bold;
-                                color: #aaaaaa;
+                            .selectccoverlay .pagenumdisplay { 
+                                text-align: center; 
+                                margin-bottom: 1em; 
+                                clear: both; 
+                                font-size: 14px; 
+                                font-weight: bold; 
+                                color: #aaaaaa; 
                             }
-
-                            .selectccoverlay a.bottomcancel {
-                                float: left;
-                                text-align: center;
-                                margin: 30px auto;
-                                display: block;
-                                color: #666666;
-                                font-size: 16px;
-                                font-weight: bold;
-                                text-decoration: none;
+                            .selectccoverlay a.bottomcancel { 
+                                float: left; 
+                                text-align: center; 
+                                margin: 30px auto; 
+                                display: block; 
+                                color: #666666; 
+                                font-size: 16px; 
+                                font-weight: bold; 
+                                text-decoration: none; 
                             }
-
-                            .selectccoverlay a.bottomcancel:hover {
-                                color: #777777;
-                                text-decoration: none;
+                            .selectccoverlay a.bottomcancel:hover { 
+                                color: #777777; 
+                                text-decoration: none; 
                             }
                         </style>
-
                         <div class="ccbrowsercontainer">
-                            <div class="leftarrowcontainer">
-                                <div class="leftarrow"></div>
-                            </div>
-                            <div class="rightarrowcontainer">
-                                <div class="rightarrow"></div>
-                            </div>
+                            <div class="leftarrowcontainer"><div class="leftarrow"></div></div>
+                            <div class="rightarrowcontainer"><div class="rightarrow"></div></div>
                             <div class="cc"></div>
                             <div class="cc"></div>
                             <div class="cc"></div>
@@ -373,137 +367,55 @@
                             <div class="cc"></div>
                             <div class="pagenumdisplay"></div>
                         </div>
-
                         <h2>2. Select a voice for your character:</h2>
                         <script type="text/javascript">
-                            var VoiceCatalog = (function() {
-                                var lang_model = {
-                                    en: {
-                                        desc: "English",
-                                        options: [{
-                                            "id": "jennifer",
-                                            "country": "US",
-                                            "lang": "en",
-                                            "sex": "F",
-                                            "vendor": "ReadLoud",
-                                            "desc": "Jennifer",
-                                            "plus": false
-                                        }, {
-                                            "id": "ivy",
-                                            "country": "US",
-                                            "lang": "en",
-                                            "sex": "F",
-                                            "vendor": "ReadLoud",
-                                            "desc": "Ivy",
-                                            "plus": false
-                                        }, {
-                                            "id": "joey",
-                                            "country": "US",
-                                            "lang": "en",
-                                            "sex": "M",
-                                            "vendor": "ReadLoud",
-                                            "desc": "Joey",
-                                            "plus": false
-                                        }, {
-                                            "id": "brian",
-                                            "country": "GB",
-                                            "lang": "en",
-                                            "sex": "M",
-                                            "vendor": "ReadLoud",
-                                            "desc": "Brian",
-                                            "plus": false
-                                        }, {
-                                            "id": "kimberly",
-                                            "country": "US",
-                                            "lang": "en",
-                                            "sex": "F",
-                                            "vendor": "ReadLoud",
-                                            "plus": false,
-                                            "desc": "Kimberly"
-                                        }, {
-                                            "id": "kendra",
-                                            "country": "US",
-                                            "lang": "en",
-                                            "sex": "F",
-                                            "vendor": "ReadLoud",
-                                            "plus": false,
-                                            "desc": "Kendra"
-                                        }, {
-                                            "id": "justin",
-                                            "country": "US",
-                                            "lang": "en",
-                                            "sex": "M",
-                                            "vendor": "ReadLoud",
-                                            "plus": false,
-                                            "desc": "Justin"
-                                        }]
-                                    },
-                                    el: {
-                                        desc: "Greek",
-                                        options: [{
-                                            "id": "afroditi",
-                                            "country": "el",
-                                            "lang": "el",
-                                            "sex": "F",
-                                            "plus": false,
-                                            "vendor": "Oddcast",
-                                            "desc": "Afroditi"
-                                        }, {
-                                            "id": "nikos",
-                                            "country": "el",
-                                            "lang": "el",
-                                            "sex": "M",
-                                            "plus": false,
-                                            "vendor": "Oddcast",
-                                            "desc": "Nikos"
-                                        }]
-                                    }  
-                                };                             
-                                return {
-                                    getModel: function() {
-                                        return lang_model;
-                                    },
-                                    lookupVoiceInfo: function(voice_id) {
-                                        for (var langId in lang_model) {
-                                            var voice_count = lang_model[langId]['options'].length;
-                                            for (var i = 0; i < voice_count; i++) {
-                                                if (lang_model[langId]['options'][i].id == voice_id) {
-                                                    return {
-                                                        desc: lang_model[langId]['options'][i].desc,
-                                                        sex: lang_model[langId]['options'][i].sex,
-                                                        plus: lang_model[langId]['options'][i].plus,
-                                                        locale: { id: langId, lang: lang_model[langId]['options'][i].lang, country: lang_model[langId]['options'][i].country, desc: lang_model[langId].desc }
-                                                    };
-                                                }
-                                            }
-                                        }
-                                        return null;
-                                    },
-                                    getDefaultVoice: function() {
-                                        for (var langId in lang_model) {
-                                            var voice_count = lang_model[langId]['options'].length;
-                                            for (var i = 0; i < voice_count; i++) {
-                                                if (typeof lang_model[langId]['options'][i].id === 'string') {
-                                                    return lang_model[langId]['options'][i].id;
-                                                }
-                                            }
-                                        }
-                                        return null;
+                            var lang_model = {};
+                            jQuery.post("/api/getTTSVoices", (d) => {
+                                for (const voice of d) {
+                                    for (const stuff in voice) {
+                                        lang_model[stuff] = voice[stuff];
                                     }
-                                };
-                            })();
+                                }
+                            });
+                            var VoiceCatalog = {
+                                getModel() {
+                                    return lang_model;
+                                },
+                                lookupVoiceInfo(voice_id) {
+                                    for (var langId in lang_model) {
+                                        var voice_count = lang_model[langId]['options'].length;
+                                        for (var i = 0; i < voice_count; i++) if (lang_model[langId]['options'][i].id == voice_id) return {
+                                            desc: lang_model[langId]['options'][i].desc,
+                                            sex: lang_model[langId]['options'][i].sex,
+                                            plus: lang_model[langId]['options'][i].plus,
+                                            locale: { 
+                                                id: langId, 
+                                                lang: lang_model[langId]['options'][i].lang, 
+                                                country: lang_model[langId]['options'][i].country, 
+                                                desc: lang_model[langId].desc 
+                                            }
+                                        };
+                                    }
+                                    return null;
+                                },
+                                getDefaultVoice() {
+                                    for (var langId in lang_model) {
+                                        var voice_count = lang_model[langId]['options'].length;
+                                        for (var i = 0; i < voice_count; i++) if (typeof lang_model[langId]['options'][i].id === 'string') return lang_model[langId]['options'][i].id;
+                                    }
+                                    return null;
+                                }
+                            };
                         </script>
                         <div class="voiceselectorwidget">
-                            <div class="voiceselector">
-                            </div>
+                            <div class="voiceselector"></div>
                             <!-- Templates -->
                             <div class="templates" style="display: none">
                                 <!-- Voice list -->
                                 <div class="categorytab">
                                     <div class="flag" title="Language"></div>
                                     <div class="masteroptionscontainer">
-                                        <div class="optionscontainer">
-                                        </div>
+                                        <div class="optionscontainer"></div>
                                     </div>
                                 </div>
                                 <!-- Voice option -->
@@ -520,85 +432,70 @@
                             <div class="jplayer"></div>
                         </div>
                         <div style="overflow: auto; padding-left: 135px;">
-                            <a href="javascript:;" class="buttonbase buttonorange" id="voiceselect_confirm"
-                                style="margin:15px auto;float:left;display:block;">
+                            <a href="javascript:;" class="buttonbase buttonorange" id="voiceselect_confirm" style="margin:15px auto;float:left;display:block;">
                                 <div class="buttontitle">Confirm</div>
                             </a>
-                            <a href="javascript:;" class="buttonbase buttonblue dark" id="voiceselect_plusupgrade"
-                                style="margin:15px auto;float:left;display:none;">
+                            <a href="javascript:;" class="buttonbase buttonblue dark" id="voiceselect_plusupgrade" style="margin:15px auto;float:left;display:none;">
                                 <div class="buttontitle">Upgrade Now</div>
                             </a>
-                            <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel">
-                                <div style="width: 180px">Cancel</div>
-                            </a>
+                            <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel"><div style="width: 180px">Cancel</div></a>
                         </div>
                         <a onclick="jQuery.unblockUI()" class="close_btn">×</a>
                     </div>
                 </div>
                 <div class="selectvoiceoverlay lightbox" style="display:none">
                     <div class="lightbox_wrapper">
-
                         <style type="text/css">
-                            .selectvoiceoverlay {
-                                width: 550px;
+                            .selectvoiceoverlay { 
+                                width: 550px; 
                             }
-
-                            .selectvoiceoverlay h2 {
-                                text-align: center;
-                                color: black;
-                                margin-bottom: 0px;
-                                font-size: 18px;
-                                line-height: 20px;
+                            .selectvoiceoverlay h2 { 
+                                text-align: center; 
+                                color: black; margin-bottom: 0px; 
+                                font-size: 18px; 
+                                line-height: 20px; 
                             }
-
-                            .selectvoiceoverlay h3 {
-                                text-align: center;
-                                color: #999999;
-                                font-style: oblique;
-                                margin-top: 0px;
-                                margin-bottom: 2em;
-                                font-weight: normal;
-                                font-size: 13px;
-                                line-height: 20px;
+                            .selectvoiceoverlay h3 { 
+                                text-align: center; 
+                                color: #999999; 
+                                font-style: oblique; 
+                                margin-top: 0px; 
+                                margin-bottom: 2em; 
+                                font-weight: normal; 
+                                font-size: 13px; 
+                                line-height: 20px; 
                             }
-
-                            .selectvoiceoverlay .voiceselectorwidget {
-                                margin-left: auto;
-                                margin-right: auto;
+                            .selectvoiceoverlay .voiceselectorwidget { 
+                                margin-left: auto; 
+                                margin-right: auto; 
                             }
-
-                            .selectvoiceoverlay a.bottomcancel {
-                                float: left;
-                                text-align: center;
-                                margin: 30px auto;
-                                display: block;
-                                color: #666666;
-                                font-size: 16px;
-                                font-weight: bold;
-                                text-decoration: none;
+                            .selectvoiceoverlay a.bottomcancel { 
+                                float: left; 
+                                text-align: center; 
+                                margin: 30px auto; 
+                                display: block; 
+                                color: #666666; 
+                                font-size: 16px; 
+                                font-weight: bold; 
+                                text-decoration: none; 
                             }
-
-                            .selectvoiceoverlay a.bottomcancel:hover {
-                                color: #777777;
-                                text-decoration: none;
+                            .selectvoiceoverlay a.bottomcancel:hover { 
+                                color: #777777; 
+                                text-decoration: none; 
                             }
                         </style>
-
                         <h2>Select a voice for your character</h2>
                         <h3>This change applies to the whole video</h3>
-                        <script type="text/javascript">
-                        </script>
+                        <script type="text/javascript"></script>
                         <div class="voiceselectorwidget">
-                            <div class="voiceselector">
-                            </div>
+                            <div class="voiceselector"></div>
                             <!-- Templates -->
                             <div class="templates" style="display: none">
                                 <!-- Voice list -->
                                 <div class="categorytab">
                                     <div class="flag" title="Language"></div>
                                     <div class="masteroptionscontainer">
-                                        <div class="optionscontainer">
-                                        </div>
+                                        <div class="optionscontainer"></div>
                                     </div>
                                 </div>
                                 <!-- Voice option -->
@@ -615,13 +512,10 @@
                             <div class="jplayer"></div>
                         </div>
                         <div style="overflow: auto; padding-left: 85px;">
-                            <a href="javascript:;" class="buttonbase buttonorange" id="voiceselectonly_confirm"
-                                style="margin:15px auto;float:left;display:block;">
+                            <a href="javascript:;" class="buttonbase buttonorange" id="voiceselectonly_confirm" style="margin:15px auto;float:left;display:block;">
                                 <div class="buttontitle">Confirm</div>
                             </a>
-                            <a href="/public_features"
-                                class="buttonbase buttonpurple3 dark" id="voiceselectonly_plusupgrade"
-                                style="margin:15px auto;float:left;display:none;">
+                            <a href="/public_features" class="buttonbase buttonpurple3 dark" id="voiceselectonly_plusupgrade" style="margin:15px auto;float:left;display:none;">
                                 <div class="buttontitle">Get a quote</div>
                             </a>
                             <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel">
@@ -632,49 +526,47 @@
                     </div>
                 </div>
             </div>
-
             <script id="dialogTmpl" type="text/x-jquery-tmpl">
-    <div class="dialog">
-        <div class="num"></div>
-        <div class="char_thumb">
-            <img src="${thumbURL}" alt="" />
-            <a class="switch">Switch</a>
-            <div class="tips">Switch Actor</div>
-        </div>
-        <div class="box">
-            <div class="dialog_input_wrapper">
-                <textarea class="dialog_input" name="script_text[]"></textarea>
-                <span class="label">Type in or Record Your dialog</span>
-            </div>
-            <div class="counter" style="display:none;"></div>
-            <div class="voice_recorder"></div>
-            <div class="dialog_options">
-                <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
-                {{if hasFacial}}
-                <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
-                {{/if}}
-                <div class="langarea">
-                    <div class="lang"></div>
-                    <div class="gender"></div>
-                    Voice                    <div class="tips">Switch Voice</div>
+                <div class="dialog">
+                    <div class="num"></div>
+                    <div class="char_thumb">
+                        <img src="${thumbURL}" alt="" />
+                        <a class="switch">Switch</a>
+                        <div class="tips">Switch Actor</div>
+                    </div>
+                    <div class="box">
+                        <div class="dialog_input_wrapper">
+                            <textarea class="dialog_input" name="script_text[]"></textarea>
+                            <span class="label">Type in or Record Your dialog</span>
+                        </div>
+                        <div class="counter" style="display:none;"></div>
+                        <div class="voice_recorder"></div>
+                        <div class="dialog_options">
+                            <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
+                            {{if hasFacial}}
+                            <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
+                            {{/if}}
+                            <div class="langarea">
+                                <div class="lang"></div>
+                                <div class="gender"></div>
+                                Voice <div class="tips">Switch Voice</div>
+                            </div>
+                        </div>
+                        <div class="dialog_input_control">
+                            <a class="dialog_tts on" data-method="tts"><div class="icon"></div><span class="tips">Text to Speech</span></a>
+                            <a class="dialog_mic" data-method="mic"><div class="icon"></div><span class="tips">Voice Recording</span></a>
+                        </div>
+                        <div class="dialog_control">
+                            <a title="Delete" class="dialog_delete">Delete</a>
+                            <a title="Insert Line" class="dialog_insert">Insert Line</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="dialog_input_control">
-                <a class="dialog_tts on" data-method="tts"><div class="icon"></div><span class="tips">Text to Speech</span></a>
-                <a class="dialog_mic" data-method="mic"><div class="icon"></div><span class="tips">Voice Recording</span></a>
-            </div>
-            <div class="dialog_control">
-                <a title="Delete" class="dialog_delete">Delete</a>
-                <a title="Insert Line" class="dialog_insert">Insert Line</a>
-            </div>
-        </div>
-    </div>
-</script>
-
+            </script>
+    
             <a class="btn_next" href="#step3" onclick="stepTo('#step3'); return false;">Next</a>
             <div class="upgrade" style="display: none;">
-                <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark"
-                    style="margin:0 auto;float:none;display:block;">
+                <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
                     <div class="buttontitle">Upgrade Now</div>
                 </a>
             </div>
@@ -692,7 +584,7 @@
                     <div class="dialog focus" data-charid="0" data-facial="default">
                         <div class="num">1</div>
                         <div class="char_thumb">
-                            <img src="/char_heads/c-0.png"
+                            <img src="/char_heads/53774620.png"
                                 alt="">
                             <a class="switch">Switch</a>
                             <div class="tips">Switch Actor</div>
@@ -729,7 +621,7 @@
                     </div>
                     <div class="dialog fake" data-charid="1">
                         <div class="char_thumb">
-                            <img src="/char_heads/c-1.png"
+                            <img src="/char_heads/51900632.png"
                                 alt="">
                         </div>
                         <div class="box">
@@ -840,37 +732,27 @@
                     <div class="thumbnail">
                         Choose your thumbnail
                         <div id="thumb_chooser_container">
-                            You can't use GoAnimate because Flash might be disabled. <a
-                                href="https://web.archive.org/web/20191027000220/https://get.adobe.com/flashplayer/">Enable
-                                Flash</a>.
+                            This content requires the Adobe Flash Player 10.0.12. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
                         </div>
                     </div>
-
+        
                     <div class="title">
                         <label for="movie_title">TITLE:</label>
-                        <input type="text" id="movie_title" name="movie_title" value="" maxlength="140"
-                            placeholder="Enter your title here">
+                        <input type="text" id="movie_title" name="movie_title" value="" maxlength="140" placeholder="Enter your title here">
                     </div>
-
+        
                     <div class="description">
                         <label for="movie_description">DESCRIPTION:</label>
-                        <textarea id="movie_description" name="movie_description"
-                            placeholder="Enter your description (optional)"></textarea>
+                        <textarea id="movie_description" name="movie_description" placeholder="Enter your description (optional)"></textarea>
                     </div>
-
-
-                    <div class="clear"></div>
-                    <div class="group_message" style="color:#999999;font-size:19px;padding-top:10px;text-align:center;">
-                        When you are finished with your video, you can post it to a group from the video page.</div>
+        
+        
                     <div class="buttons">
-                        <a id="btn_publish" href="#" style="font-size:21px;" onclick="GoLite.save(); return false;">Save
-                            and Go To Video Page</a>
+                        <a id="btn_publish" href="#" onclick="GoLite.save(); return false;">Publish</a>
                     </div>
                     <div class="clear"></div>
-
-                    <a id="back_preview" href="#"
-                        onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']); return false;">&lt; Back
-                        to Preview</a>
+        
+                    <a id="back_preview" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']); return false;">&lt; Back to Preview</a>
                 </div>
             </div>
         </div>
@@ -889,7 +771,6 @@
         <div class="lightbox_wrapper">Publishing ...</div>
     </div>
 
-
     <div id="upgrade" class="lightbox" style="display:none">
         <div class="lightbox_wrapper">
             <h2>Make animated videos exactly the way you want!</h2>
@@ -904,42 +785,45 @@
             <a class="close_btn">×</a>
         </div>
     </div>
-    <script type="text/javascript">
-        jQuery('#upgrade_confirm, #upgrade .close_btn').click(function (e) {
-            e.preventDefault();
-            jQuery.unblockUI();
-        });
-    </script>
+    <script type="text/javascript"></script>
 
     <script type="text/javascript" src="/qvm_files/jquery.swfobject.min.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/jquery.waypoints.min.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
     <script type="text/javascript">
         jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
-
-        (function ($) {
-            $(document).ready(function () {
-                
-
+        var customCC_model = [];
+        const reloadCCList = (userInfo) => {
+            jQuery.ajax({
+                url: '/api/getChars',
+                type: 'POST',
+                data: { 
+                    cc_theme_id: 'family', 
+                    tags: '',
+                    userId: userInfo.uid
+                },
+                dataType: 'json',
+                success: function(data) {
+                    customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });
+                    jQuery('div.character .customlink').addClass('ready');
+                }
+            });
+        }
+        (function($) {
+            $(document).ready(function() {
                 var next = 'step1', prev = '';
-
-                $('#nav_links .next').click(function (e) {
+                $('#nav_links .next').click(function(e) {
                     e.preventDefault();
-
                     next && stepTo('#' + next);
                 });
-                $('#nav_links .prev').click(function (e) {
+                $('#nav_links .prev').click(function(e) {
                     e.preventDefault();
-
                     prev && stepTo('#' + prev);
                 });
-
-                $('.section').waypoint({ offset: '50%' });
-
-                $('body').delegate('.section', 'waypoint.reached', function (e, direction) {
+                $('.section').waypoint({offset: '50%'});
+                $('body').delegate('.section', 'waypoint.reached', function(e, direction) {
                     var $this = $(this);
                     var id = $this.attr('id');
-
                     if (direction == 'up') {
                         if (id == 'step1') {
                             next = 'step1';
@@ -973,51 +857,16 @@
                             prev = 'step3';
                         }
                     }
-
-                    $('#nav_links').find('li').removeClass('on').end()
-                        .find('.' + id).addClass('on');
+                    $('#nav_links').find('li').removeClass('on').end().find('.' + id).addClass('on');
                 });
-
-                if ($('#login_bar').length) {
-                    $('#seperator0').waypoint(function (e) {
-                        $('#login_bar').slideDown();
-                    }, { offset: 'bottom-in-view', triggerOnce: true });
-
-                    $(document).bind('user.signup user.login', function (e) {
-                        GoLite.updateUserState(function (userState) {
-                            $(document).trigger('GoLite.stateChange', ['']);
-                            $('#login_bar').slideUp();
-                            showNotice('You are now logged in to GoAnimate');
-                        });
-                    });
-                }
-
                 jQuery('#movie_title, #movie_description').placeholder();
             });
-            $(window).load(function () { $('#nav_links').fadeIn(); });
+            $(window).load(function() {$('#nav_links').fadeIn();});
         })(jQuery);
     </script>
-
     <script type="text/javascript">
         var customCCHeadsBaseUrl = '/char_heads/';
         var customCCThumbsBaseUrl = '/char_thumbs/';
-
-
         var goliteEditorMode = 'new';
-
     </script>
-
-
-
-    <!--
-playback timings (ms):
-  captures_list: 71.632
-  exclusion.robots: 0.247
-  exclusion.robots.policy: 0.229
-  RedisCDXSource: 0.582
-  esindex: 0.011
-  LoadShardBlock: 47.623 (3)
-  PetaboxLoader3.datanode: 85.469 (4)
-  load_resource: 358.356
-  PetaboxLoader3.resolve: 306.734
--->
+</body></html>

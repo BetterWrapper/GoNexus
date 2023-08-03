@@ -160,6 +160,8 @@ auth.onAuthStateChanged(user => {
             case "/movies": {
                 window.location.href = '/';
                 break;
+            } case "/quickvideo": {
+                jQuery("#login_bar").show();
             }
         }
     }

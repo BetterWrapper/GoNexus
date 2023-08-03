@@ -1048,22 +1048,6 @@
 			"source": "Vocalware",
 			"desc": "Stefan"
 		},
-		"afroditi": {
-			"country": "EL",
-			"language": "el",
-			"gender": "F",
-			"arg": [2, 8, 1],
-			"source": "Vocalware",
-			"desc": "Afroditi"
-		},
-		"nikos": {
-			"country": "EL",
-			"language": "el",
-			"gender": "M",
-			"arg": [2, 8, 3],
-			"source": "Vocalware",
-			"desc": "Nikos"
-		},
 		"federica": {
 			"country": "IT",
 			"language": "it",
@@ -2811,7 +2795,6 @@
 	},
 	"languages": {
 		"th": "Thai",
-		"el": "Greek",
 		"fi": "Suomi",
 		"de": "German",
 		"fr": "French",

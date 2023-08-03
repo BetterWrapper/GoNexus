@@ -1,6 +1,21 @@
 var userData;
 function sendUserData(user) {
     userData = user;
+    reloadCCList(userData);
+}
+function detectLogin(action) {
+    if (!action) alert("Please put in an action in order to peform it if the user is logged in.");
+    if (!userData) switch (action) {
+        case "customchars": {
+            alert("Please login to betterwrapper in order to use custom characters");
+            break;
+        }
+    } else switch (action) {
+        case "customchars": {
+            GoLite.showSelectCCOverlay(1);
+            break;
+        }
+    }
 }
 function ItemSelector(c) {
     var b = 0,
