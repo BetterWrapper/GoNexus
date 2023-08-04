@@ -1,8 +1,20 @@
 # BetterWrapper
-Wrapper: Offline but better with more complex features for your creativity.
+An attempt to bring back GoAnimate For Schools and a sort of "continuation" of the obsolte project "GoAnimate For Schools Remastered". Currently private and closed source but that'll change in the future. 
 
-This branch is the ga4s version of betterwrapper as requested by our wonderful ex project manager, Luna.
+also uhh the codename is BetterWrapper lol I know its shit i plan on changing it in a few weeks lmao
 
-Note From Luna: I just got my hands on the brand new fusion5 laptop, now i can actually work on this project.
+## Developers
+* BluePeacocks
+* Itinerary Jyvee
+* josephanimate
+* lunastar67
+* MysteriousOwen
+* Revolution909
 
-Note from Owen: what is a "ga4s" version of betterwrapper
+## Beta Testers
+* CallMeMontie
+* gaviboi
+* HoodedCube
+* JonsCartoonShow
+* MKAnimates
+* Xill/Music
