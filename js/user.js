@@ -65,6 +65,7 @@ auth.onAuthStateChanged(user => {
             hideElement('login-button');
             showElement('isLogin');
             showElement('exploreTab');
+            showElement('iconsLol');
             switch (window.location.pathname) {
                 case "/quickvideo": {
                     sendUserData(user);
@@ -165,6 +166,7 @@ auth.onAuthStateChanged(user => {
     } else {
         hideElement('isLogin');
         hideElement('exploreTab');
+        hideElement('iconsLol');
         showElement('signup-button');
         showElement('login-button');
         switch (window.location.pathname) {
