@@ -106,7 +106,8 @@ module.exports = function (req, res, url) {
 
 		case "/quickvideo": {
 			const quickvideoThemeids = {
-				everydaylife: true
+				everydaylife: true,
+				basketball: true
 			};
 			if (quickvideoThemeids[url.query.filename]) filename = url.query.filename;
 			else return res.end('This theme has not been added to the server. Current Theme: ' + url.query.filename);
