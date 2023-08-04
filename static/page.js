@@ -99,7 +99,7 @@ module.exports = function (req, res, url) {
 			break;
 		}
 
-		case "/create": {
+		case "/videomaker": {
 			filename = "create";
 			break;
 		}
