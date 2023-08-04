@@ -72,9 +72,9 @@ module.exports = {
 		let xml;
 		switch (v.type) {
 			case "char": {
-				xml = `<char id="${v.id}" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="/char_thumbs/${
-					v.id
-				}.png" copyable="Y"><tags>${v.tags || ""}</tags></char>`;
+				xml = `<char id="${v.id}" name="${v.title || "Untitled"}" cc_theme_id="${v.themeId}" thumbnail_url="${
+					v.thumb_url || `/char-default.png`
+				}" copyable="Y"><tags>${v.tags || ""}</tags></char>`;
 				break;
 			} case "bg": {
 				xml = `<background subtype="0" id="${v.id}" name="${v.title}" enable="Y"/>`;
