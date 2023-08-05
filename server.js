@@ -42,6 +42,7 @@ module.exports = http
 			if (!fs.existsSync('./_ASSETS/users.json')) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify({
 				users: []
 			}, null, "\t"));
+			if (!fs.existsSync('./_SAVED')) fs.mkdirSync('./_SAVED');
 			const parsedUrl = url.parse(req.url, true);
 			//pages
 			switch (req.method) {

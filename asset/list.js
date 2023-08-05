@@ -10,7 +10,17 @@ async function listAssets(data, makeZip) {
 	var files;
 	switch (data.type) {
 		case "char": {
-			files = asset.list(data.userId, "char", 0, data.themeId);
+			let tId;
+			switch (data.themeId) {
+				case "custom": {
+					tId = "family";
+					break;
+				} case "action": {
+					tId = "cc2";
+					break;
+				}
+			}
+			files = asset.list(data.userId, "char", 0, tId);
 			break;
 		} default: {
 			files = asset.list(data.userId, data.type);

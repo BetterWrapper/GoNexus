@@ -14,7 +14,7 @@ ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
 const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
-const templateAssets = [];
+var templateAssets = [];
 function getMp3Duration(buffer) {
 	return new Promise((res, rej) => {
 		mp3Duration(buffer, (e, d) => {
@@ -92,12 +92,15 @@ module.exports = function (req, res, url) {
 						if (data.thumbnail) { // if there was a thumbnail in the video
 
 						} else switch (data.enc_tid){ // generate a thumbnail from the enc_tid param.
-							case "0nZrWjgxqytA": {
+							case "0GWxgtNKvSes": {
+								thumb = fs.readFileSync(`./qvm_files/basketball/bg01.jpg`);
+								break;
+							} case "0nZrWjgxqytA": {
 								thumb = fs.readFileSync(`./qvm_files/bg03.jpg`);
 								break;
 							} default: {
 								return res.end(JSON.stringify({
-									error: "A thumbnail does not exist for this id. because of that, your video could not be saved. if you think that this is a bug, please contact lunabril#7273 on discord and let him know about this bug."
+									error: "A thumbnail does not exist for this id. because of that, your video could not be saved. if you think that this is a bug, please contact @_sleepyguy on discord and let him know about this bug."
 								}));
 							}
 						}
@@ -105,23 +108,23 @@ module.exports = function (req, res, url) {
 						const filepath = fUtil.getFileIndex("movie-", ".xml", mIdParts.suffix);
 						fs.writeFileSync(thumbpath, thumb);
 						fs.writeFileSync(filepath, movieXml);
-						const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`))
-						const json = user.users.find(i => i.id == data.userId);
-						let metaCount;
-						for (const meta of templateAssets) {
-							metaCount = meta.orderNum;
-							metaCount++
-							json.assets.unshift(meta);
-							for (let i = 0; i < metaCount; i++) {
-								const index = templateAssets.findIndex(d => d.orderNum == i);
-								templateAssets.splice(index, 1);
-							}
-						}
-						fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(user, null, "\t"));
-						console.log(templateAssets);
-						res.end(JSON.stringify({
-							url: `/player?movieId=${mId}`
-						}));
+						movie.meta(mId).then(m => {
+							const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`))
+							const json = user.users.find(i => i.id == data.userId);
+							for (const meta of templateAssets) json.assets.unshift(meta);
+							json.movies.unshift(m);
+							fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(user, null, "\t"));
+							templateAssets = [];
+							console.log(templateAssets);
+							res.end(JSON.stringify({
+								url: `/player?movieId=${mId}`
+							}));
+						}).catch(e => {
+							console.log(e);
+							res.end(JSON.stringify({
+								error: e
+							}));
+						})
 					});
 					break;
 				} case "/ajax/previewText2Video": { // loads qvm preview
@@ -131,8 +134,10 @@ module.exports = function (req, res, url) {
 						if (!f["script[1][char_num]"]) return res.end(JSON.stringify({
 							error: "Your video has to contain 2 characters talking to one another. please fix all of the errors you made and preview this video again."
 						}));
-						let movieXml = '', sceneXml = '', soundXml = `<sound id="SOUND0" index="0" track="0" vol="1" tts="0"><sfile>common.Sunshine.mp3</sfile><start>1</start>
-						<stop>1440</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/></sound>`, lipsyncXml = '';
+						if (!f["script[2][char_num]"] && f.golite_theme == "basketball") return res.end(JSON.stringify({
+							error: "Your video has to contain at least 3 voice clips in order to make this video a proper one. please fix all of the errors you made and preview this video again."
+						}));
+						let movieXml = '', sceneXml = '', soundXml = '', lipsyncXml = '';
 						const charIds = [];
 						const counts = {
 							chars: 0,
@@ -156,7 +161,179 @@ module.exports = function (req, res, url) {
 						console.log(charIds, counts);
 						// and finally, generate the xml
 						switch (f.enc_tid) {
-							case "0nZrWjgxqytA": {
+							case "0GWxgtNKvSes": {
+								counts.soundStartCount = 61;
+								counts.soundStopCount = 72;
+								movieXml += `<film isWide="1"><meta><title><![CDATA[]]></title><tag><![CDATA[]]></tag><hiddenTag><![CDATA[]]></hiddenTag><desc><![CDATA[]]></desc>
+								<mver><![CDATA[4]]></mver><studio>d7446f28669693f5b7a35d41831e43c3662c48bf</studio><thumbnail index="0"/><palette><color value="333333"/><color value="999999"/>
+								<color value="fbfbfb"/><color value="669999"/><color value="55bbaa"/><color value="7fbb11"/><color value="15709b"/><color value="9a5d1"/><color value="6ab8d6"/>
+								<color value="da2021"/><color value="fecd31"/><color value="28c6c1"/><color value="37444f"/></palette></meta>
+								<scene id="SCENE0" adelay="60" lock="N" index="0" color="16777215" guid="C6D59870-8479-2385-819E-B4ACA4A185F0" combgId="common.cbg_news_room">
+								<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/><bg id="cbg_news_room_BG18" index="0">
+								<file>common.ncc_low.swf</file><color r="colorB">1779506</color><color r="colorA">9672351</color></bg><char id="${
+									avatarIds[f[`characters[0][${charIds[0]}]`]]
+								}" index="4" raceCode="1"><action face="1" motionface="1">ugc.${
+									charIds[0]
+								}.stand.xml</action><x>328.15</x><y>185.7433025</y><xscale>1</xscale><yscale>1</yscale><rotation>0</rotation></char><prop id="PROP79" index="8" attached="Y">
+								<file>common.msp_laptop.msp_laptop_laptop_back.swf</file><x>231.7</x><y>213</y><xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation></prop>
+								<prop id="PROP78" index="7" attached="Y"><file>common.ncc_tv_table02.swf</file><x>325</x><y>288</y><xscale>1</xscale><yscale>1</yscale><face>1</face>
+								<rotation>0</rotation></prop><prop id="PROP77" index="6" attached="Y"><file>common.msp_spotlight.msp_spotlight_ncc_spotlight01_still.swf</file><x>163</x><y>77</y>
+								<xscale>1.18</xscale><yscale>1.18</yscale><face>1</face><rotation>-18.4</rotation></prop><prop id="PROP76" index="5" attached="Y">
+								<file>common.msp_spotlight.msp_spotlight_ncc_spotlight01_still.swf</file><x>462</x><y>80</y><xscale>1.18</xscale><yscale>1.18</yscale><face>1</face>
+								<rotation>17.8</rotation></prop><prop id="PROP75" index="3" attached="Y"><file>common.ncc_tv_screen.swf</file><x>318</x><y>113</y><xscale>1</xscale><yscale>1</yscale>
+								<face>1</face><rotation>0</rotation><color r="ccColorA">3355443</color></prop><prop id="PROP74" index="2" attached="Y"><file>common.square01.swf</file><x>319</x>
+								<y>110</y><xscale>4.27</xscale><yscale>2.57</yscale><face>1</face><rotation>0</rotation><color r="ccColorA">2236962</color></prop>
+								<prop id="PROP73" index="1" attached="Y"><file>common.ncc_tv_backdrop.swf</file><x>316</x><y>158</y><xscale>1</xscale><yscale>1</yscale><face>1</face>
+								<rotation>0</rotation></prop><effectAsset id="EFFECT0" themecode="common" index="10">
+								<effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/><x>47</x><y>24</y><width>550</width><height>354</height>
+								<speech>0</speech></effectAsset><effectAsset id="EFFECT4" index="9"><effect id="ncc_opening01.swf" type="ANIME"/><x>47</x><y>24</y><xscale>1</xscale>
+								<yscale>1</yscale><file>common.ncc_opening01.swf</file></effectAsset></scene>`;
+								for (let i = 0; i < counts.scripts; i++) try {
+									if (f[`script[${i}][text]`]) {
+										const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
+										const dur = await getMp3Duration(buffer);
+										const title = `[${voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
+										templateAssets.unshift(asset.save(buffer, {
+											orderNum: i,
+											type: "sound",
+											subtype: "tts",
+											title,
+											published: 0,
+											tags: "",
+											duration: dur,
+											downloadtype: "progressive",
+											ext: "mp3"
+										}, {
+											isTemplate: true
+										}));
+										const meta = templateAssets.find(s => s.orderNum == i);
+										switch (f[`script[${i}][char_num]`]) {
+											case "1": {
+												sceneXml += `<scene id="SCENE${counts.scenes - 1}" adelay="${60 + i}" lock="N" index="${
+													counts.scenes - 1
+												}" color="16777215" guid="C360D744-12AB-42D1-0905-6CA6DA3FCFD2">
+												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/><bg id="cbg_news_room_BG18" index="0">
+												<file>common.ncc_low.swf</file><color r="colorB">1779506</color><color r="colorA">9672351</color></bg><char id="${
+													avatarIds[f[`characters[0][${charIds[0]}]`]]
+												}" index="4" raceCode="1"><action face="1" motionface="1">ugc.${
+													charIds[0]
+												}.stand.xml</action>${
+													f[`script[${
+														i
+													}][facial][${
+														f[`characters[0][${
+															charIds[0]
+														}]`]
+													}]`] != "default" ? `<head id="PROP10" raceCode="1"><file>ugc.${
+														charIds[0]
+													}.head.head_${
+														f[`script[${
+															i
+														}][facial][${
+															f[`characters[0][${
+																charIds[0]
+															}]`]
+														}]`]
+													}.xml</file></head>` : ''
+												}<x>328.15</x><y>185.7433025</y><xscale>1</xscale><yscale>1</yscale><rotation>0</rotation></char><prop id="PROP73" index="1" attached="Y">
+												<file>common.ncc_tv_backdrop.swf</file><x>316</x><y>158</y><xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation></prop>
+												<prop id="PROP74" index="2" attached="Y"><file>common.square01.swf</file><x>319</x><y>110</y><xscale>4.27</xscale><yscale>2.57</yscale><face>1</face>
+												<rotation>0</rotation><color r="ccColorA">2236962</color></prop><prop id="PROP75" index="3" attached="Y"><file>common.ncc_tv_screen.swf</file>
+												<x>318</x><y>113</y><xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation><color r="ccColorA">3355443</color></prop>
+												<prop id="PROP76" index="5" attached="Y"><file>common.msp_spotlight.msp_spotlight_ncc_spotlight01_still.swf</file><x>462</x><y>80</y>
+												<xscale>1.18</xscale><yscale>1.18</yscale><face>1</face><rotation>17.8</rotation></prop><prop id="PROP77" index="6" attached="Y">
+												<file>common.msp_spotlight.msp_spotlight_ncc_spotlight01_still.swf</file><x>163</x><y>77</y><xscale>1.18</xscale><yscale>1.18</yscale><face>1</face>
+												<rotation>-18.4</rotation></prop><prop id="PROP78" index="7" attached="Y"><file>common.ncc_tv_table02.swf</file><x>325</x><y>288</y><xscale>1</xscale>
+												<yscale>1</yscale><face>1</face><rotation>0</rotation></prop><prop id="PROP79" index="8" attached="Y">
+												<file>common.msp_laptop.msp_laptop_laptop_back.swf</file><x>231.7</x><y>213</y><xscale>1</xscale><yscale>1</yscale><face>1</face>
+												<rotation>0</rotation></prop><effectAsset id="EFFECT0" themecode="common" index="9">
+												<effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/><x>47</x><y>24</y><width>550</width>
+												<height>354</height><speech>0</speech></effectAsset></scene>`;
+												break;
+											} case "2": {
+												sceneXml += `<scene id="SCENE${counts.scenes - 1}" adelay="${60 + i}" lock="N" index="${
+													counts.scenes - 1
+												}" color="16777215" guid="836AF204-8F76-3CAE-8A50-455B4B702AC6" combgId="custom.cbg_basketball_int">
+												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/><bg id="cbg_basketball_int_BG2" index="0">
+												<file>custom.basketball_court01_bg.swf</file><dcsn>9607</dcsn><color r="ccColorA" oc="0x0">15450736</color></bg>
+												<char id="${
+													avatarIds[f[`characters[1][${charIds[1]}]`]]
+												}" index="3" raceCode="1"><action face="1" motionface="1">ugc.${charIds[1]}.stand.xml</action>${
+													f[`script[${
+														i
+													}][facial][${
+														f[`characters[1][${
+															charIds[1]
+														}]`]
+													}]`] != "default" ? `<head id="PROP10" raceCode="1"><file>ugc.${
+														charIds[1]
+													}.head.head_${
+														f[`script[${
+															i
+														}][facial][${
+															f[`characters[1][${
+																charIds[1]
+															}]`]
+														}]`]
+													}.xml</file></head>` : ''
+												}<x>366.4256752</x><y>227.975</y><xscale>1</xscale><yscale>1</yscale><rotation>0</rotation></char>
+												<prop id="cbg_basketball_int_PROP1" index="1" attached="Y"><file>custom.basketball_court01_people.swf</file><x>445</x><y>159</y><xscale>1</xscale>
+												<yscale>1</yscale><face>1</face><rotation>0</rotation></prop><prop id="cbg_basketball_int_PROP0" index="2" attached="Y">
+												<file>custom.basketball_court01_goal.swf</file><x>102</x><y>203</y><xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation></prop>
+												<effectAsset id="EFFECT0" themecode="common" index="4">
+												<effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/><x>47</x><y>24</y><width>550</width>
+												<height>354</height><speech>0</speech></effectAsset></scene>`;
+												break;
+											}
+										}
+										soundXml += `<sound id="SOUND${counts.sounds - 1}" index="${
+											counts.sounds - 1
+										}" track="0" vol="1" tts="1"><sfile>ugc.${meta.id}</sfile><start>${
+											counts.soundStartCount
+										}</start><stop>${
+											counts.soundStopCount
+										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
+											f[`script[${i}][text]`]
+										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
+										lipsyncXml += `<linkage>SOUND${counts.sounds - 1},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.sounds - 1}~~~</linkage>`
+										counts.soundStartCount = counts.soundStopCount + 49 - i;
+										counts.soundStopCount = counts.soundStopCount + 96  - i;
+									} else {
+
+									}
+									counts.scenes++
+									counts.sounds++
+								} catch (e) {
+									console.log(e);
+									res.end(JSON.stringify({
+										error: e
+									}));
+								}
+								movieXml += `${sceneXml}<scene id="SCENE${counts.scenes}" adelay="60" lock="N" index="${counts.scenes}" color="16777215" guid="1A11B79D-657C-9C96-07E5-586DC24E4248">
+								<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/><bg id="cbg_news_room_BG18" index="0">
+								<file>common.ncc_low.swf</file><color r="colorB">1779506</color><color r="colorA">9672351</color></bg><char id="${
+									avatarIds[f[`characters[0][${charIds[0]}]`]]
+								}" index="4" raceCode="1">
+								<action face="1" motionface="1">ugc.${
+									charIds[0]
+								}.stand.xml</action><x>328.15</x><y>185.7433025</y><xscale>1</xscale><yscale>1</yscale><rotation>0</rotation></char><prop id="PROP73" index="1" attached="Y">
+								<file>common.ncc_tv_backdrop.swf</file><x>316</x><y>158</y><xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation></prop>
+								<prop id="PROP74" index="2" attached="Y"><file>common.square01.swf</file><x>319</x><y>110</y><xscale>4.27</xscale><yscale>2.57</yscale><face>1</face>
+								<rotation>0</rotation><color r="ccColorA">2236962</color></prop><prop id="PROP75" index="3" attached="Y"><file>common.ncc_tv_screen.swf</file><x>318</x><y>113</y>
+								<xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation><color r="ccColorA">3355443</color></prop><prop id="PROP76" index="5" attached="Y">
+								<file>common.msp_spotlight.msp_spotlight_ncc_spotlight01_still.swf</file><x>462</x><y>80</y><xscale>1.18</xscale><yscale>1.18</yscale><face>1</face>
+								<rotation>17.8</rotation></prop><prop id="PROP77" index="6" attached="Y"><file>common.msp_spotlight.msp_spotlight_ncc_spotlight01_still.swf</file><x>163</x><y>77</y>
+								<xscale>1.18</xscale><yscale>1.18</yscale><face>1</face><rotation>-18.4</rotation></prop><prop id="PROP78" index="7" attached="Y">
+								<file>common.ncc_tv_table02.swf</file><x>325</x><y>288</y><xscale>1</xscale><yscale>1</yscale><face>1</face><rotation>0</rotation></prop>
+								<prop id="PROP79" index="8" attached="Y"><file>common.msp_laptop.msp_laptop_laptop_back.swf</file><x>231.7</x><y>213</y><xscale>1</xscale><yscale>1</yscale>
+								<face>1</face><rotation>0</rotation></prop><effectAsset id="EFFECT9" index="9"><effect id="ncc_opening01b.swf" type="ANIME"/><x>47</x><y>24</y><xscale>1</xscale>
+								<yscale>1</yscale><file>common.ncc_opening01b.swf</file></effectAsset><effectAsset id="EFFECT0" themecode="common" index="10">
+								<effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/><x>47</x><y>24</y><width>550</width><height>354</height>
+								<speech>0</speech></effectAsset></scene>${soundXml}${lipsyncXml}</film>`;
+								break;
+							} case "0nZrWjgxqytA": {
+								soundXml += `<sound id="SOUND0" index="0" track="0" vol="1" tts="0"><sfile>common.Sunshine.mp3</sfile><start>1</start>
+								<stop>1440</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/></sound>`;
 								movieXml += `<film isWide="1">
 								<meta>
 								  <title><![CDATA[]]></title>
@@ -292,10 +469,8 @@ module.exports = function (req, res, url) {
 									<speech>0</speech>
 								  </effectAsset>
 								</scene>`;
-								const texts = {};
 								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										texts[i] = f[`script[${i}][text]`];
 										const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 										const dur = await getMp3Duration(buffer);
 										const title = `[${voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
