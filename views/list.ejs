@@ -298,7 +298,7 @@ function refreshMovieList() {
     jQuery.get(`/movieList?uid=${userData.uid}`, (meta) => {
         videoCounts.all += meta.length;
 		document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
-        if (meta == []) {
+        if (meta.length < 1) {
             jQuery("#myvideos").hide();
             jQuery("#novideos").show();
             jQuery("#allvideos").hide();
@@ -335,7 +335,7 @@ function movieRedirect(url, mId) { // movie version of a redirect. i don't know 
     });
     else alert("you need to specify the url and action in order to do a movie version of a redirect.");
 }
-function movieCallback(action, mId, callback) {
+function movieCallback(action, mId, callback) { // movie version of a callback. i don't know why it's here lol
     if (action) $.post(`/api/check4MovieFilepaths`, {
         mId, action
     }).done(d => {
@@ -350,7 +350,7 @@ function movieCallback(action, mId, callback) {
             }
         }
     });
-    else alert("you need to specify an action in order to do a movie version of a redirect.");
+    else alert("you need to specify an action and callback function in order to do a movie version of a callback.");
 }
 function deleteMovie(mId) {
     movieCallback("delete your movie", mId, () => {
