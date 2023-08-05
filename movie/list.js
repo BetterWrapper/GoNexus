@@ -1,4 +1,3 @@
-const movie = require("./main");
 const http = require("http");
 const fs = require("fs");
 
@@ -11,8 +10,9 @@ const fs = require("fs");
 module.exports = function (req, res, url) {
 	if (req.method != "GET" || url.pathname != "/movieList") return;
 	res.setHeader("Content-Type", "application/json");
-	if (url.query.uid && JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == url.query.uid)) {
-		const a = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == url.query.uid).movies;
+	const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == url.query.uid);
+	if (url.query.uid && json) {
+		const a = json.movies;
 		const sorted = a.sort((a, b) => b.id - a.id);
 		res.end(JSON.stringify(sorted));
 	} else res.end(JSON.stringify([]));

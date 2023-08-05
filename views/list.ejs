@@ -101,9 +101,11 @@ if (self !== top) {
 <!-- END OF HEADER -->
 
 <div class="alert alert-danger">
-	<div class="alert-content text-center">BetterWrapper is currently under development right now. things like video importing and eta does not work yet. <a href="https://github.com/lunastar67/betterwrapper" target="_blank">GITHUB LINK</a>.
-            </div>
-        </div>
+	<div class="alert-content text-center">
+        BetterWrapper is currently under development right now. things like video importing and eta does not work yet. 
+        <a href="https://github.com/josephanimate2021/betterwrapper" target="_blank">GITHUB LINK</a>.
+    </div>
+</div>
 
 
 
@@ -280,7 +282,10 @@ if (self !== top) {
     <input id='char' type="file" onchange="this.form.submit()" name='import' accept=".xml" />
 </form>
 <script>
-var videoCounts = {"all":"0","trash":"0"};
+var videoCounts = {
+    all: "0",
+    trash: "0"
+};
 
 // Folder counts. To be updated by myvideos.js.
 var folderCounts = 0;
@@ -291,6 +296,7 @@ function sendUserData(userInfo) {
 }
 function refreshMovieList() {
     jQuery.get(`/movieList?uid=${userData.uid}`, (meta) => {
+        videoCounts.all += meta.length;
 		document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
         if (meta == []) {
             jQuery("#myvideos").hide();
@@ -299,20 +305,72 @@ function refreshMovieList() {
         }
     })
 }
-function deleteMovie(mId) {
-    const yesorno = confirm(`Are you sure that you want to delete movie #${mId.split("-")[1]}?`);
-    if (yesorno) $.post('/api/movie/delete', {mId}).done(d => {
-        const meta = JSON.parse(d);
-        switch (meta.status) {
-            case "error": {
-                alert(`The Movie: ${mId} cannot be deleted because something has happened in the server witch caused problems. please try again later.`);
+function movieRedirect(url, mId) { // movie version of a redirect. i don't know why it's here lol
+    let action;
+    switch (url) {
+        case `/player?movieId=${mId}`: {
+            action = "play your movie";
+            break;
+        } case `/go_full?movieId=${mId}`: {
+            action = "edit your movie";
+            break;
+        } case `/movies/${mId}.zip`: {
+            action = "download your movie";
+            break;
+        }
+    }
+    if (url && action) $.post(`/api/check4MovieFilepaths`, {
+        mId, action
+    }).done(d => {
+        const json = JSON.parse(d);
+        switch (json.status) {
+            case "ok": {
+                window.location.href = url;
                 break;
-            } case "ok": {
-                window.location.reload();
+            } case "error": {
+                alert(json.msg);
                 break;
             }
         }
-    })
+    });
+    else alert("you need to specify the url and action in order to do a movie version of a redirect.");
+}
+function movieCallback(action, mId, callback) {
+    if (action) $.post(`/api/check4MovieFilepaths`, {
+        mId, action
+    }).done(d => {
+        const json = JSON.parse(d);
+        switch (json.status) {
+            case "ok": {
+                callback();
+                break;
+            } case "error": {
+                alert(json.msg);
+                break;
+            }
+        }
+    });
+    else alert("you need to specify an action in order to do a movie version of a redirect.");
+}
+function deleteMovie(mId) {
+    movieCallback("delete your movie", mId, () => {
+        const yesorno = confirm(`Are you sure that you want to delete movie #${mId.split("-")[1]}?`);
+        if (yesorno) $.post('/api/movie/delete', {
+            mId, 
+            uId: userData.uid
+        }).done(d => {
+            const meta = JSON.parse(d);
+            switch (meta.status) {
+                case "error": {
+                    alert(meta.msg);
+                    break;
+                } case "ok": {
+                    window.location.reload();
+                    break;
+                }
+            }
+        });
+    });
 }
 </script>
 <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>

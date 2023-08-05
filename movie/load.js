@@ -73,7 +73,102 @@ module.exports = function (req, res, url) {
 
 		case "POST": {
 			switch (url.pathname) {
-				case "/ajax/saveText2Video": { // save a qvm video (requires a user to be logged in)
+				case "/api/check4MovieFilepaths": {
+					loadPost(req, res).then(([data]) => {
+						const params = {
+							mId: true,
+							action: true
+						};
+						for (const stuff in data) {
+							if (!params[stuff]) return res.end(JSON.stringify({
+								status: "error",
+								msg: "Missing one or more fields."
+							}));
+						}
+						const filepaths = [];
+						if (data.mId.includes("-")) {
+							const prefix = data.mId.substr(0, data.mId.lastIndexOf("-"));
+							const suffix = data.mId.substr(data.mId.lastIndexOf("-") + 1);
+							switch (prefix) {
+								case "m": {
+									filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
+									filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
+									break;
+								} default: {
+									return res.end(JSON.stringify({
+										status: "error",
+										msg: `The prefix: ${prefix} does not exist in our database.`
+									}))
+								}
+							}
+						}
+						for (const filepath of filepaths) {
+							if (!fs.existsSync(filepath)) return res.end(JSON.stringify({
+								status: "error",
+								msg: `The filepath: ${filepath} does not exist on this server. it is needed in order to ${data.action}.`
+							}));
+						}
+						res.end(JSON.stringify({
+							status: "ok"
+						}));
+					});
+					break;
+				} case "/api/movie/delete": {
+					loadPost(req, res).then(([data]) => {
+						const params = {
+							mId: true,
+							uId: true
+						};
+						for (const stuff in data) {
+							if (!params[stuff]) return res.end(JSON.stringify({
+								status: "error",
+								msg: "Missing one or more fields."
+							}));
+						}
+						const filepaths = [];
+						if (data.mId.includes("-")) {
+							const prefix = data.mId.substr(0, data.mId.lastIndexOf("-"));
+							const suffix = data.mId.substr(data.mId.lastIndexOf("-") + 1);
+							switch (prefix) {
+								case "m": {
+									filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
+									filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
+									break;
+								} default: {
+									return res.end(JSON.stringify({
+										status: "error",
+										msg: `The prefix: ${prefix} does not exist in our database.`
+									}))
+								}
+							}
+						}
+						parse.deleteTTSFiles(fs.readFileSync(filepaths[0]), data.uId).then(json => {
+							console.log(json);
+							if (!json) try {
+								for (const filepath of filepaths) fs.unlinkSync(filepath);
+								const userInfo = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`));
+								const json = userInfo.users.find(i => i.id == data.uId);
+								const index = json.movies.findIndex(i => i.id == data.mId);
+								json.movies.splice(index, 1);
+								fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(userInfo, null, "\t"));
+								res.end(JSON.stringify({
+									status: "ok"
+								}));
+							} catch (e) {
+								console.log(e);
+								res.end(JSON.stringify({
+									status: "error",
+									msg: e
+								}));
+							}
+							else res.end(JSON.stringify({
+								status: "error",
+								msg: json.error
+							}));
+						});
+					});
+					break;
+				} case "/ajax/saveText2Video": { // save a qvm video (requires a user to be logged in)
 					loadPost(req, res).then(([data]) => {
 						console.log(data, templateAssets);
 						if (!data.userId) return res.end(JSON.stringify({
@@ -209,7 +304,7 @@ module.exports = function (req, res, url) {
 										const meta = templateAssets.find(s => s.orderNum == i);
 										switch (f[`script[${i}][char_num]`]) {
 											case "1": {
-												sceneXml += `<scene id="SCENE${counts.scenes - 1}" adelay="${60 + i}" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes - 1}" adelay="60" lock="N" index="${
 													counts.scenes - 1
 												}" color="16777215" guid="C360D744-12AB-42D1-0905-6CA6DA3FCFD2">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/><bg id="cbg_news_room_BG18" index="0">
@@ -251,7 +346,7 @@ module.exports = function (req, res, url) {
 												<height>354</height><speech>0</speech></effectAsset></scene>`;
 												break;
 											} case "2": {
-												sceneXml += `<scene id="SCENE${counts.scenes - 1}" adelay="${60 + i}" lock="N" index="${
+												sceneXml += `<scene id="SCENE${counts.scenes - 1}" adelay="60" lock="N" index="${
 													counts.scenes - 1
 												}" color="16777215" guid="836AF204-8F76-3CAE-8A50-455B4B702AC6" combgId="custom.cbg_basketball_int">
 												<durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/><bg id="cbg_basketball_int_BG2" index="0">
@@ -296,8 +391,8 @@ module.exports = function (req, res, url) {
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
 										lipsyncXml += `<linkage>SOUND${counts.sounds - 1},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.sounds - 1}~~~</linkage>`
-										counts.soundStartCount = counts.soundStopCount + 49 - i;
-										counts.soundStopCount = counts.soundStopCount + 96  - i;
+										counts.soundStartCount = counts.soundStopCount + 49;
+										counts.soundStopCount = counts.soundStopCount + 90;
 									} else {
 
 									}

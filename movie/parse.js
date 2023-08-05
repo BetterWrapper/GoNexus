@@ -387,5 +387,48 @@ module.exports = {
 			if (elem.name == "theme") themes.push(elem);
 		}
 		return themes;
-	}
+	},
+	async deleteTTSFiles(xmlBuffer, uId) {
+		if (xmlBuffer.length == 0) throw null;
+
+		// this is common in this file
+		async function basicParse(file, type) {
+			const pieces = file.split(".");
+			const themeId = pieces[0];
+
+			// add the extension to the last key
+			const ext = pieces.pop();
+			pieces[pieces.length - 1] += "." + ext;
+			// add the type to the filename
+			pieces.splice(1, 0, type);
+
+			if (themeId == "ugc") {
+				const id = pieces[2];
+				try {
+					const json = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`)).users.find(i => i.id == uId).assets.find(i => i.id == id);
+					if (json.type == "sound" && json.subtype == "tts") asset.delete({
+						userId: uId,
+						assetId: id
+					});
+				} catch (e) {
+					console.error(`WARNING: ${id}:`, e);
+					return {
+						error: `WARNING: ${id}: ${e}`
+					};
+				}
+			}
+		}
+		// begin parsing the movie xml
+		const film = new xmldoc.XmlDocument(xmlBuffer);
+		for (const eI in film.children) {
+			const elem = film.children[eI];
+			switch (elem.name) {
+				case "sound": {
+					const file = elem.childNamed("sfile")?.val;
+					if (!file) continue;
+					return await basicParse(file, elem.name);
+				}
+			}
+		}
+	},
 };
