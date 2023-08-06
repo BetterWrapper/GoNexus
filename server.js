@@ -71,7 +71,7 @@ module.exports = http
 							res.end(JSON.stringify({
 								hasProjectDownloads: false,
 								projectDownloads: []
-							});
+							}));
 							break;
 						} case "/api/getAllUsers": {
 							res.setHeader("Content-Type", "application/json");
