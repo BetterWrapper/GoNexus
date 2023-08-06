@@ -256,7 +256,7 @@ if (self !== top) {
 
 <script>
 $('#demo-video').on('show.bs.modal', function(e) {
-    $(this).find('.embed-responsive').html('<video class="embed-responsive-item" controls src="/assets/oldga4sdemo.mp4"></video>');
+    $(this).find('.embed-responsive').html('<video class="embed-responsive-item" controls src="/assets/oldga4sdemo.mp4" height="100%" width="100%"></video>');
 }).on('hide.bs.modal', function(e) {
     $(this).find('.embed-responsive').empty();
 });

@@ -95,9 +95,6 @@
                                 <object class="embed-responsive-item" id="wistia-player" data="/static/animation/player.swf" type="application/x-shockwave-flash" height="100%" width="100%"></object>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-default" type="button" data-dismiss="modal">Close</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -183,7 +180,6 @@
                                                 <img src="/movie_thumbs/${movieInfo.id}.png"/>
                                                 <div class="video-cate video-cate-explainer clearfix">
                                                     <span>${movieInfo.title}</span>
-                                                    <span class="video-length">${movieInfo.durationString}</span>
                                                 </div>
                                                 <div class="play"></div>
                                             </a>
@@ -194,6 +190,7 @@
                                     <div class="video-title">
                                         <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}')">${movieInfo.title}</a>
                                     </div>
+                                    <div class="video-length">${movieInfo.durationString}</div>
                                     <div class="video-desc">${movieInfo.desc}</div>
                                 </div>
                             </div>`);
