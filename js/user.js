@@ -34,6 +34,7 @@ auth.onAuthStateChanged(user => {
                 });
             }
             switch (window.location.pathname) {
+                case "/forgotpassword":
                 case "/cc_browser": 
                 case "/cc": 
                 case "/go_full": 
@@ -152,6 +153,7 @@ auth.onAuthStateChanged(user => {
                     loadUserContent(user);
                     break;
                 }
+                case "/forgotpassword":
                 case "/login":
                 case "/public_signup": {
                     location.href = '/movies';
