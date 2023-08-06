@@ -53,7 +53,7 @@ module.exports = function (req, res, url) {
 	const query = url.query;
 	const userSession = session.get(req);
 	var attrs, params, title, filename, charOrder = '';
-	if (req.headers.host == "localhost" || req.headers.host == `localhost:${process.env.SERVER_PORT}` || userSession && userSession.site_access_key_is_correct) switch (url.pathname) {
+	if (req.headers.host == "localhost" || req.headers.host == `localhost:${process.env.SERVER_PORT}` || userSession && userSession.data.site_access_key_is_correct) switch (url.pathname) {
 		case "/cc": {
 			title = "Character Creator";
 			filename = "cc";
@@ -261,8 +261,9 @@ module.exports = function (req, res, url) {
 			if (url.pathname != "/") {
 				res.statusCode = 302;
 				res.setHeader("Location", "/");
-				res.end();
-			} else filename = "closed";
+				return res.end();
+			}
+			filename = "closed";
 			break;
 		}
 	}
