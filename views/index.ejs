@@ -4,13 +4,17 @@
 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>Home - GoNexus</title>
+<link rel="dns-prefetch" href="//web.archive.org/web/20160724162053/https://d2qrjeyl4jwu9j.cloudfront.net/">
+
+<title>GoNexus</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="GoNexus is an LVM project that is attempting to fix all of the errors that Wrapper: Offline has right now.">
+<meta name="description" content="">
 
-<meta property="og:site_name" content="Codename: BetterWrapper">
-
+<meta property="og:site_name" content="GoNexus (Codename: BetterWrapper)">
+<meta property="fb:app_id" content="122508887813978">
+<meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
 
 
 <style>
@@ -29,8 +33,9 @@
 </style>
 <link rel="stylesheet" href="/lvm_files/school/css/common_combined.css">
 
-<link rel="stylesheet" href="/ui/css/school.css">
-<link rel="stylesheet" href="/ui/css/owl.idk.css">
+<link rel="stylesheet" href="/lvm_files/school/css/public/index.css">
+<link rel="stylesheet" href="/lvm_files/school/css/owl.carousel.css">
+<link rel="stylesheet" href="/lvm_files/school/css/owl.theme.default.css">
 
 <script>
 var srv_tz_os = -4, view_name = "school", user_cookie_name = "u_info_school";
@@ -38,6 +43,7 @@ var user_country = "US";
 </script>
 
 <!--[if lt IE 9]>
+<script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/go/js/lib/html5shiv.js"></script>
 <![endif]-->
 <script src="/lvm_files/school/js/common_combined.js"></script>
 <script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json"></script>
@@ -45,7 +51,7 @@ var user_country = "US";
 var I18N_LANG = 'en_US';
 var GT = new Gettext({'locale_data': json_locale_data});
 </script>
-
+<script src="/lvm_files/school/js/owl.carousel.min.js"></script>
 </head>
 <body class="page-action-public_index">
 <script type="text/javascript">
@@ -56,11 +62,11 @@ if (self !== top) {
 
 <%- include("includes/header.ejs", {
     isVideoList: false
-}); %>
+}) %>
 
 <div class="homepage-top">
     <div class="container">
-        <h1 class="homepage-title">Make Animated Videos, the <strong>Better</strong> way.</h1>
+        <h1 class="homepage-title">Make Animated Videos in the Classroom</h1>
         <p>Easy learning curve. Low budget. Simple do-it-yourself tools.</p>
 
         <div class="homepage-top-content">
@@ -72,46 +78,67 @@ if (self !== top) {
 
 <div class="homepage-secure">
     <div class="container">
-        <h2 class="homepage-title">Create Videos with the nostalgia you miss.</h2>
+        <h2 class="homepage-title">Create Videos in a Safe Online Environment</h2>
         <div class="row">
             <div class="col-md-6 col-lg-6 secure-wrapper">
                 <div class="clearfix">
-            
-                    <h3>Full Video Maker</h3>
-                    <p>Create Easy, Simple, and Excellent animations!</p>
+                    <div class="icon-block"><img class="icon-block-icon" src="/ui/img/img_secure_01.png" alt=""></div>
+                    <h3>Privacy and Security</h3>
+                    <p>Each implementation is its own private, secure "walled garden"</p>
                 </div>
                 <ul class="secure-content">
-                    <li>Use easy simplistic themes like Comedy World, Lil Peepz or Cartoon Classics!</li>
-                    <li>Express your creativity!</li>
-                    <li>Import a custom library of images and audio!</li>
-                    
+                    <li>Student videos cannot be accessed by the public</li>
+                    <li>Student videos cannot be published publicly, without teacher approval</li>
+                    <li>School login page can only be found by those who know the exact URL</li>
+                    <li>Students cannot surf public video sites from within GoAnimate for Schools</li>
+                    <li>No integration with social networks</li>
+                    <li>Student email addresses and contact info are never collected</li>
                 </ul>
             </div>
             <div class="col-md-6 col-lg-6 secure-wrapper">
                 <div class="clearfix">
-                    <div class="icon-block"><img class="icon-block-icon" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_secure_02.png" alt=""></div>
-                    <h3>Quick Video Maker</h3>
-                    <p>Create videos using templates!</p>
+                    <div class="icon-block"><img class="icon-block-icon" src="/ui/img/img_secure_02.png" alt=""></div>
+                    <h3>Group Management</h3>
+                    <p>Segment your students into classes and workgroups</p>
                 </div>
                 <ul class="secure-content">
-                    <li>You can create a video using simple templates like Pizza Tower, Slice Of Daily Life, </li>
+                    <li>Teachers can divide students into classes and/or workgroups</li>
+                    <li>Student video distribution is limited to the classes/groups to which they belong</li>
+                    <li>Great way to block younger students from seeing the videos of older students</li>
                 </ul>
             </div>
-           
-          
+            <div class="col-md-6 col-lg-6 secure-wrapper">
+                <div class="clearfix">
+                    <div class="icon-block"><img class="icon-block-icon" src="/ui/img/img_secure_03.png" alt=""></div>
+                    <h3>Moderation</h3>
+                    <p>Stop bad words in their tracks</p>
+                </div>
+                <ul class="secure-content">
+                    <li>Teachers have the option to moderate student videos before the videos become visible to the group</li>
+                    <li>Teachers can approve or reject student-created videos and comments</li>
+                </ul>
+            </div>
+            <div class="col-md-6 col-lg-6 secure-wrapper">
+                <div class="clearfix">
+                    <div class="icon-block"><img class="icon-block-icon" src="/ui/img/img_secure_04.png" alt=""></div>
+                    <h3>Safe Online Content</h3>
+                    <p>All assets have been scrubbed to be appropriate for a student audience</p>
+                </div>
+                <ul class="secure-content">
+                    <li>We have ensured that all characters, backgrounds, props, etc. are appropriate for a K-12 audience</li>
+                    <li>You won't find "assets" like weapons, alcohol, or violent actions in GoAnimate for Schools</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-<script src="/js/user.js"></script>
+
 <div class="homepage-videomaker">
     <div class="container">
         <h2 class="homepage-title">Powerful Tools at the Click of a Mouse</h2>
         <p>Add a character, swap a background, or start a scene just by dragging and dropping.</p>
 
-        <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_videomaker_cw.jpg" alt="">
+        <img class="img-responsive center-block" src="/ui/img/img_videomaker_cw.jpg" alt="">
     </div>
 </div>
 
@@ -123,13 +150,13 @@ if (self !== top) {
                     <h2 class="homepage-title">Characters With All the Right Moves</h2>
                     <p>Our libraries are filled with styles, settings, props, and actions. Lip sync is automatic!</p>
 
-                    <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_slide_ce662a.jpg" width="1060" alt="">
+                    <img class="img-responsive center-block" src="/ui/img/img_slide_ce662a.jpg" width="1060" alt="">
                 </div>
                 <div class="bg-khaki">
                     <h2 class="homepage-title">Characters With All the Right Moves</h2>
                     <p>Our libraries are filled with styles, settings, props, and actions. Lip sync is automatic!</p>
 
-                    <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_slide_dfcc9e.jpg" width="1060" alt="">
+                    <img class="img-responsive center-block" src="/ui/img/img_slide_dfcc9e.jpg" width="1060" alt="">
                 </div>
             </div>
         </div>
@@ -154,47 +181,47 @@ if (self !== top) {
         <p>GoAnimate for Schools is used by hundreds of thousands of students, in thousands of schools, on 6 continents.</p>
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_01.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_01.png" alt="">
                 <h4>Flip Your Classroom By Sending Home Videos</h4>
                 <p>In a flipped classroom, students learn through online instruction outside of class; “homework” is done in the classroom. Students are much more likely to watch or create a video at home than they are to read a textbook or write a paper.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_02.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_02.png" alt="">
                 <h4>Introduce Topics and Lessons</h4>
                 <p>Teach new and difficult topics with video. Use animation to simplify complex ideas. Illustrate word problems.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_03.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_03.png" alt="">
                 <h4>Create Presentations</h4>
                 <p>Use video at open houses, back-to-school nights, assemblies, staff meetings, and other events.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_07.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_07.png" alt="">
                 <h4>Create Reports and Stories</h4>
                 <p>Have students make reports, presentations, and stories with video, helping them convey their creativity and perspectives without physically placing them in front of peers.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_05.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_05.png" alt="">
                 <h4>Check for Understanding</h4>
                 <p>Teachers can “check for understanding” with video assignments.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_04.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_04.png" alt="">
                 <h4>Engage Special Needs Students</h4>
                 <p>Students on the Autism spectrum find animated videos to be a great way to communicate and share their feelings.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_06.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_06.png" alt="">
                 <h4>Practice Language Skills</h4>
                 <p>Practice grammar, spelling, foreign languages, and sentence structure with our text-to-speech technology. Great for language learners!</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_08.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_08.png" alt="">
                 <h4>Produce PSAs</h4>
                 <p>Students can create videos on respect, bullying, and a variety of other topics.</p>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-4 usage-wrapper">
-                <img class="img-responsive center-block" src="https://web.archive.org/web/20160724162053im_/https://d2qrjeyl4jwu9j.cloudfront.net/static/ffa8f9f111b8a856/school/img/homepage/img_use_09.png" alt="">
+                <img class="img-responsive center-block" src="/ui/img/img_use_09.png" alt="">
                 <h4>Engage Higher-Order Learning Skills</h4>
                 <p>Adapting material to video requires both critical thinking AND creativity. Students are enthusiastic about making videos. They think it’s fun. This also leads to deeper understanding and learning.</p>
             </div>
@@ -205,7 +232,7 @@ if (self !== top) {
 <div class="homepage-signup">
     <div class="container">
         <span class="cta">Make your first video in less than 5 Minutes</span>
-        <a href="/public_signup" class="btn btn-xlg btn-orange">Sign Up To Try</a>
+        <a href="/public_signup" class="btn btn-xlg btn-orange">Pricing &amp; Signup</a>
     </div>
 </div>
 
@@ -214,7 +241,7 @@ if (self !== top) {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">BetterWrapper</h4>
+                <h4 class="modal-title">GoAnimate for Schools</h4>
             </div>
             <div class="modal-body">
                 <div class="embed-responsive embed-responsive-16by9"></div>
@@ -225,14 +252,13 @@ if (self !== top) {
 
 <script>
 $('#demo-video').on('show.bs.modal', function(e) {
-    $(this).find('.embed-responsive').html('<video class="embed-responsive-item" src="/assets/oldga4sdemo.mp4" controls></video>');
-    $(".embed-responsive-item").get(0).play();
+    $(this).find('.embed-responsive').html('<video class="embed-responsive-item" controls src="/assets/oldga4sdemo.mp4"></video>');
 }).on('hide.bs.modal', function(e) {
     $(this).find('.embed-responsive').empty();
 });
 </script>
 
-<%- include("includes/footer.ejs", {}); %>
+<%- include("includes/footer.ejs") %>
 
 
 <div id="studio_container" style="display: none;">
