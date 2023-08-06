@@ -213,6 +213,9 @@ module.exports = {
 				const begTag = buffer.indexOf("<tag>") + 14;
 				const endTag = buffer.indexOf("]]></tag>");
 				const tags = buffer.slice(begTag, endTag).toString();
+				const begHiddenTag = buffer.indexOf("<hiddenTag>") + 20;
+				const endHiddenTag = buffer.indexOf("]]></hiddenTag>");
+				const hiddenTag = buffer.slice(begHiddenTag, endHiddenTag).toString();
 				const begDuration = buffer.indexOf('duration="') + 10;
 				const endDuration = buffer.indexOf('"', begDuration);
 				const duration = Number.parseFloat(buffer.slice(begDuration, endDuration));
@@ -232,6 +235,7 @@ module.exports = {
 				}
 				res({
 					desc,
+					hiddenTag,
 					date: fs.statSync(fn).mtime,
 					durationString: durationStr,
 					duration,

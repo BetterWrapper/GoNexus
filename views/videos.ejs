@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>User Videos - GoNexus</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta property="og:site_name" content="GoNexus">
+        <meta property="fb:app_id" content="177116303202">
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        <style>
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+            }
+        </style>
+        <link href="/lvm_files/school/css/common_combined.css" rel="stylesheet" type="text/css">
+        <link href="/lvm_files/go/css/watch.css" rel="stylesheet" type="text/css">
+        <link href="/lvm_files/go/css/featured_videos.css" rel="stylesheet" type="text/css">
+        <!--[if lt IE 9]>
+            <style text="text/css">
+                .top-nav.collapse {height: auto;overflow: visible;}
+            </style>
+        <![endif]-->
+        <script>
+            var srv_tz_os = -5; 
+            var view_name = "school"; 
+            var user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <script src="/lvm_files/school/js/common_combined.js"></script>
+        <script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json"></script>
+        <script type="text/javascript">
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+        <script src="/lvm_files/go/js/jquery/jquery.waypoints2.min.js"></script>
+        <script type="text/javascript"></script>
+    </head>
+    <body class="en_US">
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+            jQuery.extend(CCStandaloneBannerAdUI, {
+                actionshopSWF: "/static/actionshop.swf",
+                apiserver: "/",
+                clientThemePath: "/static/<client_theme>",
+                userId: ""
+            });
+        </script>
+        <div class="page-container">
+            <%- include("includes/header.ejs", {
+                isVideoList: true
+            }) %>
+            <!-- END OF HEADER -->
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="h2">Videos Created By Users On GoNexus</h1>
+                </div>
+                <div class="row page-content">
+                    <div class="col-md-4 col-md-push-8">
+                        <div class="watch-categories list-group" id="videoFilters">
+                            <a class="list-group-item nav-cate active" id="all-videos" onclick="switchFilters('all')">
+                                All Videos <span class="badge" id="all-videos-count">0</span>
+                            </a>
+                            <a class="list-group-item nav-cate" id="qvm-videos" onclick="switchFilters('qvm')">
+                                Made With The QVM <span class="badge" id="qvm-videos-count">0</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-md-pull-4">
+                        <div class="watch-section" id="results-container" data-category="featured">
+                            <div class="watch-videos-horizontal clearfix" id="allvideos"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="video-modal-wistia">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <object class="embed-responsive-item" id="wistia-player" data="/static/animation/player.swf" type="application/x-shockwave-flash" height="100%" width="100%"></object>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-default" type="button" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+            <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+            <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+            <script src="/js/user.js"></script>
+            <script>
+                var categoryNames = {
+                    all: "All Videos"
+                };
+                function toAttrString(table) {
+                    return typeof table == "object"
+                        ? Object.keys(table)
+                                .filter((key) => table[key] !== null)
+                                .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`)
+                                .join("&")
+                        : table.replace(/"/g, '\\"');
+                }
+                function toParamString(table) {
+                    return Object.keys(table)
+                        .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
+                        .join(" ");
+                }
+                function loadVideoPlayer(movieId, movieTitle) {
+                    if (!movieId) return;
+                    $('#wistia-player').html(toParamString({
+                        flashvars: {
+                            movieId,
+                            apiserver: "/",
+                            storePath: "/static/store/<store>",
+                            ut: "23",
+                            autostart: "1",
+                            isWide: "1",
+                            clientThemePath: "/static/<client_theme>",
+                        },
+                        allowScriptAccess: "always",
+                        allowFullScreen: "true",
+                    }));
+                    $('#video-modal-wistia').modal({keyboard: true, backdrop: true}).find(".modal-title").text(movieTitle);
+                }
+                function showByCate(cate) {
+                    $('.video-row').each(function(index, element) {
+                        switch (cate) {
+                            case "all": {
+                                $(element).show();
+                                break;
+                            } case "qvm": {
+                                $(element).hide();
+                                $("#qvm").show();
+                                break;
+                            } default: {
+                                if ($(element).data('uid')) $(`#${cate}`).show();
+                                else $(element).hide();
+                                break;
+                            }
+                        }
+                    });
+                    $('.watch-videos-horizontal').removeClass('loading');
+                    $.waypoints('refresh');
+                }
+                function shouldShowStickyMenu() {
+                    return $(document).width() > 991;
+                }
+                $.post("/api/getAllUsers").done(d => {
+                    let qvmVidsCount = 0;
+                    let type = '';
+                    for (const userInfo of d) {
+                        categoryNames[userInfo.id] = `By ${userInfo.name}`;
+                        $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${userInfo.id}')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
+                        $("#all-videos-count").text(userInfo.movies.length);
+                        $(`#${userInfo.id}-videos-count`).text(userInfo.movies.length);
+                        for (const movieInfo of userInfo.movies) {
+                            if (movieInfo.hiddenTag == "qvm") {
+                                qvmVidsCount++
+                                type = "qvm";
+                            } else type = userInfo.id;
+                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer" data-uid="${userInfo.id}" id="${type}">
+                                <div class="col-sm-4">
+                                    <div class="video-thumbnail">
+                                        <div class="video-thumbnail-explainer">
+                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}')">
+                                                <img src="/movie_thumbs/${movieInfo.id}.png"/>
+                                                <div class="video-cate video-cate-explainer clearfix">
+                                                    <span>${movieInfo.title}</span>
+                                                    <span class="video-length">${movieInfo.durationString}</span>
+                                                </div>
+                                                <div class="play"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="video-title">
+                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}')">${movieInfo.title}</a>
+                                    </div>
+                                    <div class="video-desc">${movieInfo.desc}</div>
+                                </div>
+                            </div>`);
+                        }
+                    }
+                    $("#qvm-videos-count").text(qvmVidsCount);
+                });
+                $.waypoints('extendFn', 'sticky', function(opt) {
+                    var $wrap = this.wrap('<div class="sticky-wrapper"></div>').parent();
+                    var $sticky = $wrap.children(':first');
+                    var options = $.extend({}, $.fn.waypoint.defaults, opt);
+                    var originalStickyTopOffset = $sticky.offset().top;
+                    var gapHeight = parseInt($('.watch-section').css('margin-bottom')); // gap between body and footer
+                    options.handler = function(direction) {
+                        if (shouldShowStickyMenu()) {
+                            var shouldBeStuck = direction === 'down' || direction === 'right';
+                            $sticky.toggleClass('stuck', shouldBeStuck);
+                            $wrap.height(shouldBeStuck ? $sticky.outerHeight() : '');
+                        }
+                    };
+                    options.offset = 25;
+                    $wrap.waypoint(options);
+                    if ('undefined' != typeof options.footer) {
+                        var $footer = $(options.footer);
+                        $footer.waypoint(function(direction) {
+                            if (shouldShowStickyMenu()) {
+                                if ('down' == direction) $sticky.css({
+                                    position: 'absolute',
+                                    top: $(this).offset().top - $sticky.outerHeight() - originalStickyTopOffset - gapHeight
+                                });
+                                else $sticky.attr('style', '');
+                            }
+                        }, {
+                            offset: 550
+                        });
+                    }
+                    return this;
+                });
+                if (
+                    (
+                        typeof navigator.userAgent != 'undefined'
+                    ) && (
+                        (
+                            navigator.userAgent.indexOf('Safari/') < 0
+                        ) ||(
+                            navigator.userAgent.indexOf('Chrome/') > -1
+                        )
+                    )
+                ) $('.watch-categories').waypoint('sticky', {footer: '.site-footer'});
+                function switchFilters(cate) {
+                    $('.watch-categories .nav-cate').removeClass('active');
+                    $(`#${cate}-videos`).addClass('active');
+                    $('html, body').animate({ scrollTop: 0 }, 200);
+                    $('.watch-videos-horizontal').addClass('loading');
+                    setTimeout(function() {
+                        showByCate(cate);
+                    }, 200);
+                    return false;
+                }
+            </script>
+            <!-- FOOTER -->
+            <%- include("includes/footer.ejs") %>
+            <div id="studio_container" style="display: none;">
+                <div id="studio_holder"><!-- Full Screen Studio -->
+                    <div style="top: 50%; position: relative;">
+                        You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END OF PAGE STRUCTURE -->
+    </body>
+</html>

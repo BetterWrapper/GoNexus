@@ -34,6 +34,7 @@ auth.onAuthStateChanged(user => {
                 });
             }
             switch (window.location.pathname) {
+                case "/videos":
                 case "/forgotpassword":
                 case "/create":
                 case "/cc_browser": 
@@ -174,6 +175,7 @@ auth.onAuthStateChanged(user => {
         showElement('signup-button');
         showElement('login-button');
         switch (window.location.pathname) {
+            case "/videos":
             case "/cc_browser": 
             case "/create":
             case "/cc": 

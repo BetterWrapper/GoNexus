@@ -178,6 +178,7 @@ module.exports = function (req, res, url) {
 						movieXml = movieXml.replace(`<film isWide="1">`, `<film copyable="0" published="0" pshare="0" isWide="1">`);
 						movieXml = movieXml.replace(`<title><![CDATA[]]></title>`, `<title><![CDATA[${data.title}]]></title>`);
 						movieXml = movieXml.replace(`<desc><![CDATA[]]></desc>`, `<desc><![CDATA[${data.desc}]]></desc>`);
+						movieXml = movieXml.replace(`<hiddenTag><![CDATA[]]></hiddenTag>`, `<hiddenTag><![CDATA[qvm]]></hiddenTag>`);
 						const mId = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
 						const mIdParts = {
 							prefix: mId.substr(0, mId.lastIndexOf("-")),

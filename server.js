@@ -66,7 +66,11 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/submitSiteAccessKey": {
+					    case "/api/getAllUsers": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users));
+							break;
+						} case "/api/submitSiteAccessKey": {
 							loadPost(req, res).then(([data]) => {
 								if (!data.text) res.end(JSON.stringify({error: "Please enter in an access key."}));
 								else if (data.text != env.PROJECT_ACCESS_KEY) res.end(JSON.stringify({error: "Invaild Access Key"}));

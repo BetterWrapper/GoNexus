@@ -123,9 +123,15 @@ if (self !== top) jQuery('body').hide();
 if (window.location.origin.includes("localhost")) $("#googleloginfooter").show();
 var processing = false;
 $("#googlelogin").click(() => {
+    if (processing) return;
+    processing = true;
+    var buttonText = $('#btn-login').text();
+    $('#btn-login').text('Logging in...');
     formErrorMessage('');
     const googleProvider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(googleProvider).catch(error => {
+        processing = false;
+        $("#btn-login").text(buttonText);
         formErrorMessage(error.message);
     });
 })
