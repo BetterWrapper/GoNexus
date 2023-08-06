@@ -66,7 +66,14 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-					    case "/api/getAllUsers": {
+						case "/api/getProjectDownloads": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify({
+								hasProjectDownloads: false,
+								projectDownloads: []
+							});
+							break;
+						} case "/api/getAllUsers": {
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users));
 							break;
