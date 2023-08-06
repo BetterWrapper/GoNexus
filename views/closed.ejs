@@ -22,7 +22,13 @@
                 <input name="text" placeholder="Access Key">
                 <input id="inputbtn" type="submit" name="submit" value="Submit">
             </form>
+            <h5>Project Downloads</h5>
+            <div id="projectdownloads"></div>
             <script type="text/javascript">
+                $.post("/api/getProjectDownloads").done(d => {
+                    if (d.hasProjectDownloads) for (const f of d.projectDownloads) $("#projectdownloads").append(`<h6><a href="${f.downloadUrl}" download="${f.projectFilename}">${f.projectName}</a></h6>`);
+                    else $("#projectdownloads").html('<h6>No Downloads are available for this project right now. pleae check back later.</h6>');
+                });
                 var formShown = false, processing = false;
                 $('#siteAccessForm').on("submit", function() {
                     if (processing) return;
