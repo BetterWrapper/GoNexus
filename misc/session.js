@@ -24,7 +24,7 @@ module.exports = {
     },
     get(req) {
         const ip = this.getIp(req);
-        return userSessions.find(i => i.ip == ip);
+        return userSessions.find(i => i.ip == ip).data;
     },
     remove(req) {
         try {
