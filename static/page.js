@@ -4,8 +4,7 @@ const fs = require("fs");
 const http = require("http");
 const ejs = require('ejs');
 const { existsSync } = require("fs");
-const { join } = require("path");
-
+const session = require("../misc/session");
 function toAttrString(table) {
 	return typeof table == "object"
 		? Object.keys(table)
@@ -52,9 +51,9 @@ function fetchCharOrder(themeId, pathname) {
 module.exports = function (req, res, url) {
 	if (req.method != "GET") return;
 	const query = url.query;
-
+	const userSession = session.get(req);
 	var attrs, params, title, filename, charOrder = '';
-	switch (url.pathname) {
+	if (req.headers.host == "localhost" || req.headers.host == `localhost:${process.env.SERVER_PORT}` || userSession && userSession.site_access_key_is_correct) switch (url.pathname) {
 		case "/cc": {
 			title = "Character Creator";
 			filename = "cc";
@@ -87,24 +86,16 @@ module.exports = function (req, res, url) {
 				movie: process.env.SWF_URL + "/cc.swf", // 'http://localhost/cc.swf'
 			};
 			break;
-		}
-
-		case "/public_index": {
+		} case "/public_index": {
 			filename = "index";
 			break;
-		}
-
-		case "/public_signup": {
+		} case "/public_signup": {
 			filename = "signup";
 			break;
-		}
-
-		case "/create": {
+		} case "/create": {
 			filename = "create";
 			break;
-		}
-
-		case "/quickvideo": {
+		} case "/quickvideo": {
 			const quickvideoThemeids = {
 				everydaylife: true,
 				basketball: true
@@ -112,19 +103,13 @@ module.exports = function (req, res, url) {
 			if (quickvideoThemeids[url.query.filename]) filename = url.query.filename;
 			else return res.end('This theme has not been added to the server. Current Theme: ' + url.query.filename);
 			break;
-		}
-
-		case "/login": {
+		} case "/login": {
 			filename = "login";
 			break;
-		}
-
-		case "/movies": {
+		} case "/movies": {
 			filename = "list";
 			break;
-		}
-
-		case "/cc_browser": {
+		} case "/cc_browser": {
 			title = "CC Browser";
 			filename = "cc";
 			charOrder = fetchCharOrder(url.query.themeId || "family", "/cc_browser");
@@ -156,9 +141,7 @@ module.exports = function (req, res, url) {
 				movie: process.env.SWF_URL + "/cc_browser.swf", // 'http://localhost/cc_browser.swf'
 			};
 			break;
-		}
-
-		case "/go_full": {
+		} case "/go_full": {
 			let presave = query.movieId && query.movieId.startsWith("m") ? query.movieId: `m-${fUtil.getNextFileId("movie-", ".xml")}`;
 			title = "Video Editor";
 			filename = "studio";
@@ -217,9 +200,7 @@ module.exports = function (req, res, url) {
 				allowScriptAccess: "always",
 			};
 			break;
-		}
-
-		case "/player": {
+		} case "/player": {
 			const path = fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(url.query.movieId.lastIndexOf("-") + 1));
 			if (url.query.movieId.startsWith("m-") && existsSync(path)) filename = "player";
 			else {
@@ -274,10 +255,16 @@ module.exports = function (req, res, url) {
 				},
 			};
 			break;
+		} default: return;
+	} else switch (url.pathname) {
+		default: {
+			if (url.pathname != "/") {
+				res.statusCode = 302;
+				res.setHeader("Location", "/");
+				res.end();
+			} else filename = "closed";
+			break;
 		}
-
-		default:
-			return;
 	}
 	Object.assign(params ? params.flashvars : {}, query);
 	ejs.renderFile(`./views/${filename}.ejs`, {

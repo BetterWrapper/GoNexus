@@ -66,7 +66,11 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/redirect": {
+						case "/api/submitSiteAccessKey": {
+							loadPost(req, res).then(([data]) => {
+								console.log(data);
+							})
+						} case "/api/redirect": {
 							res.statusCode = 302;
 							res.setHeader("Location", "/");
 							res.end();

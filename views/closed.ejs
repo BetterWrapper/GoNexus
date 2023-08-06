@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>BetterWrapper - Maintenance Page</title>
+        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="This website is under developer testing.">
+        <meta property="og:description" content="GoNexus is a lvm project where it has more features that are complex compared to wrapper: offline.">
+        <meta property="og:site_name" content="GoNexus" />
+    </head>
+    <body>
+        <div class="bartop"></div>
+        <div id="allthestuff">
+            <img src="/ui/img/logo_better.png" width="700" height="110" alt="flashthemes.net" class="center">
+            <hr>
+            <h1>~~ GoNexus ~~</h1>
+            <h2 id="notpermitted">We do apologize but this website is currently under developer testing right now.</h2>
+            <!--<h3><a href="https://discord.gg/xNUXFsFQdH">Join the Discord server for updates</a></h3>-->
+            <h4 id="logintext">Do you have an access key for this project? <a href="javascript:;" onclick="showSiteAccessForm();">click here</a>!</h4>
+            <form id="siteAccessForm" method="post" action="javascript:;">
+                <input name="text" placeholder="Access Key">
+                <input type="hidden" name="returnto" value="/">
+                <input type="submit" name="submit" value="Submit">
+            </form>
+            <script type="text/javascript">
+                $('#siteAccessForm').on("submit", function() {
+                    $.ajax({
+                        method: "POST",
+                        url: "/api/submitSiteAccessKey",
+                        data: $('#siteAccessForm').serialize(),
+                    }).done(d => {
+                        const json = JSON.parse(d);
+                        if (json.error) {
+                            console.error(json.error)
+                            $('#logintext').css('opacity', '1').html('<span style="color: #ff0000">' + json["errmsg"] + '</span>')
+                        } else if (json.success) window.location.reload();
+                    });
+                }) 
+                function showSiteAccessForm() {
+                    $('#logintext').css('opacity', '0')
+                    $('#siteAccessForm').addClass("on");
+                }
+            </script>
+        </div>
+        <div class="barbottom"></div>
+        <style>
+            html {
+                background-color: rgb(9, 255, 0);
+                animation: bgColor 10s linear infinite;
+                font-family: Arial, sans-serif;
+                -webkit-text-size-adjust: 100%;
+            }
+            body {
+                background-color: #eee;
+                color: #000;
+                text-align: center;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 50px;
+                border-radius: 15px;
+                transition-duration: 0.5s;
+            }
+            h1 {
+                font-size: 40px;
+            }
+            h2 {
+                font-size: 30px;
+            }
+            h3 {
+                font-size: 25px;
+                margin-bottom: 0;
+            }
+            .bartop,
+            .barbottom {
+                position: absolute;
+                left: 0;
+                background-color: #2f2f2f;
+                width: 100%;
+                height: 15px;
+            }
+            .bartop {
+                top: -1px;
+                border-radius: 10px 10px 0 0;
+            }
+            .barbottom {
+                bottom: -1px;
+                border-radius: 0 0 10px 10px;
+            }
+            #siteAccessForm input {
+                display: block;
+                margin: 0 auto;
+            }
+            #siteAccessForm {
+                display: none; 
+                height: 0; 
+                overflow-y: hidden;
+            }
+            #siteAccessForm.on {
+                display: block; 
+                height: 70px;
+                animation-name: heightchange;
+                animation-duration: 0.5s;
+            }
+        </style>
+    </body>
+</html>
