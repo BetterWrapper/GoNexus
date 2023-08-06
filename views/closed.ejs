@@ -17,13 +17,19 @@
             <h2 id="notpermitted">We do apologize, but this website is currently under developer testing right now.</h2>
             <!--<h3><a href="https://discord.gg/xNUXFsFQdH">Join the Discord server for updates</a></h3>-->
             <h4>Do you have an access key for this project? <a href="javascript:;" onclick="showSiteAccessForm();">click here</a>!</h4>
+            <h4 id="errortext" style="color: #ff0000"></h4>
             <form id="siteAccessForm" method="post" action="javascript:;">
                 <input name="text" placeholder="Access Key">
-                <input type="submit" name="submit" value="Submit">
+                <input id="inputbtn" type="submit" name="submit" value="Submit">
             </form>
             <script type="text/javascript">
-                var formShown = false;
+                var formShown = false, processing = false;
                 $('#siteAccessForm').on("submit", function() {
+                    if (processing) return;
+                    processing = true;
+                    const origText = $("#inputbtn").val();
+                    $("#inputbtn").val('Submiting Access Key...');
+                    $('#errortext').text('');
                     $.ajax({
                         method: "POST",
                         url: "/api/submitSiteAccessKey",
@@ -31,8 +37,10 @@
                     }).done(d => {
                         const json = JSON.parse(d);
                         if (json.error) {
+                            processing = false;
+                            $("#inputbtn").val(origText);
                             console.error(json.error)
-                            $('h4').html(`<span style="color: #ff0000">${json.error}</span>`)
+                            $('#errortext').text(json.error);
                         } else if (json.success) window.location.reload();
                     });
                 }) 
