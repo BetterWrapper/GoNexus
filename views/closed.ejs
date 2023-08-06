@@ -124,7 +124,7 @@
         }
         $.post("/api/getProjectDownloads").done(d => {
             if (d.hasProjectDownloads) for (const f of d.projectDownloads) $("#projectdownloads").append(`<a href="${f.downloadUrl}" download="${f.projectFilename}">${f.projectName}</a><br>`);
-            else $("#projectdownloads").html('No Downloads are available for this project right now. pleae check back later.');
+            else $("#projectdownloads").html('No Downloads are available for this project right now. please check back later.');
         });
         var processing = false;
         $('#siteAccessForm').on("submit", function() {
