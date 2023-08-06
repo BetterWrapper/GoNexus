@@ -261,8 +261,9 @@ module.exports = function (req, res, url) {
 			if (url.pathname != "/") {
 				res.statusCode = 302;
 				res.setHeader("Location", "/");
-				res.end();
-			} else filename = "closed";
+				return res.end();
+			}
+			filename = "closed";
 			break;
 		}
 	}
