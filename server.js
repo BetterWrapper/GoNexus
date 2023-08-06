@@ -33,7 +33,7 @@ const fme = require("./static/frames");
 const pse = require("./movie/parse");
 const fs = require("fs");
 const url = require("url");
-
+const session = require("./misc/session");
 const functions = [mvL, qvm, ebd, pre, snd, fme, str, swf, pmc, asl, chl, chh, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
 
 module.exports = http
@@ -68,8 +68,13 @@ module.exports = http
 					switch (parsedUrl.pathname) {
 						case "/api/submitSiteAccessKey": {
 							loadPost(req, res).then(([data]) => {
-								console.log(data);
-							})
+								if (!data.text) res.end(JSON.stringify({error: "Please enter in an access key."}));
+								else if (data.text != env.PROJECT_ACCESS_KEY) res.end(JSON.stringify({error: "Invaild Access Key"}));
+								else if (session.set(req, {
+									site_access_key_is_correct: true
+								})) res.end(JSON.stringify({success: true}));
+							});
+							break;
 						} case "/api/redirect": {
 							res.statusCode = 302;
 							res.setHeader("Location", "/");
