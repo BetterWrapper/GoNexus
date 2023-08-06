@@ -72,8 +72,8 @@ module.exports = http
 							break;
 						} case "/api/submitSiteAccessKey": {
 							loadPost(req, res).then(([data]) => {
-								if (!data.text) res.end(JSON.stringify({error: "Please enter in an access key."}));
-								else if (data.text != env.PROJECT_ACCESS_KEY) res.end(JSON.stringify({error: "Invaild Access Key"}));
+								if (!data.access_key) res.end(JSON.stringify({error: "Please enter in an access key."}));
+								else if (data.access_key != env.PROJECT_ACCESS_KEY) res.end(JSON.stringify({error: "Invaild Access Key"}));
 								else if (session.set(req, {
 									site_access_key_is_correct: true
 								})) res.end(JSON.stringify({success: true}));
