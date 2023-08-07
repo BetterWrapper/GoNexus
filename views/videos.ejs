@@ -146,7 +146,7 @@
                                 break;
                             } default: {
                                 $(element).hide();
-                                if ($(element).data('uid')) $(`.${cate}`).show();
+                                if (cate == $(element).data('uid')) $(`.${cate}`).show();
                                 break;
                             }
                         }
