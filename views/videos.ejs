@@ -162,11 +162,12 @@
                 }
                 $.post("/api/getAllUsers").done(d => {
                     let qvmVidsCount = 0;
+                    let allVidsCount = 0;
                     let type = '';
                     for (const userInfo of d) {
                         categoryNames[userInfo.id] = `By ${userInfo.name}`;
                         $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${userInfo.id}')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
-                        $("#all-videos-count").text(userInfo.movies.length);
+                        allVidsCount += userInfo.movies.length;
                         $(`#${userInfo.id}-videos-count`).text(userInfo.movies.length);
                         for (const movieInfo of userInfo.movies) {
                             if (movieInfo.hiddenTag == "qvm") {
@@ -198,6 +199,7 @@
                         }
                     }
                     $("#qvm-videos-count").text(qvmVidsCount);
+                    $("#all-videos-count").text(allVidsCount);
                 });
                 $.waypoints('extendFn', 'sticky', function(opt) {
                     var $wrap = this.wrap('<div class="sticky-wrapper"></div>').parent();
