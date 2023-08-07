@@ -103,9 +103,6 @@
             <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
             <script src="/js/user.js"></script>
             <script>
-                var categoryNames = {
-                    all: "All Videos"
-                };
                 function toAttrString(table) {
                     return typeof table == "object"
                         ? Object.keys(table)
@@ -165,11 +162,10 @@
                     let allVidsCount = 0;
                     let type = '';
                     for (const userInfo of d) {
-                        categoryNames[userInfo.id] = `By ${userInfo.name}`;
                         $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${userInfo.id}')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
-                        allVidsCount += userInfo.movies.length;
                         $(`#${userInfo.id}-videos-count`).text(userInfo.movies.length);
                         for (const movieInfo of userInfo.movies) {
+                            allVidsCount++
                             if (movieInfo.hiddenTag == "qvm") {
                                 qvmVidsCount++
                                 type += ` is-qvm ${userInfo.id}`;
