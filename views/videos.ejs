@@ -119,15 +119,16 @@
                         .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
                         .join(" ");
                 }
-                function loadVideoPlayer(movieId, movieTitle) {
+                function loadVideoPlayer(movieId, movieTitle, uid) {
                     if (!movieId) return;
                     $('#wistia-player').html(toParamString({
                         flashvars: {
+                            movieOwnerId: uid,
                             movieId,
                             apiserver: "/",
                             storePath: "/static/store/<store>",
                             ut: "23",
-                            autostart: "1",
+                            autostart: "0",
                             isWide: "1",
                             clientThemePath: "/static/<client_theme>",
                         },
@@ -147,8 +148,8 @@
                                 $("#qvm").show();
                                 break;
                             } default: {
+                                $(element).hide();
                                 if ($(element).data('uid')) $(`#${cate}`).show();
-                                else $(element).hide();
                                 break;
                             }
                         }
@@ -176,7 +177,7 @@
                                 <div class="col-sm-4">
                                     <div class="video-thumbnail">
                                         <div class="video-thumbnail-explainer">
-                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}')">
+                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">
                                                 <img src="/movie_thumbs/${movieInfo.id}.png"/>
                                                 <div class="video-cate video-cate-explainer clearfix">
                                                     <span>${movieInfo.title}</span>
@@ -188,7 +189,7 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="video-title">
-                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}')">${movieInfo.title}</a>
+                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">${movieInfo.title}</a>
                                     </div>
                                     <div class="video-length">${movieInfo.durationString}</div>
                                     <div class="video-desc">${movieInfo.desc}</div>
