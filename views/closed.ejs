@@ -86,6 +86,9 @@
                         <div class="mb-3">
                             <label for="access-key" class="col-form-label">Access Key:</label>
                             <input type="text" class="form-control" id="access-key" name="access_key">
+                            <% if (returnto) { %>
+                                <input type="hidden" name="returnto" value="<%= returnto %>">
+                            <% } %>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -144,7 +147,10 @@
                     $("#inputbtn").text(origText);
                     console.error(json.error)
                     $('#errortext').text(json.error);
-                } else if (json.success) window.location.reload();
+                } else if (json.success) {
+                    if (json.url) window.location.href = json.url;
+                    else window.location.reload();
+                }
             });
         }) 
     </script>

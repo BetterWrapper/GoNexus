@@ -145,11 +145,11 @@
                                 break;
                             } case "qvm": {
                                 $(element).hide();
-                                $("#qvm").show();
+                                $(".is-qvm").show();
                                 break;
                             } default: {
                                 $(element).hide();
-                                if ($(element).data('uid')) $(`#${cate}`).show();
+                                if ($(element).data('uid')) $(`.${cate}`).show();
                                 break;
                             }
                         }
@@ -171,9 +171,9 @@
                         for (const movieInfo of userInfo.movies) {
                             if (movieInfo.hiddenTag == "qvm") {
                                 qvmVidsCount++
-                                type = "qvm";
-                            } else type = userInfo.id;
-                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer" data-uid="${userInfo.id}" id="${type}">
+                                type += ` is-qvm ${userInfo.id}`;
+                            } else type = ` ${userInfo.id}`;
+                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer${type}" data-uid="${userInfo.id}">
                                 <div class="col-sm-4">
                                     <div class="video-thumbnail">
                                         <div class="video-thumbnail-explainer">

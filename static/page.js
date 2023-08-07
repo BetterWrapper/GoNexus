@@ -266,7 +266,7 @@ module.exports = function (req, res, url) {
 		default: {
 			if (url.pathname != "/") {
 				res.statusCode = 302;
-				res.setHeader("Location", "/");
+				res.setHeader("Location", `/?returnto=${url.path}`);
 				return res.end();
 			}
 			filename = "closed";
@@ -275,6 +275,7 @@ module.exports = function (req, res, url) {
 	}
 	Object.assign(params ? params.flashvars : {}, query);
 	ejs.renderFile(`./views/${filename}.ejs`, {
+		returnto: url.query.returnto,
 		title,
 		attrs,
 		params,
