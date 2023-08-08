@@ -53,6 +53,7 @@ module.exports = http
 				users: []
 			}, null, "\t"));
 			if (!fs.existsSync(env.SAVED_FOLDER)) fs.mkdirSync(env.SAVED_FOLDER);
+			if (!fs.existsSync(env.CACHÉ_FOLDER)) fs.mkdirSync(env.CACHÉ_FOLDER);
 			const parsedUrl = url.parse(req.url, true);
 			function missingFilesError() {
 				return res.end(JSON.stringify({
