@@ -135,7 +135,7 @@ module.exports = http
 										const meta = usersFile.users.find(i => i.id == json.id);
 										for (let i = 0; i < json.assets.length; i++) {
 											const assetInfo = json.assets[i];
-											if (meta.assets[i].id == assetInfo.id) return sameFilesError();
+											if (meta.assets[i] && meta.assets[i].id == assetInfo.id) return sameFilesError();
 											meta.assets.unshift(assetInfo);
 											if (assetInfo.id.startsWith("s-")) {
 												if (!zip[assetInfo.id + '.xml'] || !zip[assetInfo.id + '.png']) return missingFilesError();
@@ -148,7 +148,7 @@ module.exports = http
 										}
 										for (let i = 0; i < json.movies.length; i++) {
 											const movieInfo = json.movies[i];
-											if (meta.movies[i].id == movieInfo.id) return sameFilesError();
+											if (meta.movies[i] && meta.movies[i].id == movieInfo.id) return sameFilesError();
 											meta.movies.unshift(movieInfo);
 											if (movieInfo.id.startsWith("m-")) {
 												if (!zip[movieInfo.id + '.xml'] || !zip[movieInfo.id + '.png']) return missingFilesError();
