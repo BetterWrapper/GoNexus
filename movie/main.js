@@ -52,7 +52,10 @@ module.exports = {
 			var suffix = mId.substr(i + 1);
 			switch (prefix) {
 				case "m": {
-					var path = fUtil.getFileIndex("movie-", ".xml", suffix);
+					if (fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix))) fs.unlinkSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix));
+					var path;
+					if (data.is_triggered_by_autosave && fs.existsSync(fUtil.getFileIndex("movie-", ".xml", suffix))) path = fUtil.getFileIndex("movie-autosaved-", ".xml", suffix);
+					else path = fUtil.getFileIndex("movie-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
 					parse.unpackMovie(movieZip).then((buffer) => {
 						writeStream.write(buffer, () => {
@@ -109,7 +112,8 @@ module.exports = {
 						let filePath;
 						switch (prefix) {
 							case "m": {
-								filePath = fUtil.getFileIndex("movie-", ".xml", numId);
+								if (data.loadFromAutosave) filePath = fUtil.getFileIndex("movie-autosaved-", ".xml", numId);
+								else filePath = fUtil.getFileIndex("movie-", ".xml", numId);
 								break;
 							} case "s": {
 								filePath = fUtil.getFileIndex("starter-", ".xml", numId);

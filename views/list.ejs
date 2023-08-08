@@ -3,11 +3,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<title>Your Videos on BetterWrapper</title>
+<title>Your Videos on GoNexus</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="BetterWrapper is an LVM project that helps improve the errors Wrapper: Offline has right now.">
+<meta name="description" content="GoNexus is an LVM project that helps improve the errors Wrapper: Offline has right now.">
 <meta property="og:site_name" content="Vyond">
 <meta property="fb:app_id" content="177116303202">
 
@@ -36,11 +36,7 @@
 </style>
 </body>
 <link rel="stylesheet" href="../ui/css/common_combined.css">
-<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/watermark.css.gz.css" rel="stylesheet" type="text/css">
-<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video.css.gz.css" rel="stylesheet" type="text/css">
 <link href="../ui/css/mymovies.css" rel="stylesheet" type="text/css">
-<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/video_export.css.gz.css" rel="stylesheet" type="text/css">
-<link href="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/css/vm5_alpha/banner.css.gz.css" rel="stylesheet" type="text/css">
 <!--[if lt IE 9]>
 <style text="text/css">
 .top-nav.collapse {height: auto;overflow: visible;}
@@ -53,19 +49,12 @@ var user_role = 9;
 </script>
 
 <script src="../js/common_combined.js"></script>
-<script type="text/javascript" src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/../po/goserver_js-en_US.json.gz.json"></script>
+<script type="text/javascript" src="/lvm_files/go/js/../po/goserver_js-en_US.json.gz.json"></script>
 <script type="text/javascript">
 var I18N_LANG = 'en_US';
 var GT = new Gettext({'locale_data': json_locale_data});
 </script>
 
-<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery-ui-1.9.2.custom-core-interactions.min.js.gz.js"></script>
-<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/jquery/jquery.tmpl.min.js.gz.js"></script>
-<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/trial_upsell.js.gz.js"></script>
-<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/lib/moment.min.js.gz.js"></script>
-<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/sessionChecker.js.gz.js"></script>
-<script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/amplitude/go_amp.js.gz.js"></script>
-
 
 
 
@@ -75,14 +64,12 @@ var GT = new Gettext({'locale_data': json_locale_data});
 
 
 <script type="text/javascript">
-if (self !== top) {
-            jQuery('body').hide();
-    }
-</script>
-
-
-<script type="text/javascript">
-        jQuery.extend(CCStandaloneBannerAdUI, {"actionshopSWF":"https:\/\/d3v4eglovri8yt.cloudfront.net\/animation\/66453a3ba2cc5e1b\/actionshop.swf","apiserver":"http:\/\/ga.vyond.com\/","clientThemePath":"https:\/\/d3v4eglovri8yt.cloudfront.net\/html\/204877ced07e5539\/<client_theme>","userId":"0AxjAaQrlscE"});
+    if (self !== top) $('body').hide();
+    $.extend(CCStandaloneBannerAdUI, {
+        actionshopSWF: "https:\/\/d3v4eglovri8yt.cloudfront.net\/animation\/66453a3ba2cc5e1b\/actionshop.swf",
+        apiserver: "http:\/\/ga.vyond.com\/","clientThemePath":"https:\/\/d3v4eglovri8yt.cloudfront.net\/html\/204877ced07e5539\/<client_theme>",
+        userId: "0AxjAaQrlscE"
+    });
 </script>
 
 <div class="page-container">
@@ -92,18 +79,13 @@ if (self !== top) {
 	<%- include("includes/header.ejs", {
         isVideoList: true
     }) %>
-<script>
-    jQuery('.logout-link').click(function(){
-        amplitudeTrackEvent(AMPLITUDE_EVENT.LOGOUT, null);
-    });
-    </script>
 
 <!-- END OF HEADER -->
 
 <div class="alert alert-danger">
 	<div class="alert-content text-center">
         BetterWrapper is currently under development right now. things like video importing and eta does not work yet. 
-        <a href="https://github.com/josephanimate2021/betterwrapper" target="_blank">GITHUB LINK</a>.
+        <a href="https://github.com/josephanimate2021/GoNexus" target="_blank">GITHUB LINK</a>.
     </div>
 </div>
 
@@ -289,19 +271,31 @@ var videoCounts = {
 
 // Folder counts. To be updated by myvideos.js.
 var folderCounts = 0;
-var userData;
-
-function sendUserData(userInfo) {
-    userData = userInfo;
-}
 function refreshMovieList() {
-    jQuery.get(`/movieList?uid=${userData.uid}`, (meta) => {
-        videoCounts.all += meta.length;
-		document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
+    jQuery.getJSON(`/movieList?uid=${userData.uid}`, (meta) => {
+        document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
         if (meta.length < 1) {
             jQuery("#myvideos").hide();
             jQuery("#novideos").show();
             jQuery("#allvideos").hide();
+        } else {
+            jQuery("#myvideos").show();
+            jQuery("#novideos").hide();
+            jQuery("#allvideos").show();
+            for (const tbl of meta) {
+                videoCounts.all++
+                const date = tbl.date.split("T")[0];
+                const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
+                jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${
+                    tbl.durationString
+                }</div></div></td><td>${
+                    usDate
+                }</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${tbl.id}')"></a><a href="javascript:movieRedirect('/go_full?movieId=${
+                    tbl.id
+                }', '${tbl.id}')"></a><a href="javascript:movieRedirect('/movies/${tbl.id}.zip', '${tbl.id}')"></a><a onclick="deleteMovie('${
+                    tbl.id
+                }')"></a></td></tr>`);
+            }
         }
     })
 }

@@ -103,9 +103,6 @@
             <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
             <script src="/js/user.js"></script>
             <script>
-                var categoryNames = {
-                    all: "All Videos"
-                };
                 function toAttrString(table) {
                     return typeof table == "object"
                         ? Object.keys(table)
@@ -145,11 +142,11 @@
                                 break;
                             } case "qvm": {
                                 $(element).hide();
-                                $("#qvm").show();
+                                $(".is-qvm").show();
                                 break;
                             } default: {
                                 $(element).hide();
-                                if ($(element).data('uid')) $(`#${cate}`).show();
+                                if (cate == $(element).data('uid')) $(`.${cate}`).show();
                                 break;
                             }
                         }
@@ -162,18 +159,18 @@
                 }
                 $.post("/api/getAllUsers").done(d => {
                     let qvmVidsCount = 0;
+                    let allVidsCount = 0;
                     let type = '';
                     for (const userInfo of d) {
-                        categoryNames[userInfo.id] = `By ${userInfo.name}`;
                         $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${userInfo.id}')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
-                        $("#all-videos-count").text(userInfo.movies.length);
                         $(`#${userInfo.id}-videos-count`).text(userInfo.movies.length);
                         for (const movieInfo of userInfo.movies) {
+                            allVidsCount++
                             if (movieInfo.hiddenTag == "qvm") {
                                 qvmVidsCount++
-                                type = "qvm";
-                            } else type = userInfo.id;
-                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer" data-uid="${userInfo.id}" id="${type}">
+                                type += ` is-qvm ${userInfo.id}`;
+                            } else type = ` ${userInfo.id}`;
+                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer${type}" data-uid="${userInfo.id}">
                                 <div class="col-sm-4">
                                     <div class="video-thumbnail">
                                         <div class="video-thumbnail-explainer">
@@ -198,6 +195,7 @@
                         }
                     }
                     $("#qvm-videos-count").text(qvmVidsCount);
+                    $("#all-videos-count").text(allVidsCount);
                 });
                 $.waypoints('extendFn', 'sticky', function(opt) {
                     var $wrap = this.wrap('<div class="sticky-wrapper"></div>').parent();

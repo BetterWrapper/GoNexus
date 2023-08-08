@@ -8,13 +8,9 @@ const auth = firebase.auth();
 let signupComplete = false;
 let loginComplete = false;
 let displayName = null;
+let userData;
 auth.onAuthStateChanged(user => {
     if (user) {
-        jQuery.post("/api/check4SavedUserInfo", {
-            displayName: user.displayName,
-            email: user.email,
-            uid: user.uid
-        });
         if (displayName != null) auth.currentUser.updateProfile({displayName}).catch(e => {
             console.log(e);
             alert(e.message);
@@ -64,6 +60,12 @@ auth.onAuthStateChanged(user => {
                 }
             }
         } else {
+            userData = user;
+            jQuery.post("/api/check4SavedUserInfo", {
+                displayName: user.displayName,
+                email: user.email,
+                uid: user.uid
+            });
             hideElement('signup-button');
             hideElement('login-button');
             showElement('isLogin');
@@ -76,7 +78,6 @@ auth.onAuthStateChanged(user => {
                 }
                 case "/":
                 case "/movies": {
-                    sendUserData(user);
                     jQuery.getJSON(`/movieList?uid=${user.uid}`, (meta) => {
                         document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
                         if (meta.length < 1) {
@@ -297,5 +298,60 @@ function loadUserContent(userData) {
                 });
             }
         });
+    }
+}
+function downloadMyStuff() {
+    try {
+        $("#stuff-downloading-overlay").modal({
+            keyboard: false, 
+            backdrop: "static"
+        });
+        $.post('/api/fetchMyStuff', {
+            displayName: userData.displayName,
+            uid: userData.uid,
+            email: userData.email
+        }, (d) => {
+            const json = JSON.parse(d);
+            if (json.success) {
+                $("#stuff-downloading-overlay").modal('hide');
+                window.location.href = json.fileUrl;
+            } else displayFeedback(1 + json.error);
+        });
+    } catch (e) {
+        console.log(e);
+        displayFeedback(1 + e);
+    }
+}
+function uploadMyStuff() {
+    try {
+        $("#stuff-uploading-overlay").modal({
+            keyboard: false, 
+            backdrop: "static"
+        });
+        var b = new FormData();
+        b.append("import", document.getElementById('stuff-upload').files[0]);
+        b.append("userId", userData.uid);
+        $.ajax({
+            url: "/api/uploadMyStuff",
+            method: "POST",
+            data: b,
+            processData: false,
+            contentType: false,
+            dataType: "json"
+        }).done((d) => {
+            $("#stuff-uploading-overlay").modal('hide');
+            if (d.success) {
+                displayFeedback(0 + d.msg);
+                switch (window.location.pathname) {
+                    case "/movies": {
+                        refreshMovieList();
+                        break;
+                    }
+                }
+            } else displayFeedback(1 + d.error);
+        });
+    } catch (e) {
+        console.log(e);
+        displayFeedback(1 + e);
     }
 }
