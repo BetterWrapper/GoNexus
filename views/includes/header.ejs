@@ -18,6 +18,8 @@
                 <li class="dropdown" id="isLogin" style="display: none">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Your Account <span class="caret"></span></a>
                     <ul class="dropdown-menu">
+                        <li><a href="javascript:downloadMyStuff()">Download Your Stuff</a></li>
+                        <li><a href="javascript:document.getElementById('stuff-upload').click()">Upload Your Stuff</a></li>
                         <li><a href="/movies">Your Videos</a></li>
                         <li class="divider"></li>
                         <li><a href="/account">Account Settings</a></li>
@@ -41,3 +43,27 @@
         </div>
     </div>
 </nav>
+<script src="https://josephanimate2021.github.io/blockui/jquery.blockUI.js"></script>
+<form enctype='multipart/form-data' action='javascript:uploadMyStuff()' method="post" style="display: none;">
+    <input id='stuff-upload' type="file" onchange="this.form.submit()" name='import' accept=".zip" />
+</form>
+<div id="stuff-uploading-overlay" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">We are currently uploading your stuff right now.</h3>
+            </div>
+            <div class="modal-body">Please wait until your stuff is done uploading. it should not take long.</div>
+        </div>
+    </div>
+</div>
+<div id="stuff-downloading-overlay" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">We are currently downloading your stuff right now.</h3>
+            </div>
+            <div class="modal-body">Please wait until your stuff is done downloading. it should not take long.</div>
+        </div>
+    </div>
+</div>

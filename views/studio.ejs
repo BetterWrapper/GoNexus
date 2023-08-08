@@ -179,8 +179,6 @@ if (self !== top) {
 </div>
 
 <script>
-    var userData;
-    
     var hideHTMLBox = function() {
         window.close();
     };
@@ -226,7 +224,6 @@ if (self !== top) {
     }
 
     function proceedWithFullscreenStudio(user) {
-        userData = user;
         // These should be executed only when we are really ready to show the studio
         window.onbeforeunload = function(e) {
             var e = e || window.event;
