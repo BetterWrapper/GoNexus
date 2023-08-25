@@ -72,10 +72,6 @@ auth.onAuthStateChanged(user => {
             showElement('exploreTab');
             showElement('iconsLol');
             switch (window.location.pathname) {
-                case "/quickvideo": {
-                    sendUserData(user);
-                    break;
-                }
                 case "/":
                 case "/movies": {
                     jQuery.getJSON(`/movieList?uid=${user.uid}`, (meta) => {

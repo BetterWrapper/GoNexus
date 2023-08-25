@@ -230,7 +230,7 @@ module.exports = function (req, res, url) {
 						if (!f["script[1][char_num]"]) return res.end(JSON.stringify({
 							error: "Your video has to contain 2 characters talking to one another. please fix all of the errors you made and preview this video again."
 						}));
-						if (!f["script[2][char_num]"] && f.golite_theme == "basketball") return res.end(JSON.stringify({
+						if (!f["script[2][char_num]"] && f.golite_theme == "basketball" && f.enc_tid == "0GWxgtNKvSes") return res.end(JSON.stringify({
 							error: "Your video has to contain at least 3 voice clips in order to make this video a proper one. please fix all of the errors you made and preview this video again."
 						}));
 						let movieXml = '', sceneXml = '', soundXml = '', lipsyncXml = '';
@@ -393,7 +393,7 @@ module.exports = function (req, res, url) {
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
 										lipsyncXml += `<linkage>SOUND${counts.sounds - 1},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.sounds - 1}~~~</linkage>`
 										counts.soundStartCount = counts.soundStopCount + 49;
-										counts.soundStopCount = counts.soundStopCount + 90;
+										counts.soundStopCount = counts.soundStartCount + 49;
 									} else {
 
 									}

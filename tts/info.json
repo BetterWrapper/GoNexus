@@ -2817,5 +2817,34 @@
 		"pl": "Polish",
 		"nl": "Dutch",
 		"cy": "Welsh"
+	},
+	"langPrefixes": {
+		"Thai": "th",
+		"Suomi": "fi",
+		"German": "de",
+		"French": "fr",
+		"Danish": "da",
+		"English": "en",
+		"Spanish": "es",
+		"Catalan": "ca",
+		"Russian": "ru",
+		"Italian": "it",
+		"Turkish": "tr",
+		"Chinese": "zh",
+		"Japanese": "ja",
+		"Romanian": "ro",
+		"Norwegian": "no",
+		"Valencian": "va",
+		"Portuguese": "pt",
+		"Galician": "gl",
+		"Swedish": "sv",
+		"Korean": "ko",
+		"Polish": "pl",
+		"Dutch": "nl",
+		"Welsh": "cy"
+	},
+	"genderPrefixes": {
+		"Male": "M",
+		"Female": "F"
 	}
 }

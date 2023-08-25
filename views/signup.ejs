@@ -127,15 +127,18 @@ var aff_ref = '', currency = 'USD';
         <script src="/js/user.js"></script>
         <script>
             $("#signup-form").submit(() => {
-                $("#signup-processing").show();
+                $("#signup-processing").modal({
+                    keyboard: false,
+                    backdrop: "static"
+                });
                 $("#error-message").text('');
                 setTimeout(() => {
                     if ($('#password').val() != $('#password2').val()) {
                         $("#error-message").text('Your password and confirm password must match.');
-                        $("#signup-processing").hide();
+                        $("#signup-processing").modal('hide');
                     } else if (!$('#display_name').val()) {
                         $("#error-message").text('You need to have a display name.');
-                        $("#signup-processing").hide();
+                        $("#signup-processing").modal('hide');
                     } else userSignup($('#email').val(), $('#password').val(), $('#display_name').val());
                 }, 5000);
             })
