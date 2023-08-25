@@ -369,7 +369,7 @@ module.exports = {
 							const vJson = {};
 							for (let i = 0; i < json.Voice.length; i++) {
 								const v = json.Voice[i];
-								if (!v.isvip && v.urlname) {
+								if (v.urlname) {
 									if (v.Languagename.match(/[a-zA-Z]/) && v.name.includes(" (") && v.name.includes(")") && info.genderPrefixes[v.name.split(" (")[1].split(")")[0]]) {
 										if (v.Languagename.includes(" (") && v.Languagename.includes(")") && info.langPrefixes[v.Languagename.split(" (")[0]]) {
 											const l = info.langPrefixes[v.Languagename.split(" (")[0]];
@@ -382,7 +382,7 @@ module.exports = {
 												demo: l != "fi" ? `https://images.topmediai.com/topmediai/assets/overview/text-to-speech/${v.name.split(" ").join("_")}.wav` : "",
 												country: (v.Languagename.split(" (")[1].split(")")[0]).length != 2 ? false : v.Languagename.split(" (")[1].split(")")[0],
 												lang: l,
-												plus: false,
+												plus: !v.isvip ? false : true,
 											});
 										} else {
 											jsons.default = jsons.default || [];
@@ -394,7 +394,7 @@ module.exports = {
 												demo: "",
 												country: false,
 												lang: false,
-												plus: false,
+												plus: !v.isvip ? false : true,
 											});
 										}
 									} else {
@@ -407,7 +407,7 @@ module.exports = {
 											demo: "",
 											country: false,
 											lang: false,
-											plus: false,
+											plus: !v.isvip ? false : true,
 										});
 									}
 								}
