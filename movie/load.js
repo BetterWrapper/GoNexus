@@ -286,7 +286,7 @@ module.exports = function (req, res, url) {
 								for (let i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
 										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f[`script[${i}][facial][${
-											f[`characters[0][${charIds[f[`script[${i}][char_num]`]]}]`]
+											f[`characters[${f[`script[${i}][char_num]`]}][${charIds[f[`script[${i}][char_num]`]]}]`]
 										}]`]);
 										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
@@ -572,7 +572,7 @@ module.exports = function (req, res, url) {
 								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
 										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f[`script[${i}][facial][${
-											f[`characters[0][${charIds[f[`script[${i}][char_num]`]]}]`]
+											f[`characters[${f[`script[${i}][char_num]`]}][${charIds[f[`script[${i}][char_num]`]]}]`]
 										}]`]);
 										console.log(buffer);
 										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
