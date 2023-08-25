@@ -1,13 +1,9 @@
-var userData;
-function sendUserData(user) {
-    userData = user;
-    reloadCCList(userData);
-}
+while (userData) reloadCCList(userData);
 function detectLogin(action, actionNum) {
     if (!action || !actionNum) alert("Missing one or more actions.");
     if (!userData) switch (action) {
         case "customchars": {
-            alert("Please login to betterwrapper in order to use custom characters");
+            alert("Please login to gonexus in order to use custom characters");
             break;
         }
     } else switch (action) {
