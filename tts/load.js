@@ -15,7 +15,7 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.path != "/goapi/convertTextToSoundAsset/") return;
 	loadPost(req, res).then(async ([data]) => {
 		try {
-			const buffer = await tts(data.voice, data.text);
+			const buffer = await tts.genVoice(data.voice, data.text);
 			mp3Duration(buffer, (e, d) => {
 				var dur = d * 1e3;
 				if (e || !dur) return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${

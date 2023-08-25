@@ -375,11 +375,39 @@
                         <h2>2. Select a voice for your character:</h2>
                         <script type="text/javascript">
                             var VoiceCatalog = {
-                                getModel() {
-                                    jQuery.post("/api/getTTSVoices", lang_model => {
-                                        return lang_model;
+                                lookupVoiceInfo: function(voice_id) {
+                                    jQuery.post("/api/getAIVoices", (lang_model) => {
+                                        console.log(lang_model);
+                                        for (var langId in lang_model) {
+                                            const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
+                                            if (voiceInfo) {
+                                                return {
+                                                    desc: voiceInfo.desc,
+                                                    sex: voiceInfo.sex,
+                                                    plus: voiceInfo.plus,
+                                                    locale: { 
+                                                        id: langId, 
+                                                        lang: voiceInfo.lang, 
+                                                        country: voiceInfo.country, 
+                                                        desc: lang_model[langId].desc 
+                                                    }
+                                                };
+                                            }
+                                        }
+                                        return null;
                                     });
                                 },
+                                getDefaultVoice: function() {
+                                    jQuery.post("/api/getAIVoices", (lang_model) => {
+                                        console.log(lang_model);
+                                        for (var langId in lang_model) {
+                                            for (var i = 0; i < lang_model[langId].options.length; i++) {
+                                                if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
+                                            }
+                                        }
+                                        return null;
+                                    });
+                                }
                             };
                         </script>
                         <div class="voiceselectorwidget">

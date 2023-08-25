@@ -4,7 +4,6 @@ const http = require("http");
 const loadPost = require("../misc/post_body");
 const fUtil = require("../misc/file");
 const formidable = require("formidable");
-const voices = require("../tts/info").voices;
 let userId = null;
 const path = require("path");
 const tts = require("../tts/main");
@@ -286,9 +285,12 @@ module.exports = function (req, res, url) {
 								<yscale>1</yscale><file>common.ncc_opening01.swf</file></effectAsset></scene>`;
 								for (let i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
+										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f[`script[${i}][facial][${
+											f[`characters[0][${charIds[f[`script[${i}][char_num]`]]}]`]
+										}]`]);
+										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
-										const title = `[${voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
+										const title = `[${voiceInfo.name}] ${f[`script[${i}][text]`]}`;
 										templateAssets.unshift(asset.save(buffer, {
 											orderNum: i,
 											type: "sound",
@@ -567,9 +569,13 @@ module.exports = function (req, res, url) {
 								</scene>`;
 								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										const buffer = await tts(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
+										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f[`script[${i}][facial][${
+											f[`characters[0][${charIds[f[`script[${i}][char_num]`]]}]`]
+										}]`]);
+										console.log(buffer);
+										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
-										const title = `[${voices[f[`script[${i}][voice]`]].desc}] ${f[`script[${i}][text]`]}`;
+										const title = `[${voiceInfo.name}] ${f[`script[${i}][text]`]}`;
 										templateAssets.unshift(asset.save(buffer, {
 											orderNum: i,
 											type: "sound",
@@ -587,7 +593,7 @@ module.exports = function (req, res, url) {
 										switch (f[`script[${i}][char_num]`]) {
 											case "1": {
 												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${
-													(Math.round(texts[i].length) * 24) + (texts[i].length * 24) + 96
+													(Math.round(f[`script[${i}][text]`].length) * 24) + (f[`script[${i}][text]`].length * 24) + 96
 												}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="D13D4A19-8247-704D-7D92-54C7E96875B9">
@@ -643,7 +649,7 @@ module.exports = function (req, res, url) {
 											  break;
 											} case "2": {
 												sceneXml += `<scene id="SCENE${counts.scenes}" adelay="${
-													(Math.round(texts[i].length) * 24) + (texts[i].length * 24) + 96
+													(Math.round(f[`script[${i}][text]`].length) * 24) + (f[`script[${i}][text]`].length * 24) + 96
 												}" lock="N" index="${
 													counts.scenes
 												}" color="16777215" guid="65B686F6-7257-FBA7-2397-2B22E0F82023">
@@ -699,9 +705,9 @@ module.exports = function (req, res, url) {
 											}
 										}
 										soundXml += `<sound id="SOUND${counts.sounds}" index="${counts.sounds}" track="0" vol="1" tts="1"><sfile>ugc.${meta.id}</sfile><start>${
-											(Math.round(texts[i].length) * 24) + 96
+											(Math.round(f[`script[${i}][text]`].length) * 24) + 96
 										}</start><stop>${
-											(Math.round(texts[i].length) * 24) + (texts[i].length * 24) + 96
+											(Math.round(f[`script[${i}][text]`].length) * 24) + (f[`script[${i}][text]`].length * 24) + 96
 										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;

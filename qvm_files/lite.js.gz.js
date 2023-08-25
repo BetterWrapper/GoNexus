@@ -1213,17 +1213,21 @@ var GoLite = (function(e) {
             }, "json")
         },
         showSelectCCOverlay: function(y) {
-            var w = GoLite.getCharacters();
-            var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, (c >= 2));
-            z.setDefaultCharacterById(w[y].data("cid"));
-            z.setDefaultVoice(w[y].data("voice"));
-            z.show()
+            jQuery.post("/api/getAIVoices", d => {
+                var w = GoLite.getCharacters();
+                var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, (c >= 2), d);
+                z.setDefaultCharacterById(w[y].data("cid"));
+                z.setDefaultVoice(w[y].data("voice"));
+                z.show()
+            });
         },
         showSelectVoiceOverlay: function(y) {
-            var w = GoLite.getCharacters();
-            var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, (c >= 2));
-            z.setDefaultVoice(w[y].data("voice"));
-            z.show()
+            jQuery.post("/api/getAIVoices", d => {
+                var w = GoLite.getCharacters();
+                var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, (c >= 2), d);
+                z.setDefaultVoice(w[y].data("voice"));
+                z.show()
+            });
         },
         addCC: function(y, w) {
             e.each(l, function(B, A) {
@@ -1345,8 +1349,7 @@ function customCharSignup() {
     popUpgrade()
 }
 
-function SelectCCDialog(g, a, c) {
-    var d = VoiceCatalog.getModel();
+function SelectCCDialog(g, a, c, d) {
     var f = new VoiceSelectionWidget(jQuery(".voiceselectorwidget", g), d, c);
     var b = new CCBrowserSimple(jQuery(".ccbrowsercontainer", g), customCC_model);
     var e = function() {
@@ -1419,8 +1422,7 @@ function SelectCCDialog(g, a, c) {
     }
 }
 
-function SelectVoiceDialog(f, a, b) {
-    var c = VoiceCatalog.getModel();
+function SelectVoiceDialog(f, a, b, c) {
     var e = new VoiceSelectionWidget(jQuery(".voiceselectorwidget", f), c, b);
     var d = function() {
         if (e.getSelectedVoice() == null) {
@@ -1483,14 +1485,16 @@ var VoiceLanguageDisplay = function(b) {
     var c = {
         updateByVoiceId: function(d) {
             var e = VoiceCatalog.lookupVoiceInfo(d);
-            var f = {
-                gender: e.sex,
-                locale: e.locale
-            };
-            if ((a && a.gender) != f.gender || (a && a.locale) != f.locale) {
-                a = f;
-                b.find(".gender").removeClass().addClass("gender " + f.gender);
-                b.find(".lang").removeClass().addClass("lang " + (f.locale.country || ("lg_" + f.locale.lang)))
+            while (e) {
+                var f = {
+                    gender: e.sex,
+                    locale: e.locale
+                };
+                if ((a && a.gender) != f.gender || (a && a.locale) != f.locale) {
+                    a = f;
+                    b.find(".gender").removeClass().addClass("gender " + f.gender);
+                    b.find(".lang").removeClass().addClass("lang " + (f.locale.country || ("lg_" + f.locale.lang)))
+                }
             }
         }
     };

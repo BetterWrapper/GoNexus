@@ -354,41 +354,39 @@
                         </div>
                         <h2>2. Select a voice for your character:</h2>
                         <script type="text/javascript">
-                            var lang_model = {};
-                            jQuery.post("/api/getTTSVoices", (d) => {
-                                for (const voice of d) {
-                                    for (const stuff in voice) {
-                                        lang_model[stuff] = voice[stuff];
-                                    }
-                                }
-                            });
                             var VoiceCatalog = {
-                                getModel() {
-                                    return lang_model;
-                                },
-                                lookupVoiceInfo(voice_id) {
-                                    for (var langId in lang_model) {
-                                        var voice_count = lang_model[langId]['options'].length;
-                                        for (var i = 0; i < voice_count; i++) if (lang_model[langId]['options'][i].id == voice_id) return {
-                                            desc: lang_model[langId]['options'][i].desc,
-                                            sex: lang_model[langId]['options'][i].sex,
-                                            plus: lang_model[langId]['options'][i].plus,
-                                            locale: { 
-                                                id: langId, 
-                                                lang: lang_model[langId]['options'][i].lang, 
-                                                country: lang_model[langId]['options'][i].country, 
-                                                desc: lang_model[langId].desc 
+                                lookupVoiceInfo: function(voice_id) {
+                                    jQuery.post("/api/getAIVoices", (lang_model) => {
+                                        console.log(lang_model);
+                                        for (var langId in lang_model) {
+                                            const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
+                                            if (voiceInfo) {
+                                                return {
+                                                    desc: voiceInfo.desc,
+                                                    sex: voiceInfo.sex,
+                                                    plus: voiceInfo.plus,
+                                                    locale: { 
+                                                        id: langId, 
+                                                        lang: voiceInfo.lang, 
+                                                        country: voiceInfo.country, 
+                                                        desc: lang_model[langId].desc 
+                                                    }
+                                                };
                                             }
-                                        };
-                                    }
-                                    return null;
+                                        }
+                                        return null;
+                                    });
                                 },
-                                getDefaultVoice() {
-                                    for (var langId in lang_model) {
-                                        var voice_count = lang_model[langId]['options'].length;
-                                        for (var i = 0; i < voice_count; i++) if (typeof lang_model[langId]['options'][i].id === 'string') return lang_model[langId]['options'][i].id;
-                                    }
-                                    return null;
+                                getDefaultVoice: function() {
+                                    jQuery.post("/api/getAIVoices", (lang_model) => {
+                                        console.log(lang_model);
+                                        for (var langId in lang_model) {
+                                            for (var i = 0; i < lang_model[langId].options.length; i++) {
+                                                if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
+                                            }
+                                        }
+                                        return null;
+                                    });
                                 }
                             };
                         </script>
