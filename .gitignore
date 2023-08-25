@@ -1,5 +1,5 @@
 node_modules
-
+_CACHÉ
 _SAVED
 _ASSETS
 frames
@@ -9,4 +9,4 @@ views/qvm
 .space
 Spacefile
 Discovery.md
-_CACHÉ
+.DS_Store
