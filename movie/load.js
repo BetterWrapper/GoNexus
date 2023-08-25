@@ -710,8 +710,8 @@ module.exports = function (req, res, url) {
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
 										lipsyncXml += `<linkage>SOUND${counts.sounds},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.scenes}~~~</linkage>`;
-										counts.soundStartCount = counts.soundStopCount + 49 + f[`script[${i}][text]`].length;
-										counts.soundStopCount = counts.soundStartCount + 49 - i;
+										counts.soundStartCount = counts.soundStopCount + (f[`script[${i}][text]`].length + 49);
+										counts.soundStopCount = counts.soundStartCount + 49;
 									} else { // mic recording
 									}
 									counts.scenes++
