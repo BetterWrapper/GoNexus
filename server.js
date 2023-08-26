@@ -49,6 +49,7 @@ function stream2Buffer(readStream) {
 module.exports = http
 	.createServer((req, res) => {
 		try {
+			if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 			if (!fs.existsSync('./_ASSETS/users.json')) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify({
 				users: []
 			}, null, "\t"));
