@@ -285,9 +285,7 @@ module.exports = function (req, res, url) {
 								<yscale>1</yscale><file>common.ncc_opening01.swf</file></effectAsset></scene>`;
 								for (let i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f[`script[${i}][facial][${
-											f[`characters[${f[`script[${i}][char_num]`]}][${charIds[f[`script[${i}][char_num]`]]}]`]
-										}]`]);
+										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
 										const title = `[${voiceInfo.name}] ${f[`script[${i}][text]`]}`;
@@ -571,9 +569,7 @@ module.exports = function (req, res, url) {
 								</scene>`;
 								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f[`script[${i}][facial][${
-											f[`characters[${f[`script[${i}][char_num]`]}][${charIds[f[`script[${i}][char_num]`]]}]`]
-										}]`]);
+										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
 										console.log(buffer);
 										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
@@ -718,7 +714,7 @@ module.exports = function (req, res, url) {
 									counts.sounds++
 								} catch (e) {
 									console.log(e);
-									return res.end(JSON.stringify({
+									if (!(e.toString("utf8")).startsWith('{"')) return res.end(JSON.stringify({
 										error: e
 									}));
 								}
