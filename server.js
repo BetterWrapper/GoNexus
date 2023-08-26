@@ -49,7 +49,6 @@ function stream2Buffer(readStream) {
 module.exports = http
 	.createServer((req, res) => {
 		try {
-			if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 			if (!fs.existsSync('./_ASSETS/users.json')) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify({
 				users: []
 			}, null, "\t"));
@@ -289,6 +288,7 @@ module.exports = http
 		}
 		console.log(req.method, req.url, '-', res.statusCode);
 	}).listen(env.PORT || env.SERVER_PORT, () => {
+		if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 		fs.readdirSync(env.CACHÉ_FOLDER).forEach(file => fs.unlinkSync(`${env.CACHÉ_FOLDER}/${file}`));
 		console.log("GoNexus Has Started.");
 	});
