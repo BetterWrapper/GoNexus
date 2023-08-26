@@ -8,6 +8,8 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 var ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const mp3Duration = require("mp3-duration");
+const FormData = require("form-data");
+const fs = require("fs");
 
 module.exports = {
 	genVoice(voiceName, rawText) {
@@ -328,16 +330,53 @@ module.exports = {
 						console.log(json);
 						if (json.status == 200 && json.message == "Success") {
 							if (json.data && json.data.oss_url) {
-								https.get(json.data.oss_url, (r) => {
-									const stream = ffmpeg(r).inputFormat('wav').toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
-										rej(`Encoding Error: ${error.message}`);
-									}).pipe();
+								https.request({
+									hostname: "api.freeconvert.com",
+									path: "/v1/process/import/url",
+									method: "POST",
+									headers: {
+										'Content-Type': 'application/json',
+										Accept: 'application/json',
+										Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc'
+									}
+								}, (r) => {
 									const buffers = [];
-									stream.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
-								})
+									r.on("data", b => buffers.push(b)).on("end", () => {
+										const json = JSON.parse(Buffer.concat(buffers));
+										console.log(json);
+										https.request({
+											hostname: "api.freeconvert.com",
+											path: "/v1/process/convert",
+											method: "POST",
+											headers: {
+												'Content-Type': 'application/json',
+												Accept: 'application/json',
+												Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc'
+											}
+										}, (r) => {
+											const buffers = [];
+											r.on("data", b => buffers.push(b)).on("end", () => {
+												const json = JSON.parse(Buffer.concat(buffers));
+												console.log(json);
+											})
+										}).end(
+											JSON.stringify({
+												input: json.id,
+												input_format: "wav",
+												output_format: "mp3",
+												options: {}
+											})
+										).on("error", rej);
+									})
+								}).end(
+									JSON.stringify({
+										url: json.data.oss_url,
+										filename: json.data.oss_url.substr(json.data.oss_url.lastIndexOf("/") + 1)
+									})
+								).on("error", rej);
 							} else rej("Unable to retreive the ai voice file url")
 						} else rej(json.message);
-					})
+					});
 				}).end(
 					JSON.stringify({
 						text,

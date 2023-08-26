@@ -375,7 +375,7 @@
                         <h2>2. Select a voice for your character:</h2>
                         <script type="text/javascript">
                             var VoiceCatalog = {
-                                lookupVoiceInfo: function(voice_id) {
+                                lookupVoiceInfo(voice_id) {
                                     jQuery.post("/api/getAIVoices", (lang_model) => {
                                         console.log(lang_model);
                                         for (var langId in lang_model) {
@@ -397,7 +397,7 @@
                                         return null;
                                     });
                                 },
-                                getDefaultVoice: function() {
+                                getDefaultVoice() {
                                     jQuery.post("/api/getAIVoices", (lang_model) => {
                                         console.log(lang_model);
                                         for (var langId in lang_model) {
