@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <title>Comedy World Template | Slices of Daily Life | BetterWrapper</title>
+    <title>Comedy World Template | Slices of Daily Life | GoNexus</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
     <meta name="description"
@@ -104,7 +104,7 @@
                     <li class="intro"><a onclick="stepTo('#intro')">0</a></li>
                     <li class="step1"><a onclick="stepTo('#step1');">1</a></li>
                     <li class="step2"><a onclick="stepTo('#step2');">2</a></li>
-                    <li class="step3 on"><a onclick="stepTo('#step3');">3</a></li>
+                    <li class="step3"><a onclick="stepTo('#step3');">3</a></li>
                     <li class="step4"><a onclick="GoLite.preview();stepTo('#step4');">4</a></li>
                     <li class="seperate">&nbsp;</li>
                     <li class="next" title="Next step"><a>Next</a></li>
@@ -373,43 +373,6 @@
                             <div class="pagenumdisplay"></div>
                         </div>
                         <h2>2. Select a voice for your character:</h2>
-                        <script type="text/javascript">
-                            var VoiceCatalog = {
-                                lookupVoiceInfo(voice_id) {
-                                    jQuery.post("/api/getAIVoices", (lang_model) => {
-                                        console.log(lang_model);
-                                        for (var langId in lang_model) {
-                                            const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
-                                            if (voiceInfo) {
-                                                return {
-                                                    desc: voiceInfo.desc,
-                                                    sex: voiceInfo.sex,
-                                                    plus: voiceInfo.plus,
-                                                    locale: { 
-                                                        id: langId, 
-                                                        lang: voiceInfo.lang, 
-                                                        country: voiceInfo.country, 
-                                                        desc: lang_model[langId].desc 
-                                                    }
-                                                };
-                                            }
-                                        }
-                                        return null;
-                                    });
-                                },
-                                getDefaultVoice() {
-                                    jQuery.post("/api/getAIVoices", (lang_model) => {
-                                        console.log(lang_model);
-                                        for (var langId in lang_model) {
-                                            for (var i = 0; i < lang_model[langId].options.length; i++) {
-                                                if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
-                                            }
-                                        }
-                                        return null;
-                                    });
-                                }
-                            };
-                        </script>
                         <div class="voiceselectorwidget">
                             <div class="voiceselector"></div>
                             <!-- Templates -->
@@ -796,7 +759,12 @@
     <script type="text/javascript">
         jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
         var customCC_model = [];
+        var userData2;
+        function getUserData() {
+            return userData2;
+        }
         const reloadCCList = (userInfo) => {
+            userData2 = userInfo;
             jQuery.ajax({
                 url: '/api/getChars',
                 type: 'POST',

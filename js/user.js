@@ -16,7 +16,13 @@ auth.onAuthStateChanged(user => {
             alert(e.message);
         });
         if (!user.emailVerified) {
-            hideElement('signup-container');
+            jQuery.post(`/api/fetchAPIKeys`, (d) => {
+                console.log(d);
+                const json = JSON.parse(d);
+                addVal2Element('freeconvert-key', json.freeConvertKey);
+                addVal2Element('topmediaai-key', json.topMediaAIKey);
+            });
+            jQuery("#signup-processing").modal('hide');
             showElement('email-verification-signup');
             hideElement('login-container');
             showElement('logout-link');
@@ -65,6 +71,13 @@ auth.onAuthStateChanged(user => {
                 displayName: user.displayName,
                 email: user.email,
                 uid: user.uid
+            }, () => {
+                jQuery.post(`/api/fetchAPIKeys?uid=${user.uid}`, (d) => {
+                    console.log(d);
+                    const json = JSON.parse(d);
+                    addVal2Element('freeconvert-key', json.freeConvertKey);
+                    addVal2Element('topmediaai-key', json.topMediaAIKey);
+                });
             });
             hideElement('signup-button');
             hideElement('login-button');
@@ -95,6 +108,68 @@ auth.onAuthStateChanged(user => {
                             }')"></a></td></tr>`);
                         }
                     })
+                    break;
+                } case "/quickvideo": {
+                    GoLite.showSelectCCOverlay = function(y) {
+                        jQuery.post("/api/getAIVoices", {
+                            uid: user.uid
+                        }, d => {
+                            var w = GoLite.getCharacters();
+                            var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
+                            z.setDefaultCharacterById(w[y].data("cid"));
+                            z.setDefaultVoice(w[y].data("voice"));
+                            z.show()
+                        });
+                    };
+                    GoLite.showSelectVoiceOverlay = function(y) {
+                        jQuery.post("/api/getAIVoices", {
+                            uid: user.uid
+                        }, d => {
+                            var w = GoLite.getCharacters();
+                            var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
+                            z.setDefaultVoice(w[y].data("voice"));
+                            z.show()
+                        });
+                    };
+                    VoiceCatalog = {
+                        lookupVoiceInfo(voice_id) {
+                            jQuery.post("/api/getAIVoices", {
+                                uid: user.uid
+                            }, lang_model => {
+                                console.log(lang_model);
+                                for (var langId in lang_model) {
+                                    const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
+                                    if (voiceInfo) {
+                                        return {
+                                            desc: voiceInfo.desc,
+                                            sex: voiceInfo.sex,
+                                            plus: voiceInfo.plus,
+                                            locale: { 
+                                                id: langId, 
+                                                lang: voiceInfo.lang, 
+                                                country: voiceInfo.country, 
+                                                desc: lang_model[langId].desc 
+                                            }
+                                        };
+                                    }
+                                }
+                                return null;
+                            });
+                        },
+                        getDefaultVoice() {
+                            jQuery.post("/api/getAIVoices", {
+                                uid: user.uid
+                            }, lang_model => {
+                                console.log(lang_model);
+                                for (var langId in lang_model) {
+                                    for (var i = 0; i < lang_model[langId].options.length; i++) {
+                                        if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
+                                    }
+                                }
+                                return null;
+                            });
+                        }
+                    };
                     break;
                 } case "/go_full": {
                     $(document).ready(function() {
@@ -166,9 +241,13 @@ auth.onAuthStateChanged(user => {
             }
         }
     } else {
+        jQuery.post(`/api/fetchAPIKeys`, (d) => {
+            console.log(d);
+            const json = JSON.parse(d);
+            addVal2Element('freeconvert-key', json.freeConvertKey);
+            addVal2Element('topmediaai-key', json.topMediaAIKey);
+        });
         hideElement('isLogin');
-        hideElement('exploreTab');
-        hideElement('iconsLol');
         showElement('signup-button');
         showElement('login-button');
         switch (window.location.pathname) {
@@ -219,6 +298,9 @@ function showElement(id) {
 }
 function addText2Element(id, text) {
     if (document.getElementById(id)) document.getElementById(id).innerHTML = text;
+}
+function addVal2Element(id, text) {
+    if (document.getElementById(id)) document.getElementById(id).value = text;
 }
 function addLink2Element(id, url) {
     if (document.getElementById(id)) document.getElementById(id).href = url;

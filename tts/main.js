@@ -4,12 +4,11 @@ const qs = require("querystring");
 const brotli = require("brotli");
 const https = require("https");
 const md5 = require("js-md5");
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
-var ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
-const mp3Duration = require("mp3-duration");
-const FormData = require("form-data");
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(require('@ffmpeg-installer/ffmpeg').path);
+const fetch = require("node-fetch");
 const fs = require("fs");
+const mp3Duration = require("mp3-duration");
 
 module.exports = {
 	genVoice(voiceName, rawText) {
@@ -44,7 +43,7 @@ module.exports = {
 								"Accept-Encoding": "identity",
 								"Icy-Metadata": "1",
 							}
-						}, (r) => {
+						}, r => {
 							const stream = ffmpeg(r).inputFormat('wav').toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
 								rej(`Encoding Error: ${error.message}`);
 							}).pipe();
@@ -66,12 +65,12 @@ module.exports = {
 								"Content-Length": body.length,
 								"Content-type": "application/x-www-form-urlencoded"
 							}
-						}, (r) => {
+						}, r => {
 							let body = "";
 							r.on("data", (c) => body += c).on("end", () => {
 								const json = JSON.parse(body);
 								if (json.Error == 1) return rej(json.Text);
-								https.get(json.URL, (r) => {
+								https.get(json.URL, r => {
 									var buffers = [];
 									r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 								}).on("error", rej);
@@ -89,7 +88,7 @@ module.exports = {
 						} else {
 							pitch = 1;
 						}
-						https.get("https://www.cepstral.com/en/demos", async (r) => {
+						https.get("https://www.cepstral.com/en/demos", async r => {
 							const cookie = r.headers["set-cookie"];
 							const q = qs.encode({
 								voiceText: text,
@@ -106,14 +105,14 @@ module.exports = {
 									path: `/demos/createAudio.php?${q}`,
 									headers: { Cookie: cookie }
 								},
-								(r) => {
+								r => {
 									let body = "";
 									r.on("data", (b) => body += b);
 									r.on("end", () => {
 										const json = JSON.parse(body);
 	
 										https
-											.get(`https://www.cepstral.com${json.mp3_loc}`, (r) => {
+											.get(`https://www.cepstral.com${json.mp3_loc}`, r => {
 												var buffers = [];
 												r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 											}).on("error", rej);
@@ -146,7 +145,7 @@ module.exports = {
 								"User-Agent":
 									"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 							},
-						}, (r) => {
+						}, r => {
 							var buffers = [];
 							r.on("data", (d) => buffers.push(d));
 							r.on("end", () => res(Buffer.concat(buffers)));
@@ -167,7 +166,7 @@ module.exports = {
 									"Content-Type": "application/x-www-form-urlencoded",
 								},
 							},
-							(r) => {
+							r => {
 								let buffers = [];
 								r.on("data", (b) => buffers.push(b));
 								r.on("end", () => {
@@ -182,7 +181,7 @@ module.exports = {
 												"Content-Type": "application/x-www-form-urlencoded",
 											},
 										},
-										(r) => {
+										r => {
 											let buffers = [];
 											r.on("data", (d) => buffers.push(d));
 											r.on("end", () => {
@@ -191,7 +190,7 @@ module.exports = {
 												const end = html.indexOf("&", beg);
 												const sub = html.subarray(beg, end).toString();
 	
-												https.get(sub, (r) => {
+												https.get(sub, r => {
 													var buffers = [];
 													r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 												}).on("error", rej);
@@ -233,7 +232,7 @@ module.exports = {
 									"Content-Type": "application/x-www-form-urlencoded"
 								}
 							},
-							(r) => {
+							r => {
 								let buffers = [];
 								r.on("data", (b) => buffers.push(b));
 								r.on("end", () => {
@@ -249,7 +248,7 @@ module.exports = {
 											headers: {
 												Host: "gonutts.net"
 											}
-										}, (r) => {
+										}, r => {
 											var buffers = [];
 											r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 										}).on("error", rej);
@@ -283,7 +282,7 @@ module.exports = {
 								"x-requested-with": "XMLHttpRequest",
 								cookie: "Drupal.visitor.liveDemo=666",
 							},
-						}, (r) => {
+						}, r => {
 							var buffers = [];
 							r.on("data", (d) => buffers.push(d));
 							r.on("end", () => {
@@ -291,7 +290,7 @@ module.exports = {
 								const beg = xml.indexOf("https://cerevoice.s3.amazonaws.com/");
 								const end = xml.indexOf(".mp3", beg) + 4;
 								const loc = xml.substr(beg, end - beg).toString();
-								https.get(loc, (r) => {
+								https.get(loc, r => {
 									var buffers = [];
 									r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 								}).on("error", rej);
@@ -308,80 +307,148 @@ module.exports = {
 			}
 		});
 	},
-	genAIVoice(voiceName, text, emotion) {
+	async checkAIVoiceServer(data) {
+		try {
+			await this.genAIVoice("Barbara(Female)", "test", data.uid);
+			return "NoErrors";
+		} catch (e) {
+			console.log(e);
+			return "ContainsErrors"
+		}
+	},
+	genAIVoice(voiceName, text, userId) {
 		return new Promise(async (res, rej) => {
 			try {
-				if (emotion == "default") emotion = "string";
+				const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == userId);
 				const voiceInfo = await this.getAIVoiceInfo(voiceName);
-				console.log(voiceInfo);
+				console.log(voiceInfo, userInfo);
 				https.request({
 					hostname: "api.topmediai.com",
 					path: "/v1/text2speech",
 					method: "POST",
 					headers: {
 						accept: 'application/json',
-						'x-api-key': '7023b52a96aa48ce8bd32e2233ef0cc2',
+						'x-api-key': userInfo.apiKeys.Topmediaai || process.env.API_KEYS.Topmediaai,
 						'Content-Type': 'application/json'
-					},
-				}, (r) => {
+					}
+				}, r => {
 					const buffers = [];
 					r.on("data", b => buffers.push(b)).on("end", () => {
 						const json = JSON.parse(Buffer.concat(buffers));
 						console.log(json);
 						if (json.status == 200 && json.message == "Success") {
-							if (json.data && json.data.oss_url) {
-								https.request({
-									hostname: "api.freeconvert.com",
-									path: "/v1/process/import/url",
-									method: "POST",
-									headers: {
-										'Content-Type': 'application/json',
-										Accept: 'application/json',
-										Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc'
-									}
-								}, (r) => {
-									const buffers = [];
-									r.on("data", b => buffers.push(b)).on("end", () => {
-										const json = JSON.parse(Buffer.concat(buffers));
-										console.log(json);
-										https.request({
-											hostname: "api.freeconvert.com",
-											path: "/v1/process/convert",
-											method: "POST",
+							function altConvert(url) {
+								return new Promise(async (res, rej) => {
+									const newFileName = url.substr(url.lastIndexOf("/") + 1).split("wav").join("mp3");
+									const taskIds = [];
+									async function checkTask(obj) {
+										const res = await fetch(obj.links.self, {
+											method: "GET",
 											headers: {
 												'Content-Type': 'application/json',
 												Accept: 'application/json',
-												Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc'
+												Authorization: `Bearer ${userInfo.apiKeys.FreeConvert || process.env.API_KEYS.FreeConvert}`
 											}
-										}, (r) => {
-											const buffers = [];
-											r.on("data", b => buffers.push(b)).on("end", () => {
-												const json = JSON.parse(Buffer.concat(buffers));
-												console.log(json);
-											})
-										}).end(
-											JSON.stringify({
-												input: json.id,
+										});
+										return await res.json();
+									}
+									https.request({
+										hostname: "api.freeconvert.com",
+										path: "/v1/process/import/url",
+										method: "POST",
+										headers: {
+											'Content-Type': 'application/json',
+											Accept: 'application/json',
+											Authorization: `Bearer ${userInfo.apiKeys.FreeConvert || process.env.API_KEYS.FreeConvert}`
+										}
+									}, r => {
+										const buffers = [];
+										r.on("data", b => buffers.push(b)).on("end", async () => {
+											const json = JSON.parse(Buffer.concat(buffers));
+											console.log(json);
+											if (!json.links && json.errors && json.errors[0] && json.errors[0].message) return rej(json.errors[0].message);
+											let json2 = await checkTask(json);
+											while (json2.status != "completed") json2 = await checkTask(json);
+											console.log(json2);
+											taskIds.push(json2.id);
+											https.request({
+												hostname: "api.freeconvert.com",
+												path: "/v1/process/convert",
+												method: "POST",
+												headers: {
+													'Content-Type': 'application/json',
+													Accept: 'application/json',
+													Authorization: `Bearer ${userInfo.apiKeys.FreeConvert || process.env.API_KEYS.FreeConvert}`
+												}
+											}, r => {
+												const buffers = [];
+												r.on("data", b => buffers.push(b)).on("end", async () => {
+													const json = JSON.parse(Buffer.concat(buffers));
+													console.log(json);
+													if (!json.links && json.errors && json.errors[0] && json.errors[0].message) return rej(json.errors[0].message);
+													let json2 = await checkTask(json);
+													while (json2.status != "completed") json2 = await checkTask(json);
+													console.log(json2);
+													taskIds.push(json2.id);
+													https.request({
+														hostname: "api.freeconvert.com",
+														path: "/v1/process/export/url",
+														method: "POST",
+														headers: {
+															'Content-Type': 'application/json',
+															Accept: 'application/json',
+															Authorization: `Bearer ${userInfo.apiKeys.FreeConvert || process.env.API_KEYS.FreeConvert}`
+														}
+													}, r => {
+														const buffers = [];
+														r.on("data", b => buffers.push(b)).on("end", async () => {
+															const json = JSON.parse(Buffer.concat(buffers));
+															console.log(json);
+															let json2 = await checkTask(json);
+															while (json2.status != "completed") json2 = await checkTask(json);
+															console.log(json2);
+															https.get(json2.result.url, r => {
+																const buffers = [];
+																r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+															}).on("error", rej);
+														}).on("error", rej);
+													}).end(JSON.stringify({
+														input: taskIds,
+														filename: newFileName,
+														archive_multiple_files: true
+													})).on("error", rej);
+												}).on("error", rej);
+											}).end(JSON.stringify({
+												input: json2.id,
 												input_format: "wav",
 												output_format: "mp3",
 												options: {}
-											})
-										).on("error", rej);
-									})
-								}).end(
-									JSON.stringify({
-										url: json.data.oss_url,
-										filename: json.data.oss_url.substr(json.data.oss_url.lastIndexOf("/") + 1)
-									})
-								).on("error", rej);
+											})).on("error", rej);
+										}).on("error", rej);
+									}).end(JSON.stringify({
+										url: url,
+										filename: url.substr(url.lastIndexOf("/") + 1)
+									})).on("error", rej);
+								});
+							}
+							if (json.data && json.data.oss_url) {
+								altConvert(json.data.oss_url).then(res).catch(e => {
+									console.log(e);
+									https.get(json.data.oss_url, r => {
+										const stream = ffmpeg(r).inputFormat('wav').toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+											rej(`Encoding Error: ${error.message}`);
+										}).pipe();
+										const buffers = [];
+										stream.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+									}).on("error", rej);
+								});
 							} else rej("Unable to retreive the ai voice file url")
 						} else rej(json.message);
-					});
+					}).on("error", rej);
 				}).end(
 					JSON.stringify({
 						text,
-						speaker: voiceInfo.speaker,
-						emotion
+						speaker: voiceInfo.speaker
 					})
 				).on("error", rej);
 			} catch (e) {
@@ -399,7 +466,7 @@ module.exports = {
 						accept: "application/json",
 						"x-api-key": "7023b52a96aa48ce8bd32e2233ef0cc2"
 					}
-				}, (r) => {
+				}, r => {
 					const buffers = [];
 					r.on("data", (b) => buffers.push(b)).on("end", async () => {
 						const json = JSON.parse(Buffer.concat(buffers));
@@ -483,14 +550,14 @@ module.exports = {
 						accept: "application/json",
 						"x-api-key": "7023b52a96aa48ce8bd32e2233ef0cc2"
 					}
-				}, (r) => {
+				}, r => {
 					const buffers = [];
 					r.on("data", (b) => buffers.push(b)).on("end", async () => {
 						const json = JSON.parse(Buffer.concat(buffers));
-						if (json.Voice) try {
-							res(json.Voice.find(i => i.urlname == voiceName));
-						} catch (e) {
-							rej(e);
+						if (json.Voice) {
+							let json2 = json.Voice.find(i => i.urlname == voiceName)
+							if (!json2) json2 = json.Voice.find(i => i.name == voiceName);
+							res(json2);
 						} else if (json.detail) {
 							if (typeof json.detail == "string") rej(json.detail);
 							else rej(json.detail[0].msg);

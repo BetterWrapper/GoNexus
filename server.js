@@ -1,8 +1,13 @@
 const env = Object.assign(process.env, require("./env"), require("./config"));
+const apiKeys = Object.assign(process.env.API_KEYS, {
+	Topmediaai: "7023b52a96aa48ce8bd32e2233ef0cc2",
+	FreeConvert: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc"
+})
 const fUtil = require("./misc/file");
 const nodezip = require("node-zip");
 const loadPost = require("./misc/post_body");
 const http = require("http");
+const https = require("https");
 const chr = require("./character/redirect");
 const pmc = require("./character/premade");
 const chl = require("./character/load");
@@ -88,7 +93,125 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/check4MovieAutosaves": {
+						case "/api/submitAPIKeys": {
+							loadPost(req, res).then(([data]) => {
+								if (!data.uid) return res.end(JSON.stringify({
+									success: false,
+									message: "Please login to your account in order to submit both your Topmediai and FreeConvert API Keys"
+								}));
+								const usersJson = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+								const userInfo = usersJson.users.find(i => i.id == data.uid);
+								const API_KEYS = {
+									topMediaAIKey: userInfo.apiKeys.Topmediaai || apiKeys.Topmediaai,
+									freeConvertKey: userInfo.apiKeys.FreeConvert || apiKeys.FreeConvert
+								};
+								function submitFreeConvertKey(dontWrite = false) {
+									return new Promise((res, rej) => {
+										try {
+											userInfo.apiKeys.FreeConvert = data.freeConvertKey;
+											if (!dontWrite) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(usersJson, null, "\t"));
+											res();
+										} catch (e) {
+											rej(e);
+										}
+									});
+								}
+								function submitTopMediaAIKey(dontWrite = false) {
+									return new Promise((res, rej) => {
+										try {
+											https.get({
+												hostname: "api.topmediai.com",
+												path: "/v1/get_api_key_info",
+												headers: {
+													accept: 'application/json',
+													'x-api-key': data.topMediaAIKey
+												}
+											}, (r) => {
+												const buffers = [];
+												r.on("data", b => buffers.push(b)).on("end", () => {
+													const json = JSON.parse(Buffer.concat(buffers));
+													console.log(json);
+													if (json.detail) {
+														switch (typeof json.detail) {
+															case "string": {
+																switch (json.detail) {
+																	case "x_api_key is invalid": return rej("Invaild API key for Topmediaai. Please enter a correct API key for Topmediaai.");
+																}
+																break;
+															}
+														}
+													} else if (json.x_api_key && json.email) {
+														if (json.email != userInfo.email) return rej("The api key you typed in for Topmediaai does not belong to you. Please enter in your own api key for Topmediaai.");
+														userInfo.apiKeys.Topmediaai = json.x_api_key;
+														if (!dontWrite) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(usersJson, null, "\t"));
+														res();
+													}
+												}).on("error", rej);
+											}).on("error", rej);
+										} catch (e) {
+											rej(e);
+										}
+									})
+								}
+								if (API_KEYS.topMediaAIKey != data.topMediaAIKey) {
+									submitTopMediaAIKey().then(() => {
+										return res.end(JSON.stringify({
+											success: true,
+											message: "Your api key for Topmediaai has been sent in successfully!"
+										}))
+									}).catch(e => {
+										console.log(e);
+										return res.end(JSON.stringify({
+											success: false,
+											message: e
+										}));
+									});
+								} else if (API_KEYS.freeConvertKey != data.freeConvertKey) {
+									submitFreeConvertKey().then(() => {
+										return res.end(JSON.stringify({
+											success: true,
+											message: "Your api key for freeConvert has been sent in successfully!"
+										}))
+									}).catch(e => {
+										console.log(e);
+										return res.end(JSON.stringify({
+											success: false,
+											message: e
+										}));
+									});
+								}
+								submitTopMediaAIKey(true).then(() => {
+									submitFreeConvertKey(true).then(() => {
+										console.log(userInfo);
+										fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(usersJson, null, "\t"));
+										res.end(JSON.stringify({
+											success: true,
+											message: "Both your freeConvert and Topmediaai API keys have been sent in successfully!"
+										}))
+									}).catch(e => {
+										console.log(e);
+										res.end(JSON.stringify({
+											success: false,
+											message: e
+										}));
+									});
+								}).catch(e => {
+									console.log(e);
+									res.end(JSON.stringify({
+										success: false,
+										message: e
+									}));
+								});
+							})
+							break;
+						} case "/api/fetchAPIKeys": {
+							const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == parsedUrl.query.uid);
+							res.end(JSON.stringify({
+								topMediaAIKey: userInfo ? userInfo.apiKeys.Topmediaai : apiKeys.Topmediaai,
+								freeConvertKey: userInfo ? userInfo.apiKeys.FreeConvert : apiKeys.FreeConvert
+							}));
+							break;
+						} case "/api/check4MovieAutosaves": {
 							loadPost(req, res).then(([data]) => {
 								console.log(data, fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", data.mId.substr(2))));
 								res.end(JSON.stringify({
@@ -118,7 +241,11 @@ module.exports = http
 										id: "490369038276834906546354",
 										email: "johndoecreates@goanimate.com",
 										movies: [],
-										assets: []
+										assets: [],
+										apiKeys: {
+											Topmediaai: "775690357860759807389",
+											FreeConvert: "9538673598094783458348540325739893478692085848745"
+										}
 									}
 									const json = JSON.parse(await stream2Buffer(zip['profile.json'].toReadStream()));
 									console.log(json);
@@ -258,7 +385,11 @@ module.exports = http
 											id: data.uid,
 											email: data.email,
 											movies: [],
-											assets: []
+											assets: [],
+											apiKeys: {
+												Topmediaai: "",
+												FreeConvert: ""
+											}
 										});
 									} else {
 										for (const stuff in data) {
@@ -273,6 +404,7 @@ module.exports = http
 								} catch (e) {
 									console.log(e);
 								}
+								res.end();
 							})
 							break;
 						} default: break;

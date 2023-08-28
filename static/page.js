@@ -89,6 +89,9 @@ module.exports = function (req, res, url) {
 		} case "/public_index": {
 			filename = "index";
 			break;
+		} case "/public_faq": {
+			filename = "faq";
+			break;
 		} case "/public_signup": {
 			filename = "signup";
 			break;

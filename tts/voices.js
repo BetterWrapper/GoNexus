@@ -1,6 +1,7 @@
 const info = require("./info");
 const tts = require("./main");
 const http = require("http");
+const loadPost = require("../misc/post_body");
 const voices = info.voices,
 	xmls = {};
 
@@ -26,14 +27,37 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
 		case "/api/getAIVoices": {
-			tts.getAIVoices().then(i => {
-				res.statusCode = 200;
-				res.setHeader("Content-Type", "application/json");
-				res.end(JSON.stringify(i, null, "\t"));
-			}).catch(e => {
-				res.statusCode = 400;
-				console.log(e);
-			});
+			loadPost(req, res).then(([data]) => tts.checkAIVoiceServer(data).then(q => {
+				console.log(q);
+				if (q == "ContainsErrors") {
+					res.statusCode = 200;
+					res.setHeader("Content-Type", "application/json");
+					res.end(JSON.stringify({
+						en: {
+							desc: "English",
+							options: [
+								{
+									id: "Hannah",
+									desc: "Hannah",
+									sex: "F",
+									vendor: "Topmediai",
+									demo: "",
+									country: "US",
+									lang: "en",
+									plus: false
+								}
+							]
+						}
+					}));
+				} else tts.getAIVoices().then(i => {
+					res.statusCode = 200;
+					res.setHeader("Content-Type", "application/json");
+					res.end(JSON.stringify(i, null, "\t"));
+				}).catch(e => {
+					res.statusCode = 400;
+					console.log(e);
+				});
+			}));
 			break;
 		}
 		case "/goapi/getTextToSpeechVoices/": {

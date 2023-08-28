@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="dns-prefetch" href="//web.archive.org/web/20170102134752/https://d2qrjeyl4jwu9j.cloudfront.net/">
+        <title>Frequently Asked Questions - GoNexus</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="GoAnimate for Schools is a safe environment for students to fully express their creativity through video and a great place for educators to share educational videos with other educators worldwide.">
+        <meta property="og:site_name" content="GoNexus">
+        <meta property="fb:app_id" content="122508887813978">
+        <meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
+        <style>
+            #wrapper {
+                padding-left: 0;
+                -webkit-transition: all 0.5s ease;
+                -moz-transition: all 0.5s ease;
+                -o-transition: all 0.5s ease;
+                transition: all 0.5s ease;
+            }
+            
+            #wrapper.toggled {
+                padding-left: 250px;
+            }
+            
+            #sidebar-wrapper {
+                z-index: 1000;
+                position: fixed;
+                left: 250px;
+                width: 0;
+                height: 100%;
+                margin-left: -250px;
+                overflow-y: auto;
+                background: #000;
+                -webkit-transition: all 0.5s ease;
+                -moz-transition: all 0.5s ease;
+                -o-transition: all 0.5s ease;
+                transition: all 0.5s ease;
+            }
+            
+            #wrapper.toggled #sidebar-wrapper {
+                width: 250px;
+            }
+            
+            #page-content-wrapper {
+                width: 100%;
+                position: absolute;
+                padding: 15px;
+            }
+            
+            #wrapper.toggled #page-content-wrapper {
+                position: absolute;
+                margin-right: -250px;
+            }
+            
+            /* Sidebar Styles */
+            
+            .sidebar-nav {
+                position: absolute;
+                top: 0;
+                width: 250px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+            
+            .sidebar-nav li {
+                text-indent: 20px;
+                line-height: 40px;
+            }
+            
+            .sidebar-nav li a {
+                display: block;
+                text-decoration: none;
+                color: #999999;
+            }
+            .sidebar-nav li a:hover {
+                text-decoration: none;
+                color: #fff;
+                background: rgba(255,255,255,0.2);
+            }
+            .sidebar-nav li a:active,
+            .sidebar-nav li a:focus {
+                text-decoration: none;
+            }
+            .sidebar-nav li a.active {
+                display: block;
+                text-decoration: none;
+                color: #ffffff;
+            }
+            .sidebar-nav > .sidebar-brand {
+                height: 65px;
+                font-size: 18px;
+                line-height: 60px;
+            }
+            
+            .sidebar-nav > .sidebar-brand a {
+                color: #999999;
+            }
+            
+            .sidebar-nav > .sidebar-brand a:hover {
+                color: #fff;
+                background: none;
+            }
+            
+            @media(min-width:768px) {
+                #wrapper {
+                    padding-left: 250px;
+                }
+            
+                #wrapper.toggled {
+                    padding-left: 0;
+                }
+            
+                #sidebar-wrapper {
+                    width: 250px;
+                }
+            
+                #wrapper.toggled #sidebar-wrapper {
+                    width: 0;
+                }
+            
+                #page-content-wrapper {
+                    padding: 20px;
+                    position: relative;
+                }
+            
+                #wrapper.toggled #page-content-wrapper {
+                    position: relative;
+                    margin-right: 0;
+                }
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+            }
+        </style>
+        <link rel="stylesheet" href="/lvm_files/school/css/common_combined.css">
+        <script>
+            var srv_tz_os = -5, view_name = "school", user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <!--[if lt IE 9]>
+            <script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/766ffff01a7a3e3a/go/js/lib/html5shiv.js"></script>
+        <![endif]-->
+        <script src="/lvm_files/school/js/common_combined.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.3/jquery.scrollTo.js"></script>
+        <script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="/js/user.js"></script>
+        <script type="text/javascript">
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+    </head>
+    <body class="page-action-public_faq" id="wrapper">
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="javascript:stepTo('#wrapper')">
+                        Table Of Contents
+                    </a>
+                </li>
+                <li class="stepLink">
+                    <a class="signup active" href="javascript:stepTo('#signup')">1. Registration</a>
+                </li>
+                <li class="stepLink">
+                    <a class="features" href="javascript:stepTo('#features')">2. Benefits of GoNexus</a>
+                </li>
+                <li class="stepLink">
+                    <a class="troubleshooting" href="javascript:stepTo('#troubleshooting')">3. Troubleshooting Tips</a>
+                </li>
+                <li class="stepLink">
+                    <a class="apiKeys" href="javascript:stepTo('#apiKeys')">4. API Keys</a>
+                </li><!--
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Services</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>-->
+            </ul>
+        </div>
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+            function stepTo(step, callback) {
+                const settings = {
+                    duration: 2000
+                };
+                setTimeout(() => {
+                    if (callback && typeof callback == "function") callback();/*
+                    for (const elem of document.getElementsByClassName("stepLink")) {
+                        jQuery(`.${jQuery(elem.innerHTML).attr("class").split(" active")[0]}`).removeClass("active");
+                    }
+                    jQuery(`.${step.split("#")[1]}`).addClass("active");*/
+                }, settings.duration);
+                jQuery.scrollTo(step, settings);
+            }
+        </script>
+        <div class="modal" id="topMediaAIKeyTutorial">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title">Getting Your API Key From Topmediai</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>In this tutorial, we will be showing you how you can get your api key in Topmediai</p><br><br>
+                        <p>Step 1: Head to <a href="https://www.topmediai.com/">https://www.topmediai.com/</a>. From there, click on the Sign In button.</p><br><br>
+                        <img width="640" height="360" src="/ui/img/tutorials/topmediaai/step1.jpg"/><br><br>
+                        <a href="#" data-dismiss="modal">Close Modal</a><br><br>
+                        <p>Step 2: Once you have clicked on the Sign In Button, you can login to your account as you normally would on other websites.</p><br><br>
+                        <p>Step 3: Once you are in, head to the dropdown button that says For Developers and then click on the Text To Speech API</p><br><br>
+                        <img width="640" height="360" src="/ui/gifs/tutorials/topmediai/step3.gif"/><br><br>
+                        <a href="#" data-dismiss="modal">Close Modal</a><br><br>
+                        <p>Step 4: Once you are in, Click on the button that says Get API Key. Once clicked, a modal window will pop up telling you what your API key is. It's best if you copy your API key so that you can type it in <a href="javascript:;" data-toggle="modal" data-target="#apiKeysOverlay">here</a></p><br><br>
+                        <img width="640" height="360" src="/ui/img/tutorials/topmediaai/step4.jpg"/><br><br>
+                        <a href="#" data-dismiss="modal">Close Modal</a><br><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="freeConvertKeyTutorial">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title">Getting Your API Key From FreeConvert</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>In this tutorial, we will be showing you how you can get your api key in FreeConvert</p><br><br>
+                        <p>Step 1: Head to <a href="https://www.freeconvert.com/">https://www.freeconvert.com/</a>. From there, click on the Sign Up button.</p><br><br>
+                        <img width="640" height="360" src="/ui/img/tutorials/freeconvert/step1.jpg"/><br><br>
+                        <a href="#" data-dismiss="modal">Close Modal</a><br><br>
+                        <p>Step 2: Once you have clicked on the Sign Up Button, you can select what plan you want. if you can't afford any plans you see on that page, please click <a href="https://www.freeconvert.com/auth/free/signup">here</a>. From there, you can signup as you would on any other website.</a></p><br><br>
+                        <img width="640" height="360" src="/ui/img/tutorials/freeconvert/step2.jpg"/><br><br>
+                        <p>Step 3: Once you are in, head to your account dropdown and click on Dashboard.</p><br><br>
+                        <img width="640" height="360" src="/ui/gifs/tutorials/freeconvert/step3.gif"/><br><br>
+                        <a href="#" data-dismiss="modal">Close Modal</a><br><br>
+                        <p>Step 4: Once you are in, Click on the API keys option and click on create API key. name it whatever you want and after you should copy your api key and paste it in <a href="javascript:;" data-toggle="modal" data-target="#apiKeysOverlay">here</a></p><br><br>
+                        <img width="640" height="360" src="/ui/img/tutorials/freeconvert/step4.jpg"/><br><br>
+                        <a href="#" data-dismiss="modal">Close Modal</a><br><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include("includes/header.ejs", {
+            isVideoList: false
+        }) %>
+        <div class="container faq-container">
+            <div class="faq-header">
+                <h1>Frequently Asked Questions</h1>
+                Here you will find questions anwsered by our developers of GoNexus and also users in the GoNexus discord server. if you have any questions or you don't see your anwser, please DM owen.wms on discord or join our 
+                <a href="https://discord.gg/BcVeWEhuqJ">Discord Server</a>.    
+            </div>
+            <div class="feeds-container">
+                <div class="category_title" id="signup">
+                    <h3>1. Registration</h3>
+                </div>
+                <div class="panel-group">
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq0">
+                                Q: How do I create a GoNexus account?            
+                            </a>
+                        </h5>
+                        <div id="faq0" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Please visit <a href="/public_signup" title="Sign up for GoNexus" id="gonexussignup"></a> in order to create an account on gonexus</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq1">
+                                Q: Can I use GoNexus on a Chromebook?            
+                            </a>
+                        </h5>
+                        <div id="faq1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Yes you can. you can use the tutorial linked <a href="#" data-toogle="modal" data-target="#chromebookTutorialOverlay">here</a>.</p>            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="category_title" id="features">
+                    <h3>2. Benefits of GoNexus</h3>
+                </div>
+                <div class="panel-group">
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq2">
+                                Q: Can i download my videos?            
+                            </a>
+                        </h5>
+                        <div id="faq2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: While you can download your videos, your videos won't be available in an MP4 format. so you will still have to record your video.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq3">
+                                Q: Can i share my videos on YouTube, Facebook, Twitter, and etc?            
+                            </a>
+                        </h5>
+                        <div id="faq3" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Yes you can. you will need to record your video using some software like OBS Studio, Bandicam, and etc if you want to share your video to YouTube, Facebook, Twitter, and etc.</p>            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="category_title" id="troubleshooting">
+                    <h3>3. Troubleshooting Tips</h3>
+                </div>
+                <div class="panel-group">
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq4">
+                                Q: How do I get started creating videos and characters?           
+                             </a>
+                        </h5>
+                        <div id="faq4" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: After you log in to your account and you are at the video list page, click on the green &#8220;Make a Video&#8221; button at the top, right side of the page to get started.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq15">
+                                Q: Why do i need both my Topmediai and FreeConvert API Keys?        
+                             </a>
+                        </h5>
+                        <div id="faq15" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: After adding the AI voices to the QVM, i, josephanimate, realized that you will need both your FreeConvert and Topmediai API keys in order for the AI voices to be functional in the QVM for as long as possible. Topmediai takes care of getting the AI voices and FreeConvert is a converter altertive for just in case something does not go right with the ffmpeg converter.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq5">
+                                Q: I can’t find my login information. Where would it be?            
+                            </a>
+                        </h5>
+                        <div id="faq5" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: You will have received your login information in your account confirmation email. If you didn’t receive your confirmation email, you may want to check your spam/junk folder.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq6">
+                                Q: How do I change my password?            
+                            </a>
+                        </h5>
+                        <div id="faq6" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: You can change your password in your “Account Settings”.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq7">
+                                Q: GoNexus won’t work on my moible devices. Why?            
+                            </a>
+                        </h5>
+                        <div id="faq7" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Because the LVM is flash-based, it will not work on any moible devices unless you install an app called Puffin Browser.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq8">
+                                Q: What are your CPU requirements?            
+                            </a>
+                        </h5>
+                        <div id="faq8" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Any cpu that is clocked at 2 GHz or above should work fine. if your cpu is below that range, the LVM may lag alot as i, josephanimate, tested this on a school laptop with an intel Pentium processor that is clocked at 1.10 GHz.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq9">
+                                Q: Which browser should I use with GoNexus?            
+                            </a>
+                        </h5>
+                        <div id="faq9" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: If you plan on using google chrome, it is best if you use version 85 and below in order for flash to work on GoNexus. Otherwise, just use a web browser that still supports flash</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq10">
+                                Q: The LVM won’t load. Why?            
+                            </a>
+                        </h5>
+                        <div id="faq10" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Becuase most browsers don't have flash anymore, the LVM won't load. please make sure that you are using a web browser that still supports flash like google chrome version 85 and below.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq11">
+                                Q: I’m having trouble recording my voice. What can I do?            
+                            </a>
+                        </h5>
+                        <div id="faq11" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: It is best to record your voice in a quiet room, one sentence at a time. Make sure your microphone is working properly as well. Check your mic input levels using your sound preferences or control panel.</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq12">
+                                Q: Do I need to download anything to use GoNexus?            
+                            </a>
+                        </h5>
+                        <div id="faq12" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Not really. if you have a web browser that still runs flash, then that's good.</p>            
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="category_title" id="apiKeys">
+                    <h3>4. API Keys</h3>
+                </div>
+                <div class="panel-group">
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq13">
+                                Q: How do i get my api key from Topmediai?         
+                             </a>
+                        </h5>
+                        <div id="faq13" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Click <a href="javascript:;" data-toggle="modal" data-target="#topMediaAIKeyTutorial">here</a> to access the tutorial for gettting your API key from Topmediai</p>            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h5>
+                            <a data-toggle="collapse" data-parent="" href="#faq14">
+                                Q: How do i get my api key from FreeConvert?         
+                             </a>
+                        </h5>
+                        <div id="faq14" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <p>A: Click <a href="javascript:;" data-toggle="modal" data-target="#freeConvertKeyTutorial">here</a> to access the tutorial for gettting your API key from FreeConvert</p>            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="/js/waypoint.js"></script>
+        <script>
+            jQuery("#gonexussignup").text(`${window.location.origin}/public_signup`);
+            for (const element of document.getElementsByClassName("category_title")) {
+                new Waypoint({
+                    element,
+                    handler() {
+                        for (const elem of document.getElementsByClassName("stepLink")) {
+                            jQuery(`.${jQuery(elem.innerHTML).attr("class").split(" active")[0]}`).removeClass("active");
+                        }
+                        jQuery(`.${element.id}`).addClass("active");
+                    }
+                });
+            }
+            ((params) => {
+                if (params.get("target") && (params.get("action") || params.get("open"))) {
+                    switch (params.get("action")) {
+                        case "openModal": {
+                            jQuery(`#${params.get("target")}`).modal({
+                                keyboard: false,
+                                backdrop: "static"
+                            });
+                            break;
+                        } case "getExplination": {
+                            jQuery(`#${params.get("open")}`).collapse();
+                            break;
+                        }
+                    }
+                }
+            })(new URLSearchParams(window.location.search));
+        </script>
+        <%- include("includes/footer.ejs") %>
+        <div id="studio_container" style="display: none;">
+            <div id="studio_holder"><!-- Full Screen Studio -->
+                <div style="top: 50%; position: relative;">
+                    This content requires the Adobe Flash Player 10.3. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

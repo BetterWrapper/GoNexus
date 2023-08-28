@@ -947,6 +947,9 @@ var GoLite = (function(e) {
                 return
             }
             var w = f();
+            if (userData) {
+                w.userId = userData.uid;
+            }
             e(document).trigger("GoLite.stateChange", ["loading"]);
             e.ajaxSetup({
                 error: function(y, A, z) {
@@ -1212,22 +1215,8 @@ var GoLite = (function(e) {
                 }
             }, "json")
         },
-        showSelectCCOverlay: function(y) {
-            jQuery.post("/api/getAIVoices", d => {
-                var w = GoLite.getCharacters();
-                var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, (c >= 2), d);
-                z.setDefaultCharacterById(w[y].data("cid"));
-                z.setDefaultVoice(w[y].data("voice"));
-                z.show()
-            });
-        },
-        showSelectVoiceOverlay: function(y) {
-            jQuery.post("/api/getAIVoices", d => {
-                var w = GoLite.getCharacters();
-                var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, (c >= 2), d);
-                z.setDefaultVoice(w[y].data("voice"));
-                z.show()
-            });
+        getFunc(t) {
+            return t;
         },
         addCC: function(y, w) {
             e.each(l, function(B, A) {
@@ -1477,6 +1466,7 @@ function SelectVoiceDialog(f, a, b, c) {
         }
     }
 }
+var VoiceCatalog;
 var VoiceLanguageDisplay = function(b) {
     var a = null;
     b.click(function() {
@@ -1484,16 +1474,18 @@ var VoiceLanguageDisplay = function(b) {
     });
     var c = {
         updateByVoiceId: function(d) {
-            var e = VoiceCatalog.lookupVoiceInfo(d);
-            while (e) {
-                var f = {
-                    gender: e.sex,
-                    locale: e.locale
-                };
-                if ((a && a.gender) != f.gender || (a && a.locale) != f.locale) {
-                    a = f;
-                    b.find(".gender").removeClass().addClass("gender " + f.gender);
-                    b.find(".lang").removeClass().addClass("lang " + (f.locale.country || ("lg_" + f.locale.lang)))
+            if (VoiceCatalog) {
+                var e = VoiceCatalog.lookupVoiceInfo(d);
+                while (e) {
+                    var f = {
+                        gender: e.sex,
+                        locale: e.locale
+                    };
+                    if ((a && a.gender) != f.gender || (a && a.locale) != f.locale) {
+                        a = f;
+                        b.find(".gender").removeClass().addClass("gender " + f.gender);
+                        b.find(".lang").removeClass().addClass("lang " + (f.locale.country || ("lg_" + f.locale.lang)))
+                    }
                 }
             }
         }

@@ -19,6 +19,7 @@
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Your Account <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="javascript:downloadMyStuff()">Download Your Stuff</a></li>
+                        <li><a href="javascript:;" data-toggle="modal" data-target="#apiKeysOverlay">Your API Keys (For Stuff like TTS and etc)</a></li>
                         <li><a href="javascript:document.getElementById('stuff-upload').click()">Upload Your Stuff</a></li>
                         <li><a href="/movies">Your Videos</a></li>
                         <li class="divider"></li>
@@ -38,13 +39,20 @@
                         <a class="hidden-sm hidden-md hidden-lg" href="/create">Make a Video</a>
                         <span class="site-nav-btn hidden-xs"><a class="btn btn-green" href="/create">Make a Video</a></span>
                     </li>
+                <% } else { %>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Learning Center <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/public_faq">FAQ</a></li>
+                        </ul>
+                    </li>
                 <% } %>
             </ul>
         </div>
     </div>
 </nav>
 <script src="https://josephanimate2021.github.io/blockui/jquery.blockUI.js"></script>
-<form enctype='multipart/form-data' action='javascript:uploadMyStuff()' method="post" style="display: none;">
+<form enctype='multipart/form-data' action='javascript:uploadMyStuff()' style="display: none;">
     <input id='stuff-upload' type="file" onchange="this.form.submit()" name='import' accept=".zip" />
 </form>
 <div id="stuff-uploading-overlay" class="modal">
@@ -57,6 +65,26 @@
         </div>
     </div>
 </div>
+<div id="apiKeysOverlay" class="modal">
+    <form class="modal-dialog modal-lg" id="apiKeyForm" action="javascript:;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title">Your API Keys</h3>
+            </div>
+            <center class="modal-body">
+                <p>These keys are for stuff like tts usage with the QVM and etc. if you want to put in your own api keys, please do so on the form below.</p><br>
+                <p id="error-message" style="color: red;"></p><br>
+                <label for="topmediaai-key">Api Key For Topmediai <a href="/public_faq?action=openModal&target=topMediaAIKeyTutorial">How do i get that?</a></label><br>
+                <input id="topmediaai-key" type="text"/><br>
+                <label for="freeconvert-key">Api Key For FreeConvert <a href="/public_faq?action=openModal&target=freeConvertKeyTutorial">How do i get that?</a></label><br>
+                <input id="freeconvert-key" type="text"/><br>
+                <a href="/public_faq?action=getExplination&open=faq15#troubleshooting">Why do i need both my Topmediai and FreeConvert API Keys?</a><br>
+                <input type="submit" class="btn btn-orange" id="submitbtn" value="Submit API Keys"/>
+            </center>
+        </div>
+    </form>
+</div>
 <div id="stuff-downloading-overlay" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -67,3 +95,42 @@
         </div>
     </div>
 </div>
+<script>
+    let apiKeySubmiting = false;
+    jQuery("#apiKeyForm").submit(() => {
+        if (apiKeySubmiting) return;
+        jQuery("#error-message").text("")
+        apiKeySubmiting = true;
+        const origText = jQuery("#submitbtn").val();
+        jQuery("#submitbtn").val("Submiting...");
+        if (!jQuery("#topmediaai-key").val() && !jQuery("#freeconvert-key").val()) {
+            apiKeySubmiting = false;
+            jQuery("#error-message").text("Please enter one of the api keys");
+            jQuery("#submitbtn").val(origText);
+        } else {
+            jQuery.post(`/api/fetchAPIKeys${userData ? `?uid=${userData.uid}` : ''}`, (d) => {
+                const json = JSON.parse(d);
+                if (json.topMediaAIKey == jQuery("#topmediaai-key").val() && json.freeConvertKey ==  jQuery("#freeconvert-key").val()) {
+                    apiKeySubmiting = false;
+                    jQuery("#error-message").text("Both of the api keys cannot be the same as the api keys stored in the server. please change one of the api keys.");
+                    jQuery("#submitbtn").val(origText);
+                } else {
+                    jQuery.post("/api/submitAPIKeys", {
+                        topMediaAIKey: jQuery("#topmediaai-key").val(),
+                        freeConvertKey: jQuery("#freeconvert-key").val(),
+                        uid: userData ? userData.uid : ""
+                    }, (d) => {
+                        const json = JSON.parse(d);
+                        apiKeySubmiting = false;
+                        jQuery("#submitbtn").val(origText);
+                        if (!json.success) jQuery("#error-message").text(json.message);
+                        else {
+                            jQuery("#apiKeysOverlay").modal('hide');
+                            displayFeedback(0 + json.message);
+                        }
+                    })
+                }
+            });
+        }
+    });
+</script>

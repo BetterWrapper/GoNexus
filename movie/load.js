@@ -68,9 +68,7 @@ module.exports = function (req, res, url) {
 				}
 			}
 			break;
-		}
-
-		case "POST": {
+		} case "POST": {
 			switch (url.pathname) {
 				case "/api/check4MovieFilepaths": {
 					loadPost(req, res).then(([data]) => {
@@ -285,7 +283,7 @@ module.exports = function (req, res, url) {
 								<yscale>1</yscale><file>common.ncc_opening01.swf</file></effectAsset></scene>`;
 								for (let i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
+										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f.userId);
 										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
 										const title = `[${voiceInfo.name}] ${f[`script[${i}][text]`]}`;
@@ -569,7 +567,7 @@ module.exports = function (req, res, url) {
 								</scene>`;
 								for (var i = 0; i < counts.scripts; i++) try {
 									if (f[`script[${i}][text]`]) {
-										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`]);
+										const buffer = await tts.genAIVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f.userId);
 										console.log(buffer);
 										const voiceInfo = await tts.getAIVoiceInfo(f[`script[${i}][voice]`]);
 										const dur = await getMp3Duration(buffer);
@@ -705,11 +703,11 @@ module.exports = function (req, res, url) {
 										}</stop><fadein duration="0" vol="0"/><fadeout duration="0" vol="0"/><ttsdata><type><![CDATA[tts]]></type><text><![CDATA[${
 											f[`script[${i}][text]`]
 										}]]></text><voice><![CDATA[${f[`script[${i}][voice]`]}]]></voice></ttsdata></sound>`;
-										lipsyncXml += `<linkage>SOUND${counts.sounds},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.scenes}~~~</linkage>`;
 										counts.soundStartCount = counts.soundStopCount + (f[`script[${i}][text]`].length + 49);
 										counts.soundStopCount = counts.soundStartCount + 49;
 									} else { // mic recording
 									}
+									lipsyncXml += `<linkage>SOUND${counts.sounds},~~~${avatarIds[f[`script[${i}][char_num]`]]},SCENE${counts.scenes}~~~</linkage>`;
 									counts.scenes++
 									counts.sounds++
 								} catch (e) {
