@@ -207,8 +207,8 @@ module.exports = http
 						} case "/api/fetchAPIKeys": {
 							const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == parsedUrl.query.uid);
 							res.end(JSON.stringify({
-								topMediaAIKey: userInfo ? userInfo.apiKeys.Topmediaai : apiKeys.Topmediaai,
-								freeConvertKey: userInfo ? userInfo.apiKeys.FreeConvert : apiKeys.FreeConvert
+								topMediaAIKey: userInfo ? (userInfo.apiKeys.Topmediaai || apiKeys.Topmediaai) : apiKeys.Topmediaai,
+								freeConvertKey: userInfo ? (userInfo.apiKeys.FreeConvert || apiKeys.FreeConvert) : apiKeys.FreeConvert
 							}));
 							break;
 						} case "/api/check4MovieAutosaves": {
