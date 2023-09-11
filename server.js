@@ -93,7 +93,60 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/submitAPIKeys": {
+						case "/api/addFTAcc": {
+							loadPost(req, res).then(([data]) => {
+								res.setHeader("Content-Type", "application/json");
+								if (data.code == '0') try {
+									((len, callback) => {
+										var str = "";
+										var i = 0;
+										var min = 0;
+										var max = 62;
+										for (; i++ < len;) {
+											var r = Math.random() * (max - min) + min << 0;
+											str += String.fromCharCode(r += r > 9 ? r < 36 ? 55 : 61 : 48);
+										}
+										callback(str);
+									})(10, uid => {
+										session.set(req, {
+											loggedInViaFTAcc: true,
+											name: `FlashThemer #${uid}`,
+											id: uid,
+											email: data.email,
+											movies: [],
+											assets: [],
+											apiKeys: {
+												Topmediaai: "",
+												FreeConvert: ""
+											}
+										});
+										res.end(JSON.stringify({
+											success: true
+										}));
+									});
+								} catch (e) {
+									console.log(e);
+								}
+							});
+							break;
+						} case "/api/checkFTAcc": {
+							loadPost(req, res).then(([data]) => {
+								https.request({
+									hostname: "flashthemes.net",
+									path: "/ajax/doLogin",
+									method: "POST",
+									headers: { 
+										"Content-Type": "application/json"
+									}
+								}, r => {
+									const buffers = [];
+									r.on("data", b => buffers.push(b)).on("end", () => {
+										res.end(Buffer.concat(buffers).toString("utf8"));
+									});
+								}).end(JSON.stringify(data));
+							});
+							break;
+						} case "/api/submitAPIKeys": {
 							loadPost(req, res).then(([data]) => {
 								if (!data.uid) return res.end(JSON.stringify({
 									success: false,

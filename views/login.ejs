@@ -60,8 +60,31 @@ if (self !== top) jQuery('body').hide();
 <%- include("includes/header.ejs", {
     isVideoList: false
 }); %>
-<%- include("includes/countdown.ejs") %>
 <div class="hero">
+    <div id="flashThemesLogonOverlay" class="modal">
+        <div class="modal-dialog modal-lg" id="apiKeyForm" action="javascript:;">
+            <form class="modal-content" id="flashthemeslogin" action="javascript:;">
+                <header class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h3 class="modal-title">Sign In With Your FlashThemes Account</h3>
+                </header>
+                <center class="modal-body">
+                    <div id="loginErr" style="color: red"></div><br>
+                    <label for="ftemail">Email</label><br>
+                    <input id="ftemail" maxlength="255" name="email" type="email" placeholder="Your Email Address"/><br>
+                    <label for="ftpsw">Password</label><br>
+                    <input id="ftpsw" type="password" maxlength="50" name="password" placeholder="Your Password"/><br>
+                </center>
+                <footer class="modal-footer">
+                    <input type="submit" class="btn btn-orange" value="Log In" id="loginbtnft"/>
+                    <a type="button" id="forgotftpsw" class="btn btn-default" href="https://flashthemes.net/forgotpassword">i forgot my password for flashthemes</a>
+                </footer>
+            </form>
+        </div>
+    </div>
     <div class="hero-bottom">
         <div class="landscape"></div>
     </div>
@@ -102,6 +125,9 @@ if (self !== top) jQuery('body').hide();
                     <div class="floating-form-footer text-center" id="googleloginfooter" style="display: none;">
                         <a id="googlelogin" style="cursor: pointer;"><span class="si google"></span> Google Login</a>
                     </div>
+                    <div class="floating-form-footer text-center">
+                        <a data-toggle="modal" data-target="#flashThemesLogonOverlay" style="cursor: pointer;"><img src="data:@file/jpeg;base64,/9j/4AAQSkZJRgABAQAAAAAAAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAWABYDAREAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAABwYIBP/EACgQAAEDAwQCAgEFAAAAAAAAAAECAwUEBhEABxIhEzEUImEVQVKBkf/EABoBAAICAwAAAAAAAAAAAAAAAAYHAgUDBAj/xAAtEQABAwIEBAUEAwAAAAAAAAABAgMRADEEBRIhE0FRcQYiUmGRFCMygbHh8P/aAAwDAQACEQMRAD8ApWTEWx8OvuZNUpNQs+FqjY8qsJxyWE8h/LAx7wfWDreUoKGloC3MgdtyK6YzXOBhyWmxZMkqUlIAJgAqWUiSdo357Uz2bvntVbcVRydVA3UW6ipdbQj9LShQU34/urm4EjJWAOyej661DDZa9jXeE3p1bXUkTNgJiewpJeMPFqcvJS9JAG5R9xIET+SNQgC9aB2o3ntDdGnr1W1HytIiOLYcNeyhsL5gkFCkrUFejnvPrUH8K5hl8NRBPsQofIkfqgpnMG8Yjj7gH1Ap97KjbpWdWrXkrm3rXt3abdNQS1tRjFcmVU6fHSqWhZW2Gwkgk+dHvr6jrPeselQZClWJ5i8R83plZ3jFHBjHOeZLrhSEkkEhoA6tQPqciIv2q73rMpY2xlFaW4t2Ik5WclhSfLYpgFPY5vNNAJAJ+zbSCoj0rvVhlKXfquOwmeGFL9gEi/6MdztSt8QrRicOpkeQOqSgDcwFESN94iZJ7111d60lpwURblGriiOo2KbDY9lCACevzn/dX2W5MpSJVehfNc+S25CCAOWq0fN6ZWrRtO3ZySvOMgKViZk20N1tY2nDj6UABIUf3wEgf0NCCElZCZo5deXpAJJ6b7b/AMTzoU3pmoyfbZbmYdms+A78ul8qASw6ARzQfaTjIyNGWU5U2s+b/Wv1HsaAc6zx1htS0ddPK5H93vQlKzL0lUKqH3XRzUVDifydHbbAaRCaVGMxTj61qUArSYg2nqK//9k="></span> FlashThemes Login</a>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-8 col-md-6 col-lg-5 login-col">
@@ -122,6 +148,52 @@ if (self !== top) jQuery('body').hide();
 <script>
 (function($) {
 if (window.location.origin.includes("localhost")) $("#googleloginfooter").show();
+$("#flashThemesLogonOverlay").submit(() => {
+    if (processing) return;
+    $(".close").hide();
+    $("#forgotftpsw").hide();
+    const origText = $("#loginbtnft").val();
+    $("#loginbtnft").val('Logging In...');
+    $("#loginErr").text('');
+    processing = true;
+    jQuery.post('/api/checkFTAcc', {
+        lc: "en_US",
+        returnto: "/",
+        email: jQuery("#ftemail").val(),
+        password: jQuery("#ftpsw").val()
+    }, d => {
+        const code = `${d.split("{")[0]}`;
+        switch (code) {
+            case '0': {
+                jQuery.post('/api/addFTAcc', {
+                    code: '0',
+                    lc: "en_US",
+                    returnto: "/",
+                    email: jQuery("#ftemail").val(),
+                    password: jQuery("#ftpsw").val()
+                }, d => {
+                    if (d.success) location.href = '/movies';
+                    else {
+                        processing = false;
+                        $(".close").show();
+                        $("#forgotftpsw").show();
+                        $("#loginbtnft").val(origText);
+                        $("#loginErr").text(d.error);
+                    }
+                });
+                break;
+            } case '1': {
+                processing = false;
+                const json = JSON.parse(d.split('1')[1]);
+                $(".close").show();
+                $("#forgotftpsw").show();
+                $("#loginbtnft").val(origText);
+                $("#loginErr").text(json.errmsg);
+                break;
+            }
+        }
+    });
+})
 var processing = false;
 $("#googlelogin").click(() => {
     if (processing) return;

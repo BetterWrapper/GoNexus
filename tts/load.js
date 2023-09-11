@@ -1,6 +1,5 @@
 const loadPost = require("../misc/post_body");
 const mp3Duration = require("mp3-duration");
-const voices = require("./info").voices;
 const asset = require("../asset/main");
 const tts = require("./main");
 const http = require("http");
@@ -16,12 +15,13 @@ module.exports = function (req, res, url) {
 	loadPost(req, res).then(async ([data]) => {
 		try {
 			const buffer = await tts.genVoice(data.voice, data.text);
+			const voices = await tts.getVoiceInfo("StreamLabs", data.voice);
 			mp3Duration(buffer, (e, d) => {
 				var dur = d * 1e3;
 				if (e || !dur) return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${
 					e || "Unable to retrieve MP3 stream."
 				}</message><text></text></error>`);
-				const title = `[${voices[data.voice].desc}] ${data.text}`;
+				const title = `[${voices[data.voice].name}] ${data.text}`;
 				const id = asset.save(buffer, {
 					type: "sound",
 					subtype: "tts",
