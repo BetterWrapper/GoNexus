@@ -12,11 +12,16 @@ module.exports = {
     set(req, data) {
         try {
             const ip = this.getIp(req);
-            userSessions.unshift({
-                ip,
-                data
-            });
-            return true
+            const currentSession = this.get(req);
+            if (!currentSession.data && !currentSession.ip) {
+                userSessions.unshift({
+                    ip,
+                    data
+                });
+            } else for (const i in data) {
+                currentSession.data[i] = data[i];
+            }
+            return true;
         } catch (e) {
             console.log(e);
             return false;
@@ -24,14 +29,19 @@ module.exports = {
     },
     get(req) {
         const ip = this.getIp(req);
-        return userSessions.find(i => i.ip == ip);
+        const currentSession = userSessions.find(i => i.ip == ip);
+        if (currentSession) return currentSession;
+        else return {};
     },
-    remove(req) {
+    remove(req, data) {
         try {
-            const ip = this.getIp(req);
-            const index = userSessions.findIndex(i => i.ip == ip);
-            userSessions.splice(index, 1);
-            return true;
+            const currentSession = this.get(req);
+            if (data.type && currentSession.data) {
+                for (const i in data) {
+                    currentSession.data[i] = "";
+                }
+                return true;
+            }
         } catch (e) {
             console.log(e);
             return false;

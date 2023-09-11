@@ -172,7 +172,28 @@ $("#flashThemesLogonOverlay").submit(() => {
                     email: jQuery("#ftemail").val(),
                     password: jQuery("#ftpsw").val()
                 }, d => {
-                    if (d.success) location.href = '/movies';
+                    if (d.displayNameRequired) {
+                        let displayName = prompt("Please Enter In Your Display Name.", "");
+                        while (!displayName || displayName == null) displayName = prompt("Please Enter In Your Display Name.", "");
+                        jQuery.post('/api/addFTAcc', {
+                            displayName,
+                            code: '0',
+                            lc: "en_US",
+                            returnto: "/",
+                            email: jQuery("#ftemail").val(),
+                            password: jQuery("#ftpsw").val()
+                        }, d => {
+                            if (d.success) location.href = '/movies';
+                            else {
+                                processing = false;
+                                $(".close").show();
+                                $("#forgotftpsw").show();
+                                $("#loginbtnft").val(origText);
+                                $("#loginErr").text(d.error);
+                            }
+                        });
+                    }
+                    else if (d.success) location.href = '/movies';
                     else {
                         processing = false;
                         $(".close").show();

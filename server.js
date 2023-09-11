@@ -3,6 +3,8 @@ const apiKeys = Object.assign(process.env.API_KEYS, {
 	Topmediaai: "7023b52a96aa48ce8bd32e2233ef0cc2",
 	FreeConvert: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc"
 })
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const fUtil = require("./misc/file");
 const nodezip = require("node-zip");
 const loadPost = require("./misc/post_body");
@@ -75,16 +77,16 @@ module.exports = http
 			switch (req.method) {
 				case "GET": {
 					switch (parsedUrl.pathname) {
-						case "/api/getTTSVoices": {
+						case "/api/getTTSVoices": { // gets all of the TTS Voices
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./tts/info.json'))));
 							break;
 						}
-						case "/api/themes/get": {
+						case "/api/themes/get": { // list's all themes from the themelist.xml file
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(pse.getThemes()));
 							break;
-						} case "/api/convertUrlQuery2JSON": {
+						} case "/api/convertUrlQuery2JSON": { // idk
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(parsedUrl.query));
 							break;
@@ -93,42 +95,145 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/addFTAcc": {
+						case "/api/removeSession": {
 							loadPost(req, res).then(([data]) => {
+								if (session.remove(req, data)) res.end(JSON.stringify({
+									success: true
+								}));
+							});
+							break;
+						} case "/api/getUserInfoFromSession": { // sends user info from the current session
+							res.setHeader("Content-Type", "application/json");
+							const currentSession = session.get(req);
+							if (currentSession.data.loggedIn && currentSession.data.current_uid) {
+								res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == currentSession.data.current_uid)));
+							} else res.end(JSON.stringify({}));
+							break;
+						} case "/api/getSession": { // gets a user's session using their public IP address.
+							res.end(JSON.stringify(session.get(req)));
+							break;
+						} case "/api/addFTAcc": { // add the flashthemes account to the server after all checks are complete.
+							loadPost(req, res).then(async ([data]) => {
 								res.setHeader("Content-Type", "application/json");
 								if (data.code == '0') try {
-									((len, callback) => {
-										var str = "";
-										var i = 0;
-										var min = 0;
-										var max = 62;
-										for (; i++ < len;) {
-											var r = Math.random() * (max - min) + min << 0;
-											str += String.fromCharCode(r += r > 9 ? r < 36 ? 55 : 61 : 48);
-										}
-										callback(str);
-									})(10, uid => {
-										session.set(req, {
-											loggedInViaFTAcc: true,
-											name: `FlashThemer #${uid}`,
-											id: uid,
-											email: data.email,
-											movies: [],
-											assets: [],
-											apiKeys: {
-												Topmediaai: "",
-												FreeConvert: ""
+									function findUserInfo() {
+										return new Promise((res, rej) => {
+											const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+											let hasUsers = false;
+											for (const userInfo of json.users) try {
+												hasUsers = true;
+												if (userInfo.isFTAcc && userInfo.hash) {
+													bcrypt.compare(data.password, userInfo.hash, function(err, result) {
+														if (err) res({
+															success: false,
+															error: err,
+															info: "unknown_error"
+														});
+														else res({
+															success: result,
+															data: result ? userInfo : {},
+															info: "success"
+														});
+													});
+												} else res({
+													success: false,
+													error: "No FlashThemes Account Has Been Found In The GoNexus DB! Creating DB...",
+													info: "ft_acc_not_found"
+												});
+											} catch (e) {
+												rej(e);
 											}
+											if (!hasUsers) res({
+												success: false,
+												error: "No FlashThemes Account Has Been Found In The GoNexus DB! Creating DB...",
+												info: "ft_acc_not_found"
+											});
 										});
+									}
+									const json = await findUserInfo();
+									if (!json.success) {
+										console.log(data.displayName);
+										console.error(new Error(json.error));
+										switch (json.info) {
+											case "unknown_error": {
+												res.end(JSON.stringify({
+													success: false,
+													error: json.error
+												}));
+												break;
+											} case "ft_acc_not_found": {
+												if (!data.displayName) {
+													console.warn("Your Display Name is required in order to finish setting up your flashthemes account for GoNexus.");
+													res.end(JSON.stringify({
+														displayNameRequired: true
+													}));
+												} else {
+													const num = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+													const uid = crypto.randomBytes(num).toString('hex');
+													console.log(num, uid);
+													bcrypt.genSalt(num, (err, salt) => {
+														console.log(salt);
+														if (err) return res.end(JSON.stringify({
+															success: false,
+															error: err
+														}));
+														bcrypt.hash(data.password, salt, (err, hash) => {
+															console.log(hash);
+															if (err) return res.end(JSON.stringify({
+																success: false,
+																error: err
+															}));
+															const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+															if (json.users.find(i => i.email == data.email)) {
+																console.error(new Error("Your email address has already been taken by someone who created their account on GoNexus."));
+																return res.end(JSON.stringify({
+																	success: false,
+																	error: "Your email address has already been taken by someone who created their account on GoNexus."
+																}))
+															}
+															json.users.unshift({
+																name: data.displayName,
+																isFTAcc: true,
+																hash,
+																id: uid,
+																email: data.email,
+																movies: [],
+																assets: [],
+																apiKeys: {
+																	Topmediaai: "",
+																	FreeConvert: ""
+																}
+															});
+															fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+															if (session.set(req, {
+																loggedIn: true,
+																current_uid: uid,
+																displayName,
+																email: data.email
+															})) res.end(JSON.stringify({
+																success: true
+															}));
+														});
+													});
+												};
+												break;
+											}
+										}
+									} else if (session.set(req, {
+										loggedIn: true,
+										current_uid: json.data.id,
+										displayName: json.data.name,
+										email: json.data.email
+									})) {
 										res.end(JSON.stringify({
 											success: true
 										}));
-									});
+									}
 								} catch (e) {
 									console.log(e);
 								}
 							});
-							break;
+							break; // checks flashthemes's server to see if the account info the user entered in exists in their servers. if something went wrong, an error spits out.
 						} case "/api/checkFTAcc": {
 							loadPost(req, res).then(([data]) => {
 								https.request({
@@ -146,7 +251,7 @@ module.exports = http
 								}).end(JSON.stringify(data));
 							});
 							break;
-						} case "/api/submitAPIKeys": {
+						} case "/api/submitAPIKeys": { // sends both the Topmediai and FreeConvert API Keys To The Server
 							loadPost(req, res).then(([data]) => {
 								if (!data.uid) return res.end(JSON.stringify({
 									success: false,
@@ -257,14 +362,14 @@ module.exports = http
 								});
 							})
 							break;
-						} case "/api/fetchAPIKeys": {
+						} case "/api/fetchAPIKeys": { // fetches the API keys from the server
 							const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == parsedUrl.query.uid);
 							res.end(JSON.stringify({
 								topMediaAIKey: userInfo ? (userInfo.apiKeys.Topmediaai || apiKeys.Topmediaai) : apiKeys.Topmediaai,
 								freeConvertKey: userInfo ? (userInfo.apiKeys.FreeConvert || apiKeys.FreeConvert) : apiKeys.FreeConvert
 							}));
 							break;
-						} case "/api/check4MovieAutosaves": {
+						} case "/api/check4MovieAutosaves": { // checks to see if a movie is autosaved or not.
 							loadPost(req, res).then(([data]) => {
 								console.log(data, fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", data.mId.substr(2))));
 								res.end(JSON.stringify({
@@ -272,7 +377,7 @@ module.exports = http
 								}));
 							});
 							break;
-						} case "/api/uploadMyStuff": {
+						} case "/api/uploadMyStuff": { // uploads a user profile to the server
 							new formidable.IncomingForm().parse(req, async (e, f, files) => {
 								if (e) {
 									console.log(e);
@@ -355,7 +460,7 @@ module.exports = http
 								}));
 							});
 							break;
-						} case "/api/fetchMyStuff": {
+						} case "/api/fetchMyStuff": { // fetches the user profile from the server
 							loadPost(req, res).then(async ([data]) => {
 								try {
 									const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid);
@@ -387,18 +492,18 @@ module.exports = http
 								}
 							});
 							break;
-						} case "/api/getProjectDownloads": {
+						} case "/api/getProjectDownloads": { // lists downloads for this project without the need to upload files. base64 will help just nicely.
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify({
 								hasProjectDownloads: false,
 								projectDownloads: []
 							}));
 							break;
-						} case "/api/getAllUsers": {
+						} case "/api/getAllUsers": { // fetches all users on this server
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users));
 							break;
-						} case "/api/submitSiteAccessKey": {
+						} case "/api/submitSiteAccessKey": { // grants a user permision to the site
 							loadPost(req, res).then(([data]) => {
 								if (!data.access_key) res.end(JSON.stringify({error: "Please enter in an access key."}));
 								else if (data.access_key != env.PROJECT_ACCESS_KEY) res.end(JSON.stringify({error: "Invaild Access Key"}));
@@ -414,15 +519,12 @@ module.exports = http
 								}
 							});
 							break;
-						} case "/api/redirect": {
+						} case "/api/redirect": { // idk
 							res.statusCode = 302;
 							res.setHeader("Location", "/");
 							res.end();
 							break;
-						} case "/api/getAllUsers": {
-							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users));
-							break;
-						} case "/api/check4SavedUserInfo": {
+						} case "/api/check4SavedUserInfo": { // checks for some saved user info on the server
 							loadPost(req, res).then(([data]) => {
 								try {
 									const info = {

@@ -65,207 +65,244 @@ auth.onAuthStateChanged(user => {
                     break;
                 }
             }
-        } else {
-            userData = user;
-            jQuery.post("/api/check4SavedUserInfo", {
-                displayName: user.displayName,
-                email: user.email,
-                uid: user.uid
-            }, () => {
-                jQuery.post(`/api/fetchAPIKeys?uid=${user.uid}`, (d) => {
-                    console.log(d);
-                    const json = JSON.parse(d);
-                    addVal2Element('freeconvert-key', json.freeConvertKey);
-                    addVal2Element('topmediaai-key', json.topMediaAIKey);
-                });
-            });
-            hideElement('signup-button');
-            hideElement('login-button');
-            showElement('isLogin');
-            showElement('exploreTab');
-            showElement('iconsLol');
-            switch (window.location.pathname) {
-                case "/":
-                case "/movies": {
-                    jQuery.getJSON(`/movieList?uid=${user.uid}`, (meta) => {
-                        document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
-                        if (meta.length < 1) {
-                            jQuery("#myvideos").hide();
-                            jQuery("#novideos").show();
-                            jQuery("#allvideos").hide();
-                        } else for (const tbl of meta) {
-                            videoCounts.all++
-                            const date = tbl.date.split("T")[0];
-                            const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
-                            jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${
-                                tbl.durationString
-                            }</div></div></td><td>${usDate}</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${
-                                tbl.id
-                            }')"></a><a href="javascript:movieRedirect('/go_full?movieId=${tbl.id}', '${tbl.id}')"></a><a href="javascript:movieRedirect('/movies/${
-                                tbl.id
-                            }.zip', '${tbl.id}')"></a><a onclick="deleteMovie('${
-                                tbl.id
-                            }')"></a></td></tr>`);
+        } else loggedIn(user);
+    } else logout('auto');
+});
+function logout(t) {
+    jQuery.post("/api/getSession", d => {
+        const json = JSON.parse(d);
+        if (json.data && json.data.loggedIn && json.data.current_uid) {
+            if (t != 'auto') jQuery.post('/api/removeSession', {
+                current_uid: json.data.current_uid,
+                type: 'current_uid'
+            }, d => {
+                if (JSON.parse(d).success) {
+                    jQuery.post(`/api/fetchAPIKeys`, (d) => {
+                        const json = JSON.parse(d);
+                        addVal2Element('freeconvert-key', json.freeConvertKey);
+                        addVal2Element('topmediaai-key', json.topMediaAIKey);
+                    });
+                    hideElement('isLogin');
+                    showElement('signup-button');
+                    showElement('login-button');
+                    switch (window.location.pathname) {
+                        case "/videos":
+                        case "/cc_browser": 
+                        case "/create":
+                        case "/cc": 
+                        case "/go_full": 
+                        case "/movies": {
+                            window.location.href = '/';
+                            break;
+                        } case "/quickvideo": {
+                            jQuery("#login_bar").not("[email-verification]").show();
+                            break;
                         }
-                    })
+                    }
+                }
+            });
+            else jQuery.post('/api/getUserInfoFromSession', loggedIn);
+        } else {
+            jQuery.post(`/api/fetchAPIKeys`, (d) => {
+                const json = JSON.parse(d);
+                addVal2Element('freeconvert-key', json.freeConvertKey);
+                addVal2Element('topmediaai-key', json.topMediaAIKey);
+            });
+            hideElement('isLogin');
+            showElement('signup-button');
+            showElement('login-button');
+            switch (window.location.pathname) {
+                case "/videos":
+                case "/cc_browser": 
+                case "/create":
+                case "/cc": 
+                case "/go_full": 
+                case "/movies": {
+                    window.location.href = '/';
                     break;
                 } case "/quickvideo": {
-                    GoLite.showSelectCCOverlay = function(y) {
-                        jQuery.post("/api/getAIVoices", {
-                            uid: user.uid
-                        }, d => {
-                            var w = GoLite.getCharacters();
-                            var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
-                            z.setDefaultCharacterById(w[y].data("cid"));
-                            z.setDefaultVoice(w[y].data("voice"));
-                            z.show()
-                        });
-                    };
-                    GoLite.showSelectVoiceOverlay = function(y) {
-                        jQuery.post("/api/getAIVoices", {
-                            uid: user.uid
-                        }, d => {
-                            var w = GoLite.getCharacters();
-                            var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
-                            z.setDefaultVoice(w[y].data("voice"));
-                            z.show()
-                        });
-                    };
-                    VoiceCatalog = {
-                        lookupVoiceInfo(voice_id) {
-                            jQuery.post("/api/getAIVoices", {
-                                uid: user.uid
-                            }, lang_model => {
-                                console.log(lang_model);
-                                for (var langId in lang_model) {
-                                    const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
-                                    if (voiceInfo) {
-                                        return {
-                                            desc: voiceInfo.desc,
-                                            sex: voiceInfo.sex,
-                                            plus: voiceInfo.plus,
-                                            locale: { 
-                                                id: langId, 
-                                                lang: voiceInfo.lang, 
-                                                country: voiceInfo.country, 
-                                                desc: lang_model[langId].desc 
-                                            }
-                                        };
-                                    }
-                                }
-                                return null;
-                            });
-                        },
-                        getDefaultVoice() {
-                            jQuery.post("/api/getAIVoices", {
-                                uid: user.uid
-                            }, lang_model => {
-                                console.log(lang_model);
-                                for (var langId in lang_model) {
-                                    for (var i = 0; i < lang_model[langId].options.length; i++) {
-                                        if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
-                                    }
-                                }
-                                return null;
-                            });
-                        }
-                    };
-                    break;
-                } case "/go_full": {
-                    $(document).ready(function() {
-                        if (enable_full_screen) {
-                
-                            if (!true) {
-                                $('#studio_container').css('top', '0px');
-                            }
-                            $('#studio_container').show();
-                            $('.site-footer').hide();
-                            $('#studioBlock').css('height', '1800px');
-                
-                            if (false) {
-                                checkCopyMovie(`javascript:proceedWithFullscreenStudio('${JSON.stringify(user)}', 'isJson')`, '');
-                            } else if (false) {
-                                checkEditMovie('');
-                            } else {
-                                proceedWithFullscreenStudio(user);
-                            }
-                
-                            $(window).on('resize', function() {
-                                ajust_studio();
-                            });
-                            $(window).on('studio_resized', function() {
-                                if (show_cc_ad) {
-                                    _ccad.refreshThumbs();
-                                }
-                            });
-                
-                            if (studioApiReady) {
-                                var api = studioApi($('#studio_holder'));
-                                api.bindStudioEvents();
-                            }
-                            $('.ga-importer').prependTo($('#studio_container'));
-                        } else setTimeout(() => {
-                            $('#studioBlock').flash(studio_data);
-                        }, 1);
-                        // Video Tutorial
-                        videoTutorial = new VideoTutorial($("#video-tutorial"));
-                    })
-                    // restore studio when upsell overlay hidden
-                    .on('hidden', '#upsell-modal', function(e) {
-                        if ($(e.target).attr('id') == 'upsell-modal') {
-                            restoreStudio();
-                        }
-                    })
-                    .on('studioApiReady', function() {
-                        var api = studioApi($('#studio_holder'));
-                        api.bindStudioEvents();
-                    })
-                    break;
-                } case "/player": {
-                    break;
-                } case "/user": {
-                    loadUserContent(user);
-                    break;
-                }
-                case "/forgotpassword":
-                case "/login":
-                case "/public_signup": {
-                    location.href = '/movies';
-                    break;
-                }
-                case "/cc_browser": 
-                case "/cc":  {
-                    loadCC(user);
+                    jQuery("#login_bar").not("[email-verification]").show();
                     break;
                 }
             }
         }
-    } else {
-        jQuery.post(`/api/fetchAPIKeys`, (d) => {
+    });
+}
+function loggedIn(user) {
+    userData = user;
+    jQuery.post("/api/check4SavedUserInfo", {
+        displayName: user.displayName || user.name,
+        email: user.email,
+        uid: user.uid || user.id
+    }, () => {
+        jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
             console.log(d);
             const json = JSON.parse(d);
             addVal2Element('freeconvert-key', json.freeConvertKey);
             addVal2Element('topmediaai-key', json.topMediaAIKey);
         });
-        hideElement('isLogin');
-        showElement('signup-button');
-        showElement('login-button');
-        switch (window.location.pathname) {
-            case "/videos":
-            case "/cc_browser": 
-            case "/create":
-            case "/cc": 
-            case "/go_full": 
-            case "/movies": {
-                window.location.href = '/';
-                break;
-            } case "/quickvideo": {
-                jQuery("#login_bar").not("[email-verification]").show();
-                break;
-            }
+    });
+    hideElement('signup-button');
+    hideElement('login-button');
+    showElement('isLogin');
+    showElement('exploreTab');
+    showElement('iconsLol');
+    switch (window.location.pathname) {
+        case "/":
+        case "/movies": {
+            jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
+                document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
+                if (meta.length < 1) {
+                    jQuery("#myvideos").hide();
+                    jQuery("#novideos").show();
+                    jQuery("#allvideos").hide();
+                } else for (const tbl of meta) {
+                    videoCounts.all++
+                    const date = tbl.date.split("T")[0];
+                    const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
+                    jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${
+                        tbl.durationString
+                    }</div></div></td><td>${usDate}</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${
+                        tbl.id
+                    }')"></a><a href="javascript:movieRedirect('/go_full?movieId=${tbl.id}', '${tbl.id}')"></a><a href="javascript:movieRedirect('/movies/${
+                        tbl.id
+                    }.zip', '${tbl.id}')"></a><a onclick="deleteMovie('${
+                        tbl.id
+                    }')"></a></td></tr>`);
+                }
+            })
+            break;
+        } case "/quickvideo": {
+            GoLite.showSelectCCOverlay = function(y) {
+                jQuery.post("/api/getAIVoices", {
+                    uid: user.uid || user.id
+                }, d => {
+                    var w = GoLite.getCharacters();
+                    var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
+                    z.setDefaultCharacterById(w[y].data("cid"));
+                    z.setDefaultVoice(w[y].data("voice"));
+                    z.show()
+                });
+            };
+            GoLite.showSelectVoiceOverlay = function(y) {
+                jQuery.post("/api/getAIVoices", {
+                    uid: user.uid || user.id
+                }, d => {
+                    var w = GoLite.getCharacters();
+                    var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
+                    z.setDefaultVoice(w[y].data("voice"));
+                    z.show()
+                });
+            };
+            VoiceCatalog = {
+                lookupVoiceInfo(voice_id) {
+                    jQuery.post("/api/getAIVoices", {
+                        uid: user.uid || user.id
+                    }, lang_model => {
+                        console.log(lang_model);
+                        for (var langId in lang_model) {
+                            const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
+                            if (voiceInfo) {
+                                return {
+                                    desc: voiceInfo.desc,
+                                    sex: voiceInfo.sex,
+                                    plus: voiceInfo.plus,
+                                    locale: { 
+                                        id: langId, 
+                                        lang: voiceInfo.lang, 
+                                        country: voiceInfo.country, 
+                                        desc: lang_model[langId].desc 
+                                    }
+                                };
+                            }
+                        }
+                        return null;
+                    });
+                },
+                getDefaultVoice() {
+                    jQuery.post("/api/getAIVoices", {
+                        uid: user.uid || user.id
+                    }, lang_model => {
+                        console.log(lang_model);
+                        for (var langId in lang_model) {
+                            for (var i = 0; i < lang_model[langId].options.length; i++) {
+                                if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
+                            }
+                        }
+                        return null;
+                    });
+                }
+            };
+            break;
+        } case "/go_full": {
+            $(document).ready(function() {
+                if (enable_full_screen) {
+        
+                    if (!true) {
+                        $('#studio_container').css('top', '0px');
+                    }
+                    $('#studio_container').show();
+                    $('.site-footer').hide();
+                    $('#studioBlock').css('height', '1800px');
+        
+                    if (false) {
+                        checkCopyMovie(`javascript:proceedWithFullscreenStudio('${JSON.stringify(user)}', 'isJson')`, '');
+                    } else if (false) {
+                        checkEditMovie('');
+                    } else {
+                        proceedWithFullscreenStudio(user);
+                    }
+        
+                    $(window).on('resize', function() {
+                        ajust_studio();
+                    });
+                    $(window).on('studio_resized', function() {
+                        if (show_cc_ad) {
+                            _ccad.refreshThumbs();
+                        }
+                    });
+        
+                    if (studioApiReady) {
+                        var api = studioApi($('#studio_holder'));
+                        api.bindStudioEvents();
+                    }
+                    $('.ga-importer').prependTo($('#studio_container'));
+                } else setTimeout(() => {
+                    $('#studioBlock').flash(studio_data);
+                }, 1);
+                // Video Tutorial
+                videoTutorial = new VideoTutorial($("#video-tutorial"));
+            })
+            // restore studio when upsell overlay hidden
+            .on('hidden', '#upsell-modal', function(e) {
+                if ($(e.target).attr('id') == 'upsell-modal') {
+                    restoreStudio();
+                }
+            })
+            .on('studioApiReady', function() {
+                var api = studioApi($('#studio_holder'));
+                api.bindStudioEvents();
+            })
+            break;
+        } case "/player": {
+            break;
+        } case "/user": {
+            loadUserContent(user);
+            break;
+        }
+        case "/forgotpassword":
+        case "/login":
+        case "/public_signup": {
+            location.href = '/movies';
+            break;
+        }
+        case "/cc_browser": 
+        case "/cc":  {
+            loadCC(user);
+            break;
         }
     }
-});
+}
 function userSignup(email, password, name) {
     signupComplete = true;
     displayName = name;
@@ -285,9 +322,15 @@ function userLogin(email, password) {
     });
 }
 function userLogout() {
-    auth.signOut().catch(e => {
-        console.log(e);
-        alert(e.message);
+    jQuery.post("/api/getSession", d => {
+        const json = JSON.parse(d);
+        if (json.data && json.data.loggedIn && json.data.current_uid) logout();
+        else {
+            auth.signOut().then(logout).catch(e => {
+                console.log(e);
+                alert(e.message);
+            });
+        }
     });
 }
 function hideElement(id) {
