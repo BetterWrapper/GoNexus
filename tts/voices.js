@@ -40,9 +40,11 @@ function getLangPre(langName) {
 		if (langs[lang] == langName) return lang;
 	}
 }
+const voices = {};
 const tts = require("./main");
 const https = require("https");
 const loadPost = require("../misc/post_body");
+const fs = require("fs");
 function getXml(apiName) {
 	return new Promise((res, rej) => {
 		https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
@@ -52,7 +54,7 @@ function getXml(apiName) {
 					const json = JSON.parse(Buffer.concat(buffers))[apiName];
 					const xmls = {};
 					for (const voiceInfo of json.voices) {
-						tts.sendVoiceInfo(voiceInfo.vid.split("-").join("").toLowerCase(), voiceInfo);
+						voices[voiceInfo.vid.split("-").join("").toLowerCase()] = voiceInfo;
 						xmls[voiceInfo.lang] = xmls[voiceInfo.lang] || [];
 						xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.split("-").join("").toLowerCase()}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
 					}
@@ -121,9 +123,13 @@ module.exports = function (req, res, url) {
 			}));
 			break;
 		} case "/goapi/getTextToSpeechVoices/": {
-			getXml("Acapela").then(xml => {
-				res.setHeader("Content-Type", "application/xml");
-				res.end(xml);
+			loadPost(req, res).then(([data]) => {
+				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
+				getXml(json.settings.api.ttstype.value.split("+").join(" ")).then(xml => {
+					fs.writeFileSync('./tts/voices.json', JSON.stringify(voices, null, "\t"));
+					res.setHeader("Content-Type", "application/xml");
+					res.end(xml);
+				});
 			});
 			break;
 		} default: return;

@@ -44,7 +44,6 @@ const langs = {
 	"gd": "Scottish Gaelic",
 	"cs": "Czech"
 }
-const voices = {};
 function getLangPre(langName) {
 	for (const lang in langs) {
 		if (langs[lang] == langName) return lang;
@@ -52,18 +51,16 @@ function getLangPre(langName) {
 }
 
 module.exports = {
-	sendVoiceInfo(voiceName, data) {
-		voices[voiceName] = data;
-	},
 	getVoiceInfo(voiceName) {
-		return voices[voiceName];
+		return JSON.parse(fs.readFileSync('./tts/voices.json'))[voiceName];
 	},
-	genVoice(voiceName, text) {
+	genVoice(voiceName, text, uid) {
 		return new Promise(async (res, rej) => {
 			try {
+				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == uid);
 				const voice = this.getVoiceInfo(voiceName);
 				const body = new URLSearchParams({
-					service: "Acapela",
+					service: json.settings.api.ttstype.value.split("+").join(" "),
 					voice: voice.vid,
 					text
 				}).toString();

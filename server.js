@@ -41,13 +41,14 @@ const ebd = require("./movie/embed");
 const thL = require("./theme/list");
 const thl = require("./theme/load");
 const tsv = require("./tts/voices");
+const tsl = require("./tts/load");
 const fme = require("./static/frames");
 const pse = require("./movie/parse");
 const fs = require("fs");
 const url = require("url");
 const formidable = require("formidable");
 const session = require("./misc/session");
-const functions = [mvL, qvm, tmp, ebd, pre, snd, fme, str, swf, pmc, asl, chl, chh, thl, thL, chs, cht, asL, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
+const functions = [mvL, qvm, tmp, ebd, pre, snd, fme, str, swf, tsl, pmc, asl, chl, chh, thl, thL, chs, cht, asL, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
 function stream2Buffer(readStream) {
 	return new Promise((res, rej) => {
 		let buffers = [];
