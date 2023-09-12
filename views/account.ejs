@@ -209,7 +209,14 @@
                                 <form action="javascript:;" id="ttsapiform">
                                     <div class="form-group">
                                         <p class="d-block">API Type For The TTS (LVM Only)</p>
-                                        <select id="ttsapitype"></select>
+                                        <select id="ttsapitype">
+                                            <option data-apiserver="https://www.tetyys.com/" value="Microsoft">Microsoft (https://www.tetyys.com/)</option>
+                                            <option data-apiserver="https://www.nuance.com/" value="Nuance">Nuance (https://www.nuance.com/)</option>
+                                            <option data-apiserver="https://www.cepstral.com/" value="Cepstral">Cepstral (https://www.cepstral.com/)</option>
+                                            <option data-apiserver="http://www.voiceforge.com/" value="Voiceforge">Voiceforge (http://www.voiceforge.com/)</option>
+                                            <option data-apiserver="https://www.ispeech.org/" value="Svox">Svox (https://www.ispeech.org/)</option>
+                                            <option data-apiserver="https://readloud.net/" value="Readloud">Readloud (https://readloud.net/)</option>
+                                        </select>
                                     </div>
                                     <input type="submit" class="btn btn-primary" value="Update TTS Api (LVM Only)"/>
                                 </form>
@@ -231,7 +238,7 @@
             function loadSettings(user) {
                 jQuery.post('/api/fetchTTSApis', d => {
                     for (const i of d) {
-                        jQuery("#ttsapitype").append(`<option value="${i}">${i}</option>`);
+                        jQuery("#ttsapitype").append(`<option data-apiserver="https://lazypy.ro/" value="${i}">${i} (https://lazypy.ro/)</option>`);
                     }
                     jQuery("#displayName").val(user.displayName || user.name);
                 })
