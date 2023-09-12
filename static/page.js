@@ -92,6 +92,9 @@ module.exports = function (req, res, url) {
 		} case "/public_faq": {
 			filename = "faq";
 			break;
+		} case "/account": {
+			filename = "account";
+			break;
 		} case "/public_signup": {
 			filename = "signup";
 			break;

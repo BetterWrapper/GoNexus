@@ -41,6 +41,7 @@ auth.onAuthStateChanged(user => {
                 case "/create":
                 case "/cc_browser": 
                 case "/cc": 
+                case "/account":
                 case "/go_full": 
                 case "/movies": {
                     window.location.href = '/';
@@ -87,6 +88,7 @@ function logout(t) {
                     showElement('login-button');
                     switch (window.location.pathname) {
                         case "/videos":
+                        case "/account":
                         case "/cc_browser": 
                         case "/create":
                         case "/cc": 
@@ -113,6 +115,7 @@ function logout(t) {
             showElement('login-button');
             switch (window.location.pathname) {
                 case "/videos":
+                case "/account":
                 case "/cc_browser": 
                 case "/create":
                 case "/cc": 
@@ -148,6 +151,10 @@ function loggedIn(user) {
     showElement('exploreTab');
     showElement('iconsLol');
     switch (window.location.pathname) {
+        case "/account": {
+            loadSettings(user);
+            break;
+        }
         case "/":
         case "/movies": {
             jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {

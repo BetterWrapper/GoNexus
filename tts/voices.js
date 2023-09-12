@@ -74,7 +74,20 @@ function getXml(apiName) {
 module.exports = function (req, res, url) {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
-		case "/api/getAIVoices": {
+		case "/api/fetchTTSApis": {
+			https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
+				const buffers = [];
+				r.on("data", b => buffers.push(b)).on("end", () => {
+					try {
+						res.setHeader("Content-Type", "application/json");
+						res.end(JSON.stringify(Object.keys(JSON.parse(Buffer.concat(buffers)))));
+					} catch (e) {
+						console.error(e);
+					}
+				}).on("error", console.error);
+			}).on("error", console.error);
+			break;
+		} case "/api/getAIVoices": {
 			loadPost(req, res).then(([data]) => tts.checkAIVoiceServer(data).then(q => {
 				console.log(q);
 				if (q == "ContainsErrors") {
@@ -107,8 +120,7 @@ module.exports = function (req, res, url) {
 				});
 			}));
 			break;
-		}
-		case "/goapi/getTextToSpeechVoices/": {
+		} case "/goapi/getTextToSpeechVoices/": {
 			getXml("Acapela").then(xml => {
 				res.setHeader("Content-Type", "application/xml");
 				res.end(xml);
