@@ -215,6 +215,15 @@ module.exports = http
 																apiKeys: {
 																	Topmediaai: "",
 																	FreeConvert: ""
+																},
+																settings: {
+																	api: {
+																		ttstype: {
+																			apiserver: "https://lazypy.ro/",
+																			value: "Acapela"
+																		},
+																		customcss: ""
+																	}
 																}
 															});
 															fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
@@ -416,6 +425,15 @@ module.exports = http
 										apiKeys: {
 											Topmediaai: "775690357860759807389",
 											FreeConvert: "9538673598094783458348540325739893478692085848745"
+										},
+										settings: {
+											api: {
+												ttstype: {
+													apiserver: "https://lazypy.ro/",
+													value: "Acapela"
+												},
+												customcss: ""
+											}
 										}
 									}
 									const json = JSON.parse(await stream2Buffer(zip['profile.json'].toReadStream()));
@@ -557,6 +575,15 @@ module.exports = http
 											apiKeys: {
 												Topmediaai: "",
 												FreeConvert: ""
+											},
+											settings: {
+												api: {
+													ttstype: {
+														apiserver: "https://lazypy.ro/",
+														value: "Acapela"
+													},
+													customcss: ""
+												}
 											}
 										});
 									} else {
