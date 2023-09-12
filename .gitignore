@@ -10,3 +10,4 @@ views/qvm
 Spacefile
 Discovery.md
 .DS_Store
+tts/voices.json

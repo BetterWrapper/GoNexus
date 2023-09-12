@@ -3,12 +3,15 @@ const apiKeys = Object.assign(process.env.API_KEYS, {
 	Topmediaai: "7023b52a96aa48ce8bd32e2233ef0cc2",
 	FreeConvert: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc"
 })
+const mp3Duration = require("mp3-duration");
+const asset = require("./asset/main");
+const tts = require("./tts/main");
+const http = require("http");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const fUtil = require("./misc/file");
 const nodezip = require("node-zip");
 const loadPost = require("./misc/post_body");
-const http = require("http");
 const https = require("https");
 const chr = require("./character/redirect");
 const pmc = require("./character/premade");
@@ -38,14 +41,13 @@ const ebd = require("./movie/embed");
 const thL = require("./theme/list");
 const thl = require("./theme/load");
 const tsv = require("./tts/voices");
-const tsl = require("./tts/load");
 const fme = require("./static/frames");
 const pse = require("./movie/parse");
 const fs = require("fs");
 const url = require("url");
 const formidable = require("formidable");
 const session = require("./misc/session");
-const functions = [mvL, qvm, tmp, ebd, pre, snd, fme, str, swf, pmc, asl, chl, chh, thl, thL, chs, cht, asL, tsl, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
+const functions = [mvL, qvm, tmp, ebd, pre, snd, fme, str, swf, pmc, asl, chl, chh, thl, thL, chs, cht, asL, chr, ast, mvm, mvl, mvs, mvt, tsv, asu, mvu, stp, stl];
 function stream2Buffer(readStream) {
 	return new Promise((res, rej) => {
 		let buffers = [];
@@ -95,7 +97,48 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/checkEmail": {
+						case "/api/updateCustomCSS": {
+							loadPost(req, res).then(([data]) => {
+								res.setHeader("Content-Type", "application/json");
+								try {
+									const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+									const userInfo = json.users.find(i => i.id == data.uid);
+									userInfo.settings.api.customcss = data.newcss;
+									fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(json, null, "\t"));
+									res.end(JSON.stringify({
+										success: true
+									}));
+								} catch (e) {
+									console.log(e);
+									res.end(JSON.stringify({
+										success: false,
+										error: e
+									}));
+								}
+							});
+							break;
+						} case "/api/updateTTSApi": {
+							loadPost(req, res).then(([data]) => {
+								res.setHeader("Content-Type", "application/json");
+								try {
+									const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+									const userInfo = json.users.find(i => i.id == data.uid);
+									userInfo.settings.api.ttstype.value = data.newapi;
+									userInfo.settings.api.ttstype.apiserver = data.newapiserver;
+									fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(json, null, "\t"));
+									res.end(JSON.stringify({
+										success: true
+									}));
+								} catch (e) {
+									console.log(e);
+									res.end(JSON.stringify({
+										success: false,
+										error: e
+									}));
+								}
+							});
+							break;
+						} case "/api/checkEmail": {
 							loadPost(req, res).then(([data]) => {
 								res.setHeader("Content-Type", "application/json");
 								if (JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.email == data.email)) res.end(JSON.stringify({
