@@ -52,9 +52,9 @@ function getXml(apiName) {
 					const json = JSON.parse(Buffer.concat(buffers))[apiName];
 					const xmls = {};
 					for (const voiceInfo of json.voices) {
-						tts.sendVoiceInfo(voiceInfo.vid.toLowerCase(), voiceInfo);
+						tts.sendVoiceInfo(voiceInfo.vid.split("-").join("").toLowerCase(), voiceInfo);
 						xmls[voiceInfo.lang] = xmls[voiceInfo.lang] || [];
-						xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.toLowerCase()}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
+						xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.split("-").join("").toLowerCase()}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
 					}
 					const xml = `${process.env.XML_HEADER}<voices>${Object.keys(xmls).sort().map((i) => {
 						const v = xmls[i],
@@ -109,7 +109,7 @@ module.exports = function (req, res, url) {
 			break;
 		}
 		case "/goapi/getTextToSpeechVoices/": {
-			getXml("Streamlabs").then(xml => {
+			getXml("Acapela").then(xml => {
 				res.setHeader("Content-Type", "application/xml");
 				res.end(xml);
 			});

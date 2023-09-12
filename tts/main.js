@@ -56,7 +56,6 @@ module.exports = {
 		voices[voiceName] = data;
 	},
 	getVoiceInfo(voiceName) {
-		console.log(voices);
 		return voices[voiceName];
 	},
 	genVoice(voiceName, text) {
@@ -64,7 +63,7 @@ module.exports = {
 			try {
 				const voice = this.getVoiceInfo(voiceName);
 				const body = new URLSearchParams({
-					service: "Streamlabs",
+					service: "Acapela",
 					voice: voice.vid,
 					text
 				}).toString();
