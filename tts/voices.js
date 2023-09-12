@@ -36,8 +36,8 @@ const langs = {
 	"cs": "Czech"
 }
 function getLangPre(langName) {
-	for (const langInfo in langs) {
-		if (langs[langInfo] == langName) return langInfo;
+	for (const lang in langs) {
+		if (langs[lang] == langName) return lang;
 	}
 }
 const tts = require("./main");
@@ -52,12 +52,14 @@ function getXml(apiName) {
 					const json = JSON.parse(Buffer.concat(buffers))[apiName];
 					const xmls = {};
 					for (const voiceInfo of json.voices) {
-						xmls[getLangPre(voiceInfo.lang)].push(`<voice id="${voiceInfo.vid}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
+						tts.sendVoiceInfo(voiceInfo.vid.toLowerCase(), voiceInfo);
+						xmls[voiceInfo.lang] = xmls[voiceInfo.lang] || [];
+						xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.toLowerCase()}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
 					}
 					const xml = `${process.env.XML_HEADER}<voices>${Object.keys(xmls).sort().map((i) => {
 						const v = xmls[i],
-						l = langs[i];
-						return `<language id="${i}" desc="${l}">${v.join("")}</language>`;
+						l = getLangPre(i);
+						return `<language id="${l}" desc="${i}">${v.join("")}</language>`;
 					}).join("")}</voices>`
 					console.log(xml);
 					res(xml);

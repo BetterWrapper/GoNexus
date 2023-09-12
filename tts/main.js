@@ -44,31 +44,25 @@ const langs = {
 	"gd": "Scottish Gaelic",
 	"cs": "Czech"
 }
+const voices = {};
 function getLangPre(langName) {
-	for (const langInfo in langs) {
-		if (langs[langInfo] == langName) return langInfo;
+	for (const lang in langs) {
+		if (langs[lang] == langName) return lang;
 	}
 }
 
 module.exports = {
-	getVoiceInfo(apiName, voiceName) {
-		return new Promise((res, rej) => {
-			https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
-				const buffers = [];
-				r.on("data", b => buffers.push(b)).on("end", () => {
-					try {
-						res(JSON.parse(Buffer.concat(buffers))[apiName].voices.find(i => i.vid == voiceName));
-					} catch (e) {
-						rej(e);
-					}
-				}).on("error", rej);
-			}).on("error", rej);
-		});
+	sendVoiceInfo(voiceName, data) {
+		voices[voiceName] = data;
+	},
+	getVoiceInfo(voiceName) {
+		console.log(voices);
+		return voices[voiceName];
 	},
 	genVoice(voiceName, text) {
 		return new Promise(async (res, rej) => {
 			try {
-				const voice = await this.getVoiceInfo("Streamlabs", voiceName);
+				const voice = this.getVoiceInfo(voiceName);
 				const body = new URLSearchParams({
 					service: "Streamlabs",
 					voice: voice.vid,
@@ -85,7 +79,12 @@ module.exports = {
 					const buffers = [];
 					r.on("data", b => buffers.push(b)).on("end", () => {
 						const json = JSON.parse(Buffer.concat(buffers));
-						console.log(json);
+						if (json.success && json.audio_url) {
+							https.get(json.audio_url, r => {
+								const buffers = [];
+								r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+							})
+						}
 					}).on("error", rej);
 				}).end(body).on("error", rej);
 			} catch (e) {
