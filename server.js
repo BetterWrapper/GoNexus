@@ -95,6 +95,19 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
+						case "/api/checkEmail": {
+							loadPost(req, res).then(([data]) => {
+								res.setHeader("Content-Type", "application/json");
+								if (JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.email == data.email)) res.end(JSON.stringify({
+									success: false,
+									error: "Your Email Address has already been taken by someone with either a google or flashthemes account"
+								}));
+								else res.end(JSON.stringify({
+									success: true
+								}));
+							});
+							break;
+						}
 						case "/api/removeSession": {
 							loadPost(req, res).then(([data]) => {
 								if (session.remove(req, data)) res.end(JSON.stringify({

@@ -261,7 +261,16 @@ function submitLogin() {
 
     var buttonText = $('#btn-login').text();
     $('#btn-login').text('Logging in...');
-    userLogin($('#login-email').val(), $('#login-password').val());
+    $.post("/api/checkEmail", {
+        email: $('#login-email').val()
+    }, d => {
+        if (d.success) userLogin($('#login-email').val(), $('#login-password').val());
+        else {
+            processing = false;
+            formErrorMessage(d.error);
+            $('#btn-login').text(buttonText);
+        }
+    })
 }
 
 $('#login-form').submit(function() {
