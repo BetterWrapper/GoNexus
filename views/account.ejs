@@ -11,17 +11,12 @@
         <meta property="fb:app_id" content="122508887813978">
         <meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
         <style>
-            .main-body {
-                padding: 15px;
-            }
-            
             .nav-link {
                 color: #4a5568;
             }
             .card {
                 box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
             }
-            
             .card {
                 position: relative;
                 display: flex;
@@ -33,18 +28,15 @@
                 border: 0 solid rgba(0,0,0,.125);
                 border-radius: .25rem;
             }
-            
             .card-body {
                 flex: 1 1 auto;
                 min-height: 1px;
                 padding: 1rem;
             }
-            
             .gutters-sm {
                 margin-right: -8px;
                 margin-left: -8px;
             }
-            
             .gutters-sm>.col, .gutters-sm>[class*=col-] {
                 padding-right: 8px;
                 padding-left: 8px;
@@ -116,6 +108,38 @@
                     </div>
                     <div class="modal-body">
                         Please wait while we load your settings.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="accountDeletion">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Deleting Your Account...</h3>
+                    </div>
+                    <div class="modal-body">
+                        This will take some time. it depends on how much stuff you have stored into your account.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="deleteAccount">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Delete Account</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure about this? if you delete your account, there is no turning back! please be careful about this.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
                     </div>
                 </div>
             </div>
@@ -219,12 +243,12 @@
                             <div class="tab-pane active" id="account">
                                 <h6>ACCOUNT SETTINGS</h6>
                                 <hr>
-                                <form action="javascript:;" id="accountform">
+                                <form>
                                     <div class="form-group">
                                         <label class="d-block text-danger">Delete Account</label>
                                         <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
                                     </div>
-                                    <input type="submit" class="btn btn-danger" value="Delete Account"/>
+                                    <a class="btn btn-danger" data-toggle="modal" data-target="#deleteAccount">Delete Account</a>
                                 </form>
                             </div>
                             <div class="tab-pane" id="api">
@@ -259,6 +283,22 @@
             </div>
         </div>
         <script>
+            function deleteAccount() {
+                $("#deleteAccount").modal('hide');
+                $("#accountDeletion").modal({
+                    keyboard: false,
+                    backdrop: "static"
+                });
+                jQuery.post("/api/deleteAccount", {
+                    uid: userData.uid || userData.id
+                }, d => {
+                    if (d.success) userLogout();
+                    else {
+                        $("#accountDeletion").modal('hide');
+                        displayFeedback(1 + d.error);
+                    }
+                })
+            }
             $("#settingsLoading").modal({
                 keyboard: false,
                 backdrop: "static"

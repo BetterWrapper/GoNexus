@@ -21,30 +21,41 @@ module.exports = {
 		}
 		fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
 	},
-	delete(data) {
-		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
-		const userInfo = json.users.find(i => i.id == data.userId);
-		let info, index;
-		if (data.id && data.id != "null") {
-			info = userInfo.assets.find(i => i.enc_asset_id == data.id);
-			index = userInfo.assets.findIndex(i => i.enc_asset_id == data.id);
-		} else if (data.templateId && data.templateId != "null") {
-			info = userInfo.assets.find(i => i.enc_asset_id == data.templateId);
-			index = userInfo.assets.findIndex(i => i.enc_asset_id == data.templateId);
-		} else if (data.assetId && data.assetId != "null") {
-			info = userInfo.assets.find(i => i.id == data.assetId);
-			index = userInfo.assets.findIndex(i => i.id == data.assetId);
+	delete(data, justFiles = false) {
+		if (!justFiles) {
+			const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
+			const userInfo = json.users.find(i => i.id == data.userId);
+			let info, index;
+			if (data.id && data.id != "null") {
+				info = userInfo.assets.find(i => i.enc_asset_id == data.id);
+				index = userInfo.assets.findIndex(i => i.enc_asset_id == data.id);
+			} else if (data.templateId && data.templateId != "null") {
+				info = userInfo.assets.find(i => i.enc_asset_id == data.templateId);
+				index = userInfo.assets.findIndex(i => i.enc_asset_id == data.templateId);
+			} else if (data.assetId && data.assetId != "null") {
+				info = userInfo.assets.find(i => i.id == data.assetId);
+				index = userInfo.assets.findIndex(i => i.id == data.assetId);
+			}
+			if (info.id.startsWith("s-")) {
+				const paths = [
+					fUtil.getFileIndex("starter-", ".xml", info.id.substr(2)),
+					fUtil.getFileIndex("starter-", ".png", info.id.substr(2))
+				];
+				for (const path of paths) fs.unlinkSync(path);
+			}
+			else fs.unlinkSync(`${this.folder}/${info.id}`);
+			userInfo.assets.splice(index, 1);
+			fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
+		} else {
+			if (data.id.startsWith("s-")) {
+				const paths = [
+					fUtil.getFileIndex("starter-", ".xml", data.id.substr(2)),
+					fUtil.getFileIndex("starter-", ".png", data.id.substr(2))
+				];
+				for (const path of paths) fs.unlinkSync(path);
+			}
+			else fs.unlinkSync(`${this.folder}/${data.id}`);
 		}
-		if (info.id.startsWith("s-")) {
-			const paths = [
-				fUtil.getFileIndex("starter-", ".xml", info.id.substr(2)),
-				fUtil.getFileIndex("starter-", ".png", info.id.substr(2))
-			];
-			for (const path of paths) fs.unlinkSync(path);
-		}
-		else fs.unlinkSync(`${this.folder}/${info.id}`);
-		userInfo.assets.splice(index, 1);
-		fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
 	},
 	generateId() {
 		return ("" + Math.random()).replace(".", "");

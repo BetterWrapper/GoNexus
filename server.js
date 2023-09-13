@@ -3,12 +3,10 @@ const apiKeys = Object.assign(process.env.API_KEYS, {
 	Topmediaai: "7023b52a96aa48ce8bd32e2233ef0cc2",
 	FreeConvert: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc"
 })
-const mp3Duration = require("mp3-duration");
-const asset = require("./asset/main");
-const tts = require("./tts/main");
 const http = require("http");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const asset = require("./asset/main");
 const fUtil = require("./misc/file");
 const nodezip = require("node-zip");
 const loadPost = require("./misc/post_body");
@@ -98,7 +96,59 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/updateCustomCSS": {
+						case "/api/deleteAccount": {
+							loadPost(req, res).then(([data]) => {
+								console.log(data);
+								res.setHeader("Content-Type", "application/json");
+								const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+								const userInfo = json.users.find(i => i.id == data.uid);
+								const userInfoIndex = json.users.findIndex(i => i.id == data.uid);
+								console.log(json, userInfoIndex);
+								for (const assetInfo of userInfo.assets) try {
+									asset.delete({
+										id: assetInfo.id
+									}, true);
+								} catch (e) {
+									console.log(e);
+									return res.end(JSON.stringify({
+										success: false,
+										error: e
+									}));
+								}
+								for (const movieInfo of userInfo.movies) try {
+									const filepaths = [];
+									if (movieInfo.id.includes("-")) {
+										const prefix = movieInfo.id.substr(0, movieInfo.id.lastIndexOf("-"));
+										const suffix = movieInfo.id.substr(movieInfo.id.lastIndexOf("-") + 1);
+										switch (prefix) {
+											case "m": {
+												filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
+												filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
+												break;
+											} default: {
+												return res.end(JSON.stringify({
+													success: false,
+													error: `The prefix: ${prefix} does not exist in our database.`
+												}))
+											}
+										}
+									}
+									for (const filepath of filepaths) fs.unlinkSync(filepath);
+								} catch (e) {
+									console.log(e);
+									return res.end(JSON.stringify({
+										success: false,
+										error: e
+									}));
+								}
+								json.users.splice(userInfoIndex, 1);
+								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+								res.end(JSON.stringify({
+									success: true
+								}));
+							});
+							break;
+						} case "/api/updateCustomCSS": {
 							loadPost(req, res).then(([data]) => {
 								res.setHeader("Content-Type", "application/json");
 								try {
@@ -209,8 +259,7 @@ module.exports = http
 									}
 									const json = await findUserInfo();
 									if (!json.success) {
-										console.log(data.displayName);
-										console.error(new Error(json.error));
+										console.log(data.displayName, json.error);
 										switch (json.info) {
 											case "unknown_error": {
 												res.end(JSON.stringify({
@@ -236,49 +285,54 @@ module.exports = http
 														}));
 														bcrypt.hash(data.password, salt, (err, hash) => {
 															console.log(hash);
-															if (err) return res.end(JSON.stringify({
+															if (err) res.end(JSON.stringify({
 																success: false,
 																error: err
 															}));
-															const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-															if (json.users.find(i => i.email == data.email)) {
-																console.error(new Error("Your email address has already been taken by someone who created their account on GoNexus."));
-																return res.end(JSON.stringify({
-																	success: false,
-																	error: "Your email address has already been taken by someone who created their account on GoNexus."
-																}))
-															}
-															json.users.unshift({
-																name: data.displayName,
-																isFTAcc: true,
-																hash,
-																id: uid,
-																email: data.email,
-																movies: [],
-																assets: [],
-																apiKeys: {
-																	Topmediaai: "",
-																	FreeConvert: ""
-																},
-																settings: {
-																	api: {
-																		ttstype: {
-																			apiserver: "https://lazypy.ro/",
-																			value: "Acapela"
+															else {
+																const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+																if (json.users.find(i => i.email == data.email)) {
+																	console.error("Your email address has already been taken by someone who created their account on GoNexus.");
+																	res.end(JSON.stringify({
+																		success: false,
+																		error: "Your email address has already been taken by someone who created their account on GoNexus."
+																	}))
+																} else {
+																	json.users.unshift({
+																		name: data.displayName,
+																		isFTAcc: true,
+																		hash,
+																		id: uid,
+																		email: data.email,
+																		movies: [],
+																		assets: [],
+																		apiKeys: {
+																			Topmediaai: "",
+																			FreeConvert: ""
 																		},
-																		customcss: ""
+																		settings: {
+																			api: {
+																				ttstype: {
+																					apiserver: "https://lazypy.ro/",
+																					value: "Acapela"
+																				},
+																				customcss: ""
+																			}
+																		}
+																	});
+																	fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+																	if (session.set(req, {
+																		loggedIn: true,
+																		current_uid: uid,
+																		displayName: data.displayName,
+																		email: data.email
+																	})) {
+																		res.end(JSON.stringify({
+																			success: true
+																		}));
 																	}
 																}
-															});
-															fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
-															if (session.set(req, {
-																loggedIn: true,
-																current_uid: uid,
-																displayName,
-																email: data.email
-															})) res.end(JSON.stringify({
-																success: true
-															}));
+															}
 														});
 													});
 												};
