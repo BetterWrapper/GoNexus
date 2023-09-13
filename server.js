@@ -74,6 +74,19 @@ module.exports = http
 					error: "Some of your files have ids that are already in this server. please upload a different zip file that contains the profile.json file and files with different ids."
 				}));
 			}
+			function genHash(num, password) {
+				return new Promise((res, rej) => {
+					bcrypt.genSalt(num, (err, salt) => {
+						console.log(salt);
+						if (err) rej(err);
+						else bcrypt.hash(password, salt, (err, hash) => {
+							console.log(hash);
+							if (err) rej(err);
+							else res(hash);
+						});
+					});
+				})
+			}
 			//pages
 			switch (req.method) {
 				case "GET": {
@@ -96,7 +109,36 @@ module.exports = http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/deleteAccount": {
+						case "/api/linkAccount": {
+							loadPost(req, res).then(async ([data]) => {
+								res.setHeader("Content-Type", "application/json");
+								const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+								const userInfo = json.users.find(i => i.id == data.uid);
+								switch (data.type) {
+									case "FlashThemes": {
+										try {
+											const num = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+										    const hash = await genHash(num, data.password);
+										    userInfo.isFTAcc = true;
+										    userInfo.hash = hash;
+										    userInfo.linkedFTAcc = true;
+										    fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+										    res.end(JSON.stringify({
+												success: true
+										    }));
+										} catch (e) {
+											console.log(e);
+											res.end(JSON.stringify({
+												success: false,
+												error: e
+											}));
+										}
+										break;		
+									}
+								}
+							});
+							break;
+						} case "/api/deleteAccount": {
 							loadPost(req, res).then(([data]) => {
 								console.log(data);
 								res.setHeader("Content-Type", "application/json");
@@ -150,11 +192,13 @@ module.exports = http
 							break;
 						} case "/api/updateCustomCSS": {
 							loadPost(req, res).then(([data]) => {
+								console.log(data);
 								res.setHeader("Content-Type", "application/json");
 								try {
 									const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 									const userInfo = json.users.find(i => i.id == data.uid);
 									userInfo.settings.api.customcss = data.newcss;
+									fs.writeFileSync("./views/includes/usercss.ejs", `<style id="usercss">${data.newcss}</style>`);
 									fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(json, null, "\t"));
 									res.end(JSON.stringify({
 										success: true
@@ -277,64 +321,50 @@ module.exports = http
 													const num = Math.floor(Math.random() * (50 - 1 + 1) + 1);
 													const uid = crypto.randomBytes(num).toString('hex');
 													console.log(num, uid);
-													bcrypt.genSalt(num, (err, salt) => {
-														console.log(salt);
-														if (err) return res.end(JSON.stringify({
+													const hash = await genHash(num, data.password);
+													const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+													const meta = json.users.find(i => i.email == data.email);
+													if (meta && !meta.linkedFTAcc) {
+														console.error("Your email address has already been taken by someone who created their account on GoNexus.");
+														res.end(JSON.stringify({
 															success: false,
-															error: err
-														}));
-														bcrypt.hash(data.password, salt, (err, hash) => {
-															console.log(hash);
-															if (err) res.end(JSON.stringify({
-																success: false,
-																error: err
-															}));
-															else {
-																const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-																if (json.users.find(i => i.email == data.email)) {
-																	console.error("Your email address has already been taken by someone who created their account on GoNexus.");
-																	res.end(JSON.stringify({
-																		success: false,
-																		error: "Your email address has already been taken by someone who created their account on GoNexus."
-																	}))
-																} else {
-																	json.users.unshift({
-																		name: data.displayName,
-																		isFTAcc: true,
-																		hash,
-																		id: uid,
-																		email: data.email,
-																		movies: [],
-																		assets: [],
-																		apiKeys: {
-																			Topmediaai: "",
-																			FreeConvert: ""
-																		},
-																		settings: {
-																			api: {
-																				ttstype: {
-																					apiserver: "https://lazypy.ro/",
-																					value: "Acapela"
-																				},
-																				customcss: ""
-																			}
-																		}
-																	});
-																	fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
-																	if (session.set(req, {
-																		loggedIn: true,
-																		current_uid: uid,
-																		displayName: data.displayName,
-																		email: data.email
-																	})) {
-																		res.end(JSON.stringify({
-																			success: true
-																		}));
-																	}
+															error: "Your email address has already been taken by someone who created their account on GoNexus."
+														}))
+													} else {
+														json.users.unshift({
+															name: data.displayName,
+															isFTAcc: true,
+															hash,
+															id: uid,
+															email: data.email,
+															movies: [],
+															assets: [],
+															apiKeys: {
+																Topmediaai: "",
+																FreeConvert: ""
+															},
+															settings: {
+																api: {
+																	ttstype: {
+																		apiserver: "https://lazypy.ro/",
+																		value: "Acapela"
+																	},
+																	customcss: ""
 																}
 															}
 														});
-													});
+														fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+														if (session.set(req, {
+															loggedIn: true,
+															current_uid: uid,
+															displayName: data.displayName,
+															email: data.email
+														})) {
+															res.end(JSON.stringify({
+																success: true
+															}));
+														}
+													}
 												};
 												break;
 											}

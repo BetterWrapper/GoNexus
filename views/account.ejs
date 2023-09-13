@@ -54,6 +54,10 @@
             .shadow-none {
                 box-shadow: none!important;
             }
+            button.disabled {
+                background-color: #4a5568;
+                cursor: not-allowed;
+            }
             @font-face {
                 font-family: 'Lato';
                 font-style: normal;
@@ -67,6 +71,7 @@
                 src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
             }
         </style>
+        <%- include("includes/usercss.ejs") %>
         <link rel="stylesheet" href="/lvm_files/school/css/common_combined.css">
         <script>
             var srv_tz_os = -5, view_name = "school", user_cookie_name = "u_info_school";
@@ -142,6 +147,28 @@
                         <button type="button" class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="modal" id="FTAccLinkage">
+            <div class="modal-dialog">
+                <form class="modal-content" action="javascript:;" id="ftacclinkageform">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" id="ftacclinkageclosebtn">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Link A FlashThemes Account</h4>
+                    </div>
+                    <center class="modal-body">
+                        <p id="ftacclinkageerror" style="color: red;"></p><br>
+                        <label for="ftpsw">FlashThemes Account Password</label><br>
+                        <input id="ftpsw" type="password"/>
+                    </center>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="ftacclinkageclosefooterbtn" data-dismiss="modal">Close</button>
+                        <input type="submit" id="ftacclinkagebutton" class="btn btn-green" value="Link FlashThemes Account"/></button>
+                    </div>
+                </form>
             </div>
         </div>
         <%- include("includes/header.ejs", {
@@ -249,6 +276,14 @@
                                         <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
                                     </div>
                                     <a class="btn btn-danger" data-toggle="modal" data-target="#deleteAccount">Delete Account</a>
+                                    <div class="divider"></div>
+                                    <div id="linkFTAcc">
+                                        <div class="form-group">
+                                            <label class="d-blockr">Link FlashThemes Account</label>
+                                            <p class="text-muted font-size-sm">By linking your flashthemes account, you will have two ways to sign in to your account. this method is recomeneded for anyone who wants to sign in using their flashthemes account because sometimes signing in with a flashthemes account without it linked can take a while.</p>
+                                        </div>
+                                        <a class="btn btn-green" id="linkFTAccBtn">Link FlashThemes Account</a>
+                                    </div>
                                 </form>
                             </div>
                             <div class="tab-pane" id="api">
@@ -283,6 +318,7 @@
             </div>
         </div>
         <script>
+            let processing = false;
             function deleteAccount() {
                 $("#deleteAccount").modal('hide');
                 $("#accountDeletion").modal({
@@ -299,6 +335,57 @@
                     }
                 })
             }
+            $("#ftacclinkageform").submit(() => {
+                if (processing) return;
+                $("#ftacclinkageerror").text("");
+                $("#ftacclinkageclosebtn").hide();
+                $("#ftacclinkageclosefooterbtn").hide();
+                processing = true;
+                const origText = $("#ftacclinkagebutton").val();
+                $("#ftacclinkagebutton").val("Linking FlashThemes Account...");
+                jQuery.post('/api/checkFTAcc', {
+                    lc: "en_US",
+                    returnto: "/",
+                    email: userData.email,
+                    password: jQuery("#ftpsw").val()
+                }, d => {
+                    const code = `${d.split("{")[0]}`;
+                    switch (code) {
+                        case '0': {
+                            jQuery.post('/api/linkAccount', {
+                                code: '0',
+                                type: "FlashThemes",
+                                uid: userData.uid,
+                                password: jQuery("#ftpsw").val()
+                            }, d => {
+                                if (d.success) {
+                                    $("#FTAccLinkage").modal('hide');
+                                    displayFeedback(0 + "Success!");
+                                    $("#linkFTAccBtn").removeClass("btn-green");
+                                    $("#linkFTAccBtn").addClass("disabled");
+                                    $("#linkFTAccBtn").click(() => location.href = 'javascript:;');
+                                    $("#linkFTAccBtn").text("Already Linked");
+                                } else {
+                                    processing = false;
+                                    $("#ftacclinkagebutton").val(origText);
+                                    $("#ftacclinkageerror").text(d.error);
+                                    $("#ftacclinkageclosebtn").show();
+                                    $("#ftacclinkageclosefooterbtn").show();
+                                }
+                            });
+                            break;
+                        } case '1': {
+                            const json = JSON.parse(d.split("1")[1]);
+                            processing = false;
+                            $("#ftacclinkagebutton").val(origText);
+                            $("#ftacclinkageerror").text(json.errmsg);
+                            $("#ftacclinkageclosebtn").show();
+                            $("#ftacclinkageclosefooterbtn").show();
+                            break;
+                        }
+                    }
+                })
+            })
             $("#settingsLoading").modal({
                 keyboard: false,
                 backdrop: "static"
@@ -310,6 +397,16 @@
                     }
                     jQuery.post('/api/getAllUsers', d => {
                         const userInfo = d.find(i => i.id == user.uid || user.id);
+                        if (userInfo.linkedFTAcc) {
+                            $("#linkFTAccBtn").removeClass("btn-green");
+                            $("#linkFTAccBtn").addClass("disabled");
+                            $("#linkFTAccBtn").click(() => location.href = 'javascript:;');
+                            $("#linkFTAccBtn").text("Already Linked");
+                        } else if (userInfo.isFTAcc && !userInfo.linkedFTAcc) $("#linkFTAcc").hide();
+                        else $("#linkFTAccBtn").click(() => $("#FTAccLinkage").modal({
+                            keyboard: false,
+                            backdrop: "static"
+                        }));
                         $("#ttsapitype").find(`option[value='${userInfo.settings.api.ttstype.value}']`).prop("selected", true);
                         $("#customcsstext").val(userInfo.settings.api.customcss);
                         jQuery("#displayName").val(user.displayName || user.name);
@@ -327,7 +424,7 @@
                 jQuery.post("/api/updateTTSApi", {
                     newapi: api,
                     newapiserver: apiserver,
-                    uid: userData.uid
+                    uid: userData.id || userData.uid
                 }, d => {
                     $("#settingsUpdating").modal('hide');
                     if (d.success) displayFeedback(0 + "Success!");
@@ -341,7 +438,7 @@
                 });
                 jQuery.post("/api/updateCustomCSS", {
                     newcss: jQuery("#customcsstext").val(),
-                    uid: userData.uid
+                    uid: userData.uid || userData.id
                 }, d => {
                     $("#settingsUpdating").modal('hide');
                     if (d.success) displayFeedback(0 + "Success!");
