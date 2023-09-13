@@ -320,20 +320,23 @@
         <script>
             let processing = false;
             function deleteAccount() {
-                $("#deleteAccount").modal('hide');
-                $("#accountDeletion").modal({
-                    keyboard: false,
-                    backdrop: "static"
-                });
-                jQuery.post("/api/deleteAccount", {
-                    uid: userData.uid || userData.id
-                }, d => {
-                    if (d.success) userLogout();
-                    else {
-                        $("#accountDeletion").modal('hide');
-                        displayFeedback(1 + d.error);
-                    }
-                })
+                const yesorno = confirm("Are you really sure that you want to delete your account? there is no turning back if you press that ok button!");
+                if (yesorno) {
+                    $("#deleteAccount").modal('hide');
+                    $("#accountDeletion").modal({
+                        keyboard: false,
+                        backdrop: "static"
+                    });
+                    jQuery.post("/api/deleteAccount", {
+                        uid: userData.uid || userData.id
+                    }, d => {
+                        if (d.success) userLogout();
+                        else {
+                            $("#accountDeletion").modal('hide');
+                            displayFeedback(1 + d.error);
+                        }
+                    })
+                }
             }
             $("#ftacclinkageform").submit(() => {
                 if (processing) return;
