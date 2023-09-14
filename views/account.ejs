@@ -278,7 +278,7 @@
                                     <div class="divider"></div>
                                     <div id="linkFTAcc">
                                         <div class="form-group">
-                                            <label class="d-blockr">Link FlashThemes Account</label>
+                                            <label class="d-block">Link FlashThemes Account</label>
                                             <p class="text-muted font-size-sm">By linking your flashthemes account, you will have two ways to sign in to your account. this method is recomeneded for anyone who wants to sign in using their flashthemes account because sometimes signing in with a flashthemes account without it linked can take a while.</p>
                                         </div>
                                         <a class="btn btn-green" id="linkFTAccBtn">Link FlashThemes Account</a>
@@ -319,20 +319,23 @@
         <script>
             let processing = false;
             function deleteAccount() {
-                $("#deleteAccount").modal('hide');
-                $("#accountDeletion").modal({
-                    keyboard: false,
-                    backdrop: "static"
-                });
-                jQuery.post("/api/deleteAccount", {
-                    uid: userData.uid || userData.id
-                }, d => {
-                    if (d.success) userLogout();
-                    else {
-                        $("#accountDeletion").modal('hide');
-                        displayFeedback(1 + d.error);
-                    }
-                })
+                const yesorno = confirm("Are you really sure that you want to delete your account? there is no turning back if you press that ok button!");
+                if (yesorno) {
+                    $("#deleteAccount").modal('hide');
+                    $("#accountDeletion").modal({
+                        keyboard: false,
+                        backdrop: "static"
+                    });
+                    jQuery.post("/api/deleteAccount", {
+                        uid: userData.uid || userData.id
+                    }, d => {
+                        if (d.success) userLogout();
+                        else {
+                            $("#accountDeletion").modal('hide');
+                            displayFeedback(1 + d.error);
+                        }
+                    })
+                }
             }
             $("#ftacclinkageform").submit(() => {
                 if (processing) return;
