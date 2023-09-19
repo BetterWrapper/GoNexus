@@ -18,3 +18,9 @@ also uhh the codename is skull emoji
 * JonsCartoonShow
 * MKAnimates
 * Xill/Music
+
+## Checklist
+Add free FlashThemes movie exporting ![red x](https://www.bing.com/th?id=OIP.8OAMREDN0OjXjsR8HV5MWQHaHk&w=144&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2)
+Add FlashThemes movie zip downloading ![red x](https://www.bing.com/th?id=OIP.8OAMREDN0OjXjsR8HV5MWQHaHk&w=144&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2)
+Fix voice clips in the QVM ![red x](https://www.bing.com/th?id=OIP.8OAMREDN0OjXjsR8HV5MWQHaHk&w=144&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2)
+Find a new online site host for GoNexus ![red x](https://www.bing.com/th?id=OIP.8OAMREDN0OjXjsR8HV5MWQHaHk&w=144&h=150&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2)
