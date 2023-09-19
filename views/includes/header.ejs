@@ -48,6 +48,12 @@
                         </ul>
                     </li>
                 <% } %>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Video Converters<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a data-toggle="modal" data-target="#flashThemesConverterOverlay">FlashThemes To MP3 Converter</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
@@ -89,6 +95,35 @@
         </div>
     </form>
 </div>
+<div id="flashThemesConverterOverlay" class="modal">
+    <form class="modal-dialog modal-lg converterForm" action="javascript:;" data-for="flashthemes">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">FlashThemes To MP3 Converter</h3>
+            </div>
+            <center class="modal-body" id="converter_ready">
+                <p>To get started, please enter your FlashThemes video URL before selecting any converter options.</p><br>
+                <label for="converter_url">FlashThemes Video URL <a href="/public_faq?action=getExplination&open=faq18#troubleshooting">Where do i get this?</a></label><br>
+                <input type="text" id="converter_url"/><br>
+                <label for="converter_videotype">Video Type</a></label><br>
+                <select name="videoType" id="converter_videotype">
+                    <option value="mp3">MP3</option>
+                    <option value="mp4">MP4</option>
+                    <option value="zip">ZIP</option>
+                    <option value="xml">XML</option>
+                </select><br>
+                <input type="submit" class="btn btn-orange" id="submitbtn" value="Begin Video Convert"/>
+            </center>
+            <center class="modal-body" id="converting_url" style="display: none">
+                This Video is converting right now. please wait for a few minutes.
+            </center>
+        </div>
+    </form>
+</div>
 <div id="stuff-downloading-overlay" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -100,6 +135,14 @@
     </div>
 </div>
 <script>
+    $("..converterForm").submit(() => {
+        if (apiKeySubmiting) return;
+        apiKeySubmiting = true;
+        $(".close").hide();
+        $("#converter_ready").hide();
+        $("#converting_url").show();
+        jQuery.post(`/api/beginVideoConvertFromURL?for=${$(".converterForm").data("for")}`, $(".converterForm").serialize(), d => {});
+    });
     let apiKeySubmiting = false;
     jQuery("#apiKeyForm").submit(() => {
         if (apiKeySubmiting) return;
