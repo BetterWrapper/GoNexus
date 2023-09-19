@@ -24,7 +24,8 @@ also the codename is BetterWrapper.
 
 ## To Do
 * Add free FlashThemes movie exporting (Not Done)<br>
-* Add FlashThemes movie zip downloading (Not Done)<br>
-* Fix voice clips in the QVM (Not Done)<br>
+* Add FlashThemes movie zip and xml downloading (Not Done)<br>
+* Fix voice clip issues in the QVM (Not Done)<br>
 * Find a new online site host for GoNexus (Not Done)<br>
 * Fix bugs with the FAQ page (Not Done)<br>
+* Add 2 new functional scenes in Slices Of Daily Life (Not Done)<br>
