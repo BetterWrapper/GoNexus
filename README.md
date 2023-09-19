@@ -20,7 +20,7 @@ also uhh the codename is skull emoji
 * Xill/Music
 
 ## To Do
-Add free FlashThemes movie exporting (Not Done)
-Add FlashThemes movie zip downloading (Not Done)
-Fix voice clips in the QVM (Not Done)
-Find a new online site host for GoNexus (Not Done)
+Add free FlashThemes movie exporting (Not Done)<br>
+Add FlashThemes movie zip downloading (Not Done)<br>
+Fix voice clips in the QVM (Not Done)<br>
+Find a new online site host for GoNexus (Not Done)<br>
