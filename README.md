@@ -24,3 +24,4 @@ also uhh the codename is skull emoji
 * Add FlashThemes movie zip downloading (Not Done)<br>
 * Fix voice clips in the QVM (Not Done)<br>
 * Find a new online site host for GoNexus (Not Done)<br>
+* Fix bugs with the FAQ page (Not Done)<br>
