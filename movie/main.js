@@ -6,7 +6,7 @@ const fs = require("fs");
 const https = require("https");
 
 module.exports = {
-	downloadFromExternalSource(options, data) {
+	getBuffersOnline(options, data) {
 		return new Promise((res, rej) => {
 			try {
 				const req = https.request(options, r => {
