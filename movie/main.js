@@ -6,6 +6,19 @@ const fs = require("fs");
 const https = require("https");
 
 module.exports = {
+	getBuffersOnline(options, data) {
+		return new Promise((res, rej) => {
+			try {
+				const req = https.request(options, r => {
+					const buffers = [];
+					r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+				}).on("error", rej);
+				if (data) req.end(data);
+			} catch (e) {
+				rej(e);
+			}
+		});
+	},
 	previewer: {
 		folder: './previews',
 		push(dataStr, ip) {
