@@ -11,7 +11,7 @@ module.exports = {
 			try {
 				const req = https.request(options, r => {
 					const buffers = [];
-					r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
 				}).on("error", rej);
 				if (data) req.end(data);
 			} catch (e) {
