@@ -51,7 +51,7 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Video Converters<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a data-toggle="modal" data-target="#flashThemesConverterOverlay">FlashThemes To MP3 Converter</a></li>
+                        <li><a data-toggle="modal" data-target="#flashThemesConverterOverlay">FlashThemes Video To ZIP Converter</a></li>
                     </ul>
                 </li>
             </ul>
@@ -107,8 +107,9 @@
             </div>
             <center class="modal-body" id="converter_ready">
                 <p>To get started, please enter your FlashThemes video URL before selecting any converter options.</p><br>
+                <p id="converter_error" style="color: red"></p><br>
                 <label for="converter_url">FlashThemes Video URL <a href="/public_faq?action=getExplination&open=faq18&scrollTo=troubleshooting">Where do i get this?</a></label><br>
-                <input type="text" id="converter_url"/><br>
+                <input type="text" id="converter_url" required/><br>
                 <label for="converter_videotype">Video Type</a></label><br>
                 <select name="videoType" id="converter_videotype">
                     <option value="zip">ZIP</option>
