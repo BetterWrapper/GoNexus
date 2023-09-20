@@ -23,8 +23,7 @@ also the codename is BetterWrapper.
 * Xill/Music
 
 ## To Do
-* Add the FlashThemes video converter (15% Done)<br>
-* Add the 2011 and 2015 videomakers and make it work withn the FlashThemes API (Not Done)<br>
+* Add the 2011, early 2012, and 2015 videomakers (Not Done)
 * Fix voice clip issues in the QVM (Not Done)<br>
 * Find a new online site host for GoNexus (Not Done)<br>
 * Fix bugs with the FAQ page (Not Done)<br>
