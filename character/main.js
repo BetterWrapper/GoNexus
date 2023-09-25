@@ -2,7 +2,6 @@ const cachéFolder = process.env.CACHÉ_FOLDER;
 const xNumWidth = process.env.XML_NUM_WIDTH;
 const baseUrl = process.env.CHAR_BASE_URL;
 const fUtil = require("../misc/file");
-const util = require("../misc/util");
 const get = require("../misc/get");
 const fw = process.env.FILE_WIDTH;
 const fs = require("fs");
@@ -89,8 +88,7 @@ module.exports = {
 				case "C":
 					fs.readFile(getCharPath(id), (e, b) => {
 						if (e) {
-							var fXml = util.xmlFail();
-							rej(Buffer.from(fXml));
+							rej(`Error Loading Character: ${e}`);
 						} else {
 							res(b);
 						}
@@ -111,7 +109,7 @@ module.exports = {
 						get(url).then((b) => {
 							var line = b.toString("utf8").split("\n").find((v) => v.substr(0, xNumWidth) == lnNum);
 							if (line) res(Buffer.from(line.substr(xNumWidth)));
-							else rej(Buffer.from(util.xmlFail()));
+							else rej("Character does not exist");
 						});
 					}
 				}

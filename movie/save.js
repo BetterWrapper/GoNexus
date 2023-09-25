@@ -17,7 +17,7 @@ module.exports = function (req, res, url) {
 			if (trigAutosave && (!data.movieId || !data.thumbnail_large)) thumb = await movie.genImage();
 			else thumb = Buffer.from(data.thumbnail_large, "base64");
 			const body = Buffer.from(data.body_zip, "base64");
-			res.end(0 + await movie.save(body, thumb, data));
+			res.end(0 + await movie.save(body, thumb, data, false, req));
 		} catch (e) {
 			console.log(e);
 			res.end(1 + `<error><code>ERR_ASSET_404</code><message>${e}</message><text></text></error>`);

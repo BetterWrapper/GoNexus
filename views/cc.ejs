@@ -64,8 +64,8 @@
                 function loadCC(userInfo) {
                     jQuery.getJSON("/api/convertUrlQuery2JSON?<%= flashvarsString %>", (d) => {
                         const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
-                        flashvars.userId = userInfo.uid;
-                        flashvars.username = userInfo.displayName;
+                        flashvars.userId = userInfo.uid || userInfo.id;
+                        flashvars.username = userInfo.displayName || userInfo.name;
                         flashvars.uemail = userInfo.email;
                         jQuery('#<%= attrs.id %>_container').flash({
                             id: "<%= attrs.id %>",

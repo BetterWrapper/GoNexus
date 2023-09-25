@@ -77,14 +77,16 @@ module.exports = function (req, res, url) {
 			} else return;
 		}
 		case "POST": {
-			loadPost(req, res)
-				.then(([data]) => listAssets(data, makeZip))
-				.then((buff) => {
+			loadPost(req, res).then(async ([data]) => {
+				if (data.movieId && data.movieId.startsWith("ft-") && data.type == "sound") res.end(1 + '<error><code>Because you are using a video that has been imported from FlashThemes, you cannot use your sounds in this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.</code></error>');
+				else {
+					const buff = await listAssets(data, makeZip);
 					const type = makeZip ? "application/zip" : "text/xml";
 					res.setHeader("Content-Type", type);
 					if (makeZip) res.write(base);
 					res.end(buff);
-				});
+				}
+			});
 			return true;
 		}
 		default:

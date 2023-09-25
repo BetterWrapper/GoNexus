@@ -27,7 +27,12 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.pathname != "/ajax/saveUserProp") return;
 	new formidable.IncomingForm().parse(req, async (e, f, files) => {
 		try {
-			if (!f.subtype) {
+			if (req.headers.referer.includes("?movieId=ft-")) {
+				return res.end(JSON.stringify({
+					suc: false,
+					msg: `Because you are using a video that has been imported from FlashThemes, you cannot import assets to this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.`
+				}));
+			} else if (!f.subtype) {
 				return res.end(JSON.stringify({
 					suc: false,
 					msg: `Missing one or more fields`

@@ -89,7 +89,10 @@ module.exports = function (req, res, url) {
 		} case "/public_index": {
 			filename = "index";
 			break;
-		} case "/public_faq": {
+		} case "/dashboard": {
+			filename = "dashboard";
+			break;
+		}  case "/public_faq": {
 			filename = "faq";
 			break;
 		} case "/account": {
@@ -155,6 +158,14 @@ module.exports = function (req, res, url) {
 			break;
 		} case "/go_full": {
 			let presave = query.movieId && query.movieId.startsWith("m") ? query.movieId: `m-${fUtil.getNextFileId("movie-", ".xml")}`;
+			const path = query.movieId ? query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", query.movieId.substr(query.movieId.lastIndexOf(
+				"-"
+			) + 1)) : query.movieId.startsWith("ft-") ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "" : "";
+			if (query.movieId && (url.query.movieId.startsWith("m-") || url.query.movieId.startsWith("ft-")) && !existsSync(path)) {
+				res.statusCode = 302;
+				res.setHeader("Location", "/");
+				return res.end();
+			}
 			title = "Video Editor";
 			filename = "studio";
 			attrs = {
@@ -213,12 +224,14 @@ module.exports = function (req, res, url) {
 			};
 			break;
 		} case "/player": {
-			const path = fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(url.query.movieId.lastIndexOf("-") + 1));
-			if (url.query.movieId.startsWith("m-") && existsSync(path)) filename = "player";
+			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(url.query.movieId.lastIndexOf("-") + 1)) : url.query.movieId.startsWith(
+				"ft-"
+			) ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "";
+			if ((url.query.movieId.startsWith("m-") || url.query.movieId.startsWith("ft-")) && existsSync(path)) filename = "player";
 			else {
 				res.statusCode = 302;
 				res.setHeader("Location", "/");
-				res.end();
+				return res.end();
 			}
 			title = "Player";
 			params = {

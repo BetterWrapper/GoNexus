@@ -8,7 +8,7 @@ const auth = firebase.auth();
 let signupComplete = false;
 let loginComplete = false;
 let displayName = null;
-let userData;
+let userData = '';
 auth.onAuthStateChanged(user => {
     if (user) {
         if (displayName != null) auth.currentUser.updateProfile({displayName}).catch(e => {
@@ -36,6 +36,7 @@ auth.onAuthStateChanged(user => {
                 });
             }
             switch (window.location.pathname) {
+                case "/dashboard":
                 case "/videos":
                 case "/forgotpassword":
                 case "/create":
@@ -87,6 +88,7 @@ function logout(t) {
                     showElement('signup-button');
                     showElement('login-button');
                     switch (window.location.pathname) {
+                        case "/dashboard":
                         case "/videos":
                         case "/account":
                         case "/cc_browser": 
@@ -114,6 +116,7 @@ function logout(t) {
             showElement('signup-button');
             showElement('login-button');
             switch (window.location.pathname) {
+                case "/dashboard":
                 case "/videos":
                 case "/account":
                 case "/cc_browser": 
@@ -132,6 +135,12 @@ function logout(t) {
     });
 }
 function loggedIn(user) {
+    jQuery.post(`/api/getUserSWFFiles?userId=${user.uid || user.id}`, files => {
+        for (const file of files) {
+            $("#FlashGamePlayer_swfFilesDropdown").show();
+            $("#FlashGamePlayer_swfFilesAll").append(`<li><a href="javascript:FlashGameSetup('${file.url}');">${file.id}</a></li>`);
+        }
+    })
     userData = user;
     jQuery.post("/api/check4SavedUserInfo", {
         displayName: user.displayName || user.name,
@@ -155,8 +164,17 @@ function loggedIn(user) {
             loadSettings(user);
             break;
         }
-        case "/":
-        case "/movies": {
+        case "/dashboard": {
+            jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
+                json = meta;
+                $("#loadMore").text('load more');
+                $("#loadFTUserFeeds").text('load more');
+                $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
+                loadLatestVideos();
+                loadFTUserFeeds();
+            })
+            break;
+        } case "/movies": {
             jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
                 document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
                 if (meta.length < 1) {
@@ -168,8 +186,10 @@ function loggedIn(user) {
                     const date = tbl.date.split("T")[0];
                     const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
                     jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${
+                        tbl.desc
+                    }</div><div>${
                         tbl.durationString
-                    }</div></div></td><td>${usDate}</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${
+                    }</div></td><td>${usDate}</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${
                         tbl.id
                     }')"></a><a href="javascript:movieRedirect('/go_full?movieId=${tbl.id}', '${tbl.id}')"></a><a href="javascript:movieRedirect('/movies/${
                         tbl.id
@@ -300,7 +320,7 @@ function loggedIn(user) {
         case "/forgotpassword":
         case "/login":
         case "/public_signup": {
-            location.href = '/movies';
+            location.href = '/dashboard';
             break;
         }
         case "/cc_browser": 

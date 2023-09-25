@@ -4,18 +4,45 @@ const nodezip = require("node-zip");
 const parse = require("./parse");
 const fs = require("fs");
 const https = require("https");
+const request = require("request");
 
 module.exports = {
 	getBuffersOnline(options, data) {
 		return new Promise((res, rej) => {
 			try {
-				const req = https.request(options, r => {
-					const buffers = [];
-					r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+				if (options.method == "POST") {
+					const req = https.request(options, r => {
+						try {
+							const buffers = [];
+							r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+						} catch (e) {
+							rej(e);
+						}
+					}).on("error", rej);
+					if (data) req.end(data);
+				} else if (!options.method) https.get(options, r => {
+					try {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+					} catch (e) {
+						rej(e);
+					}
 				}).on("error", rej);
-				if (data) req.end(data);
 			} catch (e) {
 				rej(e);
+			}
+		});
+	},
+	getBuffersOnlineViaRequestModule(options, data, loadStream = false) {
+		return new Promise((res, rej) => {
+			try {
+				request[options.method](options.url, data, (e, r, b) => {
+					if (e) rej(e);
+					else if (!loadStream) res(b);
+					else res(r);
+				});
+			} catch (e) {
+				console.log(e);
 			}
 		});
 	},
@@ -459,31 +486,67 @@ module.exports = {
 	 * @param {string} oldId
 	 * @returns {Promise<string>}
 	 */
-	save(movieZip, thumb, data, isStarter = false) {
+	save(movieZip, thumb, data, isStarter = false, req) {
 		return new Promise(async (res, rej) => {
 			// Saves the thumbnail of the respective video.
-			const mId = data.movieId || !isStarter ? data.presaveId : `s-${fUtil.getNextFileId("starter-", ".xml")}`;
+			let mId = data.movieId && (data.movieId.startsWith("s-") || data.movieId.startsWith("ft-")) ? data.movieId : !isStarter ? data.presaveId : `s-${
+				fUtil.getNextFileId("starter-", ".xml")
+			}`;
 			if (thumb) {
 				const n = Number.parseInt(mId.substr(2));
 				let thumbFile;
 				if (mId.startsWith("m-")) thumbFile = fUtil.getFileIndex("thumb-", ".png", n);
 				else if (mId.startsWith("s-")) thumbFile = fUtil.getFileIndex("starter-", ".png", n);
-				fs.writeFileSync(thumbFile, thumb);
+				if (thumbFile) fs.writeFileSync(thumbFile, thumb);
 			}
 			var i = mId.indexOf("-");
 			var prefix = mId.substr(0, i);
 			var suffix = mId.substr(i + 1);
 			switch (prefix) {
-				case "m": {
+				case "ft": {
+					const oldInfo = JSON.parse(fs.readFileSync("./_ASSETS/users.json")).users.find(i => i.id == data.userId).movies.find(i => i.oldmId == data.movieId);
+					if (!oldInfo) {
+						mId = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
+					}
+					parse.unpackMovie(movieZip, data.movieId, data.userId).then((buffer) => {
+						if (typeof buffer == "object" && buffer.error) return rej(buffer.error);
+						fs.writeFileSync(fUtil.getFileIndex("thumb-", ".png", mId.split("-")[1]), thumb);
+						const writeStream = fs.createWriteStream(fUtil.getFileIndex("movie-", ".xml", mId.split("-")[1]));
+						writeStream.write(buffer, () => {
+							writeStream.close();
+							this.meta((oldInfo ? oldInfo.id : "") || mId, false, data.movieId).then(m => {
+								const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
+								const meta = json.users.find(i => i.id == data.userId);
+								const mMeta = meta.movies.find(i => i.id == m.id);
+								const oldMovieInfoIndex = meta.movies.findIndex(i => i.id == data.movieId);
+								meta.movies.splice(oldMovieInfoIndex, 1);
+								if (!mMeta) meta.movies.unshift(m);
+								else {
+									for (const stuff in m) {
+										if (m[stuff] != mMeta[stuff]) {
+											mMeta[stuff] = m[stuff];
+										}
+									}
+								}
+								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+								if (fs.existsSync(`./ftContent/${data.movieId.split("ft-")[1]}.zip`)) {
+									fs.unlinkSync(`./ftContent/${data.movieId.split("ft-")[1]}.zip`);
+									res(m.id);
+								} else rej(`Your movie has been saved, but the File: ${data.movieId.split("ft-")[1]}.zip does not exist in the ftContent folder within the GoNexus LVM Project meaning that the movie id: ${data.movieId.split("ft-")[1]} will be inaccessable until you import a FlashThemes video simular to the movie id: ${data.movieId.split("ft-")[1]} using the FlashThemes Video Converter tool. Please go to ${req.headers.origin}/movie/${m.id} in another browser window.`);
+							}).catch(rej);
+						});
+					}).catch(rej);
+					break;
+				} case "m": {
 					if (fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix))) fs.unlinkSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix));
 					var path;
 					if (data.is_triggered_by_autosave && fs.existsSync(fUtil.getFileIndex("movie-", ".xml", suffix))) path = fUtil.getFileIndex("movie-autosaved-", ".xml", suffix);
 					else path = fUtil.getFileIndex("movie-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
-					parse.unpackMovie(movieZip).then((buffer) => {
+					parse.unpackMovie(movieZip, mId, data.userId).then((buffer) => {
 						writeStream.write(buffer, () => {
 							writeStream.close();
-							this.meta(mId).then(m => {
+							this.meta(mId, data.is_triggered_by_autosave == '1').then(m => {
 								const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 								const meta = json.users.find(i => i.id == data.userId);
 								const mMeta = meta.movies.find(i => i.id == m.id);
@@ -504,7 +567,7 @@ module.exports = {
 				} case "s": {
 					var path = fUtil.getFileIndex("starter-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
-					parse.unpackMovie(movieZip).then((buffer) => {
+					parse.unpackMovie(movieZip, mId, data.userId).then((buffer) => {
 						writeStream.write(buffer, () => {
 							writeStream.close();
 							this.meta(mId).then(m => {
@@ -546,6 +609,9 @@ module.exports = {
 						const buffer = fs.readFileSync(filePath);
 						const pack = await parse.packMovie(buffer, data.movieOwnerId || query.userId, packThumb, query.movieId);
 						res(pack);
+						break;
+					} case "ft": {
+						res(fs.readFileSync(`./ftContent/${suffix}.zip`));
 						break;
 					}
 				}
@@ -607,7 +673,14 @@ module.exports = {
 				let fn;
 				if (movieId.startsWith("m-")) fn = fUtil.getFileIndex("thumb-", ".png", n);
 				else if (movieId.startsWith("s-")) fn = fUtil.getFileIndex("starter-", ".png", n);
-				res(fs.readFileSync(fn));
+				if (!movieId.startsWith("ft-")) res(fs.readFileSync(fn)); 
+				else res(await this.getBuffersOnline({
+					hostname: "flashthemes.net",
+					path: `/movie_thumbs/thumb-${movieId.split("ft-")[1]}.png`,
+					headers: { 
+						"Content-type": "image/png"
+					}
+				}));
 			} catch (e) {
 				rej(e);
 			}
@@ -623,13 +696,15 @@ module.exports = {
 		}
 		return array;
 	},
-	meta(movieId) {
+	meta(movieId, isAutosave = false, oldmId) {
 		return new Promise(async (res, rej) => {
 			try {
 				let fn;
 				const n = Number.parseInt(movieId.substr(2));
-				if (movieId.startsWith("m-")) fn = fUtil.getFileIndex("movie-", ".xml", n);
-				else if (movieId.startsWith("s-")) fn = fUtil.getFileIndex("starter-", ".xml", n);
+				if (movieId.startsWith("m-")) {
+					if (!isAutosave) fn = fUtil.getFileIndex("movie-", ".xml", n);
+					else fn = fUtil.getFileIndex("movie-autosaved-", ".xml", n);
+				} else if (movieId.startsWith("s-")) fn = fUtil.getFileIndex("starter-", ".xml", n);
 				const buffer = fs.readFileSync(fn);
 				const begTitle = buffer.indexOf("<title>") + 16;
 				const endTitle = buffer.indexOf("]]></title>");
@@ -673,7 +748,8 @@ module.exports = {
 					id: movieId,
 					enc_asset_id: movieId,
 					type: "movie",
-					file: fn.substr(fn.lastIndexOf("/") + 1)
+					file: fn.substr(fn.lastIndexOf("/") + 1),
+					oldmId
 				});
 			} catch (e) {
 				rej(e);

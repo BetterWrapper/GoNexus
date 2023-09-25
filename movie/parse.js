@@ -1,6 +1,54 @@
 const fs = require("fs");
 const nodezip = require("node-zip");
-const path = require("path");
+const mp3Duration = require("mp3-duration");
+const https = require("https");
+const request = require("request");
+function getBuffersOnline(options, data) {
+	return new Promise((res, rej) => {
+		try {
+			if (options.method == "POST") {
+				const req = https.request(options, r => {
+					try {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+					} catch (e) {
+						rej(e);
+					}
+				}).on("error", rej);
+				if (data) req.end(data);
+			} else if (!options.method) https.get(options, r => {
+				try {
+					const buffers = [];
+					r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+				} catch (e) {
+					rej(e);
+				}
+			}).on("error", rej);
+		} catch (e) {
+			rej(e);
+		}
+	});
+}
+function getBuffersOnlineViaRequestModule(options, data, loadStream = false) {
+	return new Promise((res, rej) => {
+		try {
+			request[options.method](options.url, data, (e, r, b) => {
+				if (e) rej(e);
+				else if (!loadStream) res(b);
+				else res(r);
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	});
+}
+function getMP3Duration(buffer) {
+	return new Promise((res, rej) => {
+		mp3Duration(buffer, (e, d) => {
+			e ? rej(e) : res(d * 1e3);
+		});
+	})
+}
 const xmldoc = require("xmldoc");
 const char = require("../character/main");
 const fUtil = require("../misc/file");
@@ -150,9 +198,9 @@ module.exports = {
 	 * @summary Reads an XML buffer, decodes the elements, and returns a PK stream the LVM can parse.
 	 * @param {Buffer} xmlBuffer
 	 * @param {string} uId
-	 * @param {Buffer} packThumb
+	 * @param {boolean} packThumb
 	 * @param {string} mId
-	 * @param {string} ownAssets
+	 * @param {Array} ownAssets
 	 * @returns {Buffer}
 	 */
 	async packMovie(xmlBuffer, uId, packThumb, mId, ownAssets) {
@@ -345,23 +393,137 @@ module.exports = {
 
 		fUtil.addToZip(zip, 'themelist.xml', Buffer.from(`${header}<themes>${themeKs.map(t => `<theme>${t}</theme>`).join('')}</themes>`));
 		fUtil.addToZip(zip, 'ugc.xml', Buffer.from(ugc + `</theme>`));
-		if (packThumb != false) {
+		if (packThumb) {
 			if (mId.startsWith("m-")) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("thumb-", ".png", mId.substr(2))));
 			else if (mId.startsWith("s-")) fUtil.addToZip(zip, 'thumbnail.png', fs.readFileSync(fUtil.getFileIndex("starter-", ".png", mId.substr(2))));
 		}
 		return await zip.zip();
 	},
 	/**
-	 * @summary Given a PK stream from the LVM, returns an XML buffer to save locally.
-	 * @param {nodezip.ZipFile} zipFile
-	 * @param {Buffer} thumb
-	 * @param {{[aId:string]:Buffer}} assetBuffers
-	 * @returns {Promise<Buffer>}
+	 * @summary Unpacks a movie using a PK stream the lvm generated and save the movie locally
+	 * @param {nodezip.ZipFile} body
+	 * @param {string} mId
+	 * @param {string} uId
+	 * @returns {Buffer}
 	 */
-	async unpackMovie(body) {
+	async unpackMovie(body, mId, uId) {
 		const zip = nodezip.unzip(body);
 		const readStream = zip["movie.xml"].toReadStream();
 		const buffer = await stream2Buffer(readStream);
+		if (buffer.length == 0) throw null;
+		const film = new xmldoc.XmlDocument(buffer);
+		const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+		const userInfo = json.users.find(i => i.id == uId);
+		const onlineMoviePrefixes = {
+			ft: true
+		}
+		if (onlineMoviePrefixes[mId.substr(0, mId.lastIndexOf("-"))]) {
+			for (const eI of film.children) switch (eI.name) {
+				case "sound": {
+					for (const e2I of eI.children.filter(i => i.name == "sfile")) {
+						if (e2I.val.startsWith("ugc.") && !fs.existsSync(`./_ASSETS/${e2I.val.split("ugc.")[1]}`)) {
+							console.log(`Saving Sound: ${e2I.val.split("ugc.")[1]}.`)
+							let buffer;
+							if (mId.startsWith("ft-")) buffer = await getBuffersOnline({
+								hostname: "flashthemes.net",
+								path: `/goapi/getAsset/${e2I.val.split("ugc.")[1]}`,
+								headers: {
+									"Content-Type": "audio/mp3"
+								}
+							});
+							fs.writeFileSync(`./_ASSETS/${e2I.val.split("ugc.")[1]}`, buffer);
+							userInfo.assets.unshift({
+								id: e2I.val.split("ugc.")[1],
+								enc_asset_id: e2I.val.split("ugc.")[1].split(".")[0],
+								type: "sound",
+								subtype: "voiceover",
+								title: e2I.val.split("ugc.")[1],
+								published: 0,
+								tags: "",
+								duration: await getMP3Duration(buffer),
+								downloadtype: "progressive",
+								file: e2I.val.split("ugc.")[1]
+							})
+							console.log(`Saved Sound: ${e2I.val.split("ugc.")[1]} successfully!`)
+						}
+					}
+					break;
+				} case "scene": {
+					for (const e2I of eI.children) {
+						switch (e2I.name) {
+							case "bg":
+							case "prop": {
+								for (const e3I of e2I.children.filter(i => i.name == "file")) {
+									if (e3I.val.startsWith("ugc.") && !fs.existsSync(`./_ASSETS/${e3I.val.split("ugc.")[1]}`)) {
+										console.log(`Saving ${e2I.name}: ${e3I.val.split("ugc.")[1]}.`)
+										let buffer;
+										if (mId.startsWith("ft-")) buffer = await getBuffersOnline({
+											hostname: "flashthemes.net",
+											path: `/goapi/getAsset/${e3I.val.split("ugc.")[1]}`,
+											headers: {
+												"Content-Type": "audio/mp3"
+											}
+										});
+										fs.writeFileSync(`./_ASSETS/${e3I.val.split("ugc.")[1]}`, buffer);
+										userInfo.assets.unshift({
+											id: e3I.val.split("ugc.")[1],
+											enc_asset_id: e3I.val.split("ugc.")[1].split(".")[0],
+											type: e2I.name,
+											subtype: 0,
+											title: e3I.val.split("ugc.")[1],
+											published: 0,
+											tags: "",
+											file: e3I.val.split("ugc.")[1]
+										})
+										console.log(`Saved ${e2I.name}: ${e3I.val.split("ugc.")[1]} successfully!`)
+									}
+								}
+								break;
+							} case "char": {
+								for (const e3I of e2I.children.filter(i => i.name == "action")) {
+									const charId = e3I.val.split("ugc.")[1].split(".")[0]
+									if (e3I.val.startsWith("ugc.c-")) {
+										if (!fs.existsSync(fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]))) {
+											console.log(`Saving Character: ${charId}.`)
+											let buffer;
+											if (mId.startsWith("ft-")) buffer = (await getBuffersOnlineViaRequestModule({
+												method: "post",
+												url: "https://flashthemes.net/goapi/getCcCharCompositionXml/"
+											}, { 
+												formData: { 
+													assetId: charId
+												} 
+											})).split('0<?xml version="1.').join('<?xml version="1.');
+											fs.writeFileSync(fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]), buffer);
+											userInfo.assets.unshift({
+												id: charId,
+												enc_asset_id: charId,
+												type: "char",
+												subtype: 0,
+												title: "Untitled",
+												themeId: char.getTheme(Buffer.from(buffer)),
+												published: 0,
+												tags: "",
+												file: fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]).split("./_SAVED/")[1]
+											})
+											console.log(`Saved Character: ${charId} successfully!`)
+										}
+									} else if (e3I.val.startsWith("ugc.") && e3I.val.endsWith(".swf")) {
+										console.error("Your video cannot be saved correctly because it includes a char from the FlashThemes Community Library that GoNexus can't put onto the database. Please try converting a FlashThemes video that does not include chars from FlashThemes's Community Library.")
+										return {
+											error: "Your video cannot be saved correctly because it includes a char from the FlashThemes Community Library that GoNexus can't put onto the database. Please try converting a video that does not include chars from FlashThemes's Community Library."
+										}
+									}
+								}
+								break;
+							}
+						}
+					} 
+					break;
+				}
+			}
+		}
+		fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 		return buffer;
 	},
 	/**

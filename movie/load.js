@@ -87,7 +87,10 @@ module.exports = function (req, res, url) {
 							const prefix = data.mId.substr(0, data.mId.lastIndexOf("-"));
 							const suffix = data.mId.substr(data.mId.lastIndexOf("-") + 1);
 							switch (prefix) {
-								case "m": {
+								case "ft": {
+									filepaths.push(`./ftContent/${suffix}.zip`);
+									break;
+								} case "m": {
 									filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
 									filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
 									break;
@@ -127,7 +130,17 @@ module.exports = function (req, res, url) {
 							const prefix = data.mId.substr(0, data.mId.lastIndexOf("-"));
 							const suffix = data.mId.substr(data.mId.lastIndexOf("-") + 1);
 							switch (prefix) {
-								case "m": {
+								case "ft": {
+									fs.unlinkSync(`./ftContent/${suffix}.zip`);
+									const userInfo = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`));
+									const json = userInfo.users.find(i => i.id == data.uId);
+									const index = json.movies.findIndex(i => i.id == data.mId);
+									json.movies.splice(index, 1);
+									fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(userInfo, null, "\t"));
+									return res.end(JSON.stringify({
+										status: "ok"
+									}));
+								} case "m": {
 									filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
 									filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
 									break;
@@ -172,10 +185,10 @@ module.exports = function (req, res, url) {
 							error: "You need to be logged in to your account in order to save your video."
 						}));
 						let movieXml = fs.readFileSync(`./previews/template.xml`, 'utf8');
-						movieXml = movieXml.replace(`<film isWide="1">`, `<film copyable="0" published="0" pshare="0" isWide="1">`);
+						movieXml = movieXml.replace(`<film isWide="1">`, `<film copyable="0" published="1" pshare="0" isWide="1">`);
 						movieXml = movieXml.replace(`<title><![CDATA[]]></title>`, `<title><![CDATA[${data.title}]]></title>`);
 						movieXml = movieXml.replace(`<desc><![CDATA[]]></desc>`, `<desc><![CDATA[${data.desc}]]></desc>`);
-						movieXml = movieXml.replace(`<hiddenTag><![CDATA[]]></hiddenTag>`, `<hiddenTag><![CDATA[qvm]]></hiddenTag>`);
+						movieXml = movieXml.replace(`<tag><![CDATA[]]></tag>`, `<tag><![CDATA[qvm]]></tag>`);
 						const mId = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
 						const mIdParts = {
 							prefix: mId.substr(0, mId.lastIndexOf("-")),
@@ -818,7 +831,8 @@ module.exports = function (req, res, url) {
 						try {
 							if (url.query.movieId != "templatePreview") {
 								const b = await movie.loadZip(url.query, data);
-								res.end(Buffer.concat([base, b]));
+								if (!url.query.movieId.startsWith("ft-")) res.end(Buffer.concat([base, b]));
+								else res.end(b);
 							} else res.end(Buffer.concat([base, await parse.packMovie(fs.readFileSync("./previews/template.xml"), false, false, false, templateAssets)]));
 						} catch (e) {
 							console.log(e);

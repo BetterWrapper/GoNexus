@@ -1,5 +1,9 @@
 const loadPost = require("../misc/post_body");
 const asset = require("./main");
+const {
+	getBuffersOnline,
+	getBuffersOnlineViaRequestModule
+} = require("../movie/main");
 const http = require("http");
 
 /**
@@ -45,11 +49,19 @@ module.exports = function (req, res, url) {
 				}
 				case "/goapi/getAsset/":
 				case "/goapi/getAssetEx/": {
-					loadPost(req, res).then(([data]) => {
+					loadPost(req, res).then(async ([data]) => {
 						const aId = data.assetId || data.enc_asset_id;
 
 						try {
-							const b = asset.load(aId);
+							let b;
+							if (data.movieId && data.movieId.startsWith("ft-")) b = await getBuffersOnline({
+								hostname: "flashthemes.net",
+								path: `/goapi/getAsset/${aId}`,
+								headers: { 
+									"Content-type": "audio/mp3"
+								}
+							});
+							else b = asset.load(aId);
 							res.setHeader("Content-Length", b.length);
 							res.setHeader("Content-Type", "audio/mp3");
 							res.end(b);
@@ -69,6 +81,29 @@ module.exports = function (req, res, url) {
 							console.log(e);
 							res.end("1");
 						}
+					});
+					break;
+				} case "/goapi/getWaveform/": {
+					loadPost(req, res).then(async ([data]) => {
+						if (data.movieId) {
+							switch (data.movieId.substr(0, data.movieId.lastIndexOf("-"))) {
+								case "ft": return res.end(await getBuffersOnlineViaRequestModule({
+									method: "post",
+									url: "https://flashthemes.net/goapi/getWaveform/"
+								}, {
+									formData: {
+										wfid: data.wfid
+									}
+								}))
+							}
+						} else if (fs.existsSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`)) res.end(fs.readFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`));
+						else console.log(data);
+					});
+					break;
+				} case "/goapi/saveWaveform/": {
+					loadPost(req, res).then(([data]) => {
+						fs.writeFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`, data.waveform);
+						res.end("0");
 					});
 					break;
 				}

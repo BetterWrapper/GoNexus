@@ -174,7 +174,7 @@
                                 <div class="col-sm-4">
                                     <div class="video-thumbnail">
                                         <div class="video-thumbnail-explainer">
-                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">
+                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', \`${movieInfo.title}\`, '${userInfo.id}')">
                                                 <img src="/movie_thumbs/${movieInfo.id}.png"/>
                                                 <div class="video-cate video-cate-explainer clearfix">
                                                     <span>${movieInfo.title}</span>
@@ -186,12 +186,13 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="video-title">
-                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">${movieInfo.title}</a>
+                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', \`${movieInfo.title}\`, '${userInfo.id}')">${movieInfo.title}</a>
                                     </div>
                                     <div class="video-length">${movieInfo.durationString}</div>
                                     <div class="video-desc">${movieInfo.desc}</div>
                                 </div>
                             </div>`);
+                            if ((new URLSearchParams(window.location.search)).get("movieId") && (new URLSearchParams(window.location.search)).get("movieId") == movieInfo.id) loadVideoPlayer(movieInfo.id, movieInfo.title, userInfo.id);
                         }
                     }
                     $("#qvm-videos-count").text(qvmVidsCount);

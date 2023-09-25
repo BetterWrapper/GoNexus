@@ -62,9 +62,8 @@
         <div class="page-container">
             <!-- HEADER -->
             <%- include("includes/header.ejs", {
-                isVideoList: false
+                isVideoList: true
             }); %>
-            <%- include("includes/countdown.ejs") %>
             <!-- END OF HEADER -->
             <div id="video-page">
                 <div class="video-top">
@@ -229,20 +228,20 @@
                 function restrictSizeChange() {
                     $(".form-control, .gtm-ga-event").css("margin", "0px").css("width", "515px").css("height", "36px");
                 }
-                $(".form-control, .gtm-ga-event").val(`${window.location.origin}${window.location.pathname}?movieId=<%= params.flashvars.movieId %>`);
+                $(".form-control, .gtm-ga-event").val(`${window.location.origin}/videos?movieId=<%= params.flashvars.movieId %>`);
                 jQuery.post("/api/getAllUsers", (d) => setTimeout(() => {
                     for (const f of d) {
                         const meta = f.movies.find(i => i.id == '<%= params.flashvars.movieId %>');
                         const movieTitleElement = document.getElementsByClassName('movie-title');
                         for (const elem of movieTitleElement) elem.innerHTML = meta.title;
                         jQuery("#user-link").html(f.name);
-                        if (f.id == userData.uid) $(".owner-button").show();
+                        if (f.id == (userData.uid || userData.id)) $(".owner-button").show();
                         jQuery.getJSON("/api/convertUrlQuery2JSON?<%= flashvarsString%>", (d) => {
                             const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
                             flashvars.movieOwner = f.name;
                             flashvars.movieOwnerId = f.id;
-                            flashvars.userId = userData.uid;
-                            flashvars.username = userData.displayName;
+                            flashvars.userId = userData.uid || userData.id;
+                            flashvars.username = userData.displayName || userData.name;
                             flashvars.uemail = userData.email;
                             jQuery('#playerdiv').flash({
                                 id: "Player",
