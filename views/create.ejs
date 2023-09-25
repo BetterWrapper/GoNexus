@@ -44,6 +44,7 @@
                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
+                        <a class="btn btn-default" href="javascript:selectLVM('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
                     </div></div></div></div></div>`);
                     count++
                 }
