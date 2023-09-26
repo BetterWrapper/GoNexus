@@ -23,7 +23,7 @@ also the codename is BetterWrapper.
 * Xill/Music
 
 ## To Do
-* Add the 2011, early 2012, and 2015 videomakers (Not Done)
+* Add the 2011, early 2012, and 2015 videomakers (15% Done)
 * Fix voice clip issues in the QVM (Not Done)<br>
 * Find a new online site host for GoNexus (Not Done)<br>
 * Fix bugs with the FAQ page (Not Done)<br>
