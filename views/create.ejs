@@ -1,13 +1,13 @@
+<!DOCTYPE html>
 <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Video Maker - GoNexus</title>
+        <link rel="dns-prefetch" href="/">
+        <title>Create - GoNexus</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="GoNexus is an LVM project that is attempting to fix all of the errors that Wrapper: Offline has right now.">
-        <meta property="og:site_name" content="GoNexus">
-        <link rel="stylesheet" href="/ui/css/common_combined.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
-        <link rel="stylesheet" href="/ui/css/videomaker.css">
+        <link href="/ui/css/common_combined.css" rel="stylesheet" type="text/css">
+        <link href="/ui/css/videomaker.css" rel="stylesheet" type="text/css">
         <script src="/js/common_combined.js"></script>
         <style>
             #other-options,
@@ -27,6 +27,18 @@
                 background-color: rgb(0, 38, 255);
                 text-align: center;
                 font-size: 30px;
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
             }
         </style>
     </head>
@@ -100,6 +112,7 @@
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="https://flashthemes.net/static/ft/js/studio.js"></script>
         <script src="/js/user.js"></script>
         <script>
             let tId;
@@ -162,6 +175,7 @@
                             apiserver: "/",
                             storePath: "/static/2011/store/<store>",
                             isEmbed: 1,
+                            tlist: "2012",
                             has_asset_char: 1,
                             ctc: "go",
                             initcb: "studioLoaded",
@@ -173,22 +187,21 @@
                             siteId: 0,
                             lid: "0",
                             retut: 0,
-                            isLogin: "Y",
+                            isLogin :"Y",
                             bgload: "/static/2011/animation/go_full.swf",
                             userId: userData.uid || userData.id,
-                            movieOwnerId: userData.uid || userData.id,
-                            movieOwner: userData.displayName || userData.name,
+                            movieOwnerId: 295,
+                            movieOwner: "JosephAnimate",
                             themeId: tId,
                             tlang: "en_US",
-                            isWide: json.widescreen == "on" ? '1' : '0',
+                            isWide: json.widescreen ? 1 : 0,
                             tray: tId,
                             upl: 1,
                             hb: "1",
                             pts: 0,
-                            tm: "FIN",
-                            nextUrl: window.location.origin + "/movie/<movieId>",
+                            tm: json.tutorial ? "NEW" : "FIN",
+                            nextUrl: "/movie/<movieId>",
                             clientThemePath: `/static/2011/<client_theme>?themeColor=${json.ct2011}`,
-                            themeColor: json.ct2011,
                             cczip: 1,
                             movieLid: 0,
                             includeThumbs: "Y",
