@@ -9,8 +9,84 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
         <link rel="stylesheet" href="/ui/css/videomaker.css">
         <script src="/js/common_combined.js"></script>
+        <style>
+            #other-options,
+            #studio-eras {
+                display: grid;
+                grid-template-columns: auto auto auto auto;
+                gap: 10px;
+                padding: 10px;
+            }
+            #grid-item,
+            .studio-build {
+                background-color: rgba(255, 255, 255, 0.8);
+                text-align: center;
+                font-size: 30px;
+            }
+            .studio-build-active {
+                background-color: rgb(0, 38, 255);
+                text-align: center;
+                font-size: 30px;
+            }
+        </style>
     </head>
     <body class="page-action-videomaker">
+        <div class="modal" id="createOverlay">
+            <div class="modal-dialog modal-lg">
+                <form class="modal-content" action="javascript:;" id="createVideoForm">
+                    <center class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h2 class="modal-title">Select a Video Maker</h2>
+                    </center>
+                    <center id="studio-eras" class="modal-body">
+                        <a href="javascript:;" id="studio2011" onclick="selectLVM('2011')" class="studio-build">
+                            <img src="/ui/img/2011.png" width="120">
+                            <h2>2011</h2>
+                        </a>
+                        <a href="javascript:;" id="studio2015" onclick="selectLVM('2015')" class="studio-build">
+                            <img src="/ui/img/2015.png" width="120">
+                            <h2>2015</h2>
+                        </a>
+                        <a href="javascript:;" id="studio2016" onclick="selectLVM('2016')" class="studio-build-active">
+                            <img src="/ui/img/2016.png" width="120">
+                            <h2>GoNexus Studio</h2>
+                        </a>
+                    </center>
+                    <center class="modal-footer">
+                        <h2>Other options</h2>
+                        <div id="other-options">
+                            <p id="grid-item">Tutorial <input type="checkbox" name="tutorial"></p>
+                            <p id="grid-item">Widescreen <input type="checkbox" name="widescreen" checked></p>
+                        </div>
+                        <div id="ct2011" style="display: none;">
+                            <p>Color Theme</p>
+                            <select name="ct2011" id="ct2011select">
+                                <option value="silver">Dark</option>
+                                <option value="go" selected>Silver</option>
+                            </select>
+                        </div><br>
+                        <button type="submit" class="btn btn-orange">Create a Video</button>
+                    </center>
+                </form>
+            </div>
+        </div>
+        <div class="modal" id="studioBlock2011">
+            <div class="modal-dialog modal-lg" style="width: 991px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" id="close2011Studio">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h2 class="modal-title">2011 Video Maker</h2>
+                    </div>
+                    <div class="modal-body" id="studio2011div">You need Adobe Flash Player in order to use the 2011 Video Maker</div>
+                </div>
+            </div>
+        </div>
         <%- include("includes/header.ejs", {
             isVideoList: true
         }) %>
@@ -26,6 +102,8 @@
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
         <script src="/js/user.js"></script>
         <script>
+            let tId;
+            let studio = "2016";
             jQuery.getJSON("/api/themes/get", (d) => {
                 let count = 0;
                 for (const theme of d) {
@@ -33,22 +111,107 @@
                         <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                          <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
+                         <a class="btn btn-default" href="javascript:LVMSelector('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
                          ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
                          ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
-                         <a class="btn btn-default" href="javascript:selectLVM('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
                     </div>
                     </div></div></div></div>`);
                     else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
                         <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
+                        <a class="btn btn-default" href="javascript:LVMSelector('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
-                        <a class="btn btn-default" href="javascript:selectLVM('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
                     </div></div></div></div></div>`);
                     count++
                 }
             });
+            function LVMSelector(themeId) {
+                tId = themeId;
+                $("#createOverlay").modal({
+                    keyboard: false,
+                    backdrop: "static"
+                })
+            }
+            function selectLVM(year) {
+                studio = year;
+                $(".studio-build-active").addClass("studio-build").removeClass("studio-build-active");
+                $(`#studio${year}`).addClass("studio-build-active").removeClass("studio-build");
+                if (year == '2011') $("#ct2011").show();
+                else $("#ct2011").hide();
+            }
+            $("#createVideoForm").submit(() => {
+                const json = Object.fromEntries(new URLSearchParams($("#createVideoForm").serialize()));
+                if (studio == '2011') {
+                    window.onbeforeunload = function(e) {
+                        var e = e || window.event;
+                        if (e) e.returnValue = 'You are about to lose all your unsaved changes in the studio.';
+                    };
+                    jQuery("#studio2011div").flash({
+                        id: "Studio",
+                        swf: "/static/2011/animation/go_full.swf",
+                        width: "960",
+                        height: "630",
+                        align: "middle",
+                        allowScriptAccess: "always",
+                        allowFullScreen: "true",
+                        wmode: "window",
+                        hasVersion: "10.3",
+                        flashvars: {
+                            apiserver: "/",
+                            storePath: "/static/2011/store/<store>",
+                            isEmbed: 1,
+                            has_asset_char: 1,
+                            ctc: "go",
+                            initcb: "studioLoaded",
+                            collab: 0,
+                            ut: 30,
+                            v: userData.uid || userData.id,
+                            bs: "default",
+                            appCode: "go",
+                            siteId: 0,
+                            lid: "0",
+                            retut: 0,
+                            isLogin: "Y",
+                            bgload: "/static/2011/animation/go_full.swf",
+                            userId: userData.uid || userData.id,
+                            movieOwnerId: userData.uid || userData.id,
+                            movieOwner: userData.displayName || userData.name,
+                            themeId: tId,
+                            tlang: "en_US",
+                            isWide: json.widescreen == "on" ? '1' : '0',
+                            tray: tId,
+                            upl: 1,
+                            hb: "1",
+                            pts: 0,
+                            tm: "FIN",
+                            nextUrl: window.location.origin + "/movie/<movieId>",
+                            clientThemePath: `/static/2011/<client_theme>?themeColor=${json.ct2011}`,
+                            themeColor: json.ct2011,
+                            cczip: 1,
+                            movieLid: 0,
+                            includeThumbs: "Y",
+                            tmcc: "c-123",
+                            uisa: 1
+                        }
+                    });
+                    $("#createOverlay").modal('hide');
+                    $("#studioBlock2011").modal({
+                        keyboard: false,
+                        backdrop: "static"
+                    });
+                } else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on"}&tray=${tId}`
+                $("#close2011Studio").click(() => {
+                    const yesorno = confirm("Before you leave the 2011 studio, please save any changes that you made to your video.")
+                    if (yesorno) {
+                        $("#studioBlock2011").modal('hide');
+                        window.onbeforeunload = function(e) {
+                            return null;
+                        };
+                    }
+                });
+            })
         </script>
         <%- include("includes/footer.ejs") %>
     </body>

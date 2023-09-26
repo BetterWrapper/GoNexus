@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+        <meta name="generator" content="Hugo 0.101.0">
+        <title>Account Dashboard - GoNexus</title>
+        <link rel="stylesheet" href="/ui/css/common_combined.css">
+        <style>
+            #feed_none {
+                display: none;
+            }
+            div.feed {
+                background-color: rgb(255, 255, 255);
+                width: 1000px;
+                height: 100px;
+            }
+            div.feed:hover {
+                background-color: lightgrey;
+                width: 1000px;
+                height: 100px;
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+            }
+        </style>
+        <script type="text/javascript">
+            var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
+        </script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="/js/user.js"></script>
+        <script src="/js/common_combined.js"></script>
+        <script src="/lvm_files/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="/lvm_files/go/js/jquery/jquery.blockUI-2.66.0.js"></script>
+        <script src="/lvm_files/go/js/jquery/jquery.scrollTo.min.js"></script>
+        <script src="/lvm_files/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json"></script>
+        <script type="text/javascript">
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+    </head>
+    <body class="en_US">
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+        </script>
+        <div class="page-container">
+            <!-- HEADER -->
+            <%- include("includes/header.ejs", {
+                isVideoList: true
+            }); %>
+            <!-- END OF HEADER -->
+            <div class="container-fluid">
+                <div class="row">
+                    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                        <h1>Dashboard</h1><br>
+                        <h2>FlashThemes User Feed</h2>
+                        <div id="feeds"></div>
+                        <a href="javascript:;" id="loadFTUserFeeds"></a>
+                        <progress id="loadFTUserFeeds_loading" style="display: none;"></progress><br>
+                        <a href="javascript:;" id="loadFTUserFeeds_all"></a>
+                        <progress id="loadFTUserFeeds_loading_all" style="display: none;"></progress><br>
+                        <h2>Your Latest Videos</h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Video Thumbnail</th>
+                                        <th>Video Title</th>
+                                        <th>Video Description</th>
+                                        <th>Video Duration</th>
+                                        <th>Last Modified</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <a href="javascript:;" id="loadMore"></a>
+                                            <progress id="loadMore_loading" style="display: none;"></progress>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </main>
+                </div>
+            </div>
+            <!-- FOOTER -->
+            <%- include("includes/footer.ejs") %>
+            <div id="studio_container" style="display: none;">
+                <div id="studio_holder"><!-- Full Screen Studio -->
+                    <div style="top: 50%; position: relative;">
+                        This content requires the Adobe Flash Player 10.3. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var count = 0;
+            var count2 = 0;
+            var json;
+            function loadLatestVideos() {
+                let c = count; count += 6;
+                if (json.length < 1) {
+                    jQuery("tbody").html("No Videos");
+                    $("#loadMore").hide();
+                } else for (; c < count; c++) {
+                    if (c > json.length - 1) $("#loadMore").hide();
+                    else {
+                        const tbl = json[c];
+                        const date = tbl.date.split("T")[0];
+                        const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
+                        jQuery("tbody").append(`<tr><td><img width="89" height="56" src="/movie_thumbs/${tbl.id}.png"/></td><td>${tbl.title}</td><td>${tbl.desc.split(",").join(",<br>").split("!").join("!<br>").split(".").join(".<br>")}</td><td>${tbl.durationString}</td><td>${
+                            usDate
+                        }</td><td><button onclick="movieRedirect('/player?movieId=${tbl.id}', '${tbl.id}')">Play</button><button onclick="movieRedirect('/go_full?movieId=${tbl.id}', '${
+                            tbl.id
+                        }')">Edit</button><button onclick="movieRedirect('/movies/${tbl.id}.zip', '${tbl.id}')">Download</button><button onclick="deleteMovie('${
+                            tbl.id
+                        }')">Delete</button></td></tr>`);
+                    }
+                }
+                $("#loadMore_loading").hide();
+            }
+            $("#loadMore").click(() => {
+                $("#loadMore_loading").show();
+                loadLatestVideos();
+            });
+            $("#loadFTUserFeeds").click(() => {
+                $("#loadFTUserFeeds_all").hide();
+                $("#loadFTUserFeeds").hide();
+                $("#loadFTUserFeeds_loading").show();
+                loadFTUserFeeds();
+            });
+            function loadFTUserFeeds() {
+                jQuery.post(`/api/getFTUserFeeds?page=${count2}`, html => {
+                    count2++;
+                    if (html.includes('0{"next_page":"1"}')) {
+                        jQuery("#feeds").append(html.split('0{"next_page":"1"}')[1]);
+                        $("#loadFTUserFeeds_loading").hide();
+                        jQuery("#loadFTUserFeeds").html('load more').show();
+                        jQuery("#loadFTUserFeeds_all").html('load all of the flashthemes user feed').show();
+                    } else if (html.includes('0{"next_page":"0"}')) {
+                        if (!html.includes('There are no activities')) jQuery("#feeds").append(html.split('0{"next_page":"1"}')[1]);
+                        jQuery("#loadFTUserFeeds").hide();
+                        jQuery("#loadFTUserFeeds_all").hide();
+                    }
+                })
+            }
+            $("#loadFTUserFeeds_all").click(() => {
+                jQuery("#loadFTUserFeeds").hide();
+                $("#loadFTUserFeeds_all").hide();
+                $("#loadFTUserFeeds_loading_all").show();
+                jQuery.post(`/api/getAllFTUserFeeds?page=${count2}`, html => {
+                    jQuery("#feeds").append(html.split("There are no activities").join(""));
+                    $("#loadFTUserFeeds_loading_all").hide();
+                    jQuery("#loadFTUserFeeds_all").hide();
+                })
+            });
+            function movieRedirect(url, mId) {
+                let action;
+                switch (url) {
+                    case `/player?movieId=${mId}`: {
+                        action = "play your movie";
+                        break;
+                    } case `/go_full?movieId=${mId}`: {
+                        action = "edit your movie";
+                        break;
+                    } case `/movies/${mId}.zip`: {
+                        action = "download your movie";
+                        break;
+                    }
+                }
+                if (url && action) $.post(`/api/check4MovieFilepaths`, {
+                    mId, action
+                }, d => {
+                    const json = JSON.parse(d);
+                    switch (json.status) {
+                        case "ok": {
+                            window.location.href = url;
+                            break;
+                        } case "error": {
+                            alert(json.msg);
+                            break;
+                        }
+                    }
+                });
+                else alert("you need to specify the url and action in order to do a movie version of a redirect.");
+            }
+            function movieCallback(action, mId, callback) {
+                if (action) $.post(`/api/check4MovieFilepaths`, {
+                    mId, action
+                }, d => {
+                    const json = JSON.parse(d);
+                    switch (json.status) {
+                        case "ok": {
+                            callback();
+                            break;
+                        } case "error": {
+                            alert(json.msg);
+                            break;
+                        }
+                    }
+                });
+                else alert("you need to specify an action and callback function in order to do a movie version of a callback.");
+            }
+            function deleteMovie(mId) {
+                movieCallback("delete your movie", mId, () => {
+                    const yesorno = confirm(`Are you sure that you want to delete movie ${mId}?`);
+                    if (yesorno) $.post('/api/movie/delete', {
+                        mId, 
+                        uId: userData.uid || userData.id
+                    }).done(d => {
+                        const meta = JSON.parse(d);
+                        switch (meta.status) {
+                            case "error": {
+                                alert(meta.msg);
+                                break;
+                            } case "ok": {
+                                window.location.reload();
+                                break;
+                            }
+                        }
+                    });
+                });
+            }
+        </script>
+    </body>
+</html>
