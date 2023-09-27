@@ -233,7 +233,7 @@
                         keyboard: false,
                         backdrop: "static"
                     });
-                } else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on"}&tray=${tId}`
+                } else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on" ? true : false}&tray=${tId}`
                 $("#closeStudio").click(() => {
                     const yesorno = confirm(`Before you leave the ${studio} studio, please save any changes that you made to your video.`)
                     if (!yesorno) {
