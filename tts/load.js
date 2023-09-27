@@ -34,11 +34,16 @@ module.exports = function (req, res, url) {
 					downloadtype: "progressive",
 					ext: "mp3"
 				}, data);
-				res.end(`0<response><asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>tts</subtype><title>${
+				if (!data.studio) res.end(`0<response><asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>tts</subtype><title>${
 					title
 				}</title><published>0</published><tags></tags><duration>${dur}</duration><downloadtype>progressive</downloadtype><file>${
 					id
 				}</file></asset></response>`);
+				else res.end(`0<asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>tts</subtype><title>${
+					title
+				}</title><published>0</published><tags></tags><duration>${dur}</duration><downloadtype>progressive</downloadtype><file>${
+					id
+				}</file></asset>`);
 			});
 		} catch (e) {
 			console.log(e);

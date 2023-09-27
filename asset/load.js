@@ -5,7 +5,7 @@ const {
 	getBuffersOnlineViaRequestModule
 } = require("../movie/main");
 const http = require("http");
-
+const base = Buffer.alloc(1, 0);
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -46,11 +46,9 @@ module.exports = function (req, res, url) {
 						}
 					});
 					break;
-				}
-				case "/goapi/getAsset/":
-				case "/goapi/getAssetEx/": {
+				} case "/goapi/getAsset/": {
 					loadPost(req, res).then(async ([data]) => {
-						const aId = data.assetId || data.enc_asset_id;
+						const aId = data.assetId;
 
 						try {
 							let b;
@@ -64,7 +62,32 @@ module.exports = function (req, res, url) {
 							else b = asset.load(aId);
 							res.setHeader("Content-Length", b.length);
 							res.setHeader("Content-Type", "audio/mp3");
-							res.end(b);
+							if (data.studio) res.end(Buffer.concat([base, b]));
+							else res.end(b);
+						} catch (e) {
+							res.statusCode = 404;
+							console.log(e);
+							res.end();
+						}
+					});
+					return true;
+				} case "/goapi/getAssetEx/": {
+					loadPost(req, res).then(async ([data]) => {
+						const aId = data.enc_asset_id;
+
+						try {
+							let b;
+							if (data.movieId && data.movieId.startsWith("ft-")) b = await getBuffersOnline({
+								hostname: "flashthemes.net",
+								path: `/goapi/getAsset/${aId}`,
+								headers: { 
+									"Content-type": "audio/mp3"
+								}
+							});
+							else b = asset.load(aId);
+							res.setHeader("Content-Length", b.length);
+							res.setHeader("Content-Type", "audio/mp3");
+							res.end(Buffer.concat([base, b]));
 						} catch (e) {
 							res.statusCode = 404;
 							console.log(e);

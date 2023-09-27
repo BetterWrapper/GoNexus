@@ -58,7 +58,7 @@ function getXml(apiName) {
 						xmls[voiceInfo.lang] = xmls[voiceInfo.lang] || [];
 						xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.split("-").join("").toLowerCase()}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
 					}
-					const xml = `${process.env.XML_HEADER}<voices>${Object.keys(xmls).sort().map((i) => {
+					const xml = `${process.env.XML_HEADER}<voices credit="50">${Object.keys(xmls).sort().map((i) => {
 						const v = xmls[i],
 						l = getLangPre(i);
 						return `<language id="${l}" desc="${i}">${v.join("")}</language>`;

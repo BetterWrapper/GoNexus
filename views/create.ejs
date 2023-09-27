@@ -60,11 +60,11 @@
                         </a>
                         <a href="javascript:;" id="studio2012" onclick="selectLVM('2012')" class="studio-build">
                             <img src="/ui/img/2012.png" width="120">
-                            <h2>2012 (Early Version)</h2>
+                            <h2>2012</h2>
                         </a>
                         <a href="javascript:;" id="studio2013" onclick="selectLVM('2013')" class="studio-build">
                             <img src="/ui/img/2013.png" width="120">
-                            <h2>2013 (Tutorial Only)</h2>
+                            <h2>2013</h2>
                         </a>
                         <a href="javascript:;" id="studio2015" onclick="selectLVM('2015')" class="studio-build">
                             <img src="/ui/img/2015.png" width="120">
@@ -73,6 +73,18 @@
                         <a href="javascript:;" id="studio2016" onclick="selectLVM('2016')" class="studio-build-active">
                             <img src="/ui/img/2016.png" width="120">
                             <h2>GoNexus Studio</h2>
+                        </a>
+                        <a href="javascript:;" id="studio2017" onclick="selectLVM('2017')" class="studio-build">
+                            <img src="/ui/img/2017.png" width="120">
+                            <h2>2017</h2>
+                        </a>
+                        <a href="javascript:;" id="studio2018" onclick="selectLVM('2018')" class="studio-build">
+                            <img src="/ui/img/2018.png" width="120">
+                            <h2>2018</h2>
+                        </a>
+                        <a href="javascript:;" id="studio2019" onclick="selectLVM('2019')" class="studio-build">
+                            <img src="/ui/img/2019.png" width="120">
+                            <h2>2019</h2>
                         </a>
                     </center>
                     <center class="modal-footer">
@@ -83,9 +95,16 @@
                         </div>
                         <div id="ct2011" style="display: none;">
                             <p>Color Theme</p>
-                            <select name="ct2011" id="ct2011select">
+                            <select name="ct2011">
                                 <option value="silver">Dark</option>
                                 <option value="go" selected>Silver</option>
+                            </select>
+                        </div>
+                        <div id="ct2012" style="display: none;">
+                            <p>Color Theme</p>
+                            <select name="ct2012">
+                                <option value="go">Dark</option>
+                                <option value="silver" selected>Silver</option>
                             </select>
                         </div><br>
                         <button type="submit" class="btn btn-orange">Create a Video</button>
@@ -158,12 +177,20 @@
                 studio = year;
                 $(".studio-build-active").addClass("studio-build").removeClass("studio-build-active");
                 $(`#studio${year}`).addClass("studio-build-active").removeClass("studio-build");
-                if (year == '2011' || year == '2012') $("#ct2011").show();
-                else $("#ct2011").hide();
+                if (year == '2011') {
+                    $("#ct2011").show();
+                    $("#ct2012").hide();
+                } else if (year == '2012' || year == '2013') {
+                    $("#ct2011").hide();
+                    $("#ct2012").show();
+                } else {
+                    $("#ct2011").hide();
+                    $("#ct2012").hide();
+                }
             }
             $("#createVideoForm").submit(() => {
                 const json = Object.fromEntries(new URLSearchParams($("#createVideoForm").serialize()));
-                if (studio == '2011' || studio == '2012') {
+                if (studio == '2011' || studio == '2012' || studio == '2013') {
                     $(".year").text(studio);
                     window.onbeforeunload = function(e) {
                         var e = e || window.event;
@@ -171,7 +198,7 @@
                     };
                     jQuery("#studiodiv").flash({
                         id: "Studio",
-                        swf: `/static/${studio}/animation/go_full.swf`,
+                        swf: `/static/${studio == '2013' ? '2012/477' : `${studio}/animation`}/go_full.swf`,
                         width: "960",
                         height: "630",
                         align: "middle",
@@ -182,45 +209,30 @@
                         flashvars: {
                             apiserver: "/",
                             storePath: "/static/2011/store/<store>",
-                            isEmbed: 0,
-                            has_asset_char: 1,
+                            isEmbed: 1,
                             ctc: "go",
-                            initcb: "studioLoaded",
-                            collab: 0,
                             ut: 23,
-                            v: userData.uid || userData.id,
-                            bs: "default",
-                            appCode: "go",
-                            siteId: 13,
-                            lid: "13",
-                            retut: 0,
-                            isLogin :"Y",
-                            bgload: `/static/${studio}/animation/go_full.swf`,
-                            userId: userData.uid || userData.id,
-                            movieOwnerId: userData.uid || userData.id,
-                            movieOwner: userData.displayName || userData.name,
-                            themeId: tId,
-                            tlang: "en_US",
-                            isWide: json.widescreen ? 1 : 0,
-                            tray: tId,
-                            upl: 1,
-                            hb: "1",
-                            pts: 1,
                             tm: json.tutorial ? "NEW" : "FIN",
+                            appCode: "go",
+                            tray: tId,
+                            siteId: "go",
+                            lid: 13,
+                            isLogin: "Y",
+                            retut: 1,
+                            clientThemePath: `/static/${studio != '2011' ? '2012/477' : '2011'}/<client_theme>?themeColor=${studio == '2011' ? json.ct2011 : json.ct2012}`,
+                            themeId: "business",
+                            tlang: "en_US",
+                            studio,
+                            userId: userData.uid || userData.id,
+                            isWide: json.widescreen ? 1 : 0,
+                            collab: 0,
                             nextUrl: "/api/redirect",
-                            clientThemePath: `/static/${studio}/<client_theme>?themeColor=${json.ct2011}`,
-                            cczip: 1,
-                            movieLid: 0,
-                            includeThumbs: "Y",
-                            tmcc: "4048901",
-                            uisa: 0,
-                            gocoins: 4048901
                         }
-                        $("#createOverlay").modal('hide');
-                        $("#studioBlock").modal({
-                            keyboard: false,
-                            backdrop: "static"
-                        });
+                    });
+                    $("#createOverlay").modal('hide');
+                    $("#studioBlock").modal({
+                        keyboard: false,
+                        backdrop: "static"
                     });
                 } else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on"}&tray=${tId}`
                 $("#closeStudio").click(() => {
