@@ -11,3 +11,4 @@ Discovery.md
 .DS_Store
 tts/voices.json
 ftContent
+package-lock.json
