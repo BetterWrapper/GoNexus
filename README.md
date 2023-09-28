@@ -10,7 +10,6 @@ also the codename is BetterWrapper.
 * BluePeacocks
 * Itinerary Jyvee
 * josephanimate
-* lunastar67 (Rage)
 * MysteriousOwen
 * Revolution909
 
@@ -21,7 +20,9 @@ also the codename is BetterWrapper.
 * JonsCartoonShow
 * MKAnimates
 * Xill/Music
-
+## Past Developers
+* lunastar67 (Rage)
+  
 ## To Do
 * Add the 2011, early 2012, and 2015 videomakers (Done)
 * Fix voice clip issues in the QVM (Not Done)<br>
