@@ -10,7 +10,7 @@ also the codename is BetterWrapper.
 * BluePeacocks
 * Itinerary Jyvee
 * josephanimate
-* .-.. ..- -. .- ... - .- .-. -.... --...
+* lunastar67 (Rage)
 * MysteriousOwen
 * Revolution909
 
