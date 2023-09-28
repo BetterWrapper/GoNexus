@@ -1,4 +1,6 @@
 # GoNexus
+
+## About
 An attempt to bring back GoAnimate For Schools and a sort of "continuation" of the obsolte project "GoAnimate For Schools Remastered". Currently private and closed source but that'll change in the future. This is also a great alternative for FlashThemes if you claim to have the following problems with the site:
 * The site is too slow and loads slow even though i have good WI-FI.
 * i am having problems creating an account.
