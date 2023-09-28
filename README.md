@@ -26,7 +26,6 @@ also the codename is BetterWrapper.
 * Add the 2011, early 2012, and 2015 videomakers (15% Done)
 * Fix voice clip issues in the QVM (Not Done)<br>
 * Find a new online site host for GoNexus (Not Done)<br>
-* Fix bugs with the FAQ page (Not Done)<br>
 * Add 2 new functional scenes to Slices Of Daily Life (Not Done)<br>
 * Release The Final Version Of GoNexus (Not Done)<br>
 ## Final Release Version
