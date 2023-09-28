@@ -29,5 +29,5 @@ also the codename is BetterWrapper.
 * Fix bugs with the FAQ page (Not Done)<br>
 * Add 2 new functional scenes to Slices Of Daily Life (Not Done)<br>
 ## Final Release Version
-Yes, this project is an alternative to FlashThemes, but our team desided that it's not worth the time to work on GoNexus anymore. For the final release version, it is version 0.0.2.<br>
+Yes, this project is an alternative to FlashThemes, but our team desided that it's not worth the time to work on GoNexus anymore. For the final release version, it is version 0.0.2.
 After this release, this project will no longer be worked on. Don't worry, i, josephanimate, am trying to implment as much features as possible before this project gets put into archive.
