@@ -24,7 +24,7 @@ also the codename is BetterWrapper.
 * MKAnimates
 * Xill/Music
 ## Past Developers
-* lunastar67 (Rage)
+* Magical (Rage)
   
 ## To Do
 * Add the 2011, early 2012, and 2015 videomakers (Done)
