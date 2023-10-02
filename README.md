@@ -32,7 +32,7 @@ also the codename is BetterWrapper.
 * Fix custom characters and it's emotions for the 2011 and 2012 videomakers (60% Done)<br>
 * Find a new online site host for GoNexus (Not Done)<br>
 * Add 2 new functional scenes to Slices Of Daily Life (Not Done)<br>
-* Release The Final Version Of GoNexus (10% Done)<br>
+* Release The Final Version Of GoNexus (15% Done)<br>
 
 ## Final Release Version
 Yes, this project is an alternative to FlashThemes, but our team desided that it's not worth the time to work on GoNexus anymore. For the final release version, it is version 0.0.2.
