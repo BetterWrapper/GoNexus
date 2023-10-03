@@ -13,7 +13,6 @@ also the codename is BetterWrapper.
 * BluePeacocks
 * Itinerary Jyvee
 * josephanimate
-* Magical (dev note: I'm not gonna be contributing too much, I'm a side dev)
 * MysteriousOwen
 * Revolution909
 
@@ -24,6 +23,9 @@ also the codename is BetterWrapper.
 * JonsCartoonShow
 * MKAnimates
 * Xill/Music
+
+## Side Developers
+* Magical
   
 ## To Do
 * Add the 2011, early 2012, and 2015 videomakers (Done)
