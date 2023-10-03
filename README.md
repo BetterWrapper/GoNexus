@@ -29,7 +29,7 @@ also the codename is BetterWrapper.
 * Add the 2011, early 2012, and 2015 videomakers (Done)
 * Fix voice clip issues in the QVM (Not Done)<br>
 * Fix custom characters and it's emotions for the 2011 and 2012 videomakers (60% Done)<br>
-* Find a new online site host for GoNexus (Not Done)<br>
+* Host GoNexus On Firebase (Not Done)<br>
 * Add 2 new functional scenes to Slices Of Daily Life (Not Done)<br>
 * Release The Final Version Of GoNexus (15% Done)<br>
 
