@@ -54,10 +54,10 @@
                         <h2 class="modal-title">Select a Video Maker</h2>
                     </center>
                     <center id="studio-eras" class="modal-body">
-                        <!--<a href="javascript:;" id="studio2011" onclick="selectLVM('2010')" class="studio-build">
+                        <a href="javascript:;" id="studio2011" onclick="selectLVM('2010')" class="studio-build">
                             <img src="/ui/img/2010.png" width="120">
                             <h2>2010</h2>
-                        </a>-->
+                        </a>
                         <a href="javascript:;" id="studio2011" onclick="selectLVM('2011')" class="studio-build">
                             <img src="/ui/img/2011.png" width="120">
                             <h2>2011</h2>
@@ -92,6 +92,14 @@
                         <div id="other-options">
                             <p id="grid-item">Tutorial <input type="checkbox" name="tutorial"></p>
                             <p id="grid-item">Widescreen <input type="checkbox" name="widescreen" checked></p>
+                        </div>
+                        <div id="ct2010" style="display: none;">
+                            <p>LVM Style</p>
+                            <select name="ct2010">
+                                <option value="go">Normal</option>
+                                <option value="domo" selected>Domo</option>
+                                <option value="cn" selected>Cartoon Network</option>
+                            </select>
                         </div>
                         <div id="ct2011" style="display: none;">
                             <p>Color Theme</p>
@@ -207,10 +215,11 @@
                         wmode: "window",
                         hasVersion: "10.3",
                         flashvars: {
-                            apiserver: "/",
+                            apiserver: studio != "2010" ? "/" : "https://wrapperclassic.web.app/us-centural1/app/",
+                            writeContentsToOrigin: studio == "2010" ? window.location.origin : ""
                             storePath: "/static/2011/store/<store>",
                             isEmbed: 1,
-                            ctc: "go",
+                            ctc: studio == "2010" ? json.ct2010 : "go",
                             ut: studio != '2013' ? 60 : 23,
                             tm: json.tutorial ? "NEW" : "FIN",
                             appCode: "go",
@@ -219,13 +228,14 @@
                             lid: 13,
                             isLogin: "Y",
                             retut: 1,
-                            clientThemePath: `/static/${studio != '2011' ? '2012/477' : '2011'}/<client_theme>?themeColor=${studio == '2011' ? json.ct2011 : json.ct2012}`,
+                            clientThemePath: `/static/${studio != '2011' ? '2012/477' : '2011'}/<client_theme>${studio != "2013" ? `?themeColor=${studio == '2011' ? json.ct2011 : json.ct2012}` : ""},
                             tlang: "en_US",
                             studio,
                             userId: userData.uid || userData.id,
                             isWide: json.widescreen ? 1 : 0,
                             collab: 0,
                             nextUrl: "/api/redirect",
+                            themeColor: studio == "2013" ? json.ct2012 : ""
                         }
                     });
                     $("#createOverlay").modal('hide');
