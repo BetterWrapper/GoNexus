@@ -77,7 +77,7 @@ module.exports = function (req, res, url) {
 				return true;
 			} else return;
 		} case "POST": {
-			loadPost(req, res).then(async ([data]) => {
+			loadPost(req, res).then(async data => {
 				const buff = await listAssets(data, isAssetSearch);
 				res.setHeader("Content-Type", "application/zip");
 				res.write(base);
