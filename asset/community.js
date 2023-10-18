@@ -57,15 +57,12 @@ async function listAssets(data, isAssetSearch) {
 module.exports = function (req, res, url) {
 	var isAssetSearch = false;
 	switch (url.pathname) {
-		case "/goapi/getCommunityAssets/":
-			break;
-		case "/goapi/searchCommunityAssets/":
+		case "/goapi/getCommunityAssets/": break;
+		case "/goapi/searchCommunityAssets/": {
 			isAssetSearch = true;
 			break;
-		default:
-			return;
+		} default: return;
 	}
-
 	switch (req.method) {
 		case "GET": {
 			var q = url.query;
