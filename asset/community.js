@@ -6,7 +6,7 @@ const base = Buffer.alloc(1, 0);
 const asset = require("./main");
 const http = require("http");
 
-async function listAssets(data) {
+async function listAssets(data, isAssetSearch) {
 	const xmls = [], files = [];
     switch (data.type) {
 		case "bg": {
@@ -28,12 +28,24 @@ async function listAssets(data) {
 		}
 	}
 	const zip = nodezip.create();
-	fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${xmls.map(v => v).join("")}</theme>`);
-    files.forEach((file) => {
-        const buffer = fs.readFileSync(`./.site/${file}`);
-        fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
-    });
-    return await zip.zip();
+	if (!isAssetSearch) {
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${xmls.map(v => v).join("")}</theme>`);
+		files.forEach((file) => {
+			const buffer = fs.readFileSync(`./.site/${file}`);
+			fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
+		});
+	} else {
+		let results = 0;
+		files.forEach((file) => {
+			if (file.includes(data.keywords)) {
+				results++
+				const buffer = fs.readFileSync(`./.site/${file}`);
+				fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
+			}
+		});
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library" all_asset_count="${results}">${xmls.map(v => v).join("")}</theme>`);
+	}
+	return await zip.zip();
 }
 
 /**
@@ -43,12 +55,12 @@ async function listAssets(data) {
  * @returns {boolean}
  */
 module.exports = function (req, res, url) {
-	var makeZip = false;
+	var isAssetSearch = false;
 	switch (url.pathname) {
-		case "/goapi/getUserAssets/":
-			makeZip = true;
+		case "/goapi/getCommunityAssets/":
 			break;
-		case "/goapi/getUserAssetsXml/":
+		case "/goapi/searchCommunityAssets/":
+			isAssetSearch = true;
 			break;
 		default:
 			return;
@@ -58,9 +70,8 @@ module.exports = function (req, res, url) {
 		case "GET": {
 			var q = url.query;
 			if (q.userId && q.type) {
-				listAssets(q, makeZip).then((buff) => {
-					const type = makeZip ? "application/zip" : "text/xml";
-					res.setHeader("Content-Type", type);
+				listAssets(q, isAssetSearch).then((buff) => {
+					res.setHeader("Content-Type", "application/zip");
 					res.end(buff);
 				});
 				return true;
@@ -70,10 +81,9 @@ module.exports = function (req, res, url) {
 			loadPost(req, res).then(async ([data]) => {
 				if (data.movieId && data.movieId.startsWith("ft-") && data.type == "sound") res.end(1 + '<error><code>Because you are using a video that has been imported from FlashThemes, you cannot use your sounds in this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.</code></error>');
 				else {
-					const buff = await listAssets(data, makeZip);
-					const type = makeZip ? "application/zip" : "text/xml";
-					res.setHeader("Content-Type", type);
-					if (makeZip) res.write(base);
+					const buff = await listAssets(data, isAssetSearch);
+					res.setHeader("Content-Type", "application/zip");
+					res.write(base);
 					res.end(buff);
 				}
 			});
