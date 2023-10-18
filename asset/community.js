@@ -8,28 +8,28 @@ const http = require("http");
 
 async function listAssets(data, isAssetSearch) {
 	const xmls = [], files = [];
-    switch (data.type) {
+	switch (data.type) { // if we are going to do chars, then we will need to make sure that custom characters are complatable with the Community Library.
 		case "bg": {
 			fs.readdirSync('./.site').forEach(file => {
-                if (file.endsWith(".jpg")) {
-                    files.push(file);
-                    xmls.push(`<background id="${file}" enc_asset_id="${file}" name="${file}" published="1"><tags></tags></background>`);
-                }
-            });
+				if (file.endsWith(".jpg")) {
+					files.push(file);
+					xmls.push(`<background id="${file}" enc_asset_id="${file}" name="${file}" published="1"><tags></tags></background>`);
+				}
+			});
 			break;
 		} case "prop": {
 			fs.readdirSync('./.site').forEach(file => {
-                if (file.endsWith(".png")) {
-                    files.push(file);
-                    xmls.push(`<prop id="${file}" enc_asset_id="${file}" name="${file}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="0"><tags></tags></prop>`);
-                }
-            });
+				if (file.endsWith(".png")) {
+					files.push(file);
+					xmls.push(`<prop id="${file}" enc_asset_id="${file}" name="${file}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="0"><tags></tags></prop>`);
+				}
+			});
 			break;
 		}
 	}
 	const zip = nodezip.create();
 	if (!isAssetSearch) {
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${xmls.map(v => v).join("")}</theme>`);
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${xmls.join("")}</theme>`);
 		files.forEach((file) => {
 			const buffer = fs.readFileSync(`./.site/${file}`);
 			fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
@@ -43,7 +43,7 @@ async function listAssets(data, isAssetSearch) {
 				fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
 			}
 		});
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library" all_asset_count="${results}">${xmls.map(v => v).join("")}</theme>`);
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library" all_asset_count="${results}">${xmls.join("")}</theme>`);
 	}
 	return await zip.zip();
 }
@@ -76,20 +76,14 @@ module.exports = function (req, res, url) {
 				});
 				return true;
 			} else return;
-		}
-		case "POST": {
+		} case "POST": {
 			loadPost(req, res).then(async ([data]) => {
-				if (data.movieId && data.movieId.startsWith("ft-") && data.type == "sound") res.end(1 + '<error><code>Because you are using a video that has been imported from FlashThemes, you cannot use your sounds in this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.</code></error>');
-				else {
-					const buff = await listAssets(data, isAssetSearch);
-					res.setHeader("Content-Type", "application/zip");
-					res.write(base);
-					res.end(buff);
-				}
+				const buff = await listAssets(data, isAssetSearch);
+				res.setHeader("Content-Type", "application/zip");
+				res.write(base);
+				res.end(buff);
 			});
 			return true;
-		}
-		default:
-			return;
+		} default: return;
 	}
 };
