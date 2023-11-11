@@ -62,8 +62,8 @@ if (self !== top) jQuery('body').hide();
 }); %>
 <div class="hero">
     <div id="flashThemesLogonOverlay" class="modal">
-        <div class="modal-dialog modal-lg" id="apiKeyForm" action="javascript:;">
-            <form class="modal-content" id="flashthemeslogin" action="javascript:;">
+        <div class="modal-dialog modal-lg">
+            <form class="modal-content" id="flashthemesloginform" action="javascript:;">
                 <header class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
@@ -80,7 +80,7 @@ if (self !== top) jQuery('body').hide();
                 </center>
                 <footer class="modal-footer">
                     <input type="submit" class="btn btn-orange" value="Log In" id="loginbtnft"/>
-                    <a type="button" id="forgotftpsw" class="btn btn-default" href="https://flashthemes.net/forgotpassword">i forgot my password for flashthemes</a>
+                    <a type="button" id="forgotftpsw" class="btn btn-default" href="https://flashthemes.net/forgotpassword">i forgot my password for my flashthemes account</a>
                 </footer>
             </form>
         </div>
@@ -148,7 +148,7 @@ if (self !== top) jQuery('body').hide();
 <script>
 (function($) {
 if (window.location.origin.includes("localhost")) $("#googleloginfooter").show();
-$("#flashThemesLogonOverlay").submit(() => {
+$("#flashthemesloginform").submit(() => {
     if (processing) return;
     $(".close").hide();
     $("#forgotftpsw").hide();
@@ -183,7 +183,7 @@ $("#flashThemesLogonOverlay").submit(() => {
                             email: jQuery("#ftemail").val(),
                             password: jQuery("#ftpsw").val()
                         }, d => {
-                            if (d.success) location.href = '/movies';
+                            if (d.success) location.href = '/dashboard';
                             else {
                                 processing = false;
                                 $(".close").show();
@@ -193,7 +193,7 @@ $("#flashThemesLogonOverlay").submit(() => {
                             }
                         });
                     }
-                    else if (d.success) location.href = '/movies';
+                    else if (d.success) location.href = '/dashboard';
                     else {
                         processing = false;
                         $(".close").show();

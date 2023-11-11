@@ -1,4 +1,4 @@
-const pjson = require("../package.json");
+const pjson = require("../package");
 const stuff = require("./info");
 const http = require("http");
 const fs = require("fs");

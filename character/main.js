@@ -73,6 +73,12 @@ module.exports = {
 		const end = buffer.indexOf(`"`, beg);
 		return buffer.subarray(beg, end).toString();
 	},
+	async getCharType(id) {
+		const buffer = await this.load(id);
+		const beg = buffer.indexOf(`component_id="`) + 14;
+		const end = buffer.indexOf(`"`, beg);
+		return buffer.subarray(beg, end).toString();
+	},
 	/**
 	 * @param {string} id
 	 * @returns {Promise<Buffer>}

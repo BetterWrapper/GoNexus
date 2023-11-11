@@ -42,8 +42,13 @@ module.exports = {
 					fUtil.getFileIndex("starter-", ".png", info.id.substr(2))
 				];
 				for (const path of paths) fs.unlinkSync(path);
-			}
-			else fs.unlinkSync(`${this.folder}/${info.id}`);
+			} else if (info.id.startsWith("c-")) {
+				const paths = [
+					fUtil.getFileIndex("char-", ".xml", info.id.substr(2)),
+					fUtil.getFileIndex("char-", ".png", info.id.substr(2))
+				];
+				for (const path of paths) fs.unlinkSync(path);
+			} else fs.unlinkSync(`${this.folder}/${info.id}`);
 			userInfo.assets.splice(index, 1);
 			fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
 		} else {
@@ -53,8 +58,13 @@ module.exports = {
 					fUtil.getFileIndex("starter-", ".png", data.id.substr(2))
 				];
 				for (const path of paths) fs.unlinkSync(path);
-			}
-			else fs.unlinkSync(`${this.folder}/${data.id}`);
+			} if (data.id.startsWith("c-")) {
+				const paths = [
+					fUtil.getFileIndex("char-", ".xml", data.id.substr(2)),
+					fUtil.getFileIndex("char-", ".png", data.id.substr(2))
+				];
+				for (const path of paths) fs.unlinkSync(path);
+			} else fs.unlinkSync(`${this.folder}/${data.id}`);
 		}
 	},
 	generateId() {

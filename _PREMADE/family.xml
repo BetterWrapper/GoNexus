@@ -1,0 +1,104 @@
+<chars>   
+	<char id="325084254" name="GA4S Man" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084241" name="GA4S Basket-Ball Player" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084260" name="GA4S Old Man" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084270" name="GA4S Fat Woman" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084290" name="GA4S Woman" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084283" name="GA4S Woman" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084277" name="GA4S Cheerleader" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084296" name="GA4S Woman" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084304" name="GA4S Strong Person" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="325084300" name="GA4S Strong Man" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:Specialties</tags>
+	</char>
+	<char id="327412169" enc_asset_id="0nmQZ8bWBt5g" name="GoTube" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327275957" enc_asset_id="05jPKL20LRHs" name="LukeAnimate" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764308" enc_asset_id="0UilnE4G5uzw" name="BrentAnimate" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764453" enc_asset_id="0yaYs6eX-334" name="RareYellowWUUTBee" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764148" name="CanadianScout" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764650" name="Isaac Anderson Animations" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001042" name="NathanSB (SaturnBoi)" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764259" name="Tbone Animate" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764372" name="African Vulture" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764522" name="The FunEditor4" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764594" name="sasmter5677" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="330469767" name="Fartnoise9" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001002" name="GoTest334" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327764590" name="Brendan Barney" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="327779791" name="Richie Verdi" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001004" name="Rack Animate" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001003" name="Poke Animations" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001005" name="VittorioTheVyonder2003" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="330470251" name="HanIflmranAnimator" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="330873615" name="Cewyah" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001001" name="papermariofan" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001008" name="TheVideoEditorGuy6579" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001009" name="CyanAnimate" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+	<char id="400001034" name="TBPG Studios" cc_theme_id="family" thumbnail_url="char-default.png" copyable="Y">
+		<tags>family,_free,_cat:GoAnimators</tags>
+	</char>
+</chars>

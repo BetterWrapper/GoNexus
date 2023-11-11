@@ -6,27 +6,29 @@
         <link rel="dns-prefetch" href="/">
         <title>Create - GoNexus</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet" type="text/css">
         <link href="/ui/css/common_combined.css" rel="stylesheet" type="text/css">
         <link href="/ui/css/videomaker.css" rel="stylesheet" type="text/css">
         <script src="/js/common_combined.js"></script>
         <style>
             #other-options,
+            #tutorial-chars,
             #studio-eras {
                 display: grid;
                 grid-template-columns: auto auto auto auto;
                 gap: 10px;
                 padding: 10px;
             }
+            .tutorial-char,
             #grid-item,
             .studio-build {
                 background-color: rgba(255, 255, 255, 0.8);
                 text-align: center;
-                font-size: 30px;
             }
+            .tutorial-char-active,
             .studio-build-active {
                 background-color: rgb(0, 38, 255);
                 text-align: center;
-                font-size: 30px;
             }
             @font-face {
                 font-family: 'Lato';
@@ -40,65 +42,81 @@
                 font-weight: 700;
                 src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
             }
+            .preview-button {
+                background-image: linear-gradient(rgb(182, 176, 176), rgb(43, 42, 42));
+                border: 0;
+                border-radius: 4px;
+                color: #fff;
+                cursor: pointer;
+                display: inline-block;
+                font-size: 14px;
+                font-weight: bold;
+                line-height: 36px;
+                padding: 0 25px;
+                margin:0 7px
+            }
+            .preview-button:hover {
+                color: blue;
+            }
         </style>
     </head>
     <body class="page-action-videomaker">
-        <div class="modal" id="createOverlay">
+        <div class="modal" id="studioBlock">
+            <div class="modal-dialog modal-lg" style="width: 991px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" id="closeStudio">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h2 class="modal-title">Custom LVM</h2>
+                    </div>
+                    <div class="modal-body" id="studiodiv">You need Adobe Flash Player in order to use the Custom LVM</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="customLVM">
             <div class="modal-dialog modal-lg">
                 <form class="modal-content" action="javascript:;" id="createVideoForm">
-                    <center class="modal-header">
+                    <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                             <span class="sr-only">Close</span>
                         </button>
-                        <h2 class="modal-title">Select a Video Maker</h2>
-                    </center>
-                    <center id="studio-eras" class="modal-body">
-                        <a href="javascript:;" id="studio2011" onclick="selectLVM('2010')" class="studio-build">
-                            <img src="/ui/img/2010.png" width="120">
-                            <h2>2010</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2011" onclick="selectLVM('2011')" class="studio-build">
-                            <img src="/ui/img/2011.png" width="120">
-                            <h2>2011</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2012" onclick="selectLVM('2012')" class="studio-build">
-                            <img src="/ui/img/2012.png" width="120">
-                            <h2>2012</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2013" onclick="selectLVM('2013')" class="studio-build">
-                            <img src="/ui/img/2013.png" width="120">
-                            <h2>2013</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2015" onclick="selectLVM('2015')" class="studio-build">
-                            <img src="/ui/img/2015.png" width="120">
-                            <h2>2015</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2016" onclick="selectLVM('2016')" class="studio-build-active">
-                            <img src="/ui/img/2016.png" width="120">
-                            <h2>GoNexus Studio</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2017" onclick="selectLVM('2017')" class="studio-build">
-                            <img src="/ui/img/2017.png" width="120">
-                            <h2>2017</h2>
-                        </a>
-                        <a href="javascript:;" id="studio2018" onclick="selectLVM('2018')" class="studio-build">
-                            <img src="/ui/img/2017.png" width="120">
-                            <h2>2018</h2>
-                        </a>
+                        <h2 class="modal-title">Custom LVM</h2>
+                    </div>
+                    <p id="error-message-lvmSelector" style="color: red;"></p>
+                    <center class="modal-body">
+                        <p>In order to use a custom LVM in your video, please type in a year and filename of any LVM below.</p>
+                        <p>https://wrapperclassic.netlify.app/animation/<input type="text" id="customlvmyear" value="2015" placeholder="Custom LVM Year" oninput="selectLVM()" 
+                            />/<input type="text" name="customlvmfile" value="go_full_late.swf" placeholder="Custom LVM Filename"/></p><br>
                     </center>
                     <center class="modal-footer">
                         <h2>Other options</h2>
                         <div id="other-options">
-                            <p id="grid-item">Tutorial <input type="checkbox" name="tutorial"></p>
-                            <p id="grid-item">Widescreen <input type="checkbox" name="widescreen" checked></p>
+                            <p id="grid-item" class="tutorial">Tutorial <input type="checkbox" name="tutorial" onclick="tutCharOption(studio)"></p>
+                            <p id="grid-item" class="widescreen">Widescreen <input type="checkbox" name="widescreen" checked></p>
+                            <div id="grid-item" class="tutorialchar2010" style="display: none;">
+                                <h4>Select Your Character To Use For The 2010 LVM Tutorial</h4><br>
+                                <p>Because the 2010 lvm tutorial only supports the characters from Comedy World, you will only be allowed to select any characters from Comedy World. <br>
+                                    we are not sure if the 2010 lvm tutorial also supports characters from other themes. <br>
+                                    but for now, this is what we are doing.</p><br>
+                                <div id="tutorial-chars"></div>
+                            </div>
+                        </div>
+                        <div id="lvmmode">
+                            <p>Mode</p>
+                            <select name="lvmmode">
+                                <option value="block">Modal Window</option>
+                                <option value="full">Full Screen</option>
+                            </select>
                         </div>
                         <div id="ct2010" style="display: none;">
                             <p>LVM Style</p>
                             <select name="ct2010">
                                 <option value="go">Normal</option>
-                                <option value="domo" selected>Domo</option>
-                                <option value="cn" selected>Cartoon Network</option>
+                                <option value="domo">Domo</option>
+                                <option value="cn">Cartoon Network</option>
                             </select>
                         </div>
                         <div id="ct2011" style="display: none;">
@@ -115,22 +133,28 @@
                                 <option value="silver" selected>Silver</option>
                             </select>
                         </div><br>
-                        <button type="submit" class="btn btn-orange">Create a Video</button>
+                        <button onclick="newAnimation()" class="btn btn-orange">Create a Video</button>
                     </center>
                 </form>
             </div>
         </div>
-        <div class="modal" id="studioBlock">
-            <div class="modal-dialog modal-lg" style="width: 991px;">
+        <div class="modal" id="studioLoading">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" id="closeStudio">
-                            <span aria-hidden="true">&times;</span>
-                            <span class="sr-only">Close</span>
-                        </button>
-                        <h2 class="modal-title"><span class="year"></span> Video Maker</h2>
+                        <h2 class="modal-title">Loading The Studio...</h2>
                     </div>
-                    <div class="modal-body" id="studiodiv">You need Adobe Flash Player in order to use the <span class="year"></span> Video Maker</div>
+                    <div class="modal-body">Please wait until we are done loading the studio.</div>
+                </div>
+            </div>
+        </div>
+        <div id="previewPlayerContainer" class="lightbox" style="display: none; width: 700px;">
+            <div class="lightbox_wrapper">
+                <h5>Preview Video <a style="float: right;" href="javascript:;" onclick="jQuery('#studiodiv').unblock();">×</a></h5>
+                <div id="playerdiv"></div>
+                <div style="margin-bottom: auto;">
+                    <button class="preview-button" onclick="jQuery('#studiodiv').unblock();">< Back to editing</button>
+                    <button class="preview-button" style="float: right;" onclick="jQuery('#studiodiv').unblock(); jQuery('#Studio')[0].onExternalPreviewPlayerPublish()">Save Now ></button>            
                 </div>
             </div>
         </div>
@@ -149,64 +173,141 @@
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
         <script src="/js/user.js"></script>
         <script>
-            let tId;
-            let studio = "2016";
-            jQuery.getJSON("/api/themes/get", (d) => {
-                let count = 0;
-                for (const theme of d) {
-                    if (count < 3) $("[data-row-1]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
-                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
-                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
-                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
-                         <a class="btn btn-default" href="javascript:LVMSelector('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
-                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
-                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
-                    </div>
-                    </div></div></div></div>`);
-                    else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
-                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
-                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
-                        <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
-                        <a class="btn btn-default" href="javascript:LVMSelector('${theme.attr.id}')" title="" data-original-title="LVM Selector">...</a>
-                        ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
-                        ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
-                    </div></div></div></div></div>`);
-                    count++
+            let tId, tmcId, studio = "2016", chars = [], hasChars = false, themes = [], loadingStudio = false, previewerMovieXML, previewerFlashvars;
+            const flashvars = {
+                isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
+                apiserver: window.location.origin + "/",
+                staticserver: "https://wrapperclassic.netlify.app/",
+                isEmbed: 1,
+                ut: "50",
+                studio,
+                appCode: "go",
+                siteId: window.location.host.startsWith("localhost") ? 7 : "go",
+                lid: window.location.host.startsWith("localhost") ? 7 : 13,
+                isLogin: "Y",
+                tlang: "en_US",
+                isWide: "0",
+                tray: tId,
+                upl: 1,
+                hb: "1",
+                pts: 0,
+                nextUrl: "javascript:parent.closeStudio2()"
+            };
+            function retrievePreviewPlayerData() {
+                return previewerMovieXML;
+            }
+            function initPreviewPlayer(dataXmlStr, startFrame) {
+                previewerMovieXML = dataXmlStr;
+                if (typeof startFrame == 'undefined') {
+                    startFrame = 1;
+                } else {
+                    startFrame = Math.max(1, parseInt(startFrame));
                 }
-            });
-            function LVMSelector(themeId) {
-                tId = themeId;
-                $("#createOverlay").modal({
+                jQuery("#playerdiv").flash({
+                    id: "Player",
+                    swf: "https://wrapperclassic.netlify.app/animation/414827163ad4eb60/player_old.swf",
+                    width: "640",
+                    height: "360",
+                    allowFullScreen: true,
+                    allowScriptAccess: "always",
+                    flashvars: {
+                        apiserver: "/",
+                        isEmbed: 1,
+                        tlang: "en_US",
+                        isInitFromExternal: 1,
+                        startFrame,
+                        autostart: 1,
+                        storePath: "https://wrapperclassic.netlify.app/static/store/<store>",
+                        clientThemePath: "https://wrapperclassic.netlify.app/static/tommy/2016/<client_theme>",
+                    }
+                });
+                showOverlayOnElement("#studiodiv", jQuery("#previewPlayerContainer"));
+            }
+            if ((new URLSearchParams(window.location.search)).get("lvm") && (new URLSearchParams(window.location.search)).get("tId")) {
+                $("#studioLoading").modal({
                     keyboard: false,
                     backdrop: "static"
                 })
+                tId = (new URLSearchParams(window.location.search)).get("tId");
+                studio = (new URLSearchParams(window.location.search)).get("lvm");
+                loadingStudio = true;
             }
-            function selectLVM(year) {
-                studio = year;
-                $(".studio-build-active").addClass("studio-build").removeClass("studio-build-active");
-                $(`#studio${year}`).addClass("studio-build-active").removeClass("studio-build");
-                if (year == '2011') {
+            function checkStudioLoadingStatus() {
+                if (loadingStudio && studio == (new URLSearchParams(window.location.search)).get("lvm") && tId == (new URLSearchParams(window.location.search)).get("tId")) {
+                    $("#studioLoading").modal('hide');
+                    newAnimation();
+                }
+            }
+            const interactiveTutorial = {
+                hideTutorial: true,
+                neverDisplay() {
+                    return this.hideTutorial;
+                }
+            }
+            function selectLVM() {
+                studio = $("#customlvmyear").val();
+                $("#error-message-lvmSelector").text('');
+                tutCharOption(studio);
+                if (studio == '2010') {
+                    $(".widescreen").hide();
+                    $("#ct2010").show();
+                    $("#ct2011").hide();
+                    $("#ct2012").hide();
+                } else if (studio == '2011') {
+                    $(".widescreen").show();
+                    $("#ct2010").hide();
                     $("#ct2011").show();
                     $("#ct2012").hide();
-                } else if (year == '2012' || year == '2013') {
+                } else if (studio == '2012' || studio == '2013') {
+                    $(".widescreen").show();
+                    $("#ct2010").hide();
                     $("#ct2011").hide();
                     $("#ct2012").show();
                 } else {
+                    $(".widescreen").show();
+                    $("#ct2010").hide();
                     $("#ct2011").hide();
                     $("#ct2012").hide();
                 }
             }
-            $("#createVideoForm").submit(() => {
+            function newAnimation() {
+                $("#error-message-lvmSelector").text('');
                 const json = Object.fromEntries(new URLSearchParams($("#createVideoForm").serialize()));
-                if (studio == '2011' || studio == '2012' || studio == '2013') {
-                    $(".year").text(studio);
+                studio = $("#customlvmyear").val();
+                if (studio == '2010' && json.tutorial && !tmcId && hasChars) $("#error-message-lvmSelector").text('Please select a character to use in the 2010 LVM tutorial');
+                else if (json.lvmmode == "block") jQuery.post('/api/getNewMovieId', d => {
+                    if (studio == "2010" && window.location.host.startsWith("localhost") && tId != "retro") {
+                        const themeInfo = themes.find(i => i.id == tId);
+                        $("#error-message-lvmSelector").text(`due to the crossdomain.xml file not being fetched correctly while using localhost, ${
+                            themeInfo.name
+                        } does not want to work in the 2010 LVM while you use localhost. Please try using GoNexus online for better results.`);
+                        return;
+                    }
+                    interactiveTutorial.hideTutorial = json.tutorial ? false : true;
                     window.onbeforeunload = function(e) {
                         var e = e || window.event;
                         if (e) e.returnValue = 'You are about to lose all your unsaved changes in the studio.';
                     };
-                    jQuery("#studiodiv").flash({
+                    const attrs = {
+                        data: `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val()}/${json.customlvmfile}`,
+                        width: "100%",
+                        height: "100%",
+                        type: "application/x-shockwave-flash"
+                    };
+                    const swf = parseInt(studio) >= 2013 ? `/api/serveLVMViaURL?i=https://wrapperclassic.netlify.app/animation/${
+                        $("#customlvmyear").val()
+                    }/${json.customlvmfile}` : `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val()}/${json.customlvmfile}`;
+                    const storePath = parseInt(studio) >= 2013 ? `/static/2011/store/<store>` : `https://wrapperclassic.netlify.app/static/store/<store>`;
+                    const clientThemePath = parseInt(studio) >= 2013 ? `/static/2012/477/<client_theme>?themeColor=${json.ct2012 || "go"}` : `https://wrapperclassic.netlify.app/static/tommy/${
+                        $("#customlvmyear").val()
+                    }/<client_theme>`;
+                    flashvars.presaveId = d;
+                    flashvars.ctc = json.ct2010;
+                    flashvars.tm = json.tutorial ? "NEW" : "FIN";
+                    if (json.tutorial && studio == "2010") flashvars.tmcc = tmcId;
+                    if (studio != '2010') jQuery("#studiodiv").flash({
                         id: "Studio",
-                        swf: `/static/${studio == '2013' ? '2012/477' : `${studio}/animation`}/go_full.swf`,
+                        swf,
                         width: "960",
                         height: "630",
                         align: "middle",
@@ -215,12 +316,11 @@
                         wmode: "window",
                         hasVersion: "10.3",
                         flashvars: {
-                            apiserver: studio != "2010" ? "/" : "https://wrapperclassic.web.app/us-centural1/app/",
-                            writeContentsToOrigin: studio == "2010" ? window.location.origin : ""
-                            storePath: "/static/2011/store/<store>",
+                            apiserver: "/",
+                            storePath,
                             isEmbed: 1,
                             ctc: studio == "2010" ? json.ct2010 : "go",
-                            ut: studio != '2013' ? 60 : 23,
+                            ut: parseInt(studio) <= 2012 ? 60 : 23,
                             tm: json.tutorial ? "NEW" : "FIN",
                             appCode: "go",
                             tray: tId,
@@ -228,32 +328,190 @@
                             lid: 13,
                             isLogin: "Y",
                             retut: 1,
-                            clientThemePath: `/static/${studio != '2011' ? '2012/477' : '2011'}/<client_theme>${studio != "2013" ? `?themeColor=${studio == '2011' ? json.ct2011 : json.ct2012}` : ""},
+                            clientThemePath,
                             tlang: "en_US",
                             studio,
                             userId: userData.uid || userData.id,
                             isWide: json.widescreen ? 1 : 0,
                             collab: 0,
                             nextUrl: "/api/redirect",
-                            themeColor: studio == "2013" ? json.ct2012 : ""
+                            themeColor: studio == "2013" ? json.ct2012 : "go",
+                            presaveId: d
                         }
                     });
-                    $("#createOverlay").modal('hide');
+                    else {
+                        const yesorno = window.location.host.startsWith("localhost") ? confirm("For whatever reason, when localhost is being used to fetch the crossdomain.xml file on the 2010 LVM, it tries to get it using localhost90 which is a host that does not exist on all WI-FI networks. Because of this bug, we had no choice but to set the isOffline flashvar to 1 on the 2010 LVM which will cause some features to not work properly in the 2010 LVM like saving your movie, getting user assets, and etc. After you press OK, you are agreeing with the statements that are mentioned above and the reason for all of this is because of the reason stated in the first sentence above and due to that very bug not being fixable no matter how many times one of our developers tried removing the bug. are you sure that you want to proceed to the 2010 LVM?") : true;
+                        if (yesorno) {
+                            if (studio == '2010' && jQuery.flash.available && yesorno) {
+                                const params = flashvars;
+                                jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:0%"></div></div>');
+                                jQuery.post('/api/getNewMovieId', d => {
+                                    flashvars.presaveId = d;
+                                    jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:25%"></div></div>');
+                                    jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=attrs&protocall=https&method=POST&apiPath=/.netlify/functions/api", attrs, () => {
+                                        jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:50%"></div></div>');
+                                        jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=params&protocall=https&method=POST&apiPath=/.netlify/functions/api", params, () => {
+                                            jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:100%"></div></div>');
+                                            jQuery.post('/api/lvmVarsStatus?apiHost=wrapperclassic.netlify.app&protocall=https&method=POST&apiPath=/.netlify/functions/api', d => {
+                                                if (d.isThere) jQuery("#studiodiv").html(`<embed height="630" width="960" src="https://wrapperclassic.netlify.app/lvmEmbed.html"></embed>`)
+                                                else jQuery("#studiodiv").html('<center>Some data was not sent in successfully to wrapper: classic. Please relaunch the 2010 Video Maker.</center>');
+                                            });
+                                        });
+                                    })
+                                })
+                            }
+                        } else return;
+                    }
+                    $("#customLVM").modal('hide');
                     $("#studioBlock").modal({
                         keyboard: false,
                         backdrop: "static"
                     });
-                } else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on" ? true : false}&tray=${tId}`
-                $("#closeStudio").click(() => {
-                    const yesorno = confirm(`Before you leave the ${studio} studio, please save any changes that you made to your video.`)
-                    if (!yesorno) {
-                        $("#studioBlock").modal('hide');
+                }); 
+                else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on" ? true : false}&tray=${tId}`
+                if (studio == "2010") {
+                    if (!window.location.host.startsWith("localhost")) $("#closeStudio").on("click", () => {
+                        if (closeStudio()) $("#closeStudio").off("click");
+                    });
+                    else {
                         window.onbeforeunload = function(e) {
                             return null;
                         };
+                        $("#closeStudio").on("click", () => {
+                            closeStudio2();
+                            $("#closeStudio").off("click");
+                        });
+                    }
+                } else $("#closeStudio").on("click", () => {
+                    if (closeStudio()) $("#closeStudio").off("click");
+                });
+            }
+            function closeStudio(l) {
+                const yesorno = confirm(`Before you leave the ${l || studio} LVM, please save any changes that you made to your video.`);
+                if (!yesorno) {
+                    switch (l || studio) {
+                        case "custom": {
+                            jQuery.post("/api/deleteParamInfo", new URLSearchParams({
+                                apiHost: 'wrapperclassic.netlify.app',
+                                types: 'attrs_params',
+                                protocall: 'https',
+                                method: 'POST',
+                                apiPath: '/.netlify/functions/api'
+                            }).toString());
+                            break;
+                        } case "2010": {
+                            jQuery.post("/api/deleteParamInfo", new URLSearchParams({
+                                apiHost: 'wrapperclassic.netlify.app',
+                                types: 'attrs_params',
+                                protocall: 'https',
+                                method: 'POST',
+                                apiPath: '/.netlify/functions/api'
+                            }).toString());
+                            break;
+                        }
+                    }
+                    $("#studioBlock").modal('hide');
+                    window.onbeforeunload = function(e) {
+                        return null;
+                    };
+                    return true;
+                } else return false;
+            }
+            function closeStudio2(l) {
+                switch (l || studio) {
+                    case "custom": {
+                        jQuery.post("/api/deleteParamInfo", new URLSearchParams({
+                            apiHost: 'wrapperclassic.netlify.app',
+                            types: 'attrs_params',
+                            protocall: 'https',
+                            method: 'POST',
+                            apiPath: '/.netlify/functions/api'
+                        }).toString());
+                        break;
+                    } case "2010": {
+                        jQuery.post("/api/deleteParamInfo", new URLSearchParams({
+                            apiHost: 'wrapperclassic.netlify.app',
+                            types: 'attrs_params',
+                            protocall: 'https',
+                            method: 'POST',
+                            apiPath: '/.netlify/functions/api'
+                        }).toString());
+                        break;
+                    }
+                }
+                $("#studioBlock").modal('hide');
+                window.onbeforeunload = function(e) {
+                    return null;
+                };
+            }
+            jQuery.getJSON("/api/themes/get", (d) => {
+                let count = 0;
+                for (const theme of d) {
+                    themes.push(theme.attr);
+                    if (count < 3) $("[data-row-1]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
+                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
+                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
+                         <a class="btn btn-default" title="" data-original-title="Custom LVM" data-toggle="modal" data-target="#customLVM" onclick="tId = '${theme.attr.id}'">Custom LVM</a>                         
+                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
+                    </div>
+                    </div></div></div></div>`);
+                    else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
+                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
+                        <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>  
+                        <a class="btn btn-default" title="" data-original-title="Custom LVM" data-toggle="modal" data-target="#customLVM" onclick="tId = '${theme.attr.id}'">Custom LVM</a>                      
+                        ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
+                        ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
+                    </div></div></div></div></div>`);
+                    count++
+                }
+            });
+            function tutCharOption(s) {
+                if (s == "2010") {
+                    $("#lvmmode").hide();
+                    if (!window.location.host.startsWith("localhost")) {
+                        $("input[name='tutorial']").prop("checked") ? $(".tutorialchar2010").show() : $(".tutorialchar2010").hide()
+                        for (const d of chars) {
+                            hasChars = true;
+                            break;
+                        }
+                        $("#tutorial-chars").html(`<p id="grid-item">You have not created any characters yet. but that's okay, we will use Joseph as your character instead.</p>`);
+                        tmcId = "4048901";
+                    } else $(".tutorial").hide();
+                } else {
+                    $("#lvmmode").show();
+                    $(".tutorialchar2010").hide()
+                    $(".tutorial").show();
+                }
+            }
+            function reloadCCListForTut() {
+                jQuery.ajax({
+                    url: '/api/getChars',
+                    type: 'POST',
+                    data: { 
+                        cc_theme_id: 'family', 
+                        tags: '',
+                        userId: userData.uid || userData.id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data);
+                        for (const cc of data) {
+                            $("#tutorial-chars").append(`<a href="javascript:;" id="char${cc.id}" onclick="selectTutChar('${cc.id}')" class="tutorial-char"><img src="${cc.head_url}"><h2>${
+                                cc.title
+                            }</h2></a>`);
+                            chars.push(cc);
+                        }
                     }
                 });
-            })
+            }
+            function selectTutChar(cId) {
+                tmcId = cId;
+                $(".tutorial-char-active").addClass("tutorial-char").removeClass("tutorial-char-active");
+                $(`#char${cId}`).addClass("tutorial-char-active").removeClass("tutorial-char");
+            }
         </script>
         <%- include("includes/footer.ejs") %>
     </body>

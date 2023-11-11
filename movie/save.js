@@ -10,7 +10,7 @@ const http = require("http");
  */
 module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.path != "/goapi/saveMovie/") return;
-	loadPost(req, res).then(async ([data]) => {
+	loadPost(req, res).then(async data => {
 		try {
 			var thumb;
 			const trigAutosave = data.is_triggered_by_autosave;

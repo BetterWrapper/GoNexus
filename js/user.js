@@ -3,6 +3,7 @@
  * Firebase is required in order to run this file.
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
+if (window.location.pathname != "/cc" && window.location.pathname != "/cc_browser") localStorage.removeItem("charcreatoryear");
 const params = new URLSearchParams(window.location.search);
 const auth = firebase.auth();
 let signupComplete = false;
@@ -13,7 +14,7 @@ auth.onAuthStateChanged(user => {
     if (user) {
         if (displayName != null) auth.currentUser.updateProfile({displayName}).catch(e => {
             console.log(e);
-            alert(e.message);
+            displayFeeback(1 + e.message);
         });
         if (!user.emailVerified) {
             jQuery.post(`/api/fetchAPIKeys`, (d) => {
@@ -32,7 +33,7 @@ auth.onAuthStateChanged(user => {
                 loginComplete = false;
                 auth.currentUser.sendEmailVerification().catch(e => {
                     console.log(e);
-                    alert(e.message);
+                    displayFeeback(1 + e.message);
                 });
             }
             switch (window.location.pathname) {
@@ -152,19 +153,31 @@ function loggedIn(user) {
             const json = JSON.parse(d);
             addVal2Element('freeconvert-key', json.freeConvertKey);
             addVal2Element('topmediaai-key', json.topMediaAIKey);
+            jQuery.post("/api/getAllUsers", d => {
+                const userInfo = d.find(i => i.id == user.id || user.uid);
+                if (!userInfo.isStudent) showElement('isAccountAdmin');
+                else if (userInfo.isTeacher) {
+                    hideElement('teacherOption');
+                    for (const i of document.getElementsByClassName('schoolOption')) i.style.display = 'none';
+                }
+            })
         });
     });
     hideElement('signup-button');
     hideElement('login-button');
     showElement('isLogin');
-    showElement('exploreTab');
-    showElement('iconsLol');
     switch (window.location.pathname) {
-        case "/account": {
+        case "/create": {
+            checkStudioLoadingStatus();
+            break;
+        } case "/public_index": {
+            addLink2Element("banner_btn", '/create')
+            jQuery("#banner_btn").text("Make A Video");
+            break;
+        } case "/account": {
             loadSettings(user);
             break;
-        }
-        case "/dashboard": {
+        } case "/dashboard": {
             jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
                 json = meta;
                 $("#loadMore").text('load more');
@@ -201,7 +214,7 @@ function loggedIn(user) {
             break;
         } case "/quickvideo": {
             GoLite.showSelectCCOverlay = function(y) {
-                jQuery.post("/api/getAIVoices", {
+                jQuery.post("/api/getTextToSpeechVoices", {
                     uid: user.uid || user.id
                 }, d => {
                     var w = GoLite.getCharacters();
@@ -212,7 +225,7 @@ function loggedIn(user) {
                 });
             };
             GoLite.showSelectVoiceOverlay = function(y) {
-                jQuery.post("/api/getAIVoices", {
+                jQuery.post("/api/getTextToSpeechVoices", {
                     uid: user.uid || user.id
                 }, d => {
                     var w = GoLite.getCharacters();
@@ -223,7 +236,7 @@ function loggedIn(user) {
             };
             VoiceCatalog = {
                 lookupVoiceInfo(voice_id) {
-                    jQuery.post("/api/getAIVoices", {
+                    jQuery.post("/api/getTextToSpeechVoices", {
                         uid: user.uid || user.id
                     }, lang_model => {
                         console.log(lang_model);
@@ -247,7 +260,7 @@ function loggedIn(user) {
                     });
                 },
                 getDefaultVoice() {
-                    jQuery.post("/api/getAIVoices", {
+                    jQuery.post("/api/getTextToSpeechVoices", {
                         uid: user.uid || user.id
                     }, lang_model => {
                         console.log(lang_model);
@@ -349,13 +362,20 @@ function userLogin(email, password) {
     });
 }
 function userLogout() {
+    switch (window.location.pathname) {
+        case "/public_index": {
+            addLink2Element("banner_btn", "/public_signup");
+            jQuery("#banner_btn").text("Sign Up Now");
+            break;
+        }
+    }
     jQuery.post("/api/getSession", d => {
         const json = JSON.parse(d);
         if (json.data && json.data.loggedIn && json.data.current_uid) logout();
         else {
             auth.signOut().then(logout).catch(e => {
                 console.log(e);
-                alert(e.message);
+                displayFeedback(1 + e.message);
             });
         }
     });
@@ -460,8 +480,8 @@ function downloadMyStuff() {
             email: userData.email
         }, (d) => {
             const json = JSON.parse(d);
+            $("#stuff-downloading-overlay").modal('hide');
             if (json.success) {
-                $("#stuff-downloading-overlay").modal('hide');
                 window.location.href = json.fileUrl;
             } else displayFeedback(1 + json.error);
         });

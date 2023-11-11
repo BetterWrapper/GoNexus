@@ -964,6 +964,13 @@ var GoLite = (function(e) {
                     showNotice(y.error, true);
                     e(document).trigger("GoLite.stateChange", [""]);
                     return
+                } 
+                if (y.htmlError) {
+                    jQuery("#htmlerror").html(y.htmlError);
+                    if (y.htmlCSS) for (const i in y.htmlCSS) jQuery("#html_error").css(i, y.htmlCSS[i]);
+                    showOverlay(jQuery("#html_error"));
+                    e(document).trigger("GoLite.stateChange", [""]);
+                    return
                 }
                 b = y.enc_mid;
                 u = y.opening_closing;
@@ -1043,6 +1050,12 @@ var GoLite = (function(e) {
                 if (G.error) {
                     e.unblockUI();
                     showNotice(G.error, true);
+                    return
+                }
+                if (G.htmlError) {
+                    e.unblockUI();
+                    jQuery("#htmlerror").html(G.htmlError);
+                    showOverlay(jQuery("#html_error"), G.htmlCSS || {});
                     return
                 }
                 window.location = G.url
@@ -1241,8 +1254,7 @@ function blockUICenterX() {
     $block.css("left", (jQuery(window).width() - $block.width()) / 2 + jQuery(window).scrollLeft() + "px")
 }
 
-function showOverlay(c, a) {
-    a = a || {};
+function showOverlay(c) {
     var b = {
         padding: 0,
         margin: 0,
@@ -1255,7 +1267,6 @@ function showOverlay(c, a) {
         backgroundColor: "transparent",
         cursor: "auto"
     };
-    jQuery.extend(b, a);
     jQuery.blockUI({
         message: c,
         css: b,

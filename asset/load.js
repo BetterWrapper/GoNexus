@@ -36,7 +36,7 @@ module.exports = function (req, res, url) {
 				case "/goapi/deleteAsset/":
 				case "/goapi/deleteUserTemplate/":
 				case "/goapi/DeleteUserTemplate/": {
-					loadPost(req, res).then(([data]) => {
+					loadPost(req, res).then(data => {
 						try {
 							asset.delete(data);
 							res.end("0");
@@ -47,7 +47,7 @@ module.exports = function (req, res, url) {
 					});
 					break;
 				} case "/goapi/getAsset/": {
-					loadPost(req, res).then(async ([data]) => {
+					loadPost(req, res).then(async data => {
 						const aId = data.assetId;
 
 						try {
@@ -72,7 +72,7 @@ module.exports = function (req, res, url) {
 					});
 					return true;
 				} case "/goapi/getAssetEx/": {
-					loadPost(req, res).then(async ([data]) => {
+					loadPost(req, res).then(async data => {
 						const aId = data.enc_asset_id;
 
 						try {
@@ -96,7 +96,7 @@ module.exports = function (req, res, url) {
 					});
 					return true;
 				} case "/goapi/updateAsset/": {
-					loadPost(req, res).then(([data]) => {
+					loadPost(req, res).then(data => {
 						try {
 							asset.update(data);
 							res.end("0");
@@ -107,7 +107,7 @@ module.exports = function (req, res, url) {
 					});
 					break;
 				} case "/goapi/getWaveform/": {
-					loadPost(req, res).then(async ([data]) => {
+					loadPost(req, res).then(async data => {
 						if (data.movieId) {
 							switch (data.movieId.substr(0, data.movieId.lastIndexOf("-"))) {
 								case "ft": return res.end(await getBuffersOnlineViaRequestModule({
@@ -124,7 +124,7 @@ module.exports = function (req, res, url) {
 					});
 					break;
 				} case "/goapi/saveWaveform/": {
-					loadPost(req, res).then(([data]) => {
+					loadPost(req, res).then(data => {
 						fs.writeFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`, data.waveform);
 						res.end("0");
 					});

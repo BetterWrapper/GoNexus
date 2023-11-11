@@ -10,7 +10,7 @@ const http = require("http");
  */
 module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.pathname != "/goapi/saveTemplate/") return;
-	loadPost(req, res).then(async ([data]) => {
+	loadPost(req, res).then(async data => {
 		try {
 			const body = Buffer.from(data.body_zip, "base64");
 			const thumb = Buffer.from(data.thumbnail, "base64");

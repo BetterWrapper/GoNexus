@@ -34,7 +34,11 @@ module.exports = (req, res, url) => {
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
         } else if (url.pathname.includes("/store/")) {
-            https.get(`https://ourmetallicdisplaymanager.joseph-animate.repl.co/static/store${url.pathname.split("/static/2011/store")[1]}`, (r) => {
+            if (!url.pathname.includes("/cc_store/")) https.get(`https://ourmetallicdisplaymanager.joseph-animate.repl.co/static/store${url.pathname.split("/static/2011/store")[1]}`, (r) => {
+                const buffers = [];
+                r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
+            }).on("error", console.error);
+            else https.get(`https://file.garden/ZP0Nfnn29AiCnZv5/cc_store${url.pathname.split("/static/2011/store/cc_store")[1]}`, (r) => {
                 const buffers = [];
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
@@ -46,7 +50,7 @@ module.exports = (req, res, url) => {
                 const buffers = [];
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
-        } else if (url.pathname.includes("/go/") || url.pathname.includes("/client_theme/") || url.pathname.endsWith("/go_full.swf")) {
+        } else if (url.pathname.includes("/go/") || url.pathname.includes("/client_theme/") || url.pathname.endsWith("/go_full.swf") || url.pathname.endsWith("/cc.swf")) {
             https.get(`https://file.garden/ZP0Nfnn29AiCnZv5${url.pathname.split("/static/2012")[1].split("silver").join(url.query.themeColor)}`, (r) => {
                 const buffers = [];
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);

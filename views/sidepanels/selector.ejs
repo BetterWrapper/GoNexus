@@ -1,0 +1,23 @@
+<% if (tId == "family") { %>
+    <div class="sidepanel">
+        <div class="categoryselector">
+            <select id="selector" style="margin: 5px; visibility: hidden;">
+                <option value="*">Show All</option>
+                <option value="adam">Guy Characters</option>
+                <option value="eve">Girl Characters</option>
+                <option value="rocky">Buff Characters</option>
+                <option value="bob">Fat characters</option>
+            </select>
+        </div>
+    </div>
+<% } else if (tId == "anime" || tId == "ninjaanime") { %>
+    <div class="sidepanel">
+        <div class="categoryselector">
+            <select id="selector" style="margin: 5px; visibility: hidden;">
+                <option value="*">Show All</option>
+                <option value="guy">Guy Characters</option>
+                <option value="girl">Girl Characters</option>
+            </select>
+        </div>
+    </div>
+<% } %>

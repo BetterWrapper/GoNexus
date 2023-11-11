@@ -41,11 +41,10 @@ function getLangPre(langName) {
 	}
 }
 const voices = {};
-const tts = require("./main");
 const https = require("https");
 const loadPost = require("../misc/post_body");
 const fs = require("fs");
-function getXml(apiName) {
+function getVoicesXml(apiName) {
 	return new Promise((res, rej) => {
 		https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
 			const buffers = [];
@@ -72,7 +71,44 @@ function getXml(apiName) {
 		}).on("error", rej);
 	});
 }
-
+function getVoicesJson(apiName) {
+	return new Promise((res, rej) => {
+		https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => {
+				try {
+					const json = JSON.parse(Buffer.concat(buffers))[apiName];
+					const table = {};
+					for (const voiceInfo of json.voices) {
+						voices[voiceInfo.vid] = voiceInfo;
+						table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"] = table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"] || [];
+						table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"].unshift({
+							id: voiceInfo.vid,
+							desc: voiceInfo.name,
+							sex: voiceInfo.gender,
+							vendor: apiName,
+							demo: "",
+							country: voiceInfo.flag.length <= 2 ? voiceInfo.flag : false,
+							lang: getLangPre(voiceInfo.lang) || false,
+							plus: false
+						})
+					}
+					const json2 = {};
+					Object.keys(table).sort().map((i) => {
+						json2[i == "More" ? "default" : getLangPre(i)] = {
+							desc: i,
+							options: table[i]
+						}
+					});
+					console.log(json2);
+					res(json2);
+				} catch (e) {
+					rej(e);
+				}
+			}).on("error", rej);
+		}).on("error", rej);
+	});
+}
 module.exports = function (req, res, url) {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
@@ -89,43 +125,20 @@ module.exports = function (req, res, url) {
 				}).on("error", console.error);
 			}).on("error", console.error);
 			break;
-		} case "/api/getAIVoices": {
-			loadPost(req, res).then(([data]) => tts.checkAIVoiceServer(data).then(q => {
-				console.log(q);
-				if (q == "ContainsErrors") {
-					res.statusCode = 200;
+		} case "/api/getTextToSpeechVoices": {
+			loadPost(req, res).then(data => {
+				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid);
+				getVoicesJson(json.settings.api.ttstype.value.split("+").join(" ")).then(i => {
+					fs.writeFileSync('./tts/voices.json', JSON.stringify(voices, null, "\t"));
 					res.setHeader("Content-Type", "application/json");
-					res.end(JSON.stringify({
-						en: {
-							desc: "English",
-							options: [
-								{
-									id: "Hannah",
-									desc: "Hannah",
-									sex: "F",
-									vendor: "Topmediai",
-									demo: "",
-									country: "US",
-									lang: "en",
-									plus: false
-								}
-							]
-						}
-					}));
-				} else tts.getAIVoices().then(i => {
-					res.statusCode = 200;
-					res.setHeader("Content-Type", "application/json");
-					res.end(JSON.stringify(i, null, "\t"));
-				}).catch(e => {
-					res.statusCode = 400;
-					console.log(e);
+					res.end(JSON.stringify(i));
 				});
-			}));
+			});
 			break;
 		} case "/goapi/getTextToSpeechVoices/": {
-			loadPost(req, res).then(([data]) => {
+			loadPost(req, res).then(data => {
 				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
-				getXml(json.settings.api.ttstype.value.split("+").join(" ")).then(xml => {
+				getVoicesXml(json.settings.api.ttstype.value.split("+").join(" ")).then(xml => {
 					fs.writeFileSync('./tts/voices.json', JSON.stringify(voices, null, "\t"));
 					res.setHeader("Content-Type", "application/xml");
 					res.end(xml);

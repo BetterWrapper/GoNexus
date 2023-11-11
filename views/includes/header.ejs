@@ -1,4 +1,5 @@
 <%- include("usercss.ejs") %>
+<link href="https://wrapperclassic.netlify.app/cc/overlay.css" rel="stylesheet" type="text/css">
 <nav class="navbar site-nav" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -30,11 +31,42 @@
                         <li><a class="logout-link" href="javascript:userLogout()">Logout</a></li>
                     </ul>
                 </li>
+                <li class="dropdown" id="isAccountAdmin" style="display: none;">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Manage <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="/manage_students">
+                                Students
+                                <div class="text-muted small">Add students</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/manage_teachers">
+                                Teachers
+                                <div class="text-muted small">Add teachers</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/manage_groups">
+                                Groups
+                                <div class="text-muted small">Create groups, manage group permissions</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="/manage_school">
+                                School Profile
+                                <div class="text-muted small">Enter your school information</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Useful Tools<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a data-toggle="modal" data-target="#FlashThemesConverter" href="javascript:;">FlashThemes Video Converter</a></li>
                         <li><a data-toggle="modal" data-target="#FlashGamePlayer" href="javascript:;">Flash Game Player</a></li>
+                        <li><a onclick="setupFlashThemesMovieUploader()" href="javascript:;">FlashThemes Movie Uploader</a></li>
                     </ul>
                 </li>
                 <% if (isVideoList) { %>
@@ -87,8 +119,6 @@
             <center class="modal-body">
                 <p>These keys are for stuff like tts usage with the QVM and etc. if you want to put in your own api keys, please do so on the form below.</p><br>
                 <p id="error-message" style="color: red;"></p><br>
-                <label for="topmediaai-key">Api Key For Topmediai <a href="/public_faq?action=openModal&target=topMediaAIKeyTutorial">How do i get that?</a></label><br>
-                <input id="topmediaai-key" type="text"/><br>
                 <label for="freeconvert-key">Api Key For FreeConvert <a href="/public_faq?action=openModal&target=freeConvertKeyTutorial">How do i get that?</a></label><br>
                 <input id="freeconvert-key" type="text"/><br>
                 <a href="/public_faq?action=getExplination&open=faq15&scrollTo=troubleshooting">Why do i need both my Topmediai and FreeConvert API Keys?</a><br>
@@ -116,6 +146,45 @@
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Your SWF Files <span class="caret"></span></a>
                     <ul class="dropdown-menu" id="FlashGamePlayer_swfFilesAll"></ul>
                 </div>
+            </center>
+        </div>
+    </div>
+</div>
+<div class="modal" id="FlashThemesMovieUploader">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div id="converter_modalLoad" class="modal"></div>
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">FlashThemes Movie Uploader</h3>
+            </div>
+            <center class="modal-body">
+                <p>Because FlashThemes did not add this feature, we are adding it ourselves. please thank us for doing all of the hard work we could for you all.</p>
+                <p id="flashthemes_movie_uploader_error" style="color: red;"></p>
+                <p id="flashthemes_movie_uploader_success" style="color: green;"></p>
+                <form action="javascript:;" id="flashthemesMovieUploaderForm">
+                    <input type="file" id="file" name="import" id="flashthemesMovieUploader" style="display: none;"/>
+                    <a href="javascript:;" onclick="document.getElementById('flashthemesMovieUploader').click()">Upload your movie zip from this device</a>
+                    <h4>OR</h4>
+                    <p>Select a movie from the list</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Movie Thumbnail</th>
+                                <th>Movie Title</th>
+                                <th>Movie Description</th>
+                                <th>Last Modified</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mymovies2convert"></tbody>
+                     </table>
+                    <h4>OR</h4>
+                    <label for="movieUploaderViaURL">Upload a movie from a URL (Must lead to a zip file) <input type="text" id="movieUploaderViaURL" name="movieURL"/></label><br>
+                    <button class="btn btn-orange" type="submit" id="movieUploaderSubmitBtn">Begin Movie Upload</button>
+                </form>
             </center>
         </div>
     </div>
@@ -214,6 +283,38 @@
         </div>
     </div>
 </div>
+<div id="FTAccLinkageWindowLightbox" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" id="ftacclinkageformlightbox"> 
+        <center>
+            <h2>Link Your FlashThemes Account</h2>
+            <p id="ftacclinkageerrorlightbox" style="color: red;"></p>
+            <label for="ftpswlightbox">FlashThemes Account Password <input id="ftpswlightbox" type="password"/></label><br>
+            <input class="btn btn-orange" id="ftacclinkagebuttonlightbox" type="submit" value="Link Your FlashThemes Account"/>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
+<div id="movieUploadingOverlayAfterLogin" class="lightbox" style="display:none">
+    <div class="lightbox_wrapper"> 
+        <center>
+            <h2>Uploading Your Movie To FlashThemes..</h2>
+            <p>Your movie should be done uploading soon. Please be patient.</p>
+        </center>
+    </div>
+</div>
+<div id="FTAccLoginWindowLightbox" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" id="flashthemesloginlightbox"> 
+        <center>
+            <h2>Sign In With Your FlashThemes Account</h2>
+            <p id="flashthemesloginrrorlightbox" style="color: red;"></p>
+            <label for="ftemaillightbox">Email <input id="ftemaillightbox" type="email"/></label><br>
+            <label for="ftloginpswlightbox">Password <input id="ftloginpswlightbox" type="password"/></label><br>
+            <input class="btn btn-orange" id="loginbtnftacclightbox" type="submit" value="Login"/>
+            <a type="button" id="forgotftpswlightbox" class="btn btn-default" href="https://flashthemes.net/forgotpassword">i forgot my password for my flashthemes account</a>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
 <div id="stuff-downloading-overlay" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -224,7 +325,257 @@
         </div>
     </div>
 </div>
+<div id="ft-acc-required" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">FlashThemes Account Required</h3>
+            </div>
+            <div class="modal-body" id="ft-action"></div>
+            <div class="modal-footer">
+                <button class="btn btn-green" id="linkFTAccBtnlightbox" onclick="showOverlayOnElement('#ft-acc-required', jQuery('#FTAccLinkageWindowLightbox'))">Link A FlashThemes Account</button>
+                <button class="btn btn-orange" id="loginFTAccBtnlightbox" onclick="showOverlayOnElement('#ft-acc-required', jQuery('#FTAccLoginWindowLightbox'))">Login With A FlashThemes Account</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    let uploadMovieAfterLoginIsComplete = false;
+    function uploadMovieAfterLoginComplete() {
+        if (!uploadMovieAfterLoginIsComplete) uploadMovieAfterLoginIsComplete = true;
+    }
+    $("#flashthemesMovieUploaderForm").submit(() => {
+        if (processing) return;
+        processing = true;
+        const origText = $("#movieUploaderSubmitBtn").text();
+        $("#movieUploaderSubmitBtn").text('Uploading Your Movie To FlashThemes...');
+        $("#flashthemes_movie_uploader_error").text('');
+        $("#flashthemes_movie_uploader_success").text('');
+        const json = Object.fromEntries(new URLSearchParams($("#flashthemesMovieUploaderForm").serialize()));
+        const formData = new FormData();
+        for (const i in json) if (i != "import") formData.append(i, json[i]);
+        formData.append("import", document.getElementById('file').files[0])
+        $.ajax({
+            url: "/api/uploadMovie2FlashThemes",
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json"
+        }).done((d) => {
+            processing = false;
+            $("#movieUploaderSubmitBtn").text(origText);
+            if (d.success) $("#flashthemes_movie_uploader_success").html(`Your movie has been uploaded to FlashThemes successfully. to go to your movie in FlashThemes, you may click <a href="${
+                d.movieURL
+            }">here</a>.`);
+            else $("#flashthemes_movie_uploader_error").html(d.error);
+        });
+    })
+    $("#ftacclinkageformlightbox").submit(() => {
+        if (processing) return;
+        $("#ftacclinkageerrorlightbox").text("");
+        $(".close_btn").hide();
+        processing = true;
+        const origText = $("#ftacclinkagebuttonlightbox").val();
+        $("#ftacclinkagebuttonlightbox").val("Linking FlashThemes Account...");
+        jQuery.post('/api/checkFTAcc', {
+            lc: "en_US",
+            returnto: "/",
+            email: userData.email,
+            password: jQuery("#ftpswlightbox").val()
+        }, d => {
+            const code = `${d.split("{")[0]}`;
+            switch (code) {
+                case '0': {
+                    jQuery.post('/api/linkAccount', {
+                        code: '0',
+                        type: "FlashThemes",
+                        uid: userData.uid,
+                        password: jQuery("#ftpswlightbox").val()
+                    }, d => {
+                        if (d.success) {
+                            hideOverlayOnElement();
+                            displayFeedback(0 + "Success!");
+                            $("#linkFTAccBtnlightbox").removeClass("btn-green");
+                            $("#linkFTAccBtnlightbox").addClass("disabled");
+                            $("#linkFTAccBtnlightbox").click(() => location.href = 'javascript:;');
+                            $("#linkFTAccBtnlightbox").text("Already Linked");
+                            $("#loginFTAccBtnlightbox").hide();
+                        } else {
+                            processing = false;
+                            $("#ftacclinkagebuttonlightbox").val(origText);
+                            $("#ftacclinkageerrorlightbox").text(d.error);
+                            $(".close_btn").show();
+                        }
+                    });
+                    break;
+                } case '1': {
+                    const json = JSON.parse(d.split("1")[1]);
+                    processing = false;
+                    $("#ftacclinkagebuttonlightbox").val(origText);
+                    $("#ftacclinkageerrorlightbox").text(json.errmsg);
+                    $(".close_btn").show();
+                    break;
+                }
+            }
+        })
+    })
+    $("#flashthemesloginlightbox").submit(() => {
+        if (processing) return;
+        $(".close_btn").hide();
+        $("#forgotftpswlightbox").hide();
+        const origText = $("#loginbtnftacclightbox").val();
+        $("#loginbtnftacclightbox").val('Logging In...');
+        $("#flashthemesloginrrorlightbox").text('');
+        processing = true;
+        jQuery.post('/api/checkFTAcc', {
+            lc: "en_US",
+            returnto: "/",
+            email: jQuery("#ftemaillightbox").val(),
+            password: jQuery("#ftloginpswlightbox").val()
+        }, d => {
+            const code = `${d.split("{")[0]}`;
+            switch (code) {
+                case '0': {
+                    jQuery.post('/api/addFTAcc', {
+                        code: '0',
+                        lc: "en_US",
+                        returnto: "/",
+                        email: jQuery("#ftemaillightbox").val(),
+                        password: jQuery("#ftloginpswlightbox").val(),
+                        uid: userData.uid || userData.id
+                    }, d => {
+                        if (d.displayNameRequired) {
+                            let displayName = prompt("Please Enter In Your Display Name.", "");
+                            while (!displayName || displayName == null) displayName = prompt("Please Enter In Your Display Name.", "");
+                            jQuery.post('/api/addFTAcc', {
+                                displayName,
+                                code: '0',
+                                lc: "en_US",
+                                returnto: "/",
+                                email: jQuery("#ftemaillightbox").val(),
+                                password: jQuery("#ftloginpswlightbox").val()
+                            }, d => {
+                            if (d.success) location.href = '/dashboard';
+                            else {
+                                    processing = false;
+                                    $(".close_btn").show();
+                                    $("#forgotftpswlightbox").show();
+                                    $("#loginbtnftacclightbox").val(origText);
+                                    $("#flashthemesloginrrorlightbox").text(d.error);
+                                }
+                            });
+                        }
+                        else if (d.success) {
+                            if (uploadMovieAfterLoginIsComplete && processing) {
+                                hideOverlayOnElement();
+                                const origText = $("#movieUploaderSubmitBtn").text();
+                                $("#movieUploaderSubmitBtn").text('Uploading Your Movie To FlashThemes...');
+                                $("#flashthemes_movie_uploader_error").text('');
+                                $("#flashthemes_movie_uploader_success").text('');
+                                const json = Object.fromEntries(new URLSearchParams($("#flashthemesMovieUploaderForm").serialize()));
+                                const formData = new FormData();
+                                for (const i in json) if (i != "import") formData.append(i, json[i]);
+                                formData.append("import", document.getElementById('file').files[0])
+                                $.ajax({
+                                    url: "/api/uploadMovie2FlashThemes",
+                                    method: "POST",
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    dataType: "json"
+                                }).done((d) => {
+                                    processing = false;
+                                    $("#movieUploaderSubmitBtn").text(origText);
+                                    if (d.success) $("#flashthemes_movie_uploader_success").html(`Your movie has been uploaded to FlashThemes successfully. to go to your movie in FlashThemes, you may click 
+                                    <a href="${d.movieURL}">here</a>.`);
+                                    else $("#flashthemes_movie_uploader_error").html(d.error);
+                                    uploadMovieAfterLoginIsComplete = false;
+                                });
+                            } else location.href = '/dashboard';
+                        }
+                        else {
+                            processing = false;
+                            $(".close_btn").show();
+                            $("#forgotftpswlightbox").show();
+                            $("#loginbtnftacclightbox").val(origText);
+                            $("#flashthemesloginrrorlightbox").text(d.error);
+                        }
+                    });
+                    break;
+                } case '1': {
+                    processing = false;
+                    const json = JSON.parse(d.split('1')[1]);
+                    $(".close_btn").show();
+                    $("#forgotftpswlightbox").show();
+                    $("#loginbtnftacclightbox").val(origText);
+                    $("#flashthemesloginrrorlightbox").text(json.errmsg);
+                    break;
+                }
+            }
+        });
+    })
+    let lightboxElement, processing;
+    function hideOverlayOnElement() {
+        if (uploadMovieAfterLoginIsComplete) uploadMovieAfterLoginIsComplete = false;
+        $(lightboxElement).unblock();
+    }
+    function showOverlayOnElement(e, c) {
+        lightboxElement = e;
+        jQuery(e).block({
+            message: c,
+            css: {
+                padding: 0,
+                margin: 0,
+                width: "auto",
+                top: "100px",
+                left: "29%",
+                textAlign: "center",
+                color: "#000",
+                border: "none",
+                backgroundColor: "#928e8e",
+                cursor: "auto"
+            },
+            overlayCSS: {
+                cursor: "auto"
+            }
+        });
+    }
+    function setupFTAccRequiredModal(msg) {
+        if (msg) {
+            $("#ft-action").text(msg);
+            $("#ft-acc-required").modal({
+                keyboard: false,
+                backdrop: "static"
+            });
+        } else alert('FT Action Required!');
+    }
+    function setupFlashThemesMovieUploader() {
+        jQuery.post('/api/getAllUsers', d => {
+            const userInfo = d.find(i => i.id == userData.uid || userData.id);
+            if (!userInfo.isFTAcc) setupFTAccRequiredModal('You need a FlashThemes Account in order to upload your movie to FlashThemes');
+            else {
+                $("#mymovies2convert").html(userInfo.movies.map(movieInfo => `<tr>
+                    <td>
+                        <img height="30" width="50" src="/movie_thumbs/${movieInfo.id}.png"/>
+                    </td>
+                    <td>${movieInfo.title}</td>
+                    <td>${movieInfo.desc}</td><td>${
+                        movieInfo.date.split("T")[0].split("-")[1]
+                    }/${movieInfo.date.split("T")[0].split("-")[2]}/${movieInfo.date.split("T")[0].split("-")[0]}
+                    <input type="radio" name="movieId" value="${movieInfo.id}"/></td>
+                </tr>`).join(""));
+                $("#FlashThemesMovieUploader").modal({
+                    keyboard: false,
+                    backdrop: "static"
+                })
+            }
+        })
+    }
     for (const elem of document.getElementsByClassName("converterForm")) {
         $(elem).submit(() => convertVideo(elem));
     }

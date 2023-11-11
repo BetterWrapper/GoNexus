@@ -2,7 +2,7 @@
 	"name": "betterwrapper-ga4s",
 	"version": "0.0.2",
 	"scripts": {
-		"start": "node index.js"
+		"start": "node server.js"
 	},
 	"main": "index.js",
 	"dependencies": {
@@ -20,7 +20,8 @@
 		"node-zip": "github:kyriosli/node-zip",
 		"request": "^2.88.2",
 		"xml-js": "^1.6.11",
-		"xml2js": "^0.6.2",
-		"xmldoc": "^1.1.2"
+		"xmldoc": "^1.1.2",
+		"xmlbuilder": "~11.0.0",
+		"sax": ">=0.6.0"
 	}
 }
