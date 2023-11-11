@@ -29,11 +29,12 @@ also the codename is BetterWrapper.
   
 ## To Do
 * Add the 2011, early 2012, and 2015 videomakers (Done)
-* Fix voice clip issues in the QVM (Not Done)<br>
-* Fix custom characters and it's emotions for the 2011 and 2012 videomakers (60% Done)<br>
-* Host GoNexus On Firebase (Not Done)<br>
-* Add 2 new functional scenes to Slices Of Daily Life (Not Done)<br>
-* Release The Final Version Of GoNexus (15% Done)<br>
+* Fix voice clip issues in the QVM (Not Done)
+* Fix custom characters and it's emotions for the 2011 and 2012 videomakers (60% Done)
+* Find a new site host for GoNexus (Not Done)
+* Add 2 new functional scenes to Slices Of Daily Life (Not Done)
+* Release The Final Version Of GoNexus (15% Done)
+* Fix characters not loading in the 2010 lvm (Not Done)
 
 ## Final Release Version
 Yes, this project is an alternative to FlashThemes, but our team desided that it's not worth the time to work on GoNexus anymore. For the final release version, it is version 0.0.2.
