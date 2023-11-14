@@ -10,6 +10,7 @@ const tts = require("../tts/main");
 const asset = require("../asset/main");
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
+const { exec } = require('child_process');
 const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
@@ -26,7 +27,9 @@ function getMp3Duration(buffer) {
 const nodezip = require("node-zip");
 const session = require("../misc/session");
 const https = require("https");
-const FormData = require("form-data");
+const merge = require("preroll-merge")
+const framerate = 24;
+const frameToSec = (f) => f / framerate;
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -449,33 +452,118 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/api/videoExport/completed": { // converts the video frames into an actual video.
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						if (typeof f.frames == "undefined" || f.frames.length == 0) {
+							console.warn("Exporter: Conversion attempted with no frames.");
+							res.end(JSON.stringify({ 
+								success: false,
+								msg: "Frames missing." 
+							}));
+							return;
+						} else if (typeof f.id == "undefined") {
+							console.warn("Exporter: Conversion attemped with no movie ID.");
+							res.end(JSON.stringify({
+								success: false,
+								msg: "Movie ID missing." 
+							}));
+							return;
+						}
+						const preroll = [
+							path.join(__dirname, '../node_modules/preroll-merge/preroll'),
+							path.join(__dirname, '../node_modules/preroll-merge/input'),
+							path.join(__dirname, '../node_modules/preroll-merge/output'),
+							path.join(__dirname, '../node_modules/preroll-merge/temp')
+						]
+						for (const i of preroll) {
+							for (const d of fs.readdirSync(i)) {
+								if (fs.existsSync(`${i}/${d}`)) fs.unlinkSync(`${i}/${d}`)
+							}
+						}
+						console.log("Exporter: Frames sent to server. Writing frames to temp path...");
+					
+						/* save all the frames */
 						const frames = f.frames;
-						const base = path.join(__dirname, "../frames");
-						const preview = path.join(__dirname, "../previews");
+						if (!fs.existsSync(`./previews`)) fs.mkdirSync(`./previews`);
+						const base = path.join(__dirname, `../previews/${f.id}`);
 						if (!fs.existsSync(base)) fs.mkdirSync(base);
-						if (!fs.existsSync(preview)) fs.mkdirSync(preview);
-						fs.readdirSync(base).forEach(file => fs.unlinkSync(path.join(base, file)));
-						fs.readdirSync(preview).forEach(file => fs.unlinkSync(path.join(preview, file)));
-						for (const i in frames) {
-							const frameData = Buffer.from(frames[i], "base64");
+						if (fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2)))) return res.end(JSON.stringify({
+							success: false,
+							msg: "An export for your video already exists. Please delete an existing export for your video."
+						}))
+						for (let i in frames) {
+							const frameData = Buffer.from(frames[i == 1 ? 2 : i], "base64");
 							fs.writeFileSync(path.join(base, i + ".png"), frameData);
 						}
-						if (!f.isPreview) (ffmpeg().input(base + "/%d.png").on("end", () => {
-							if (fs.existsSync(path.join(base, "output.mp4"))) {
-								fs.writeFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)), fs.readFileSync(path.join(base, "output.mp4")));
-								res.end(JSON.stringify({
-									videoUrl: `/frames/output.mp4`
-								}));
+					
+						console.log("Exporter: Saving frames completed. Converting frames to a video...");
+						
+						/* join them together */
+						const chicanery = ffmpeg().input(base + "/%d.png").on("start", (cmd) => {
+							console.log("Exporter: Spawned Ffmpeg with command:", cmd);
+						}).on("end", () => {
+							console.log("Exporter: Video conversion successful. Merging Video...");
+							for (const i in frames) {
+								fs.unlinkSync(path.join(base, i + ".png"));
 							}
-						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).size("640x360").run();
-						else (ffmpeg().input(base + "/%d.png").on("end", () => {
-							if (fs.existsSync(path.join(base, "output.mp4"))) {
-								fs.writeFileSync(path.join(preview, f.id + ".mp4"), fs.readFileSync(path.join(base, "output.mp4")));
+							fs.rmdirSync(base);
+							ffmpeg(path.join(__dirname, `../outro.mp4`)).input(path.join(__dirname, `../previews/${f.id}.mp4`)).on("start", (cmd) => {
+								console.log("Exporter: Spawned Ffmpeg with command:", cmd);
+							}).on("end", () => {
+								console.log("Exporter: Video merge successful.");
 								res.end(JSON.stringify({
-									videoUrl: `/previews/${f.id}.mp4`
+									success: true,
+									path: `/movies/${f.id}.mp4`
 								}));
+							}).on("error", (err) => {
+								console.error("Exporter: Error merging video:", err);
+								res.end(JSON.stringify({
+									success: false,
+									msg: "Internal Server Error" 
+								}));
+							}).videoCodec("libx264").audioCodec("aac").mergeToFile(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2))))
+						}).on("error", (err) => {
+							console.error("Exporter: Error merging video:", err);
+							for (const i in frames) {
+								fs.unlinkSync(path.join(base, i + ".png"));
 							}
-						})).videoCodec("libx264").outputOptions("-framerate", "23.97").outputOptions("-r", "23.97").output(path.join(base, "output.mp4")).run();
+							fs.rmdirSync(base);
+							res.end(JSON.stringify({
+								success: false,
+								msg: "Internal Server Error" 
+							}));
+						});
+						
+						/* add the audio ourselves, i really don't wanna make it record it */
+						let audios = await parse.extractAudioTimes(fs.readFileSync(fUtil.getFileIndex("movie-", ".xml", f.id.substring(2))));
+						let complexFilterString = "";
+						let delay = 0;
+						audios = audios.sort((a, b) => a.start - b.start);
+						for (const i in audios) {
+							const audio = audios[i];
+							const baseDuration = audio.stop - audio.start;
+							const duration = Math.max(baseDuration, audio.trimEnd) - audio.trimStart;
+							chicanery.input(audio.filepath);
+							chicanery.addInputOption("-t", frameToSec(duration));
+							if (audio.trimStart > 0) {
+								chicanery.seekInput(frameToSec(audio.trimStart));
+							}
+							complexFilterString += `[${Number(i) + 1}:a]adelay=${(frameToSec(audio.start) * 1e3) - delay}[audio${i}];`;
+							delay += 100;
+						}
+						if (typeof complexFilterString == "number") chicanery
+							.complexFilter(complexFilterString + `${audios.map((_, i) => `[audio${i}]`).join("")}amix=inputs=${audios.length}[a]`)
+							.addOutputOptions("-async", "1")
+							.videoCodec("libx264")
+							.audioCodec("aac")
+							.outputOptions("-pix_fmt", "yuv420p")
+							.outputOptions("-ac", "1")
+							.outputOptions("-map", "0:v")
+							.outputOptions("-map", "[a]")
+							.outputOptions("-framerate", framerate)
+							.outputOptions("-r", framerate)
+							.duration(frameToSec(frames.length))
+							.output(path.join(__dirname, `../previews/${f.id}.mp4`))
+							.run();
+						else chicanery.videoCodec("libx264").outputOptions("-framerate", framerate).outputOptions("-r", framerate).output(path.join(__dirname, `../previews/${f.id}.mp4`)).run();
 					});
 					break;
 				} case "/api/check4ExportedMovieExistance": { // checks for an existing exported video.

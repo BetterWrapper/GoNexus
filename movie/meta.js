@@ -10,7 +10,7 @@ const fs = require("fs");
  */
 module.exports = function (req, res, url) {
 	if (req.method != "GET" || !url.pathname.startsWith("/meta")) return;
-	const json = JSON.parse(fs.readFileSync('./users.json'));
+	const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 	const mId = url.pathname.substr(url.pathname.lastIndexOf("/") + 1)
 	for (const meta of json.users) {
 		const m = meta.movies.find(i => i.id == mId);

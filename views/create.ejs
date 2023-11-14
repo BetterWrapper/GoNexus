@@ -133,7 +133,12 @@
                                 <option value="silver" selected>Silver</option>
                             </select>
                         </div><br>
-                        <button onclick="newAnimation()" class="btn btn-orange">Create a Video</button>
+                        <button onclick="(() => {
+                            $('#customLVM').block()
+                            $('#error-message-lvmSelector').text('');
+                            studio = $('#customlvmyear').val();
+                            $.getJSON(`/api/convertUrlQuery2JSON?${$('#createVideoForm').serialize()}`, newAnimation);
+                        })()" class="btn btn-orange">Create a Video</button>
                     </center>
                 </form>
             </div>
@@ -197,6 +202,7 @@
                 return previewerMovieXML;
             }
             function initPreviewPlayer(dataXmlStr, startFrame) {
+                console.log(flashvars);
                 previewerMovieXML = dataXmlStr;
                 if (typeof startFrame == 'undefined') {
                     startFrame = 1;
@@ -205,20 +211,23 @@
                 }
                 jQuery("#playerdiv").flash({
                     id: "Player",
-                    swf: "https://wrapperclassic.netlify.app/animation/414827163ad4eb60/player_old.swf",
+                    swf: "https://file.garden/ZP0Nfnn29AiCnZv5/player_old.swf",
                     width: "640",
                     height: "360",
                     allowFullScreen: true,
                     allowScriptAccess: "always",
                     flashvars: {
-                        apiserver: "/",
+                        apiserver: window.location.origin + "/",
+                        staticserver: "https://wrapperclassic.netlify.app/",
                         isEmbed: 1,
                         tlang: "en_US",
                         isInitFromExternal: 1,
                         startFrame,
+                        isPreview: 1,
+                        movieId: flashvars.presaveId,
                         autostart: 1,
                         storePath: "https://wrapperclassic.netlify.app/static/store/<store>",
-                        clientThemePath: "https://wrapperclassic.netlify.app/static/tommy/2016/<client_theme>",
+                        clientThemePath: "https://file.garden/ZP0Nfnn29AiCnZv5/477/<client_theme>",
                     }
                 });
                 showOverlayOnElement("#studiodiv", jQuery("#previewPlayerContainer"));
@@ -270,15 +279,16 @@
                     $("#ct2012").hide();
                 }
             }
-            function newAnimation() {
-                $("#error-message-lvmSelector").text('');
-                const json = Object.fromEntries(new URLSearchParams($("#createVideoForm").serialize()));
-                studio = $("#customlvmyear").val();
-                if (studio == '2010' && json.tutorial && !tmcId && hasChars) $("#error-message-lvmSelector").text('Please select a character to use in the 2010 LVM tutorial');
+            function lvmSelectorError(msg) {
+                $("#customLVM").unblock()
+                $("#error-message-lvmSelector").text(msg);
+            }
+            function newAnimation(json) {
+                if (studio == '2010' && json.tutorial && !tmcId && hasChars) lvmSelectorError('Please select a character to use in the 2010 LVM tutorial');
                 else if (json.lvmmode == "block") jQuery.post('/api/getNewMovieId', d => {
                     if (studio == "2010" && window.location.host.startsWith("localhost") && tId != "retro") {
                         const themeInfo = themes.find(i => i.id == tId);
-                        $("#error-message-lvmSelector").text(`due to the crossdomain.xml file not being fetched correctly while using localhost, ${
+                        lvmSelectorError(`due to the crossdomain.xml file not being fetched correctly while using localhost, ${
                             themeInfo.name
                         } does not want to work in the 2010 LVM while you use localhost. Please try using GoNexus online for better results.`);
                         return;
@@ -362,7 +372,7 @@
                             }
                         } else return;
                     }
-                    $("#customLVM").modal('hide');
+                    $("#customLVM").unblock().modal('hide');
                     $("#studioBlock").modal({
                         keyboard: false,
                         backdrop: "static"

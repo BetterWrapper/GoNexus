@@ -123,6 +123,10 @@
                                     <span class="glyphicon glyphicon-share"></span> Share
                                 </a>
                                 <span class="divider">|</span>
+                                <a data-target="#videoExportModal" data-toggle="modal" href="#">
+                                    <span class="glyphicon glyphicon-export"></span> Export
+                                </a>
+                                <span class="divider">|</span>
                                 <a data-target="#deleteVideoModal" data-toggle="modal" href="#" class="owner-button" style="display: none;">
                                     <span class="glyphicon glyphicon-trash"></span> Delete
                                 </a>
@@ -131,6 +135,61 @@
                         </div>
                         <div class="video-main-aside" id="player-aside"></div>
                     </div>
+                </div>
+            </div>
+            <div id="videoExportModal" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content" id="isAdmin" style="display: block;">
+                        <div class="modal-header">
+                            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Export Your Video</h4>
+                        </div>
+                        <div class="modal-body">                
+                            <p>Convert your video into an mp4 file in just one click.</p>
+                            <div class="video-export-container" style="height: 120px;">    
+                                <div class="video-export-quality-box clearfix 480p">            
+                                    <div class="video-export-action">            
+                                        <div class="btn-group" id="videoExporterReady">
+                                            <button class="btn btn-orange" onclick="exportVideo('download')">Download Video</a>
+                                            <button class="btn btn-orange dropdown-toggle" data-toggle="dropdown">More Options<span class="caret"></span></button>
+                                            <ul class="dropdown-menu" style="text-align:left;">    
+                                                <li><a href="javascript:;" onclick="exportVideo('dafunk')">Publish Video To Da Funk</a></li>    
+                                                <li><a href="javascript:;" onclick="exportVideo('youtube')">Publish Video To YouTube</a></li>    
+                                                <li><a href="javascript:;" onclick="exportVideo('email')">Send This Video To A Friend</a></li>
+                                            </ul>
+                                        </div> 
+                                        <div class="btn-group" id="videoExporting" style="display: none;">
+                                            <p>Exporting Your Video...</p>
+                                            <object data="/static/exporter.swf" type="application/x-shockwave-flash" id="exporterdiv" width="320" height="180">
+                                                <param name="allowScriptAccess" value="always">
+                                                <param name="flashvars" value="autostart=1&amp;isWide=1&amp;ut=60&amp;isPreview=1&amp;movieId=<%= params.flashvars.movieId %>&amp;apiserver=%2F&amp;storePath=%2Fstatic%2Fstore%2F%3Cstore%3E&amp;clientThemePath=%2Fstatic%2F%3Cclient_theme%3E">
+                                                <param name="movie" value="/static/exporter.swf">
+                                                <param name="wmode" value="opaque">
+                                            </object>
+                                        </div>       
+                                    </div>    
+                                </div>
+                            </div>
+                            <p>Note: Converting a video usually takes under an hour (unless your video is longer than 10 minutes). Submit a bug report to dafunk in case of trouble.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>    
+                    </div><!--
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Admins Only Feature</h4>
+                        </div>
+                        <div class="modal-body">                
+                            <p>Only users who aren't students and teachers can export this video due to safety reasons with a school that you may be attending/working at right now. 
+                                Please login to youe GoNexus account as a regular user.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>    
+                    </div>-->
                 </div>
             </div>
             <div id="movieShareModal" class="modal">
@@ -211,6 +270,57 @@
                 </div>
             </div>
             <script>
+                const id = "<%= params.flashvars.movieId %>";
+                let currentFrame;
+                const player = $("#exporterdiv")[0];
+                function nextFrame() {
+                    player.seekFrame(currentFrame++);
+                }
+                function playAndPause() {
+                    player.play();
+                    setTimeout(() => player.pause(), 100)
+                }
+                function notifyMovieEnded() {
+                    sendFramesToServer();
+                }
+                function sendFramesToServer() {
+                    const scenes = player.getSceneInfoArray();
+                    /** @type {string[]} */
+                    const frames = player.getPhotoArray();
+                    for (const scene of scenes) {
+                        frames.splice(scene.startFrom, 1);
+                    }
+                    $.ajax({
+                        url: "/api/videoExport/completed",
+                        method: "POST",
+                        data: JSON.stringify({
+                            frames,
+                            id,
+                        }),
+                        dataType: "json",
+                        contentType: "application/json",
+                        success(d) {
+                            $("#exporterdiv").unblock()
+                            if (!d.success) {
+                                $("#videoExportModal").modal('hide');
+                                $("#videoExporting").hide();
+                                $("#videoExporterReady").show();
+                                displayFeedback(1 + d.msg);
+                            } else console.log(d);
+                        },
+                        fail() {
+                            displayFeedback(1 + "Error contacting the server")
+                        }
+                    })
+                }
+                function exportVideo(i) {
+                    $("#videoExporterReady").hide();
+                    $("#videoExporting").show();
+                    $("#exporterdiv").attr("data-video-export", i).block({
+                        message: null
+                    });
+                    currentFrame = 0;
+                }
                 $("#editVideoModal").on("show.bs.modal", () => {
                     jQuery.post("/api/check4MovieAutosaves", {mId: '<%= params.flashvars.movieId %>'}, (d) => setTimeout(() =>{
                         if (JSON.parse(d).isAutosaved) {
@@ -229,7 +339,7 @@
                     $(".form-control, .gtm-ga-event").css("margin", "0px").css("width", "515px").css("height", "36px");
                 }
                 $(".form-control, .gtm-ga-event").val(`${window.location.origin}/videos?movieId=<%= params.flashvars.movieId %>`);
-                jQuery.post("/api/getAllUsers", (d) => setTimeout(() => {
+                jQuery.post("/api/getAllUsers", d => setTimeout(() => {
                     for (const f of d) {
                         const meta = f.movies.find(i => i.id == '<%= params.flashvars.movieId %>');
                         const movieTitleElement = document.getElementsByClassName('movie-title');

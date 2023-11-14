@@ -1,0 +1,2 @@
+file '/home/chrx/Downloads/GoNexus/previews/m-0.mp4'
+file '/home/chrx/Downloads/GoNexus/outro.mp4'
