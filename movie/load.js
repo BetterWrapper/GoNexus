@@ -505,21 +505,21 @@ module.exports = function (req, res, url) {
 								fs.unlinkSync(path.join(base, i + ".png"));
 							}
 							fs.rmdirSync(base);
-							ffmpeg(path.join(__dirname, `../outro.mp4`)).input(path.join(__dirname, `../previews/${f.id}.mp4`)).on("start", (cmd) => {
+							/*ffmpeg(path.join(__dirname, `../outro.mp4`)).input(path.join(__dirname, `../previews/${f.id}.mp4`)).on("start", (cmd) => {
 								console.log("Exporter: Spawned Ffmpeg with command:", cmd);
 							}).on("end", () => {
-								console.log("Exporter: Video merge successful.");
+								console.log("Exporter: Video merge successful.");*/
 								res.end(JSON.stringify({
 									success: true,
 									path: `/movies/${f.id}.mp4`
-								}));
+								}));/*
 							}).on("error", (err) => {
 								console.error("Exporter: Error merging video:", err);
 								res.end(JSON.stringify({
 									success: false,
 									msg: "Internal Server Error" 
 								}));
-							}).videoCodec("libx264").audioCodec("aac").mergeToFile(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2))))
+							}).videoCodec("libx264").audioCodec("aac").mergeToFile(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2))))*/
 						}).on("error", (err) => {
 							console.error("Exporter: Error merging video:", err);
 							for (const i in frames) {
