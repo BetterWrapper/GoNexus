@@ -57,8 +57,22 @@
     </head>
     <body class="en_US" onload="(() => {
         // users cannot touch the exporter
-        $("#exporter").block({
-            message: null
+        $('#exporter').block({
+            message: null,
+            overlayCSS: {
+                'z-index': 1000,
+                border: 'none',
+                margin: '0px',
+                padding: '0px', 
+                width: '320px', 
+                height: '180px',
+                top: '0px', 
+                left: '0px', 
+                position: 'absolute',
+                cursor: 'default',
+                'background-color': 'transparent',
+                opacity: '0.6'
+            }
         });
     })()">
         <script type="text/javascript">
@@ -159,16 +173,26 @@
                                             <button class="btn btn-orange dropdown-toggle" data-toggle="dropdown">More Options<span class="caret"></span></button>
                                             <ul class="dropdown-menu" style="text-align:left;">    
                                                 <li><a href="javascript:;" onclick="exportVideo('dafunk')">Export Video To Da Funk</a></li>    
-                                                <li><a href="javascript:;" onclick="exportVideo('youtube')">Export Video To YouTube</a></li>    
+                                                <!--<li><a href="javascript:;" onclick="exportVideo('youtube')">Export Video To YouTube</a></li>-->   
                                                 <li><a href="javascript:;" onclick="exportVideo('email')">Export Video To A Friend</a></li>
                                             </ul>
                                         </div> 
                                         <div class="btn-group" id="videoExported" style="display: none;">
                                             <p style="color: green;">Your video has been exported successfully!</p>
-                                            <button class="btn btn-orange" id="exportedVideoDownload" download="<%= params.flashvars.movieId %>.mp4">Download Video</a>
+                                            <a class="btn btn-orange" id="exportedVideoDownload" download="<%= params.flashvars.movieId %>.mp4">Download Video</a>
                                             <button class="btn btn-orange dropdown-toggle" data-toggle="dropdown">More Options<span class="caret"></span></button>
                                             <ul class="dropdown-menu" style="text-align:left;">    
-                                                <li><a href="javascript:;" id="dafunk" onclick="publishVideo('dafunk')">Publish Video To Da Funk</a></li>    
+                                                <li><a href="javascript:;" id="dafunk" onclick="$('#videoExported').hide(); publishVideo('dafunk')">Publish Video To Da Funk</a></li>    
+                                                <!--<li><a href="javascript:;" id="youtube" onclick="publishVideo('youtube')">Publish Video To YouTube</a></li>-->    
+                                                <li><a href="javascript:;" onclick="showVideoShareModal()">Send This Video To A Friend</a></li>
+                                            </ul>
+                                        </div> 
+                                        <div class="btn-group" id="videoExported1" style="display: none;">
+                                            <p>Your video has already been exported.</p>
+                                            <a class="btn btn-orange" id="exportedVideoDownload" download="<%= params.flashvars.movieId %>.mp4">Download Video</a>
+                                            <button class="btn btn-orange dropdown-toggle" data-toggle="dropdown">More Options<span class="caret"></span></button>
+                                            <ul class="dropdown-menu" style="text-align:left;">    
+                                                <li><a href="javascript:;" id="dafunk" onclick="$('#videoExported1').hide(); publishVideo('dafunk')">Publish Video To Da Funk</a></li>    
                                                 <!--<li><a href="javascript:;" id="youtube" onclick="publishVideo('youtube')">Publish Video To YouTube</a></li>-->    
                                                 <li><a href="javascript:;" onclick="showVideoShareModal()">Send This Video To A Friend</a></li>
                                             </ul>
@@ -227,7 +251,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-addon">URL</span>
-                                        <textarea class="form-control gtm-ga-event" type="text" data-gtmv-action="Share - Click text field" data-gtmv-category="" data-gtmv-label="10753900 - Guest" onclick="this.focus(); this.select(); restrictSizeChange()" readonly="" style="margin: 0px; width: 515px; height: 36px;"></textarea>
+                                        <textarea id="videoShareURL" class="form-control gtm-ga-event" type="text" data-gtmv-action="Share - Click text field" data-gtmv-category="" data-gtmv-label="10753900 - Guest" onclick="this.focus(); this.select(); restrictSizeChange()" readonly="" style="margin: 0px; width: 515px; height: 36px;"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -245,18 +269,18 @@
                             <button class="close" type="button" onclick="back2exporter()">&times;</button>
                             <h3 class="modal-title">Share this video with a friend</h3>
                         </div>
-                       <form class="modal-body">
-                           <div class="form-group">
-                               <label for="friendEmail">Your Friend's Email address</label>
-                               <input type="email" class="form-control" id="friendEmail" aria-describedby="emailHelp" placeholder="Enter your friend's email" required>
-                               <small id="emailHelp" class="form-text text-muted">Don't worry, we won't send your friend's email to a hacker :)</small>
-                           </div>
-                           <div class="form-group">
-                               <label for="videoMessage">Message</label>
-                               <input type="text" class="form-control" id="videoMessage" placeholder="What is this video about?" required>
-                           </div>
-                           <button type="submit" class="btn btn-primary">Submit</button>
-                       </form>
+                        <form class="modal-body">
+                            <div class="form-group">
+                                <label for="friendEmail">Your Friend's Email address</label>
+                                <input type="email" class="form-control" id="friendEmail" aria-describedby="emailHelp" placeholder="Enter your friend's email" required>
+                                <small id="emailHelp" class="form-text text-muted">Don't worry, we won't send your friend's email to a hacker :)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="videoMessage">Message</label>
+                                <input type="text" class="form-control" id="videoMessage" placeholder="What is this video about?" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
                         <div class="modal-footer">
                             <button class="btn btn-primary" type="button" onclick="back2exporter()">< Back</button>
                             <button class="btn btn-default" type="button" data-dismiss="modal">Close ></button>
@@ -317,7 +341,17 @@
                 </div>
             </div>
             <script>
+                $.post("/api/check4ExportedMovieExistance", {
+                    id: '<%= params.flashvars.movieId %>'
+                }, d => {
+                    if (JSON.parse(d).exists) {
+                        $("#videoExporterReady").hide();
+                        $("#videoExported1").show();
+                        $("#videoExported").attr("data-base64", JSON.parse(d).base64)
+                    } 
+                })
                 function showVideoShareModal() {
+                    $(".form-control").val();
                     $("#videoExportModal").modal('hide');
                     $("#videoShareEmailModal").modal({
                         keyboard: false,
@@ -366,51 +400,58 @@
                                 $("#videoExporting").hide();
                                 $("#videoExporterReady").show();
                                 displayFeedback(1 + d.msg);
-                            } else $.get(d.path, buffer => {
-                                function buffer2base64url() {
-                                    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
-                                    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-                                }
-                                switch ($("#exporterdiv").data("video-export")) {
-                                    case "dafunk": {
-                                        $("#videoExporting").hide();
-                                        $("#videoPublishing").show();
-                                        const vidType = (buffer2base64url()).split("data:")[1].split(";base64,")[0];
-                                        $.getJSON("https://dafunk.3hj.repl.co/__replauthuser", userInfo => {
-                                            if (typeof userInfo == "object") $.post(`https://dafunk.3hj.repl.co/uploadViaBase64`, {
-                                                video: (buffer2base64url()).split(`data:${vidType};base64,`)[1],
-                                                headerVal: vidType,
-                                                title: document.getElementsByClassName('movie-title')[0].innerHTML,
-                                                userInfo
-                                            }, d => {
-                                                $("#videoExportModal").modal('hide');
-                                                $("#videoPublishing").hide();
-                                                $("#videoExporterReady").show();
-                                                displayFeedback(d.msg)
-                                            });
-                                            else {
-                                                $("#videoExportModal").modal('hide');
-                                                $("#videoPublishing").hide();
-                                                $("#videoExporterReady").show();
-                                                displayFeedback(1 + 'You need to be logged in to your dafunk account in order to publish your GoNexus video to dafunk.');
-                                            }
-                                        });
-                                        break;
-                                    }
-                                    case "email": showVideoShareModal();
-                                    case "download": {
-                                        $("#exportedVideoDownload").attr("href", buffer2base64url());
-                                        $("#videoExporting").hide();
-                                        $("#videoExported").attr("data-base64", buffer2base64url()).show();
-                                        break;
-                                    }
-                                }
-                            });
+                            } else {
+                                $("#videoExporting").hide();
+                                $("#videoExported").attr("data-base64", d.base64)
+                                publishVideo($("#exporterdiv").data("video-export"));
+                            }
                         },
                         fail() {
                             displayFeedback(1 + "Error contacting the server")
                         }
                     })
+                }
+                function publishVideo(i) {
+                    switch (i) {
+                        case "dafunk": {
+                            $("#videoPublishing").show();
+                            let profileURL = prompt("Please enter in your profile URL from dafunk", "");
+                            while (
+                                !profileURL 
+                                || profileURL == null 
+                                || !profileURL.startsWith("https://dafunk.3hj.repl.co/users/") 
+                                || typeof parseInt(profileURL.substr(profileURL.lastIndexOf("/") + 1)) != "number"
+                            ) profileURL = prompt("Please enter in your profile URL from dafunk", "");
+                            $.post(`/api/dafunk/userDataFromProfileURL?url=${profileURL}`, u => {
+                                console.log(u);
+                                if (u.success) $.post(`/api/videoExport/publish`, {
+                                    base64: $("#videoExported").data("base64"),
+                                    type: 'video/mp4',
+                                    id,
+                                    userInfo: new URLSearchParams(u.data).toString(),
+                                    userData: new URLSearchParams(userData).toString(),
+                                    platform: 'dafunk'
+                                }, d => {
+                                    $("#videoExportModal").modal('hide');
+                                    $("#videoPublishing").hide();
+                                    $("#videoExported1").show();
+                                    displayFeedback(d.msg)
+                                });
+                                else {
+                                    $("#videoExportModal").modal('hide');
+                                    $("#videoPublishing").hide();
+                                    $("#videoExported1").show();
+                                    displayFeedback(u.msg)
+                                }
+                            });
+                            break;
+                        }
+                        case "email": showVideoShareModal();
+                        case "download": {
+                            $("#exportedVideoDownload").attr("href", `data:video/mp4;base64,${$("#videoExported").data("base64")}`);
+                            break;
+                        }
+                    }
                 }
                 function exportVideo(i) {
                     $("#videoExporterReady").hide();
@@ -435,7 +476,7 @@
                 function restrictSizeChange() {
                     $(".form-control, .gtm-ga-event").css("margin", "0px").css("width", "515px").css("height", "36px");
                 }
-                $(".form-control, .gtm-ga-event").val(`${window.location.origin}/videos?movieId=<%= params.flashvars.movieId %>`);
+                $("#videoShareURL").val(`${window.location.origin}/videos?movieId=<%= params.flashvars.movieId %>`);
                 jQuery.post("/api/getAllUsers", d => setTimeout(() => {
                     for (const f of d) {
                         const meta = f.movies.find(i => i.id == '<%= params.flashvars.movieId %>');

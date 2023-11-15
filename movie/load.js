@@ -27,7 +27,6 @@ function getMp3Duration(buffer) {
 const nodezip = require("node-zip");
 const session = require("../misc/session");
 const https = require("https");
-const merge = require("preroll-merge")
 const framerate = 24;
 const frameToSec = (f) => f / framerate;
 /**
@@ -450,6 +449,100 @@ module.exports = function (req, res, url) {
 						}
 					});
 					break;
+				} case "/api/dafunk/userDataFromProfileURL": {
+					res.setHeader("Content-Type", "application/json");
+					function handleError(e) {
+						console.log(e);
+						res.end(JSON.stringify({
+							success: false,
+							msg: '1Internal Server Error'
+						}, null, "\t"))
+					}
+					const uId = url.query.url.substr(url.query.url.lastIndexOf("/") + 1);
+					https.get('https://dafunk.3hj.repl.co/insideFile?path=/users.json', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => {
+							try {
+								console.log(Buffer.concat(buffers).toString());
+								const users = JSON.parse(Buffer.concat(buffers));
+								res.end(JSON.stringify({
+									success: true,
+									data: users.users.find(i => i.id == uId)
+								}, null, "\t"));
+							} catch (e) {
+								handleError(e);
+							}
+						}).on("error", handleError)
+					}).on("error", handleError)
+					break;
+				} case "/api/videoExport/publish": {
+					loadPost(req, res).then(data => {
+						res.setHeader("Content-Type", "application/json");
+						function handleError(e) {
+							console.log(e);
+							res.end(JSON.stringify({
+								msg: '1Internal Server Error'
+							}))
+						}
+						const fakeFields = {
+							base64: 'AA',
+							type: 'video/mp4',
+							id: '666',
+							userInfo: 'name=devil',
+							userData: 'id=666',
+							platform: 'dafunk'
+						};
+						for (const i in fakeFields) {
+							if (!data[i]) res.end(JSON.stringify({
+								msg: "1Missing one or more fields."
+							}))
+						}
+						const userData = Object.fromEntries(new URLSearchParams(data.userData));
+						console.log(userData);
+						try {
+							const videoInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == userData.id || userData.uid).movies.find(i => i.id == data.id);
+							console.log(videoInfo);
+							switch (data.platform) {
+								case "dafunk": {
+									https.request({
+										method: "POST",
+										hostname: "dafunk.3hj.repl.co",
+										path: "/uploadViabase64",
+										headers: {
+											"Content-Type": "application/x-www-form-urlencoded"
+										}
+									}, r => {
+										const buffers = [];
+										r.on("data", b => buffers.push(b)).on("end", () => {
+											try {
+												console.log(Buffer.concat(buffers).toString());
+												const json = JSON.parse(Buffer.concat(buffers));
+												if (json.success) res.end(JSON.stringify({
+													msg: `0Your video has been published to Da Funk successfully! to view the video that you just published to Da Funk, please click <a href="${
+														json.url
+													}">here</a>.`
+												}))
+												else res.end(JSON.stringify({
+													msg: 1 + json.error
+												}))
+											} catch (e) {
+												handleError(e);
+											}
+										}).on("error", handleError);
+									}).end(new URLSearchParams({
+										video: data.base64,
+										headerVal: data.type,
+										title: videoInfo.title,
+										userInfo: data.userInfo
+									}).toString()).on("error", handleError);
+									break;
+								}
+							}
+						} catch (e) {
+							handleError(e);
+						}
+					})
+					break;
 				} case "/api/videoExport/completed": { // converts the video frames into an actual video.
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						if (typeof f.frames == "undefined" || f.frames.length == 0) {
@@ -466,17 +559,6 @@ module.exports = function (req, res, url) {
 								msg: "Movie ID missing." 
 							}));
 							return;
-						}
-						const preroll = [
-							path.join(__dirname, '../node_modules/preroll-merge/preroll'),
-							path.join(__dirname, '../node_modules/preroll-merge/input'),
-							path.join(__dirname, '../node_modules/preroll-merge/output'),
-							path.join(__dirname, '../node_modules/preroll-merge/temp')
-						]
-						for (const i of preroll) {
-							for (const d of fs.readdirSync(i)) {
-								if (fs.existsSync(`${i}/${d}`)) fs.unlinkSync(`${i}/${d}`)
-							}
 						}
 						console.log("Exporter: Frames sent to server. Writing frames to temp path...");
 					
@@ -511,7 +593,7 @@ module.exports = function (req, res, url) {
 								console.log("Exporter: Video merge successful.");*/
 								res.end(JSON.stringify({
 									success: true,
-									path: `/movies/${f.id}.mp4`
+									base64: fs.readFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2))).toString("base64")
 								}));/*
 							}).on("error", (err) => {
 								console.error("Exporter: Error merging video:", err);
@@ -561,15 +643,18 @@ module.exports = function (req, res, url) {
 							.outputOptions("-framerate", framerate)
 							.outputOptions("-r", framerate)
 							.duration(frameToSec(frames.length))
-							.output(path.join(__dirname, `../previews/${f.id}.mp4`))
+							.output(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2))))
 							.run();
-						else chicanery.videoCodec("libx264").outputOptions("-framerate", framerate).outputOptions("-r", framerate).output(path.join(__dirname, `../previews/${f.id}.mp4`)).run();
+						else chicanery.videoCodec("libx264").outputOptions("-framerate", framerate).outputOptions("-r", framerate).output(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)))).run();
 					});
 					break;
 				} case "/api/check4ExportedMovieExistance": { // checks for an existing exported video.
 					loadPost(req, res).then(data => {
 						res.end(JSON.stringify({
-							exists: fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2)))
+							exists: fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2))),
+							base64: fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2))) ? fs.readFileSync(
+								fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2))
+							).toString("base64") : 'AA'
 						}))
 					})
 					break;
