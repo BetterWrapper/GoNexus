@@ -29,6 +29,7 @@ const session = require("../misc/session");
 const https = require("https");
 const framerate = 24;
 const frameToSec = (f) => f / framerate;
+const nodemailer = require('nodemailer');
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -535,6 +536,29 @@ module.exports = function (req, res, url) {
 										title: videoInfo.title,
 										userInfo: data.userInfo
 									}).toString()).on("error", handleError);
+									break;
+								} case "email": {
+									const transporter = nodemailer.createTransport({
+										service: 'gmail',
+										auth: {
+											user: 'youremail@gmail.com',
+											pass: 'yourpassword'
+										}
+									});
+									transporter.sendMail({
+										from: 'youremail@gmail.com',
+										to: 'myfriend@yahoo.com',
+										subject: 'Sending Email using Node.js',
+										text: 'That was easy!'
+									}, (error, info) => {
+										if (error) handleError(error)
+										else {
+											console.log('Email sent: ' + info.response);
+											res.end(JSON.stringify({
+												msg: '0Your video has been sent to a friend successfully!'
+											}));
+										}
+									});
 									break;
 								}
 							}
