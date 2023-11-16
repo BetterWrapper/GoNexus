@@ -540,18 +540,22 @@ module.exports = function (req, res, url) {
 									}).toString()).on("error", handleError);
 									break;
 								} case "email": {
+									if (!data.formData) return res.end(JSON.stringify({
+										msg: '1You need to include all of your cridentials'
+									}));
+									const f = Object.fromEntries(new URLSearchParams(data.formData));
 									const transporter = nodemailer.createTransport({
 										service: 'gmail',
 										auth: {
 											user: userData.email,
-											pass: data.appPass
+											pass: f.appPass
 										}
 									});
 									transporter.sendMail({
 										from: userData.email,
-										to: data.friendEmail,
+										to: f.friendEmail,
 										subject: `Hey, you should check out my new animation i just made. it's called ${videoInfo.title}.`,
-										text: data.message || 'I don\'t have anything else to say rather than check out this animation i made.',
+										text: f.message || 'I don\'t have anything else to say other than check out this animation i made.',
 										html: `<video height="360" width="640" src="data:${data.type};base64,${data.base64}"></video>`
 									}, (error, info) => {
 										if (error) handleError(error)
