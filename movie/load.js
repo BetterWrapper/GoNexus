@@ -493,7 +493,7 @@ module.exports = function (req, res, url) {
 							platform: 'dafunk'
 						};
 						for (const i in fakeFields) {
-							if (!data[i]) res.end(JSON.stringify({
+							if (!data[i]) return res.end(JSON.stringify({
 								msg: "1Missing one or more fields."
 							}))
 						}
