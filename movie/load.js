@@ -29,6 +29,7 @@ const session = require("../misc/session");
 const https = require("https");
 const framerate = 24;
 const frameToSec = (f) => f / framerate;
+const nodemailer = require('nodemailer');
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -484,17 +485,16 @@ module.exports = function (req, res, url) {
 								msg: '1Internal Server Error'
 							}))
 						}
-						const fakeFields = {
+						const fieldsRequiredGlobaly = {
 							base64: 'AA',
 							type: 'video/mp4',
 							id: '666',
-							userInfo: 'name=devil',
 							userData: 'id=666',
 							platform: 'dafunk'
 						};
-						for (const i in fakeFields) {
-							if (!data[i]) return res.end(JSON.stringify({
-								msg: "1Missing one or more fields."
+						for (const i in fieldsRequiredGlobaly) {
+							if (!data[i]) res.end(JSON.stringify({
+								msg: "1Missing one or more required fields."
 							}))
 						}
 						const userData = Object.fromEntries(new URLSearchParams(data.userData));
@@ -504,7 +504,10 @@ module.exports = function (req, res, url) {
 							console.log(videoInfo);
 							switch (data.platform) {
 								case "dafunk": {
-									https.request({
+									if (!data.userInfo) res.end(JSON.stringify({
+										msg: '1You need to provide your profile URL you got from dafunk.'
+									}));
+									else https.request({
 										method: "POST",
 										hostname: "dafunk.3hj.repl.co",
 										path: "/uploadViabase64",
@@ -535,6 +538,34 @@ module.exports = function (req, res, url) {
 										title: videoInfo.title,
 										userInfo: data.userInfo
 									}).toString()).on("error", handleError);
+									break;
+								} case "email": {
+									if (!data.formData) return res.end(JSON.stringify({
+										msg: '1You need to include all of your cridentials'
+									}));
+									const f = Object.fromEntries(new URLSearchParams(data.formData));
+									const transporter = nodemailer.createTransport({
+										service: 'gmail',
+										auth: {
+											user: userData.email,
+											pass: f.appPass
+										}
+									});
+									transporter.sendMail({
+										from: userData.email,
+										to: f.friendEmail,
+										subject: `Hey, you should check out my new animation i just made. it's called ${videoInfo.title}.`,
+										text: f.message || 'I don\'t have anything else to say other than check out this animation i made.',
+										html: `<video height="360" width="640" src="data:${data.type};base64,${data.base64}"></video>`
+									}, (error, info) => {
+										if (error) handleError(error)
+										else {
+											console.log('Email successfully sent! data: ' + info);
+											res.end(JSON.stringify({
+												msg: '0Your video has been sent to a friend successfully!'
+											}));
+										}
+									});
 									break;
 								}
 							}
