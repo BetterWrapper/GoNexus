@@ -162,6 +162,7 @@ module.exports = {
 									}
 								}
 								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
+								if (fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", m.id.substr(2)))) fs.unlinkSync(fUtil.getFileIndex("movie-", ".mp4", m.id.substr(2)));
 								res(m.id);
 							}).catch(rej);
 						});

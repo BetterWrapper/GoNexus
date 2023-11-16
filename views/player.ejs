@@ -348,9 +348,28 @@
                 </div>
             </div>
             <script>
+                function deleteMovie() {
+                    $("#deleteVideoModal").block();
+                    $.post('/api/movie/delete', {
+                        mId: '<%= params.flashvars.movieId %>', 
+                        uId: userData.uid || userData.id
+                    }).done(d => {
+                        const meta = JSON.parse(d);
+                        switch (meta.status) {
+                            case "error": {
+                                $("#deleteVideoModal").unblock();
+                                displayFeedback(1 + meta.msg);
+                                break;
+                            } case "ok": {
+                                window.location = '/movies'
+                                break;
+                            }
+                        }
+                    });
+                }
                 $("#sendShareEmail").submit(() => {
                     $("#sendShareEmail").block({
-                        message: '<h1>Processing...</h1>'
+                        message: '<h2>Processing...</h2>'
                     });
                     publishExport({
                         base64: $("#videoExported").data("base64"),

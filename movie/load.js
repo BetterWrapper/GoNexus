@@ -237,6 +237,7 @@ module.exports = function (req, res, url) {
 								} case "m": {
 									filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
 									filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
+									if (fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", suffix))) filepaths.push(fUtil.getFileIndex("movie-", ".mp4", suffix));
 									break;
 								} default: {
 									return res.end(JSON.stringify({
