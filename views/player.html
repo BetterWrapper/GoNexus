@@ -269,15 +269,19 @@
                             <button class="close" type="button" onclick="back2exporter()">&times;</button>
                             <h3 class="modal-title">Share this video with a friend</h3>
                         </div>
-                        <form class="modal-body">
+                        <form class="modal-body" id="sendShareEmail" action="javascript:;">
                             <div class="form-group">
-                                <label for="friendEmail">Your Friend's Email address</label>
-                                <input type="email" class="form-control" id="friendEmail" aria-describedby="emailHelp" placeholder="Enter your friend's email" required>
+                                <label for="friedEmail">Your Friend's Email address</label>
+                                <input type="email" class="form-control" id="friedEmail" name="friendEmail" aria-describedby="emailHelp" placeholder="Enter your friend's email" required>
                                 <small id="emailHelp" class="form-text text-muted">Don't worry, we won't send your friend's email to a hacker :)</small>
                             </div>
                             <div class="form-group">
-                                <label for="videoMessage">Message</label>
-                                <input type="text" class="form-control" id="videoMessage" placeholder="What is this video about?" required>
+                                <label for="videoMessage">Message (optional)</label>
+                                <input type="text" class="form-control" id="videoMessage" placeholder="What is this video about?">
+                            </div>
+                            <div class="form-group">
+                                <label for="appPas">App password</label>
+                                <input type="text" class="form-control" id="appPas" name="appPass" placeholder="Something you use to login to older apps and does not support modern security standards." required>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -341,6 +345,26 @@
                 </div>
             </div>
             <script>
+                $("#sendShareEmail").submit(() => {
+                    $("#sendShareEmail").block();
+                    publishExport({
+                        base64: $("#videoExported").data("base64"),
+                        type: 'video/mp4',
+                        id: '<%= params.flashvars.movieId %>',
+                        formData: $("#sendShareEmail").serialize(),
+                        userData: new URLSearchParams(userData).toString(),
+                        platform: 'email'
+                    }, () => $("#sendShareEmail").unblock())
+                });
+                function publishExport(data, callback) {
+                    $.post(`/api/videoExport/publish`, data, d => {
+                        $("#videoExportModal").modal('hide');
+                        $("#videoPublishing").hide();
+                        $("#videoExported1").show();
+                        displayFeedback(d.msg);
+                        if (callback && typeof callback == "function") callback();
+                    });
+                }
                 $.post("/api/check4ExportedMovieExistance", {
                     id: '<%= params.flashvars.movieId %>'
                 }, d => {
@@ -415,28 +439,22 @@
                     switch (i) {
                         case "dafunk": {
                             $("#videoPublishing").show();
-                            let profileURL = prompt("Please enter in your profile URL from dafunk", "");
-                            while (
-                                !profileURL 
-                                || profileURL == null 
-                                || !profileURL.startsWith("https://dafunk.3hj.repl.co/users/") 
-                                || typeof parseInt(profileURL.substr(profileURL.lastIndexOf("/") + 1)) != "number"
-                            ) profileURL = prompt("Please enter in your profile URL from dafunk", "");
-                            $.post(`/api/dafunk/userDataFromProfileURL?url=${profileURL}`, u => {
+                            const profileURL = prompt("Please enter in your profile URL from dafunk", "");
+                            if (
+                                profileURL 
+                                && profileURL != null 
+                                && profileURL.startsWith("https://dafunk.3hj.repl.co/users/") 
+                                && typeof parseInt(profileURL.substr(profileURL.lastIndexOf("/") + 1)) == "number"
+                            ) $.post(`/api/dafunk/userDataFromProfileURL?url=${profileURL}`, u => {
                                 console.log(u);
-                                if (u.success) $.post(`/api/videoExport/publish`, {
+                                if (u.success) publishExport({
                                     base64: $("#videoExported").data("base64"),
                                     type: 'video/mp4',
                                     id,
                                     userInfo: new URLSearchParams(u.data).toString(),
                                     userData: new URLSearchParams(userData).toString(),
                                     platform: 'dafunk'
-                                }, d => {
-                                    $("#videoExportModal").modal('hide');
-                                    $("#videoPublishing").hide();
-                                    $("#videoExported1").show();
-                                    displayFeedback(d.msg)
-                                });
+                                })
                                 else {
                                     $("#videoExportModal").modal('hide');
                                     $("#videoPublishing").hide();
@@ -444,6 +462,12 @@
                                     displayFeedback(u.msg)
                                 }
                             });
+                            else {
+                                $("#videoExportModal").modal('hide');
+                                $("#videoPublishing").hide();
+                                $("#videoExported1").show();
+                                displayFeedback('You need to include your profile url from dafunk in a proper way.');
+                            }
                             break;
                         }
                         case "email": showVideoShareModal();
