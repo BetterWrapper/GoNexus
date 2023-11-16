@@ -215,7 +215,9 @@
                                     </div>    
                                 </div>
                             </div>
-                            <p>Note: Converting a video usually takes under an hour (unless your video is longer than 10 minutes). Submit a bug report to dafunk in case of trouble.</p>
+                            <p>Note: Converting a video usually takes under an hour <br>
+                                <b class="text-muted">(unless your video is longer than 10 minutes).</b>
+                            <br>If anything buggy happens, please send a bug report in our discord server.</p>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-default" data-dismiss="modal">Close</button>
@@ -281,9 +283,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="appPas">App password</label>
-                                <input type="text" class="form-control" id="appPas" name="appPass" placeholder="Something you use to login to older apps and does not support modern security standards." required>
+                                <input type="text" class="form-control" id="appPas" name="appPass" aria-describedby="appPassHelp" placeholder="Something you use to login to older apps and does not support modern security standards." required>
+                                <small id="appPassHelp" class="form-text text-muted">While pointless to type in, it is actually a requirement by a package on GoNexus named nodemailer.</small>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-orange">Submit</button>
                         </form>
                         <div class="modal-footer">
                             <button class="btn btn-primary" type="button" onclick="back2exporter()">< Back</button>
@@ -346,7 +349,9 @@
             </div>
             <script>
                 $("#sendShareEmail").submit(() => {
-                    $("#sendShareEmail").block();
+                    $("#sendShareEmail").block({
+                        message: '<h1>Processing...</h1>'
+                    });
                     publishExport({
                         base64: $("#videoExported").data("base64"),
                         type: 'video/mp4',

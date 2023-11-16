@@ -18,6 +18,7 @@
 		"mp3-duration": "^1.1.0",
 		"node-fetch": "^2.6.7",
 		"node-zip": "github:kyriosli/node-zip",
+		"nodemailer": "^6.9.7",
 		"request": "^2.88.2",
 		"sax": ">=0.6.0",
 		"xml-js": "^1.6.11",

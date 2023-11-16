@@ -545,22 +545,24 @@ module.exports = function (req, res, url) {
 									}));
 									const f = Object.fromEntries(new URLSearchParams(data.formData));
 									const transporter = nodemailer.createTransport({
-										service: 'gmail',
 										auth: {
 											user: userData.email,
 											pass: f.appPass
 										}
 									});
+									const html = `<p>${
+										f.message || 'I don\'t have anything else to say other than check out this animation i made.'
+									}<br>To view the animation i made, please do so <a href="${req.headers.origin}/movies/${data.id}.mp4">here</a>.</p>`
 									transporter.sendMail({
 										from: userData.email,
 										to: f.friendEmail,
 										subject: `Hey, you should check out my new animation i just made. it's called ${videoInfo.title}.`,
-										text: f.message || 'I don\'t have anything else to say other than check out this animation i made.',
-										html: `<video height="360" width="640" src="data:${data.type};base64,${data.base64}"></video>`
+										html
 									}, (error, info) => {
 										if (error) handleError(error)
 										else {
-											console.log('Email successfully sent! data: ' + info);
+											console.log('Email successfully sent! data:');
+											console.log(info);
 											res.end(JSON.stringify({
 												msg: '0Your video has been sent to a friend successfully!'
 											}));
