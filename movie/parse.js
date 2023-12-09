@@ -527,14 +527,25 @@ module.exports = {
 										if (!fs.existsSync(fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]))) {
 											console.log(`Saving Character: ${charId}.`)
 											let buffer;
-											if (mId.startsWith("ft-")) buffer = (await getBuffersOnlineViaRequestModule({
-												method: "post",
-												url: "https://flashthemes.net/goapi/getCcCharCompositionXml/"
-											}, { 
-												formData: { 
-													assetId: charId
-												} 
-											})).split('0<?xml version="1.').join('<?xml version="1.');
+											if (mId.startsWith("ft-")) {
+												function getFlashThemesCharThumb() {
+													return new Promise((res, rej) => {
+														https.get('https://flashthemes.net/char_thumbs/' + charId + '.png', r => {
+															const buffers = [];
+															r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+														})
+													})
+												}
+												fs.writeFileSync(fUtil.getFileIndex("char-", ".png", charId.split("-")[1]), await getFlashThemesCharThumb());
+												buffer = (await getBuffersOnlineViaRequestModule({
+													method: "post",
+													url: "https://flashthemes.net/goapi/getCcCharCompositionXml/"
+												}, { 
+													formData: { 
+														assetId: charId
+													} 
+												})).split('0<?xml version="1.').join('<?xml version="1.');
+											}
 											fs.writeFileSync(fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]), buffer);
 											userInfo.assets.unshift({
 												id: charId,
