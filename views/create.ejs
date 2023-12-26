@@ -153,6 +153,19 @@
                 </div>
             </div>
         </div>
+        <div id="import_popup_container" class="lightbox" style="display:none">
+            <div id="lightbox_wrapper">
+                <h2>Import an Asset</h2>
+                <p class="close-button" onclick="jQuery.unblockUI()">X</p>
+                <!-- Import form -->
+                <div id="import_image">
+                    <form id="uploadbanner" enctype="multipart/form-data" method="post" action="javascript:;">
+                        <input id="fileupload" name="import" type="file" accept=".mp3,.wav,.png,.jpg" required>
+                        <div id="importQuene"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div id="previewPlayerContainer" class="lightbox" style="display: none; width: 700px;">
             <div class="lightbox_wrapper">
                 <h5>Preview Video <a style="float: right;" href="javascript:;" onclick="jQuery('#studiodiv').unblock();">×</a></h5>
@@ -198,6 +211,17 @@
                 pts: 0,
                 nextUrl: "javascript:parent.closeStudio2()"
             };
+            function showImporter() {
+                jQuery.blockUI({
+                    message: $("#import_popup_container"),
+                    css: {
+                        cursor: 'default'
+                    },
+                    overlayCSS: {
+                        cursor: 'default'
+                    }
+                })
+            }
             function retrievePreviewPlayerData() {
                 return previewerMovieXML;
             }
