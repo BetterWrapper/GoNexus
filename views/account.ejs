@@ -349,7 +349,7 @@
                     lc: "en_US",
                     returnto: "/",
                     email: userData.email,
-                    password: jQuery("#ftpsw").val()
+                    password: btoa(jQuery("#ftpsw").val())
                 }, d => {
                     const code = `${d.split("{")[0]}`;
                     switch (code) {
@@ -358,7 +358,7 @@
                                 code: '0',
                                 type: "FlashThemes",
                                 uid: userData.uid,
-                                password: jQuery("#ftpsw").val()
+                                password: btoa(jQuery("#ftpsw").val())
                             }, d => {
                                 if (d.success) {
                                     $("#FTAccLinkage").modal('hide');

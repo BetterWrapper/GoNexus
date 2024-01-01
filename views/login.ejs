@@ -163,6 +163,7 @@ $("#flashthemesloginform").submit(() => {
         password: jQuery("#ftpsw").val()
     }, d => {
         const code = `${d.split("{")[0]}`;
+        const password = btoa(jQuery("#ftpsw").val());
         switch (code) {
             case '0': {
                 jQuery.post('/api/addFTAcc', {
@@ -170,7 +171,7 @@ $("#flashthemesloginform").submit(() => {
                     lc: "en_US",
                     returnto: "/",
                     email: jQuery("#ftemail").val(),
-                    password: jQuery("#ftpsw").val()
+                    password
                 }, d => {
                     if (d.displayNameRequired) {
                         let displayName = prompt("Please Enter In Your Display Name.", "");
@@ -181,7 +182,7 @@ $("#flashthemesloginform").submit(() => {
                             lc: "en_US",
                             returnto: "/",
                             email: jQuery("#ftemail").val(),
-                            password: jQuery("#ftpsw").val()
+                            password
                         }, d => {
                             if (d.success) location.href = '/dashboard';
                             else {
