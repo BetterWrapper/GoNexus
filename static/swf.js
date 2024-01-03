@@ -34,7 +34,7 @@ module.exports = (req, res, url) => {
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
         } else if (url.pathname.includes("/store/")) {
-            if (!url.pathname.includes("/cc_store/")) https.get(`https://ourmetallicdisplaymanager.joseph-animate.repl.co/static/store${url.pathname.split("/static/2011/store")[1]}`, (r) => {
+            if (!url.pathname.includes("/cc_store/")) https.get(`https://josephanimate2021.github.io/OurMetallicDisplaymanager/static/store${url.pathname.split("/static/2011/store")[1]}`, (r) => {
                 const buffers = [];
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
