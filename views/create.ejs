@@ -88,8 +88,13 @@
                     <p id="error-message-lvmSelector" style="color: red;"></p>
                     <center class="modal-body">
                         <p>In order to use a custom LVM in your video, please type in a year and filename of any LVM below.</p>
-                        <p>https://wrapperclassic.netlify.app/animation/<input type="text" id="customlvmyear" value="2015" placeholder="Custom LVM Year" oninput="selectLVM()" 
-                            />/<input type="text" name="customlvmfile" value="go_full_late.swf" placeholder="Custom LVM Filename"/></p><br>
+                        <p>https://wrapperclassic.netlify.app/animation/<input 
+                            type="text" id="customlvmyear" value="2015" placeholder="Custom LVM Year" 
+                            oninput="selectLVM()"/>/<input 
+                            type="text" name="customlvmfile" value="go_full_late.swf" 
+                            placeholder="Custom LVM Filename"/>
+                        </p>
+                        <br>
                     </center>
                     <center class="modal-footer">
                         <h2>Other options</h2>
@@ -137,7 +142,9 @@
                             $('#customLVM').block()
                             $('#error-message-lvmSelector').text('');
                             studio = $('#customlvmyear').val();
-                            $.getJSON(`/api/convertUrlQuery2JSON?${$('#createVideoForm').serialize()}`, newAnimation);
+                            $.getJSON(`/api/convertUrlQuery2JSON?${
+                                $('#createVideoForm').serialize()
+                            }`, newAnimation);
                         })()" class="btn btn-orange">Create a Video</button>
                     </center>
                 </form>
@@ -155,7 +162,9 @@
         </div>
         <div id="import_popup_container" class="lightbox" style="display:none">
             <div id="lightbox_wrapper">
-                <h5>Import an Asset <a style="float: right;" href="javascript:;" onclick="jQuery('#studiodiv').unblock();">×</a></h5>
+                <h5>Import an Asset <a style="float: right;" href="javascript:;" 
+                    onclick="jQuery('#studiodiv').unblock();">×</a>
+                </h5>
                 <!-- Import form -->
                 <div id="import_image">
                     <form id="uploadbanner" enctype="multipart/form-data" method="post" action="javascript:;">

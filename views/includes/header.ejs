@@ -1,4 +1,9 @@
 <%- include("usercss.ejs") %>
+<style>
+    .has-school {
+        display: none;
+    }
+</style>
 <link href="https://wrapperclassic.netlify.app/cc/overlay.css" rel="stylesheet" type="text/css">
 <nav class="navbar site-nav" role="navigation">
     <div class="container">
@@ -35,7 +40,7 @@
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Manage <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="/manage_students">
+                            <a href="javascript:;" data-target="#manage_students" data-toggle="modal">
                                 Students
                                 <div class="text-muted small">Add students</div>
                             </a>
@@ -54,7 +59,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="/manage_school">
+                            <a href="javascript:;" data-target="#manage_school" data-toggle="modal">
                                 School Profile
                                 <div class="text-muted small">Enter your school information</div>
                             </a>
@@ -96,6 +101,71 @@
 <form enctype='multipart/form-data' action='javascript:uploadMyStuff()' style="display: none;">
     <input id='stuff-upload' type="file" onchange="this.form.submit()" name='import' accept=".zip" />
 </form>
+<div id="manage_students" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">Manage Students</h3>
+            </div>
+            <div class="modal-body">
+                <div id="has-students row" style="display: none;">
+                    <!--<div class="col-*-*"></div
+                    <div class="col-*-*"></div>-->
+                </div>
+                <div id="no-students">
+                    <div class="no-school">
+                        You have not created a school yet. 
+                        <a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_school', $('#school_maker')
+                        )">Create a school now</a>
+                    </div>
+                    <div class="has-school">
+                        You don't have any students assigned to your school yet.
+                        <a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_students', $('#assign_student')
+                        )">Assign Students</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="manage_school" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">Manage Your School</h3>
+            </div>
+            <div class="modal-body">
+                <div class="no-school">
+                    You have not created a school yet. 
+                    <a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_school', $('#school_maker')
+                    )">Create a school now</a>
+                </div>
+                <div class="has-school"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="school_maker" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" id="schoolForm"> 
+        <center>
+            <h2>Name Your School</h2>
+            <input type="text" placeholder="School Name"/>
+            <input class="btn btn-orange" id="schoolNamesubtn" type="submit" value="Create School"/>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
 <div id="stuff-uploading-overlay" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
