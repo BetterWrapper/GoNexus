@@ -46,13 +46,13 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/manage_teachers">
+                            <a href="javascript:;" data-target="#manage_teachers" data-toggle="modal">
                                 Teachers
                                 <div class="text-muted small">Add teachers</div>
                             </a>
                         </li>
                         <li>
-                            <a href="/manage_groups">
+                            <a href="javascript:;" data-target="#manage_groups" data-toggle="modal">
                                 Groups
                                 <div class="text-muted small">Create groups, manage group permissions</div>
                             </a>
@@ -120,13 +120,79 @@
                     <div class="no-school">
                         You have not created a school yet. 
                         <a href="javascript:;" onclick="showOverlayOnElement(
-                            '#manage_school', $('#school_maker')
+                            '#manage_students', $('#school_maker')
                         )">Create a school now</a>
                     </div>
                     <div class="has-school">
                         You don't have any students assigned to your school yet.
                         <a href="javascript:;" onclick="showOverlayOnElement(
                             '#manage_students', $('#assign_student')
+                        )">Assign Students</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="manage_groups" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">Manage Groups</h3>
+            </div>
+            <div class="modal-body">
+                <div id="has-groups row" style="display: none;">
+                    <!--<div class="col-*-*"></div
+                    <div class="col-*-*"></div>-->
+                </div>
+                <div id="no-groups">
+                    <div class="no-school">
+                        You have not created a school yet. 
+                        <a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_groups', $('#school_maker')
+                        )">Create a school now</a>
+                    </div>
+                    <div class="has-school">
+                        You don't have any groups assigned to your school yet.
+                        <a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_groups', $('#group_maker')
+                        )">Assign Students</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="manage_teachers" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">Manage Teachers</h3>
+            </div>
+            <div class="modal-body">
+                <div id="has-teachers row" style="display: none;">
+                    <!--<div class="col-*-*"></div
+                    <div class="col-*-*"></div>-->
+                </div>
+                <div id="no-teachers">
+                    <div class="no-school">
+                        You have not created a school yet. 
+                        <a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_teachers', $('#school_maker')
+                        )">Create a school now</a>
+                    </div>
+                    <div class="has-school">
+                        You don't have any teachers assigned to your school yet.
+                        <a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_teachers', $('#assign_teacher')
                         )">Assign Students</a>
                     </div>
                 </div>
@@ -744,4 +810,16 @@
             });
         }
     });
+    const loop = setInterval(getSchoolInfo, 1);
+    const getSchoolInfo = function(stuff) {
+        if (userData) {
+            jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
+                if (d.name) {
+                    $(".no-school").hide();
+                    $(".has-school").show();
+                }
+            })
+            clearInterval(loop);
+        }
+    }
 </script>
