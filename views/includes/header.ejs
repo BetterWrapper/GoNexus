@@ -226,7 +226,7 @@
     <form class="lightbox_wrapper" action="javascript:;" id="schoolForm"> 
         <center>
             <h2>Name Your School</h2>
-            <input type="text" placeholder="School Name"/>
+            <input type="text" placeholder="School Name" name="school_name"/>
             <input class="btn btn-orange" id="schoolNamesubtn" type="submit" value="Create School"/>
         </center>
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
@@ -480,6 +480,19 @@
     </div>
 </div>
 <script>
+    jQuery("#schoolForm").submit(function() {
+        var currentElem = lightboxElement;
+        hideOverlayOnElement();
+        jQuery(currentElem).block();
+        jQuery.post("/api/school/create", {
+            user: JSON.stringify(userData),
+            formdata: jQuery("#schoolForm").serialize()
+        }, function(d) {
+            hideOverlayOnElement();
+            $(currentElem).modal('hide');
+            displayFeedback(d);
+        });
+    })
     let uploadMovieAfterLoginIsComplete = false;
     function uploadMovieAfterLoginComplete() {
         if (!uploadMovieAfterLoginIsComplete) uploadMovieAfterLoginIsComplete = true;
