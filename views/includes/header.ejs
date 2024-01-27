@@ -226,8 +226,20 @@
     <form class="lightbox_wrapper" action="javascript:;" id="schoolForm"> 
         <center>
             <h2>Name Your School</h2>
-            <input type="text" placeholder="School Name" name="school_name"/>
-            <input class="btn btn-orange" id="schoolNamesubtn" type="submit" value="Create School"/>
+            <input type="text" placeholder="School Name" name="school_name" required/>
+            <button class="btn btn-orange" type="submit">Create School</button>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
+<div id="group_maker" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" data-db-name="groups"> 
+        <center>
+            <h2>Name Your Group</h2>
+            <input type="hidden" name="students" value="No Students"/>
+            <input type="hidden" name="teachers" value="No Teachers"/>
+            <input type="text" placeholder="Group Name" name="name"/>
+            <button class="btn btn-orange" onclick="insertschooldb('groups')">Create group</button>
         </center>
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
     </form>
@@ -480,6 +492,34 @@
     </div>
 </div>
 <script>
+    const genid = (length) => {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    };
+    function insertschooldb(type) {
+        var currentElem = lightboxElement;
+        hideOverlayOnElement();
+        jQuery(currentElem).block();
+        $(".lightbox_wrapper").each(function(index, elem) {
+            if ($(elem).data("db-name") && $(elem).data("db-name") == type) {
+                $.post(`/api/school/db/create`, {
+                    user: JSON.stringify(userData),
+                    formdata: $(elem).serialize(),
+                    id: genid(7),
+                    type
+                }, d => {
+                    hideOverlayOnElement();
+                    $(currentElem).modal('hide');
+                    displayFeedback(d || "1Unable to connect to the server");
+                })
+            }
+        });
+    }
     jQuery("#schoolForm").submit(function() {
         var currentElem = lightboxElement;
         hideOverlayOnElement();
@@ -823,16 +863,44 @@
             });
         }
     });
-    const loop = setInterval(getSchoolInfo, 1);
     const getSchoolInfo = function(stuff) {
         if (userData) {
             jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
+                console.log(d)
                 if (d.name) {
                     $(".no-school").hide();
                     $(".has-school").show();
                 }
             })
+            jQuery.post("/api/school/groups/get", JSON.parse(
+                JSON.stringify(userData)
+            ), d => {
+                console.log(d)
+                if (d.name) {
+                    $(".no-groups").hide();
+                    $(".has-groups").show();
+                }
+            })
+            jQuery.post("/api/school/students/get", JSON.parse(
+                JSON.stringify(userData)
+            ), d => {
+                console.log(d)
+                if (d.name) {
+                    $(".no-students").hide();
+                    $(".has-students").show();
+                }
+            })
+            jQuery.post("/api/school/teachers/get", JSON.parse(
+                JSON.stringify(userData)
+            ), d => {
+                console.log(d)
+                if (d.name) {
+                    $(".no-teachers").hide();
+                    $(".has-teachers").show();
+                }
+            })
             clearInterval(loop);
         }
     }
+    var loop = setInterval(getSchoolInfo, 1);
 </script>
