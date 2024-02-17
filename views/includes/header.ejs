@@ -1,6 +1,7 @@
 <%- include("usercss.ejs") %>
 <style>
-    .has-school {
+    .has-school,
+    .is_school_admin {
         display: none;
     }
 </style>
@@ -112,7 +113,7 @@
                 <h3 class="modal-title">Manage Students</h3>
             </div>
             <div class="modal-body">
-                <div id="has-students row" style="display: none;">
+                <div id="has-students" class="row" style="display: none;">
                     <!--<div class="col-sm-4"></div>
                     <div class="col-sm-4"></div>-->
                 </div>
@@ -145,10 +146,7 @@
                 <h3 class="modal-title">Manage Groups</h3>
             </div>
             <div class="modal-body">
-                <div id="has-groups row" style="display: none;">
-                    <!--<div class="col-sm-4"></div>
-                    <div class="col-sm-4"></div>-->
-                </div>
+                <div id="has-groups" class="row" style="display: none;"></div>
                 <div id="no-groups">
                     <div class="no-school">
                         You have not created a school yet. 
@@ -178,7 +176,7 @@
                 <h3 class="modal-title">Manage Teachers</h3>
             </div>
             <div class="modal-body">
-                <div id="has-teachers row" style="display: none;">
+                <div id="has-teachers" class="row" style="display: none;">
                     <!--<div class="col-sm-4"></div>
                     <div class="col-sm-4"></div>-->
                 </div>
@@ -200,24 +198,49 @@
         </div>
     </div>
 </div>
-<div id="manage_school" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<div class="modal container" id="manage_school">
+    <div class="modal-dialog row">
+        <div class="modal-content col-xs-12 col-sm-6 col-md-6">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span>
                 </button>
-                <h3 class="modal-title">Manage Your School</h3>
+                <h3 class="modal-title">School Profile</h3>
             </div>
-            <div class="modal-body">
+            <div class="modal-body well well-sm">
                 <div class="no-school">
                     You have not created a school yet. 
                     <a href="javascript:;" onclick="showOverlayOnElement(
                         '#manage_school', $('#school_maker')
                     )">Create a school now</a>
                 </div>
-                <div class="has-school"></div>
+                <div class="has-school row">
+                    <div class="col-sm-6 col-md-4">
+                        <img src="/ui/gifs/school-default.gif" alt="" class="img-rounded img-responsive" />
+                    </div>
+                    <div class="col-sm-6 col-md-8">
+                        <h4 id="schoolName"></h4>
+                        <small><cite id="schoolId"></cite></small>
+                        <p>
+                            <span id="groupCount"></span>
+                            <br />
+                            <span id="studentCount"></span>
+                            <br />
+                            <span id="teacherCount"></span>
+                        </p>
+                        <div class="is_school_admin btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                Actions <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="javascript:editSchool()">Edit School</a></li>
+                                <li class="divider"></li>
+                                <li><a href="javascript:deleteSchool('#manage_school')">Delete School</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -232,14 +255,36 @@
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
     </form>
 </div>
+<div id="school_editor" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" id="schoolEditForm"> 
+        <center>
+            <h2>Rename Your School</h2>
+            <input type="text" placeholder="School Name" id="schoolEditForm_name" name="name" required/>
+            <button class="btn btn-orange" type="submit">Edit School</button>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
 <div id="group_maker" class="lightbox" style="display:none">
-    <form class="lightbox_wrapper" action="javascript:;" data-db-name="groups"> 
+    <form class="lightbox_wrapper" action="javascript:;" data-db-name="groups" data-action="create"> 
         <center>
             <h2>Name Your Group</h2>
-            <input type="hidden" name="students" value="No Students"/>
-            <input type="hidden" name="teachers" value="No Teachers"/>
+            <input type="hidden" name="students" value="[]"/>
+            <input type="hidden" name="teachers" value="[]"/>
+            <input type="hidden" name="permissions" value="{}"/>
             <input type="text" placeholder="Group Name" name="name"/>
-            <button class="btn btn-orange" onclick="insertschooldb('groups')">Create group</button>
+            <button class="btn btn-orange" onclick="insertschooldb('groups', 'create')">Create group</button>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
+<div id="group_editor" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" data-db-name="groups" data-action="modify"> 
+        <center>
+            <h2>Rename Your Group</h2>
+            <input type="hidden" name="id" id="groupId"/>
+            <input type="text" placeholder="Group Name" name="name" id="groupName"/>
+            <button class="btn btn-orange" onclick="insertschooldb('groups', 'modify')">Edit group</button>
         </center>
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
     </form>
@@ -492,6 +537,30 @@
     </div>
 </div>
 <script>
+    function editSchool() {
+        $("#schoolEditForm_name").val(schoolInfo.name);
+        showOverlayOnElement('#manage_school', $('#school_editor'))
+    }
+    function deleteSchool(elem) {
+        const delSchoolConfirm = confirm(`Are you sure that you want to delete a school called ${
+            schoolInfo.name
+        }? Any data created by your students & teachers will be deleted during this process!`)
+        if (delSchoolConfirm) {
+            var currentElem = lightboxElement;
+            hideOverlayOnElement();
+            jQuery(currentElem).block();
+            jQuery.post("/api/school/delete", {
+                user: JSON.stringify(userData),
+            }, (d) => {
+                hideOverlayOnElement();
+                $(currentElem).modal('hide');
+                $(elem).modal('hide');
+                displayFeedback(d);
+                reloadSchoolInfo();
+            });
+        }
+    }
+    var schoolInfo = {};
     const genid = (length) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -501,16 +570,23 @@
         }
         return result;
     };
-    function insertschooldb(type) {
+    function insertschooldb(type, action) {
         var currentElem = lightboxElement;
         hideOverlayOnElement();
         jQuery(currentElem).block();
         $(".lightbox_wrapper").each(function(index, elem) {
-            if ($(elem).data("db-name") && $(elem).data("db-name") == type) {
-                $.post(`/api/school/db/create`, {
+            if (
+                $(elem).data("db-name") 
+                && $(elem).data("db-name") == type 
+                && $(elem).data("action") 
+                && $(elem).data("action") == action
+            ) {
+                $.post(`/api/schooldb/${type}/${action}`, {
                     user: JSON.stringify(userData),
                     formdata: $(elem).serialize(),
-                    id: genid(7),
+                    id: action == "create" ? genid(7) : (
+                        Object.fromEntries(new URLSearchParams($(elem).serialize()))
+                    ).id,
                     type
                 }, d => {
                     hideOverlayOnElement();
@@ -520,6 +596,20 @@
             }
         });
     }
+    jQuery("#schoolEditForm").submit(() => {
+        var currentElem = lightboxElement;
+        hideOverlayOnElement();
+        jQuery(currentElem).block();
+        jQuery.post("/api/school/modify", {
+            user: JSON.stringify(userData),
+            formdata: jQuery("#schoolEditForm").serialize()
+        }, function(d) {
+            hideOverlayOnElement();
+            $(currentElem).modal('hide');
+            displayFeedback(d);
+            reloadSchoolInfo();
+        });
+    })
     jQuery("#schoolForm").submit(function() {
         var currentElem = lightboxElement;
         hideOverlayOnElement();
@@ -531,6 +621,7 @@
             hideOverlayOnElement();
             $(currentElem).modal('hide');
             displayFeedback(d);
+            reloadSchoolInfo();
         });
     })
     let uploadMovieAfterLoginIsComplete = false;
@@ -864,43 +955,55 @@
         }
     });
     const getSchoolInfo = function(stuff) {
+        schoolInfo = {};
         if (userData) {
             jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
-                console.log(d)
+                schoolInfo = d;
                 if (d.name) {
+                    if (d.admin == userData.uid) $(".is_school_admin").show()
                     $(".no-school").hide();
                     $(".has-school").show();
-                }
-            })
-            jQuery.post("/api/school/groups/get", JSON.parse(
-                JSON.stringify(userData)
-            ), d => {
-                console.log(d)
-                if (d.name) {
-                    $(".no-groups").hide();
-                    $(".has-groups").show();
-                }
-            })
-            jQuery.post("/api/school/students/get", JSON.parse(
-                JSON.stringify(userData)
-            ), d => {
-                console.log(d)
-                if (d.name) {
-                    $(".no-students").hide();
-                    $(".has-students").show();
-                }
-            })
-            jQuery.post("/api/school/teachers/get", JSON.parse(
-                JSON.stringify(userData)
-            ), d => {
-                console.log(d)
-                if (d.name) {
-                    $(".no-teachers").hide();
-                    $(".has-teachers").show();
+                    $("#schoolName").text(d.name);
+                    document.getElementById('schoolId').title = d.id;
+                    $("#schoolId").text(d.id);
+                    const texts = {
+                        groups: `${d.groups.length} Groups`,
+                        teachers: `${d.teachers.length} Teachers`,
+                        students: `${d.students.length} Students`
+                    }
+                    for (const i in texts) if (d[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                    $("#groupCount").text(texts.groups);
+                    $("#teacherCount").text(texts.teachers);
+                    $("#studentCount").text(texts.students);
+                    $("#has-groups").html(d.groups.map(v => {
+                        const texts = {
+                            teachers: `${v.teachers.length} Teachers`,
+                            students: `${v.students.length} Students`
+                        }
+                        for (const i in texts) if (v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                        return `<div class="col-sm-4">${
+                            v.name
+                        }<br><img src="/ui/img/group-default.png" height="128" width="128"/><br>${v.id}<br>${
+                            texts.teachers
+                        }<br>${texts.students}</div>`
+                    }).join(""));
+                    if (d.groups.length >= 1) {
+                        $("#no-groups").hide();
+                        $("#has-groups").show();
+                    } else {
+                        $("#has-groups").hide();
+                        $("#no-groups").show();
+                    }
+                } else {
+                    $(".has-school").hide();
+                    $(".no-school").show();
                 }
             })
             clearInterval(loop);
         }
     }
     var loop = setInterval(getSchoolInfo, 1);
+    function reloadSchoolInfo() {
+        loop = setInterval(getSchoolInfo, 1);
+    }
 </script>
