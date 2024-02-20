@@ -113,10 +113,7 @@
                 <h3 class="modal-title">Manage Students</h3>
             </div>
             <div class="modal-body">
-                <div id="has-students" class="row" style="display: none;">
-                    <!--<div class="col-sm-4"></div>
-                    <div class="col-sm-4"></div>-->
-                </div>
+                <div id="has-students" class="row" style="display: none;"></div>
                 <div id="no-students">
                     <div class="no-school">
                         You have not created a school yet. 
@@ -176,10 +173,7 @@
                 <h3 class="modal-title">Manage Teachers</h3>
             </div>
             <div class="modal-body">
-                <div id="has-teachers" class="row" style="display: none;">
-                    <!--<div class="col-sm-4"></div>
-                    <div class="col-sm-4"></div>-->
-                </div>
+                <div id="has-teachers" class="row" style="display: none;"></div>
                 <div id="no-teachers">
                     <div class="no-school">
                         You have not created a school yet. 
@@ -217,7 +211,7 @@
                 </div>
                 <div class="has-school row">
                     <div class="col-sm-6 col-md-4">
-                        <img src="/ui/gifs/school-default.gif" alt="" class="img-rounded img-responsive" />
+                        <img src="/ui/img/profile_pic_school.jpg" alt="" class="img-rounded img-responsive" />
                     </div>
                     <div class="col-sm-6 col-md-8">
                         <h4 id="schoolName"></h4>
@@ -546,15 +540,11 @@
             schoolInfo.name
         }? Any data created by your students & teachers will be deleted during this process!`)
         if (delSchoolConfirm) {
-            var currentElem = lightboxElement;
-            hideOverlayOnElement();
-            jQuery(currentElem).block();
+            jQuery(elem).block();
             jQuery.post("/api/school/delete", {
                 user: JSON.stringify(userData),
             }, (d) => {
-                hideOverlayOnElement();
-                $(currentElem).modal('hide');
-                $(elem).modal('hide');
+                $(elem).unblock().modal('hide');
                 displayFeedback(d);
                 reloadSchoolInfo();
             });
@@ -592,6 +582,7 @@
                     hideOverlayOnElement();
                     $(currentElem).modal('hide');
                     displayFeedback(d || "1Unable to connect to the server");
+                    reloadSchoolInfo();
                 })
             }
         });
@@ -749,8 +740,7 @@
                                     $("#flashthemesloginrrorlightbox").text(d.error);
                                 }
                             });
-                        }
-                        else if (d.success) {
+                        } else if (d.success) {
                             if (uploadMovieAfterLoginIsComplete && processing) {
                                 hideOverlayOnElement();
                                 const origText = $("#movieUploaderSubmitBtn").text();
@@ -981,22 +971,40 @@
                             students: `${v.students.length} Students`
                         }
                         for (const i in texts) if (v[i].length == 1) texts[i] = texts[i].slice(0, -1);
-                        return `<div class="col-sm-4">${
+                        return `<div class="col-sm-2">${
                             v.name
                         }<br><img src="/ui/img/group-default.png" height="128" width="128"/><br>${v.id}<br>${
                             texts.teachers
-                        }<br>${texts.students}</div>`
+                        }<br>${texts.students}<br><div id="is_admin_4_${v.id}" style="display: none;">
+                            <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
+                                Actions <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="javascript:editGroup('${v.id}')">Edit Group</a></li>
+                                <li><a href="javascript:permissions('groups', '${
+                                    v.id
+                                }')">Edit Group permissions</a></li>
+                                <li class="divider"></li>
+                                <li><a href="javascript:deleteGroup('${v.id}')">Delete Group</a></li>
+                            </ul>
+                        </div></div>`
                     }).join(""));
                     if (d.groups.length >= 1) {
                         $("#no-groups").hide();
                         $("#has-groups").show();
                     } else {
-                        $("#has-groups").hide();
+                        $("#has-groups").html('').hide();
                         $("#no-groups").show();
                     }
                 } else {
                     $(".has-school").hide();
                     $(".no-school").show();
+                    $("#has-groups").html('').hide();
+                    $("#no-groups").show();
+                    $("#has-teachers").html('').hide();
+                    $("#no-teachers").show();
+                    $("#has-students").html('').hide();
+                    $("#no-students").show();
                 }
             })
             clearInterval(loop);
