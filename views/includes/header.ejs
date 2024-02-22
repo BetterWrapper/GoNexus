@@ -1044,7 +1044,7 @@
                             } ${v.students ?  'Students' : 'Student'}`
                         }
                         for (const i in texts) if (v[i] && v[i].length == 1) texts[i] = texts[i].slice(0, -1);
-                        return `<div class="col-sm-2">${
+                        return `<div class="col-sm-3">${
                             v.name
                         }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
                             texts.teachers
@@ -1067,14 +1067,18 @@
                     $("#has-teachers").html((get('teachers')).map(v => {
                         const texts = {
                             groups: `${v.groups.length} Groups`,
-                            students: `${v.students.length} Students`
+                            students: `${
+                                v.students ? v.students.length : '1'
+                            } ${v.students ?  'Students' : 'Student'}`
                         }
-                        for (const i in texts) if (v[i].length == 1) texts[i] = texts[i].slice(0, -1);
-                        return `<div class="col-sm-2">${
+                        for (const i in texts) if (v[i] && v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                        return `<div class="col-sm-3">${
                             v.name
                         }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
                             texts.groups
-                        }<br>${texts.students}<br><div id="is_admin_4_${v.id}" style="display: none;">
+                        }<br>${texts.students}<br><div style="display: ${
+                            v.admin == (userData.uid || userData.id) ? 'block' : 'none'
+                        };">
                             <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
                                 Actions <span class="caret"></span>
                             </button>
@@ -1093,14 +1097,18 @@
                     }">${v.name}</option>`));
                     if ((get('groups')).length >= 1) {
                         $("#no-groups").hide();
-                        $("#has-groups").show();
+                        $("#has-groups").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_groups', $('#group_maker')
+                        )">Create more groups</a>`);
                     } else {
                         $("#has-groups").html('').hide();
                         $("#no-groups").show();
                     }
                     if ((get('teachers')).length >= 1) {
                         $("#no-teachers").hide();
-                        $("#has-teachers").show();
+                        $("#has-teachers").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                            '#manage_teachers', $('#assign_teacher')
+                        )">Assign More Teachers</a>`);
                     } else {
                         $("#has-teachers").html('').hide();
                         $("#no-teachers").show();
