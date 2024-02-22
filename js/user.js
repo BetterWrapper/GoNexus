@@ -1,5 +1,5 @@
 /**
- * Account System For BetterWrapper.
+ * Account System For GoNexus (Codename: BetterWrapper).
  * Firebase is required in order to run this file.
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
@@ -69,15 +69,14 @@ auth.onAuthStateChanged(user => {
                 }
             }
         } else loggedIn(user);
-    } else logout('auto');
+    } else if (!localStorage.getItem("u_info_school")) logout('auto');
 });
 function logout(t) {
     jQuery.post("/api/getSession", d => {
         const json = JSON.parse(d);
         if (json.data && json.data.loggedIn && json.data.current_uid) {
             if (t != 'auto') jQuery.post('/api/removeSession', {
-                current_uid: json.data.current_uid,
-                type: 'current_uid'
+                current_uid: json.data.current_uid
             }, d => {
                 if (JSON.parse(d).success) {
                     jQuery.post(`/api/fetchAPIKeys`, (d) => {
@@ -85,6 +84,7 @@ function logout(t) {
                         addVal2Element('freeconvert-key', json.freeConvertKey);
                         addVal2Element('topmediaai-key', json.topMediaAIKey);
                     });
+                    hideElement('isAccountAdmin');
                     hideElement('isLogin');
                     showElement('signup-button');
                     showElement('login-button');
@@ -146,6 +146,8 @@ function loggedIn(user) {
     jQuery.post("/api/check4SavedUserInfo", {
         displayName: user.displayName || user.name,
         email: user.email,
+        role: user.role,
+        admin: user.admin,
         uid: user.uid || user.id
     }, () => {
         jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
@@ -153,14 +155,7 @@ function loggedIn(user) {
             const json = JSON.parse(d);
             addVal2Element('freeconvert-key', json.freeConvertKey);
             addVal2Element('topmediaai-key', json.topMediaAIKey);
-            jQuery.post("/api/getAllUsers", d => {
-                const userInfo = d.find(i => i.id == user.id || user.uid);
-                if (!userInfo.isStudent) showElement('isAccountAdmin');
-                else if (userInfo.isTeacher) {
-                    hideElement('teacherOption');
-                    for (const i of document.getElementsByClassName('schoolOption')) i.style.display = 'none';
-                }
-            })
+            if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
         });
     });
     hideElement('signup-button');
@@ -379,6 +374,11 @@ function userLogout() {
             });
         }
     });
+    if (localStorage.getItem("u_info_school")) {
+        hideElement('isAccountAdmin');
+        localStorage.removeItem("u_info_school");
+        logout();
+    }
 }
 function hideElement(id) {
     if (document.getElementById(id)) document.getElementById(id).style.display='none';
@@ -410,10 +410,10 @@ function loadUserContent(userData) {
                 addText2Element('user-name', meta.name);
                 addText2Element('user-link', meta.name);
                 addLink2Element('user-link', `/user?id=${params.get("id")}`)
-                document.title = `${meta.name} On BetterWrapper`;
+                document.title = `${meta.name} On GoNexus`;
                 $.getJSON(`/movieList?uid=${params.get("id")}`, (d) => {
                     let json;
-                    if (userData && params.get("id") == userData.uid) json = d;
+                    if (userData && hasPermission('publicvids') && params.get("id") == userData.uid) json = d;
                     else json = d.filter(i => i.published == "1");
                     if (!params.get("filename") || params.get("filename") != "user-videos") {
                         let htmls = "";

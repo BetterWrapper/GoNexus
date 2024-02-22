@@ -1,6 +1,7 @@
 // variables
 const fs = require("fs");
 const loadPost = require("../misc/post_body");
+const CryptoJS = require("crypto-js");
 // peform function
 module.exports = (req, res, url) => {
     if ( // only peform this function when an api path below is being called.
@@ -15,15 +16,23 @@ module.exports = (req, res, url) => {
             const userData = JSON.parse(data.user);
             const formData = Object.fromEntries(new URLSearchParams(data.formdata));
             const users = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-            const userInfo = users.users.find(i => i.id == userData.uid);
-            if (userInfo.school) switch (action) {
+            const userInfo = users.users.find(i => i.id == userData.uid || userData.id);
+            var schoolUserInfo = userInfo.school;
+            if (userInfo.role) {
+                const adminInfo = users.users.find(i => i.id == userInfo.admin);
+                schoolUserInfo = adminInfo.school[userInfo.role + 's'].find(i => i.id == userInfo.id);
+                delete formData[userInfo.role + 's']
+            }
+            console.log(schoolUserInfo);
+            if (schoolUserInfo) switch (action) {
                 case "create": {
                     for (const i in formData) if (
                         formData[i] == '[]' 
                         || formData[i] == '{}'
                     ) formData[i] = JSON.parse(formData[i]);
+                    if (formData.pass) formData.pass = CryptoJS.AES.encrypt(formData.pass, "Secret Passphrase").toString();
                     formData.id = data.id;
-                    userInfo.school[type].unshift(formData);
+                    schoolUserInfo[type].unshift(formData);
                     fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(users, null, "\t"));
                     res.end(`0${type.slice(0, -1)} ${data.id} has been created successfully`);
                     break;

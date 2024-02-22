@@ -444,7 +444,20 @@ module.exports = function (req, res, url) {
 								const b = await movie.loadZip(url.query, data);
 								if (!url.query.movieId.startsWith("ft-")) res.end(Buffer.concat([base, b]));
 								else res.end(b);
-							} else res.end(Buffer.concat([base, await parse.packMovie(fs.readFileSync("./previews/template.xml"), false, false, false, templateAssets)]));
+							} else res.end(
+								Buffer.concat(
+									[
+										base, 
+										parse.packMovie(
+											fs.readFileSync("./previews/template.xml"), 
+											false, 
+											false, 
+											false, 
+											templateAssets
+										)
+									]
+								)
+							);
 						} catch (e) {
 							console.log(e);
 							res.end(1 + e);

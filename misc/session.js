@@ -36,7 +36,7 @@ module.exports = {
     remove(req, data) {
         try {
             const currentSession = this.get(req);
-            if (data.type && currentSession.data) {
+            if (currentSession.data) {
                 for (const i in data) {
                     currentSession.data[i] = "";
                 }

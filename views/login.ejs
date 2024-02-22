@@ -107,14 +107,10 @@ if (self !== top) jQuery('body').hide();
                                 <input class="form-control" id="login-password" type="password" name="password" maxlength="255" placeholder="Password" value="" autocomplete="off" required>
                             </div>
 
-                            <div class="form-group" id="login_captcha_container"></div>
-
                             <div class="form-group text-center">
                                 <button class="btn btn-green btn-lg" id="btn-login" type="submit">Login</button>
 
                                 <input type="hidden" name="action" value="login">
-
-<input type="hidden" name="ct" value="20aOrYnnlPfR7eDXEneVKQMpoxyR4tzA3RI+PccCC7uOC7OBl5aPC6gkX9rlu_FhyL5JiqLg32KtDMy+8+uuvxAEDlCjP8jkLR6CwVUxuYYZO3UkJyPN_UHf90nRRoq9aB_8iQxwclwBX1i_Cs6NfVUjnA1VchP8nDnSCZC3VoqFe9PaZskfE60BQsRcbJTn__GSBK+TFFFX0zU5RqPdbrO6RR"/>
                             </div>
                         </form>
                     </div>
@@ -279,17 +275,8 @@ $('#login-form').submit(function() {
     return false;
 });
 
-function showCaptchaWidget() {
-    Recaptcha.destroy();
-    Recaptcha.create("6LdF-sgSAAAAAA_YEaRe4etvtC7jo-N1NtA6lSSo", "login_captcha_container", { theme: "white" });
-    captcha_displayed = true;
-}
-
-if ($('#login-email').val().length) {
-    $('#login-password').focus();
-} else {
-    $('#login-email').focus();
-}
+if ($('#login-email').val().length) $('#login-password').focus();
+else $('#login-email').focus();
 
 
 })(jQuery);

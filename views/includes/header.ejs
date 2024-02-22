@@ -249,12 +249,52 @@
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
     </form>
 </div>
+<div id="password_generator" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" id="passwordGenForm"> 
+        <center>
+            <h2>Generate Your Password</h2>
+            <hr>
+            <label for="passlength">Password Length (Minimum 8) : &nbsp;&nbsp;
+                <select name="passlength">
+                    <option value=6>6 Characters</option>
+                    <option selected="selected" value=8>8 Characters</option>
+                    <option value=10>10 Characters</option>
+                    <option value=12>12 Characters</option>
+                </select>
+            </label><br>
+            <button class="btn btn-blue" type="submit">Generate Password</button>&nbsp;
+        </center>
+    </form>
+</div>
 <div id="school_editor" class="lightbox" style="display:none">
     <form class="lightbox_wrapper" action="javascript:;" id="schoolEditForm"> 
         <center>
             <h2>Rename Your School</h2>
             <input type="text" placeholder="School Name" id="schoolEditForm_name" name="name" required/>
             <button class="btn btn-orange" type="submit">Edit School</button>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
+<div id="assign_teacher" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" data-db-name="teachers" data-action="create"> 
+        <center>
+            <h2>Assign Teacher</h2>
+            <hr>
+            <input type="hidden" name="students" value="[]"/>
+            <input type="hidden" name="groups" value="[]"/>
+            <input type="hidden" name="admin" class="form_user_id"/>
+            <input type="hidden" name="permissions" value="{}"/>
+            <input type="hidden" name="image" value="/ui/img/person-default.jpg"/>
+            <h3>Teacher Name</h3>
+            <input type="text" placeholder="Teacher Name" name="name" required/><br>
+            <h3>Teacher Password (<button onclick="genpass(
+                '#assign_teacher', '#teacher_pass'
+            )">Generate Password (Optional)</button>)</h3>
+            <input type="text" placeholder="Teacher Password" name="pass" id="teacher_pass" required/>
+            <h3>Group (Optional)</h3>
+            <select name="group" class="group-select"></select><br><br>
+            <button class="btn btn-orange" onclick="insertschooldb('teachers', 'create')">Assign teacher</button>
         </center>
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
     </form>
@@ -266,7 +306,9 @@
             <input type="hidden" name="students" value="[]"/>
             <input type="hidden" name="teachers" value="[]"/>
             <input type="hidden" name="permissions" value="{}"/>
-            <input type="text" placeholder="Group Name" name="name"/>
+            <input type="hidden" name="admin" class="form_user_id"/>
+            <input type="hidden" name="image" value="/ui/img/group-default.png"/>
+            <input type="text" placeholder="Group Name" name="name" required/>
             <button class="btn btn-orange" onclick="insertschooldb('groups', 'create')">Create group</button>
         </center>
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
@@ -531,6 +573,21 @@
     </div>
 </div>
 <script>
+    function genpass(source, field) {
+        var currentElem = lightboxElement;
+        hideOverlayOnElement();
+        showOverlayOnElement(currentElem, $('#password_generator'))
+        $("#passwordGenForm").submit(() => {
+            const passwordgenforminfo = Object.fromEntries(
+                new URLSearchParams(
+                    $("#passwordGenForm").serialize()
+                )
+            );
+            $(field).val(genid(passwordgenforminfo.passlength));
+            hideOverlayOnElement();
+            showOverlayOnElement(currentElem, $(source));
+        })
+    }
     function editSchool() {
         $("#schoolEditForm_name").val(schoolInfo.name);
         showOverlayOnElement('#manage_school', $('#school_editor'))
@@ -551,14 +608,15 @@
         }
     }
     var schoolInfo = {};
-    const genid = (length) => {
+    const genid = (length, callback) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;
         for (let i = 0; i < length; i++) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        return result;
+        if (callback && typeof callback == "function") callback(result);
+        else return result;
     };
     function insertschooldb(type, action) {
         var currentElem = lightboxElement;
@@ -571,6 +629,7 @@
                 && $(elem).data("action") 
                 && $(elem).data("action") == action
             ) {
+                var formdata = Object.fromEntries(new URLSearchParams($(elem).serialize()));
                 $.post(`/api/schooldb/${type}/${action}`, {
                     user: JSON.stringify(userData),
                     formdata: $(elem).serialize(),
@@ -647,7 +706,7 @@
         });
     })
     $("#ftacclinkageformlightbox").submit(() => {
-        if (processing) return;
+        if (processing || userData.role) return alert('Linking a FlashThemes account is either in progress or your account just does not allow linking your flashthemes account.');
         $("#ftacclinkageerrorlightbox").text("");
         $(".close_btn").hide();
         processing = true;
@@ -876,7 +935,7 @@
             converting: $(elem).data("converting"),
             for: $(elem).data("for"),
             body: $(elem).serialize(),
-            loggedIn: userData ? 'true' : 'false',
+            loggedIn: userData && hasPermission('flashthemes') ? 'true' : 'false',
             userParams: new URLSearchParams(userData).toString()
         }, d => {
             apiKeySubmiting = false;
@@ -907,6 +966,9 @@
             }
         });
     }
+    function hasPermission(type) {
+        return !userData.role || (userData.permissions[type] && userData.permissions[type] == '1');
+    }
     let apiKeySubmiting = false;
     jQuery("#apiKeyForm").submit(() => {
         if (apiKeySubmiting) return;
@@ -919,7 +981,9 @@
             jQuery("#error-message").text("Please enter one of the api keys");
             jQuery("#submitbtn").val(origText);
         } else {
-            jQuery.post(`/api/fetchAPIKeys${userData ? `?uid=${userData.uid}` : ''}`, (d) => {
+            jQuery.post(`/api/fetchAPIKeys${userData && hasPermission('apiKey') ? `?uid=${
+                userData.uid || userData.id
+            }` : ''}`, (d) => {
                 const json = JSON.parse(d);
                 if (json.topMediaAIKey == jQuery("#topmediaai-key").val() && json.freeConvertKey ==  jQuery("#freeconvert-key").val()) {
                     apiKeySubmiting = false;
@@ -929,7 +993,7 @@
                     jQuery.post("/api/submitAPIKeys", {
                         topMediaAIKey: jQuery("#topmediaai-key").val(),
                         freeConvertKey: jQuery("#freeconvert-key").val(),
-                        uid: userData ? userData.uid : ""
+                        uid: userData && hasPermission('apiKey') ? (userData.uid || userData.id) : ""
                     }, (d) => {
                         const json = JSON.parse(d);
                         apiKeySubmiting = false;
@@ -947,10 +1011,11 @@
     const getSchoolInfo = function(stuff) {
         schoolInfo = {};
         if (userData) {
+            $(".form_user_id").val(userData.uid || userData.id);
             jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
                 schoolInfo = d;
                 if (d.name) {
-                    if (d.admin == userData.uid) $(".is_school_admin").show()
+                    if (d.admin == (userData.uid || userData.id)) $(".is_school_admin").show()
                     $(".no-school").hide();
                     $(".has-school").show();
                     $("#schoolName").text(d.name);
@@ -965,17 +1030,27 @@
                     $("#groupCount").text(texts.groups);
                     $("#teacherCount").text(texts.teachers);
                     $("#studentCount").text(texts.students);
-                    $("#has-groups").html(d.groups.map(v => {
+                    function get(type) {
+                        if (!userData.role) return d[type];
+                        return d[userData.role + 's'].find(i => i.id == userData.id)[type] || []
+                    }
+                    $("#has-groups").html((get('groups')).map(v => {
                         const texts = {
-                            teachers: `${v.teachers.length} Teachers`,
-                            students: `${v.students.length} Students`
+                            teachers: `${
+                                v.teachers ? v.teachers.length : '1'
+                            } ${v.teachers ? 'Teachers' : 'Teacher'}`,
+                            students: `${
+                                v.students ? v.students.length : '1'
+                            } ${v.students ?  'Students' : 'Student'}`
                         }
-                        for (const i in texts) if (v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                        for (const i in texts) if (v[i] && v[i].length == 1) texts[i] = texts[i].slice(0, -1);
                         return `<div class="col-sm-2">${
                             v.name
-                        }<br><img src="/ui/img/group-default.png" height="128" width="128"/><br>${v.id}<br>${
+                        }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
                             texts.teachers
-                        }<br>${texts.students}<br><div id="is_admin_4_${v.id}" style="display: none;">
+                        }<br>${texts.students}<br><div style="display: ${
+                            v.admin == (userData.uid || userData.id) ? 'block' : 'none'
+                        };">
                             <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
                                 Actions <span class="caret"></span>
                             </button>
@@ -989,12 +1064,53 @@
                             </ul>
                         </div></div>`
                     }).join(""));
-                    if (d.groups.length >= 1) {
+                    $("#has-teachers").html((get('teachers')).map(v => {
+                        const texts = {
+                            groups: `${v.groups.length} Groups`,
+                            students: `${v.students.length} Students`
+                        }
+                        for (const i in texts) if (v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                        return `<div class="col-sm-2">${
+                            v.name
+                        }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
+                            texts.groups
+                        }<br>${texts.students}<br><div id="is_admin_4_${v.id}" style="display: none;">
+                            <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
+                                Actions <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="javascript:editTeacher('${v.id}')">Edit teacher Info</a></li>
+                                <li><a href="javascript:permissions('teachers', '${
+                                    v.id
+                                }')">Edit teacher permissions</a></li>
+                                <li class="divider"></li>
+                                <li><a href="javascript:deleteTeacher('${v.id}')">Delete Teacher info</a></li>
+                            </ul>
+                        </div></div>`
+                    }).join(""));
+                    $(".group-select").html('<option value="">No Group Selected</option>' + (get('groups')).map(v => `<option value="${
+                        v.id
+                    }">${v.name}</option>`));
+                    if ((get('groups')).length >= 1) {
                         $("#no-groups").hide();
                         $("#has-groups").show();
                     } else {
                         $("#has-groups").html('').hide();
                         $("#no-groups").show();
+                    }
+                    if ((get('teachers')).length >= 1) {
+                        $("#no-teachers").hide();
+                        $("#has-teachers").show();
+                    } else {
+                        $("#has-teachers").html('').hide();
+                        $("#no-teachers").show();
+                    }
+                    if ((get('students')).length >= 1) {
+                        $("#no-students").hide();
+                        $("#has-students").show();
+                    } else {
+                        $("#has-students").html('').hide();
+                        $("#no-students").show();
                     }
                 } else {
                     $(".has-school").hide();
@@ -1008,10 +1124,24 @@
                 }
             })
             clearInterval(loop);
-        }
+        } else if (localStorage.getItem("u_info_school")) decryptText(
+            'AES', localStorage.getItem("u_info_school"), 'User Info 4 School', (text) => {
+                loggedIn(JSON.parse(text));
+                clearInterval(loop);
+                reloadSchoolInfo();
+            }
+        )
     }
     var loop = setInterval(getSchoolInfo, 1);
     function reloadSchoolInfo() {
         loop = setInterval(getSchoolInfo, 1);
+    }
+    function decryptText(type, text, word, callback) {
+        if (callback && typeof callback == "function") {
+            $.post(`/api/CryptoJS/${type}/decrypt`, {
+                text,
+                word
+            }).done(callback);
+        }
     }
 </script>
