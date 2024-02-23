@@ -48,8 +48,10 @@ module.exports = (req, res, url) => {
                         const userIndex = users.users.findIndex(i => i.id == data.id);
                         users.users.splice(userIndex, 1);
                     }
-                    const schoolIndex = schoolUserInfo[type].findIndex(i => i.id == data.id);
-                    schoolUserInfo[type].splice(schoolIndex, 1);
+                    if (schoolUserInfo[type].find(i => i.id == data.id)) {
+                        const schoolIndex = schoolUserInfo[type].findIndex(i => i.id == data.id)
+                        schoolUserInfo[type].splice(schoolIndex, 1);
+                    }
                     fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(users, null, "\t"));
                     res.end(`0${type.slice(0, -1)} ${data.id} has been deleted successfully`);
                     break;
