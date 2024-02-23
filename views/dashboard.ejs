@@ -9,6 +9,9 @@
         <title>Account Dashboard - GoNexus</title>
         <link rel="stylesheet" href="/ui/css/common_combined.css">
         <style>
+            .bold {
+                font-weight: bold;
+            }
             #feed_none {
                 display: none;
             }
@@ -63,41 +66,33 @@
                 isVideoList: true
             }); %>
             <!-- END OF HEADER -->
-            <div class="container-fluid">
+            <div class="container">
                 <div class="row">
-                    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-                        <h1>Dashboard</h1><br>
-                        <h2>User Feed</h2>
-                        <div id="feeds"></div>
-                        <a href="javascript:;" id="loadFTUserFeeds"></a>
-                        <progress id="loadFTUserFeeds_loading" style="display: none;"></progress><br>
-                        <a href="javascript:;" id="loadFTUserFeeds_all"></a>
-                        <progress id="loadFTUserFeeds_loading_all" style="display: none;"></progress><br>
-                        <h2>Your Latest Videos</h2>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Video Thumbnail</th>
-                                        <th>Video Title</th>
-                                        <th>Video Description</th>
-                                        <th>Video Duration</th>
-                                        <th>Last Modified</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td>
-                                            <a href="javascript:;" id="loadMore"></a>
-                                            <progress id="loadMore_loading" style="display: none;"></progress>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                    <div class="col-md-4">
+                        <h2 class="bold">Dashboard</h2><br>
+                        <h3 class="bold">Activity Feed</h3>
+                        <div id="activity_feed"></div>
+                        <div id="ft_feeds" style="display: none;">
+                            <h3>Recent Activity On FlashThemes</h3>
+                            <div id="feeds"></div>
+                            <a href="javascript:;" id="loadFTUserFeeds"></a>
+                            <progress id="loadFTUserFeeds_loading" style="display: none;"></progress><br>
+                            <a href="javascript:;" id="loadFTUserFeeds_all"></a>
+                            <progress id="loadFTUserFeeds_loading_all" style="display: none;"></progress><br>
                         </div>
-                    </main>
+                    </div>
+                    <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                        <form class="panel panel-default" id="groupJoinForm">
+                            <div class="panel-body">
+                                <h3 class="panel-title bold">Join a Group</h3>
+                            </div>
+                            <center class="panel-heading" style="background-color: #FFFFFF">
+                                Enter the code for the group you want to join<br><br>
+                                <input type="text" name="groupCode"/>
+                                <input type="submit" class="btn btn-default" value="Join Group"/>
+                            </center>
+                        </form>
+                    </div>
                 </div>
             </div>
             <!-- FOOTER -->
@@ -111,35 +106,7 @@
             </div>
         </div>
         <script>
-            var count = 0;
             var count2 = 0;
-            var json;
-            function loadLatestVideos() {
-                let c = count; count += 6;
-                if (json.length < 1) {
-                    jQuery("tbody").html("No Videos");
-                    $("#loadMore").hide();
-                } else for (; c < count; c++) {
-                    if (c > json.length - 1) $("#loadMore").hide();
-                    else {
-                        const tbl = json[c];
-                        const date = tbl.date.split("T")[0];
-                        const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
-                        jQuery("tbody").append(`<tr><td><img width="89" height="56" src="/movie_thumbs/${tbl.id}.png"/></td><td>${tbl.title}</td><td>${tbl.desc.split(",").join(",<br>").split("!").join("!<br>").split(".").join(".<br>")}</td><td>${tbl.durationString}</td><td>${
-                            usDate
-                        }</td><td><button onclick="movieRedirect('/player?movieId=${tbl.id}', '${tbl.id}')">Play</button><button onclick="movieRedirect('/go_full?movieId=${tbl.id}', '${
-                            tbl.id
-                        }')">Edit</button><button onclick="movieRedirect('/movies/${tbl.id}.zip', '${tbl.id}')">Download</button><button onclick="deleteMovie('${
-                            tbl.id
-                        }')">Delete</button></td></tr>`);
-                    }
-                }
-                $("#loadMore_loading").hide();
-            }
-            $("#loadMore").click(() => {
-                $("#loadMore_loading").show();
-                loadLatestVideos();
-            });
             $("#loadFTUserFeeds").click(() => {
                 $("#loadFTUserFeeds_all").hide();
                 $("#loadFTUserFeeds").hide();
@@ -171,73 +138,6 @@
                     jQuery("#loadFTUserFeeds_all").hide();
                 })
             });
-            function movieRedirect(url, mId) {
-                let action;
-                switch (url) {
-                    case `/player?movieId=${mId}`: {
-                        action = "play your movie";
-                        break;
-                    } case `/go_full?movieId=${mId}`: {
-                        action = "edit your movie";
-                        break;
-                    } case `/movies/${mId}.zip`: {
-                        action = "download your movie";
-                        break;
-                    }
-                }
-                if (url && action) $.post(`/api/check4MovieFilepaths`, {
-                    mId, action
-                }, d => {
-                    const json = JSON.parse(d);
-                    switch (json.status) {
-                        case "ok": {
-                            window.location.href = url;
-                            break;
-                        } case "error": {
-                            alert(json.msg);
-                            break;
-                        }
-                    }
-                });
-                else alert("you need to specify the url and action in order to do a movie version of a redirect.");
-            }
-            function movieCallback(action, mId, callback) {
-                if (action) $.post(`/api/check4MovieFilepaths`, {
-                    mId, action
-                }, d => {
-                    const json = JSON.parse(d);
-                    switch (json.status) {
-                        case "ok": {
-                            callback();
-                            break;
-                        } case "error": {
-                            alert(json.msg);
-                            break;
-                        }
-                    }
-                });
-                else alert("you need to specify an action and callback function in order to do a movie version of a callback.");
-            }
-            function deleteMovie(mId) {
-                movieCallback("delete your movie", mId, () => {
-                    const yesorno = confirm(`Are you sure that you want to delete movie ${mId}?`);
-                    if (yesorno) $.post('/api/movie/delete', {
-                        mId, 
-                        uId: userData.uid || userData.id
-                    }).done(d => {
-                        const meta = JSON.parse(d);
-                        switch (meta.status) {
-                            case "error": {
-                                alert(meta.msg);
-                                break;
-                            } case "ok": {
-                                window.location.reload();
-                                break;
-                            }
-                        }
-                    });
-                });
-            }
         </script>
     </body>
 </html>

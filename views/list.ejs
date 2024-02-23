@@ -129,15 +129,15 @@ var GT = new Gettext({'locale_data': json_locale_data});
             </tfoot>
         </table>
         <table class="table table-hover table-generic" id="myvideos">
-            <thead>
-                <tr>
+            <thead class="video-list-head">
+                <tr class="video-list-tr">
                     <td></td>
                     <td>Video Title</td>
                     <td>Last Modified</td>
                     <td></td>
                 </tr>
             </thead>
-            <tbody id="allvideos"></tbody>
+            <tbody class="video-list-body" id="allvideos"></tbody>
         </table>
     </div>
 
@@ -371,57 +371,57 @@ function deleteMovie(mId) {
 <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
 <script src="/js/user.js"></script>
 <style>
-thead {
+thead.video-list-head {
 	border-bottom: 2px solid #ddd;
 	border-top: 1px solid #ddd;
 }
 
-tbody>tr {
+tbody.video-list-body>tr.video-list-tr {
 	border-top: 0;
 	border-bottom: 1px solid #ddd;
 }
 
-tbody>tr:hover {
+tbody.video-list-body>tr.video-list-tr:hover {
 	background-color: #f5f5f5;
 }
 
-tr>:nth-child(1) {
+tr.video-list-tr>:nth-child(1) {
 	width: 64px;
 }
 
-tr>:nth-child(1)>img {
+tr.video-list-tr>:nth-child(1)>img {
 	height: 36px;
 }
 
-tr>:nth-child(1) {
+tr.video-list-tr>:nth-child(1) {
 	word-break: break-word;
 }
 
-tr>:nth-child(2) {
+tr.video-list-tr>:nth-child(2) {
 	color: #999;
 }
 
-tr>:nth-child(2)>:nth-child(1) {
+tr.video-list-tr>:nth-child(2)>:nth-child(1) {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-tr>:nth-child(2)>:nth-child(2) {
+tr.video-list-tr>:nth-child(2)>:nth-child(2) {
 	font-family: monospace;
 }
 
-tr>:nth-child(3) {
+tr.video-list-tr>:nth-child(3) {
 	width: 200px;
 }
 
-tr>:nth-child(3)>* {
+tr.video-list-tr>:nth-child(3)>* {
 	font-family: monospace;
 	display: inline-block;
 	text-align: center;
 	font-size: 14px;
 }
 
-tr>:nth-child(4) {
+tr.video-list-tr>:nth-child(4) {
 	font-family: 'GlyphiconsRegular';
 	text-decoration: none;
 	padding-top: 5px;
@@ -429,29 +429,29 @@ tr>:nth-child(4) {
 	width: 122px;
 }
 
-tr>:nth-child(4)>a {
+tr.video-list-tr>:nth-child(4)>a {
 	display: inline-block;
 	text-decoration: none;
 	padding-right: 10px;
 	color: #474747;
 }
 
-tr>:nth-child(4)>a:hover {
+tr.video-list-tr>:nth-child(4)>a:hover {
 	color: #2d9e88;
 }
 
-tr>:nth-child(4)>:nth-child(1)::before {
+tr.video-list-tr>:nth-child(4)>:nth-child(1)::before {
 	content: '\E174';
 }
 
-tr>:nth-child(4)>:nth-child(2)::before {
+tr.video-list-tr>:nth-child(4)>:nth-child(2)::before {
 	content: '\E235';
 }
 
-tr>:nth-child(4)>:nth-child(3)::before {
+tr.video-list-tr>:nth-child(4)>:nth-child(3)::before {
 	content: '\E182';
 }
-tr>:nth-child(4)>:nth-child(4)::before {
+tr.video-list-tr>:nth-child(4)>:nth-child(4)::before {
 	content: '\E017';
 }
 @font-face {

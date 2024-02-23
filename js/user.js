@@ -10,6 +10,162 @@ let signupComplete = false;
 let loginComplete = false;
 let displayName = null;
 let userData = '';
+var schoolInfo = {};
+function getSchoolInfo () {
+    schoolInfo = {};
+    if (userData) {
+        $(".form_user_id").val(userData.uid || userData.id);
+        jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
+            schoolInfo = d;
+            if (d.name) {
+                if (d.admin == (userData.uid || userData.id)) $(".is_school_admin").show()
+                $(".no-school").hide();
+                $(".has-school").show();
+                $("#schoolName").text(d.name);
+                document.getElementById('schoolId').title = d.id;
+                $("#schoolId").text(d.id);
+                const texts = {
+                    groups: `${d.groups.length} Groups`,
+                    teachers: `${d.teachers.length} Teachers`,
+                    students: `${d.students.length} Students`
+                }
+                for (const i in texts) if (d[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                $("#groupCount").text(texts.groups);
+                $("#teacherCount").text(texts.teachers);
+                $("#studentCount").text(texts.students);
+                function get(type) {
+                    if (!userData.role) return d[type];
+                    return d[userData.role + 's'].find(i => i.id == userData.id)[type] || []
+                }
+                $("#has-groups").html((get('groups')).map(v => {
+                    const texts = {
+                        teachers: `${
+                            v.teachers ? v.teachers.length : '1'
+                        } ${v.teachers ? 'Teachers' : 'Teacher'}`,
+                        students: `${
+                            v.students ? v.students.length : '1'
+                        } ${v.students ?  'Students' : 'Student'}`
+                    }
+                    for (const i in texts) if (v[i] && v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                    return `<div class="col-sm-3">${
+                        v.name
+                    }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
+                        texts.teachers
+                    }<br>${texts.students}<br><div style="display: ${
+                        v.admin == (userData.uid || userData.id) ? 'block' : 'none'
+                    };">
+                        <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="javascript:editGroup('${v.id}')">Edit Group</a></li>
+                            <li><a href="javascript:permissions('group', '${
+                                v.id
+                            }', '#manage_groups')">Edit Group permissions</a></li>
+                            <li class="divider"></li>
+                            <li><a href="javascript:del('groups', '${v.id}', '#manage_groups')">Delete Group</a></li>
+                        </ul>
+                    </div></div>`
+                }).join(""));
+                $("#has-teachers").html((get('teachers')).map(v => {
+                    const texts = {
+                        groups: `${v.groups.length} Groups`,
+                        students: `${
+                            v.students ? v.students.length : '1'
+                        } ${v.students ?  'Students' : 'Student'}`
+                    }
+                    for (const i in texts) if (v[i] && v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                    return `<div class="col-sm-3">${
+                        v.name
+                    }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
+                        texts.groups
+                    }<br>${texts.students}<br><div style="display: ${
+                        v.admin == (userData.uid || userData.id) ? 'block' : 'none'
+                    };">
+                        <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="javascript:editTeacher('${v.id}')">Edit teacher Info</a></li>
+                            <li><a href="javascript:permissions('teacher', '${
+                                v.id
+                            }', '#manage_teachers')">Edit teacher permissions</a></li>
+                            <li class="divider"></li>
+                            <li><a href="javascript:del('teachers', '${v.id}')">Delete Teacher</a></li>
+                        </ul>
+                    </div></div>`
+                }).join(""));
+                $("#has-students").html((get('students')).map(v => {
+                    const texts = {
+                        groups: `${v.groups.length} Groups`,
+                        teachers: `${
+                            v.teachers ? v.teachers.length : '1'
+                        } ${v.teachers ?  'Teachers' : 'Teacher'}`
+                    }
+                    for (const i in texts) if (v[i] && v[i].length == 1) texts[i] = texts[i].slice(0, -1);
+                    return `<div class="col-sm-3">${
+                        v.name
+                    }<br><img src="${v.image}" height="128" width="128"/><br>${v.id}<br>${
+                        texts.groups
+                    }<br>${texts.teachers}<br><div style="display: ${
+                        v.admin == (userData.uid || userData.id) ? 'block' : 'none'
+                    };">
+                        <button type="button" class="btn btn-orange dropdown-toggle" data-toggle="dropdown">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="javascript:editStudent('${v.id}')">Edit student Info</a></li>
+                            <li><a href="javascript:permissions('student', '${
+                                v.id
+                            }', '#manage_students')">Edit student permissions</a></li>
+                            <li class="divider"></li>
+                            <li><a href="javascript:del('students', '${v.id}')">Delete Student</a></li>
+                        </ul>
+                    </div></div>`
+                }).join(""));
+                $(".group-select").html('<option value="">No Group Selected</option>' + (get('groups')).map(v => `<option value="${
+                    v.id
+                }">${v.name}</option>`));
+                if ((get('groups')).length >= 1) {
+                    $("#no-groups").hide();
+                    $("#has-groups").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_groups', $('#group_maker')
+                    )">Create more groups</a>`);
+                } else {
+                    $("#has-groups").html('').hide();
+                    $("#no-groups").show();
+                }
+                if ((get('teachers')).length >= 1) {
+                    $("#no-teachers").hide();
+                    $("#has-teachers").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_teachers', $('#assign_teacher')
+                    )">Assign More Teachers</a>`);
+                } else {
+                    $("#has-teachers").html('').hide();
+                    $("#no-teachers").show();
+                }
+                if ((get('students')).length >= 1) {
+                    $("#no-students").hide();
+                    $("#has-students").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_students', $('#assign_student')
+                    )">Assign More Students</a>`);;
+                } else {
+                    $("#has-students").html('').hide();
+                    $("#no-students").show();
+                }
+            } else {
+                $(".has-school").hide();
+                $(".no-school").show();
+                $("#has-groups").html('').hide();
+                $("#no-groups").show();
+                $("#has-teachers").html('').hide();
+                $("#no-teachers").show();
+                $("#has-students").html('').hide();
+                $("#no-students").show();
+            }
+        })
+    }
+}
 auth.onAuthStateChanged(user => {
     if (user) {
         if (displayName != null) auth.currentUser.updateProfile({displayName}).catch(e => {
@@ -143,6 +299,7 @@ function loggedIn(user) {
         }
     })
     userData = user;
+    getSchoolInfo();
     jQuery.post("/api/check4SavedUserInfo", {
         displayName: user.displayName || user.name,
         email: user.email,
@@ -173,14 +330,9 @@ function loggedIn(user) {
             loadSettings(user);
             break;
         } case "/dashboard": {
-            jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
-                json = meta;
-                $("#loadMore").text('load more');
-                $("#loadFTUserFeeds").text('load more');
-                $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
-                loadLatestVideos();
-                loadFTUserFeeds();
-            })
+            $("#loadFTUserFeeds").text('load more');
+            $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
+            loadFTUserFeeds();
             break;
         } case "/movies": {
             jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
