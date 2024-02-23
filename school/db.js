@@ -33,7 +33,7 @@ module.exports = (req, res, url) => {
                         || formData[i] == '{}'
                     ) formData[i] = JSON.parse(formData[i]);
                     if (data.type == "groups") formData.pass = crypto.randomUUID();
-                    if (formData.pass) formData.pass = CryptoJS.AES.encrypt(
+                    else formData.pass = CryptoJS.AES.encrypt(
                         formData.pass || data.pass, "Secret Passphrase"
                     ).toString();
                     formData.id = data.id;
@@ -42,6 +42,15 @@ module.exports = (req, res, url) => {
                     res.end(`0${type.slice(0, -1)} ${data.id} has been created successfully`);
                     break;
                 } case "modify": {
+                    const info = schoolUserInfo[type].find(i => i.id == data.id);
+                    formData.pass = CryptoJS.AES.encrypt(
+                        formData.pass || data.pass, "Secret Passphrase"
+                    ).toString();
+                    for (const i in formData) {
+                        info[i] = formData[i];
+                    }
+                    fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(users, null, "\t"));
+                    res.end(`0${type.slice(0, -1)} ${data.id} has been modified successfully`);
                     break;
                 } case "delete": {
                     if (users.users.find(i => i.id == data.id)) {

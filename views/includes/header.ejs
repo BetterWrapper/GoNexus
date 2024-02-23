@@ -366,10 +366,35 @@
 <div id="group_editor" class="lightbox" style="display:none">
     <form class="lightbox_wrapper" action="javascript:;" data-db-name="groups" data-action="modify"> 
         <center>
-            <h2>Rename Your Group</h2>
+            <h2>Edit Your Group</h2>
+            <hr>
             <input type="hidden" name="id" id="groupId"/>
+            <h3>Group Name</h3>
             <input type="text" placeholder="Group Name" name="name" id="groupName"/>
+            <h3>Group Code</h3>
+            <div class="action-disabled">
+                <input type="text" placeholder="Group Code" id="groupPass"/>
+            </div>
             <button class="btn btn-orange" onclick="insertschooldb('groups', 'modify')">Edit group</button>
+        </center>
+        <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+    </form>
+</div>
+<div id="teacher_editor" class="lightbox" style="display:none">
+    <form class="lightbox_wrapper" action="javascript:;" data-db-name="teachers" data-action="modify"> 
+        <center>
+            <h2>Edit Your Teacher</h2>
+            <hr>
+            <input type="hidden" name="id" id="teacherId"/>
+            <h3>Teacher Name</h3>
+            <input type="text" placeholder="Teacher Name" name="name" id="teacherName"/>
+            <h3>Teacher Password (<button onclick="genpass(
+                '#assign_teacher', '#teacherPass'
+            )">Generate Password (Optional)</button>)</h3>
+            <input type="text" placeholder="Teacher Password" name="pass" id="teacherPass"/>
+            <h3>Group (Optional)</h3>
+            <select name="group" class="group-select" id="teacherGroup"></select><br><br>
+            <button class="btn btn-orange" onclick="insertschooldb('teachers', 'modify')">Edit teacher</button>
         </center>
         <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
     </form>
@@ -532,7 +557,7 @@
                                     <li>Unlimited Downloads, so you can download all your videos for free without spending any FlashCoins.</li>
                                     <li>If you ever wanted someone&#039;s comedy world character, you can simply use the converter to download a video that has a comedy world character and boom you have it!</li>
                                     <li>Exporting for free has never been possible, but after using the converter, you may export the video to an MP4 format at any time. we can&#039;t add it here so that way we can prevent this tool from being taken down.</li>
-                                    <li>No FlashThemes Account is required here, this tool is totally free.</li>
+                                    <li>No FlashThemes Account is required here (except for some videos that are not public), this tool is totally free.</li>
                                     <li>Support Downloading multiple formats, e.g. MP4 and MP3.</li>
                                 </ul>
                             </div>
@@ -673,6 +698,24 @@
         $("#schoolEditForm_name").val(schoolInfo.name);
         showOverlayOnElement('#manage_school', $('#school_editor'))
     }
+    function edit(type, id, elem) {
+        jQuery(elem).block();
+        const info = schoolInfo[type + 's'].find(i => i.id == id);
+        $(`#${type}Id`).val(id);
+        $(`#${type}Name`).val(info.name);
+        decryptText('AES', info.pass, 'Secret Passphrase', (text) => setTimeout(() => {
+            var actualPasswordLength = 159.5;
+            if (type == "group") {
+                actualPasswordLength += info.pass.length;
+                for (var i of text.split("-")) {
+                    actualPasswordLength += i.length;
+                }
+            } else $(`#${type}Group`).find(`option[value='${info.group}']`).prop("selected", true);
+            $(`#${type}Pass`).val(text).css("width", actualPasswordLength);
+            hideOverlayOnElement();
+            showOverlayOnElement(elem, $(`#${type}_editor`));
+        }, 500));
+    }
     function deleteSchool(elem) {
         const delSchoolConfirm = confirm(`Are you sure that you want to delete a school called ${
             schoolInfo.name
@@ -688,7 +731,6 @@
             });
         }
     }
-    var schoolInfo = {};
     const genid = (length, callback) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -699,7 +741,7 @@
         if (callback && typeof callback == "function") callback(result);
         else return result;
     };
-    function insertschooldb(type, action, json) {
+    function insertschooldb(type, action, json, callback) {
         var currentElem = lightboxElement;
         hideOverlayOnElement();
         jQuery(currentElem).block();
@@ -720,6 +762,7 @@
                     type,
                     pass: genid(7)
                 }, d => {
+                    if (callback && typeof callback == "function") callback();
                     hideOverlayOnElement();
                     $(currentElem).modal('hide');
                     displayFeedback(d || "1Unable to connect to the server");
@@ -1095,15 +1138,18 @@
             type.slice(0, -1)
         } ${id}? Any data created will be lost forever and cannot be undone!`);
         if (delConfirm) {
-            showOverlayOnElement(elem, null);
+            jQuery(elem).block();
             insertschooldb(type, 'delete', {
                 id
+            }, () => {
+                hideOverlayOnElement();
+                $(elem).modal('hide');
             })
         }
     }
     function permissions(type, id, elem) {
         jQuery(elem).block();
-        var timer = 500;
+        var timer = 0;
         function getSchooltypeInfo() {
             return new Promise((res, rej) => {
                 jQuery.post('/api/getAllUsers', d => {
@@ -1141,7 +1187,7 @@
         $("#permissions_editor").addClass(type + 's');
         $("#school-permissions-list").html(``);
         for (const permissionInfo of school_permissions_list) {
-            timer += 500;
+            timer += 100;
             getSchooltypeInfo().then(schoolInfo => {
                 permissionInfo.selected = schoolInfo.permissions[permissionInfo.permission] == '1'
                 $("#school-permissions-list").append(`<tr><td><input type="checkbox" name="${
@@ -1153,7 +1199,6 @@
                 }</td></tr>`)
             });
         }
-        console.log(timer)
         setTimeout(() => {
             hideOverlayOnElement();
             showOverlayOnElement(elem, $("#permissions_editor"));
@@ -1171,5 +1216,21 @@
                 word
             }).done(callback);
         }
+    }
+    function copyText(elem, elem2) {
+        // Get the text field
+        var copyText = $(elem)[0];
+
+        // Select the text field
+        copyText.select();
+
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(copyText.value);
+
+        // Alert the copied text
+        jQuery(elem2).block({
+            message: "Copied the text: " + copyText.value
+        });
+        setTimeout(() => jQuery(elem2).unblock(), 2000)
     }
 </script>

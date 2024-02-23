@@ -14,6 +14,19 @@ var schoolInfo = {};
 function getSchoolInfo () {
     schoolInfo = {};
     if (userData) {
+        jQuery(".action-disabled").block({
+            message: null,
+            css: {
+                'background-color': '#FFFFFF',
+                opacity: '0.5',
+                cursor: 'auto'
+            },
+            overlayCSS: {
+                'background-color': '#FFFFFF',
+                opacity: '0.5',
+                cursor: 'auto'
+            }
+        });
         $(".form_user_id").val(userData.uid || userData.id);
         jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
             schoolInfo = d;
@@ -21,7 +34,13 @@ function getSchoolInfo () {
                 if (d.admin == (userData.uid || userData.id)) $(".is_school_admin").show()
                 $(".no-school").hide();
                 $(".has-school").show();
-                $("#schoolName").text(d.name);
+                $("#schoolName").html(
+                    `<a href="javascript:copyText('#schoolUrl', '#manage_school')">${d.name}</a>`
+                );
+                $("#schoolUrl").remove();
+                $(`<input type="hidden" id="schoolUrl" value="${
+                    window.location.origin
+                }/school/${d.id}"/>`).appendTo('body');
                 document.getElementById('schoolId').title = d.id;
                 $("#schoolId").text(d.id);
                 const texts = {
@@ -58,7 +77,9 @@ function getSchoolInfo () {
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="javascript:editGroup('${v.id}')">Edit Group</a></li>
+                            <li><a href="javascript:edit('group', '${
+                                v.id
+                            }', '#manage_groups')">Edit Group</a></li>
                             <li><a href="javascript:permissions('group', '${
                                 v.id
                             }', '#manage_groups')">Edit Group permissions</a></li>
@@ -86,7 +107,9 @@ function getSchoolInfo () {
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="javascript:editTeacher('${v.id}')">Edit teacher Info</a></li>
+                            <li><a href="javascript:edit('teacher', '${
+                                v.id
+                            }', '#manage_teachers')">Edit teacher Info</a></li>
                             <li><a href="javascript:permissions('teacher', '${
                                 v.id
                             }', '#manage_teachers')">Edit teacher permissions</a></li>
@@ -114,7 +137,9 @@ function getSchoolInfo () {
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="javascript:editStudent('${v.id}')">Edit student Info</a></li>
+                            <li><a href="javascript:edit('student', '${
+                                v.id
+                            }', '#manage_students')">Edit student Info</a></li>
                             <li><a href="javascript:permissions('student', '${
                                 v.id
                             }', '#manage_students')">Edit student permissions</a></li>
