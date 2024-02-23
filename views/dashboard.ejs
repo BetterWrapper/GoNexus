@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
-                        <form class="panel panel-default" id="groupJoinForm">
+                        <form class="panel panel-default" id="groupJoinForm" action="javascript:;" style="display: none;">
                             <div class="panel-body">
                                 <h3 class="panel-title bold">Join a Group</h3>
                             </div>
@@ -106,6 +106,17 @@
             </div>
         </div>
         <script>
+            $("#groupJoinForm").submit(() => {
+                jQuery.blockUI();
+                $.post(`/api/group/join?${
+                    $("#groupJoinForm").serialize()
+                }`, JSON.parse(JSON.stringify(userData)), (data) => {
+                    jQuery.unblockUI();
+                    displayFeedback(data);
+                    getSchoolInfo();
+                });
+               return false;
+           })
             var count2 = 0;
             $("#loadFTUserFeeds").click(() => {
                 $("#loadFTUserFeeds_all").hide();

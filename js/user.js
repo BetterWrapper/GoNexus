@@ -355,6 +355,7 @@ function loggedIn(user) {
             loadSettings(user);
             break;
         } case "/dashboard": {
+            if (user.role) $("#groupJoinForm").show();
             $("#loadFTUserFeeds").text('load more');
             $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
             loadFTUserFeeds();
