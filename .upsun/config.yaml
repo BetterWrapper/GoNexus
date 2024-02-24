@@ -1,6 +1,6 @@
 # Complete list of all available properties: https://docs.upsun.com/create-apps/app-reference.html
 applications:
-  c-users-joseph-documents-github-gonexus:
+  c-users-joseph-downloads-gonexus:
     # Application source code directory
     source:
       root: "."
@@ -139,7 +139,7 @@ applications:
 routes:
   "https://{default}/":
     type: upstream
-    upstream: "c-users-joseph-documents-github-gonexus:http"
+    upstream: "c-users-joseph-downloads-gonexus:http"
   # A basic redirect definition
   # More information: https://docs.upsun.com/define-routes.html#basic-redirect-definition
   "https://www.{default}":
