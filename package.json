@@ -2,7 +2,7 @@
 	"name": "betterwrapper-ga4s",
 	"version": "0.0.2",
 	"scripts": {
-		"start": "node server.js"
+		"start": "nodemon server.js"
 	},
 	"main": "index.js",
 	"dependencies": {
@@ -20,6 +20,7 @@
 		"node-fetch": "^2.6.7",
 		"node-zip": "github:kyriosli/node-zip",
 		"nodemailer": "^6.9.7",
+		"nodemon": "^3.1.0",
 		"request": "^2.88.2",
 		"sax": ">=0.6.0",
 		"xml-js": "^1.6.11",

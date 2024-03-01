@@ -11,6 +11,9 @@ let loginComplete = false;
 let displayName = null;
 let userData = '';
 var schoolInfo = {};
+function getInfoFromArray(array, index) {
+    if (array && index) return array[index];
+}
 function getSchoolInfo () {
     schoolInfo = {};
     if (userData) {
@@ -151,6 +154,13 @@ function getSchoolInfo () {
                 $(".group-select").html('<option value="">No Group Selected</option>' + (get('groups')).map(v => `<option value="${
                     v.id
                 }">${v.name}</option>`));
+                const groupSelectorLimited = $("#group-select-limited");
+                if (groupSelectorLimited) for (let i = 0; i < groupSelectorLimited.data("number"); i++)  {
+                    const groupInfo = (get('groups'))[i]
+                    if (groupInfo) groupSelectorLimited.append(`<option value="${
+                        groupInfo.id
+                    }">${groupInfo.name}</option>`);
+                }
                 if ((get('groups')).length >= 1) {
                     $("#no-groups").hide();
                     $("#has-groups").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
@@ -355,7 +365,11 @@ function loggedIn(user) {
             loadSettings(user);
             break;
         } case "/dashboard": {
-            if (user.role) $("#groupJoinForm").show();
+            if (user.role) {
+                $(`#${user.role}-stuff`).show();
+                if (user.role == "student") $("#GoNexus_intro").hide();
+            }
+            else $(`#personal-stuff`).show();
             $("#loadFTUserFeeds").text('load more');
             $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
             loadFTUserFeeds();

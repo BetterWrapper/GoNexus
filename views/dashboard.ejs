@@ -68,30 +68,73 @@
             <!-- END OF HEADER -->
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4">
-                        <h2 class="bold">Dashboard</h2><br>
-                        <h3 class="bold">Activity Feed</h3>
-                        <div id="activity_feed"></div>
-                        <div id="ft_feeds" style="display: none;">
-                            <h3>Recent Activity On FlashThemes</h3>
-                            <div id="feeds"></div>
-                            <a href="javascript:;" id="loadFTUserFeeds"></a>
-                            <progress id="loadFTUserFeeds_loading" style="display: none;"></progress><br>
-                            <a href="javascript:;" id="loadFTUserFeeds_all"></a>
-                            <progress id="loadFTUserFeeds_loading_all" style="display: none;"></progress><br>
+                    <h2>Dashboard</h2>
+                    <div class="alert alert-info" id="GoNexus_intro" role="alert">
+                        <h3>Welcome To GoNexus!</h3>
+                        <p>Please view our interactive Getting Started guide to learn how to use GoNexus.</p><br>
+                        <a class="btn btn-orange" href="/getting_started">Getting Started Guide</a>
+                    </div>
+                    <h3>Activity Feed</h3>
+                    <hr>
+                    <div id="activity_feed"></div>
+                    <div id="ft_feeds" style="display: none;">
+                        <h3>Recent Activity On FlashThemes</h3>
+                        <hr>
+                        <div id="feeds"></div>
+                        <a href="javascript:;" id="loadFTUserFeeds"></a>
+                        <progress id="loadFTUserFeeds_loading" style="display: none;"></progress><br>
+                        <a href="javascript:;" id="loadFTUserFeeds_all"></a>
+                        <progress id="loadFTUserFeeds_loading_all" style="display: none;"></progress><br>
+                    </div>
+                    <div id="student-stuff" style="display: none;">
+                        <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                            <form class="panel panel-default" id="groupJoinForm">
+                                <div class="panel-body">
+                                    <h3 class="panel-title bold">Join a Group</h3>
+                                </div>
+                                <center class="panel-heading" style="background-color: #FFFFFF">
+                                    Enter the code for the group you want to join<br><br>
+                                    <input type="text" name="groupCode"/>
+                                    <input type="submit" class="btn btn-default" value="Join Group"/>
+                                </center>
+                            </form>
                         </div>
                     </div>
-                    <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
-                        <form class="panel panel-default" id="groupJoinForm" action="javascript:;" style="display: none;">
-                            <div class="panel-body">
-                                <h3 class="panel-title bold">Join a Group</h3>
+                    <div id="teacher-stuff" style="display: none;">
+                        <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                            <form class="panel panel-default" id="groupCodeForm">
+                                <div class="panel-body">
+                                    <div style="float: left;" class="panel-title">Your Groups</div>
+                                    <a style="float: right;" href="javascript:;" data-target="#manage_groups" data-toggle="modal">See All</a>
+                                </div>
+                                <center class="panel-heading">
+                                    Select a group from it's dropdown menu to view it's invitation code. 
+                                    Students can use this code to join the group.<br><br>
+                                    <select name="groupId" class="form-control" id="group-select-limited" data-number="7" onchange="groupCodeReveal()">
+                                        <option value="">Everyone</option>
+                                    </select><br>
+                                    Group Code <input type="text" id="group-code" value="No group code detected" readonly/>
+                                </center>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="personal-stuff" style="display: none;">
+                    </div>
+                    <div id="flashthemes-stuff" style="display: none;">
+                        <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <h3 class="panel-title bold">Latest Followers (
+                                        <span id="ft-follower-count"></span>
+                                    )</h3>
+                                </div>
+                                <center class="panel-heading" style="background-color: #FFFFFF">
+                                    Enter the code for the group you want to join<br><br>
+                                    <input type="text" name="groupCode"/>
+                                    <input type="submit" class="btn btn-default" value="Join Group"/>
+                                </center>
                             </div>
-                            <center class="panel-heading" style="background-color: #FFFFFF">
-                                Enter the code for the group you want to join<br><br>
-                                <input type="text" name="groupCode"/>
-                                <input type="submit" class="btn btn-default" value="Join Group"/>
-                            </center>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -106,6 +149,9 @@
             </div>
         </div>
         <script>
+            function groupCodeReveal() {
+                $("#group-code").val("Loading...");
+            }
             $("#groupJoinForm").submit(() => {
                 jQuery.blockUI();
                 $.post(`/api/group/join?${

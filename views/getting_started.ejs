@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+        <meta name="generator" content="Hugo 0.101.0">
+        <title>Getting Started - GoNexus</title>
+        <link rel="stylesheet" href="/ui/css/common_combined.css">
+        <style>
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+            }
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+            }
+        </style>
+        <script type="text/javascript">
+            var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
+        </script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="/js/user.js"></script>
+        <script src="/js/common_combined.js"></script>
+        <script src="/lvm_files/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="/lvm_files/go/js/jquery/jquery.blockUI-2.66.0.js"></script>
+        <script src="/lvm_files/go/js/jquery/jquery.scrollTo.min.js"></script>
+        <script src="/lvm_files/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="/lvm_files/go/po/goserver_js-en_US.json"></script>
+        <script type="text/javascript">
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+    </head>
+    <body class="en_US">
+        <div class="modal" id="getting_started_modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title">Getting Started</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div id="getting_started_header"></div>
+                        <hr>
+                        <div id="getting_started_body"></div>
+                        <hr>
+                        <div id="getting_started_footer"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="go('prev')" id="get_started_prev" class="btn btn-primary disabled">< Previous</button>
+                        <button type="button" onclick="go('next')" id="get_started_next" class="btn btn-primary">Next ></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            window.location.href = "javascript:onbeforeunload=i=>1";
+            if (self !== top) jQuery('body').hide();
+            const getting_started_html_config = {
+                start: "welcome_screen",
+                current: "welcome_screen"
+            }
+            function go(direction) {
+                jQuery("#getting_started_modal").block();
+                $(`#get_started_prev`).removeClass("disabled");
+                $(`#get_started_next`).removeClass("disabled");
+                getting_started_html_config.current = getting_started_html_config[
+                    direction
+                ] || getting_started_html_config.start;
+                getJSONInfoFromConfig().then(function(json_info){
+                    if (!json_info[direction]) $(`#get_started_${direction}`).addClass("disabled");
+                    jQuery("#getting_started_modal").unblock();
+                    $("#getting_started_modal").modal('hide');
+                    showGettingStartedModal(json_info);
+                });
+            }
+            function getJSONInfoFromConfig() {
+                return new Promise((res, rej) => {
+                    jQuery.post(`/api/getting_started/${getting_started_html_config.current}`, d => {
+                        res(JSON.parse(d));
+                    })
+                })
+            }
+            async function getHTMLInfoFromConfig(json) {
+                const d = json || await getJSONInfoFromConfig();
+                var htmls = {};
+                for (const i in d) {
+                    getting_started_html_config[i] = d[i];
+                    htmls[i] = '';
+                    $(`#getting_started_${i}`).html('');
+                    for (const e in d[i]) {
+                        if (typeof d[i][e] == "string") htmls[i] += `<${e}>${d[i][e]}</${e}>`;
+                        else {
+                            var attrs = '';
+                            for (const g in d[i][e]) {
+                                console.log(g)
+                                attrs += `${g}="${d[i][e][g]}" `;
+                            }
+                            htmls[i] += `<${e} ${attrs}></${e}>`;
+                        }
+                    }
+                }
+                return htmls;
+            }
+            function showGettingStartedModal(json) {
+                jQuery.blockUI();
+                (async () => {
+                    const htmlConfig = await getHTMLInfoFromConfig(json);
+                    for (const i in htmlConfig) {
+                        jQuery('#getting_started_'+i).html(htmlConfig[i]);
+                    }
+                    if (getting_started_html_config.current == "themes_selector") jQuery.getJSON(
+                         "/api/themes/get", (d) => {
+                            $("#themes_selector").html(d.map(v => `<option value="${v.attr.id}">${
+                                v.attr.name
+                            }</option>`)).join("");
+                        }
+                    );
+                    jQuery.unblockUI();
+                    $("#getting_started_modal").modal('show');
+                })();
+            }
+        </script>
+        <div class="page-container">
+            <!-- HEADER -->
+            <%- include("includes/header.ejs", {
+                isVideoList: false
+            }); %>
+            <!-- END OF HEADER -->
+            <h2>Getting Started</h2>
+            <div class="alert alert-info">
+                <h3>Welcome To GoNexus's Interactive Getting Started Guide!</h3>
+                <p>To proceed with the steps, please click on the Start Now button to get started</p><br>
+                <button class="btn btn-orange" onclick="showGettingStartedModal()">Start Now ></button>
+            </div>
+        </div>
+    </body>
+</html>
