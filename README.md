@@ -15,7 +15,7 @@ also the codename is BetterWrapper.
 * josephanimate
 * MysteriousOwen
 * Revolution909
-* Aryl
+* Abyl
 
 ## Beta Testers
 * CallMeMontie
