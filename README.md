@@ -36,6 +36,8 @@ also the codename is BetterWrapper.
 * Add 2 new functional scenes to Slices Of Daily Life (Not Done)
 * Release The Final Version Of GoNexus (15% Done)
 * Fix characters not loading in the 2010 lvm (Not Done)
+* Refactor School Management System (Almost Done)
+* Create an interactive Getting Started Guide (Almost Done)
 
 ## Final Release Version
 Yes, this project is an alternative to FlashThemes, but our team desided that it's not worth the time to work on GoNexus anymore. For the final release version, it is version 0.0.2.
