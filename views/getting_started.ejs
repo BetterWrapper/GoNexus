@@ -104,7 +104,6 @@
                         else {
                             var attrs = '';
                             for (const g in d[i][e]) {
-                                console.log(g)
                                 attrs += `${g}="${d[i][e][g]}" `;
                             }
                             htmls[i] += `<${e} ${attrs}></${e}>`;
@@ -124,7 +123,7 @@
                          "/api/themes/get", (d) => {
                             $("#themes_selector").html(d.map(v => `<option value="${v.attr.id}">${
                                 v.attr.name
-                            }</option>`)).join("");
+                            }</option>`).join(""));
                         }
                     );
                     jQuery.unblockUI();
