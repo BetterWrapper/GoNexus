@@ -3,7 +3,7 @@ const defaultTypes = {
 	family: "adam",
 	anime: "guy",
 };
-
+const url2 = require("url");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -15,16 +15,22 @@ module.exports = function (req, res, url) {
 	var match = /\/go\/character_creator\/(\w+)(\/\w+)?(\/.+)?$/.exec(url.pathname);
 	if (!match) return;
 	[, theme, mode, id] = match;
-
+	const origin = (function() {
+		const parsedUrl = url2.parse(req.headers.referer, true);
+		if (parsedUrl.pathname.endsWith("/embed")) return `/cc/embed?${
+			new URLSearchParams(parsedUrl.query).toString()
+		}`;
+		else return `/cc?${new URLSearchParams(parsedUrl.query).toString()}`;
+	})();
 	var redirect;
 	switch (mode) {
 		case "/copy": {
-			redirect = `/cc?themeId=${theme}&original_asset_id=${id.substr(1)}`;
+			redirect = `${origin}&original_asset_id=${id.substr(1)}`;
 			break;
 		}
 		default: {
 			var type = url.query.type || defaultTypes[theme] || "";
-			redirect = `/cc?themeId=${theme}&bs=${type}`;
+			redirect = `${origin}&bs=${type}`;
 			break;
 		}
 	}

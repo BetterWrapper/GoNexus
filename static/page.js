@@ -53,8 +53,77 @@ module.exports = function (req, res, url) {
 	const query = url.query;
 	const userSession = session.get(req);
 	var attrs, params, title, filename, charOrder = '';
-	if (req.headers.host == "localhost" || req.headers.host == `localhost:${process.env.SERVER_PORT}` || userSession && userSession.data && userSession.data.site_access_key_is_correct) switch (url.pathname) {
-		case "/cc": {
+	if (
+		req.headers.host == "localhost" 
+		|| req.headers.host == `localhost:${process.env.SERVER_PORT}` 
+		|| userSession && userSession.data && userSession.data.site_access_key_is_correct
+	) switch (url.pathname) {
+		case "/cc/embed": {
+			title = "Character Creator";
+			filename = 'app_embed';
+			attrs = {
+				data: process.env.SWF_URL + "/cc.swf", // data: 'cc.swf',
+				type: "application/x-shockwave-flash",
+				id: "char_creator",
+				width: "100%",
+				height: "100%",
+			};
+			params = {
+				type: "cc",
+				flashvars: {
+					apiserver: "/",
+					storePath: process.env.STORE_URL + "/<store>",
+					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+					original_asset_id: query["id"] || null,
+					themeId: "business",
+					ut: 60,
+					bs: "default",
+					appCode: "go",
+					page: "",
+					siteId: "go",
+					m_mode: "school",
+					isLogin: "Y",
+					isEmbed: 1,
+					ctc: "go",
+					tlang: "en_US",
+				},
+				allowScriptAccess: "always",
+				movie: process.env.SWF_URL + "/cc.swf", // 'http://localhost/cc.swf'
+			};
+			break;
+		} case "/cc_browser/embed": {
+			title = "CC Browser";
+			filename = "app_embed"
+			attrs = {
+				data: process.env.SWF_URL + "/cc_browser.swf", // data: 'cc_browser.swf',
+				type: "application/x-shockwave-flash",
+				id: "char_creator",
+				width: "100%",
+				height: "100%",
+			};
+			params = {
+				flashvars: {
+					apiserver: "/",
+					storePath: process.env.STORE_URL + "/<store>",
+					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+					original_asset_id: query["id"] || null,
+					themeId: "family",
+					ut: 60,
+					appCode: "go",
+					page: "",
+					siteId: "go",
+					m_mode: "school",
+					isLogin: "Y",
+					isEmbed: 1,
+					ctc: "go",
+					tlang: "en_US",
+					lid: 13,
+				},
+				allowScriptAccess: "always",
+				movie: process.env.SWF_URL + "/cc_browser.swf", // 'http://localhost/cc_browser.swf'
+			};
+			break;
+		} case "/cc": {
 			title = "Character Creator";
 			filename = "cc";
 			charOrder = fetchCharOrder(url.query.themeId || "family", "/cc");

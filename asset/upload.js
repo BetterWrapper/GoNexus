@@ -40,7 +40,7 @@ module.exports = function (req, res, url) {
 			} else if (e) {
 				res.end(JSON.stringify({
 					suc: false, 
-					msg: e
+					msg: e.toString()
 				}));
 			} else if (!files.file) {
 				res.end(JSON.stringify({
@@ -61,7 +61,9 @@ module.exports = function (req, res, url) {
 				const ext = name.substr(dot + 1);
 				let buffer;
 				if (type == "sound" && ext != "mp3") {
-					const stream = ffmpeg(fs.createReadStream(filePath)).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+					const stream = ffmpeg(
+						fs.createReadStream(filePath)
+					).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
 						return res.end(JSON.stringify({
 							suc: false,
 							msg: `Encoding Error: ${error.message}`
@@ -84,7 +86,7 @@ module.exports = function (req, res, url) {
 				};
 				switch (type) {
 					case "prop": {
-						meta.ptype = "placeable";
+						meta.ptype = f.ptype || "placeable";
 						break;
 					} case "sound": {
 						await new Promise(resolve => {

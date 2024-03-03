@@ -9,21 +9,113 @@
         "footer": {
             "small": "If you already know how to use GoNexus, click <a href='javascript:skipGuide()'>here</a> to skip this guide."
         },
+        "next": "char_themes_selector"
+    },
+    "char_themes_selector": {
+        "header": {
+            "h4": "Selecting A Theme For Your Character"
+        },
+        "body": {
+            "p": "In order to make a character in GoNexus, you need to select a theme in order to get started.",
+            "select": {
+                "class": "form-control",
+                "id": "char_themes_selector",
+                "name": "theme"
+            }
+        },
+        "footer": {
+            "small": "Already made a character? click <a href='javascript:checkUserChars()'>here</a> to go to the theme selection for the lvm."
+        },
+        "prev": "welcome_screen",
+        "next": "cc"
+    },
+    "cc": {
+        "header": {
+            "h4": "Making A Character"
+        },
+        "body": {
+            "p": "After you select a theme. the CC from 2016 will load the theme you selected. below you can use it to create your first character.",
+            "div": {
+                "class": "getting_started_char_creator"
+            }
+        },
+        "footer": {
+            "small": "Already made a character? click <a href='javascript:checkUserChars()'>here</a> to go to the theme selection for the lvm."
+        },
+        "prev": "char_themes_selector",
+        "next": "cc_success"
+    },
+    "cc_success": {
+        "header": {
+            "h4": "Character Saved"
+        },
+        "body": {
+            "p": "You character has been saved successfully! Click on the Next button to continue to the next step."
+        },
+        "footer": "",
         "next": "themes_selector"
     },
     "themes_selector": {
         "header": {
-            "h4": "Selecting A Theme"
+            "h4": "Selecting A Theme For Your Video"
         },
         "body": {
             "p": "In order to make a video in GoNexus, you need to select a theme in order to get started.",
             "select": {
                 "class": "form-control",
-                "id": "themes_selector"
+                "id": "themes_selector",
+                "name": "theme"
             }
         },
-        "footer": "",
-        "prev": "welcome_screen",
-        "next": ""
+        "footer": {
+            "small": "If you have already made a video in GoNexus, you may click <a href='javascript:checkUserVideos()'>here</a> to move on to the Video Management step."
+        },
+        "next": "lvm"
+    },
+    "lvm": {
+        "header": {
+            "h4": "Making A Video"
+        },
+        "body": {
+            "p": "After you select a theme. the LVM from 2016 will load the theme you selected. below you can use it to create your first video.",
+            "div": {
+                "class": "getting_started_video_maker"
+            }
+        },
+        "footer": {
+            "small": "If you have already made a video in GoNexus, you may click <a href='javascript:checkUserVideos()'>here</a> to move on to the Video Management step."
+        },
+        "prev": "themes_selector",
+        "next": "lvp"
+    },
+    "lvp": {
+        "header": {
+            "h4": "Viewing A Video"
+        },
+        "body": {
+            "p": "After you make your video, the LVP from 2016 will load the video you made. below you may view your video and make any changes you need to make before moving on with the next step.",
+            "div": {
+                "class": "getting_started_video_player"
+            }
+        },
+        "footer": {
+            "input": {
+                "type": "button",
+                "onclick": "modifyVideo()",
+                "class": "btn btn-orange",
+                "value": "Edit This Video"
+            }
+        },
+        "prev": "lvm",
+        "next": "video_management"
+    },
+    "video_management": {
+        "header": {
+            "h4": "Video Management"
+        },
+        "body": {
+            "p": "At some point you may need to manage your videos in GoNexus. Don't know how? this step provides everything you need to know about Video Management."
+        },
+        "footer": ""
     }
 }
