@@ -102,7 +102,7 @@
             <script src="/js/user.js"></script>
             <script>
                 function loadCC(userInfo) {
-                    jQuery.getJSON("/api/convertUrlQuery2JSON?<%= flashvarsString %>", (d) => {
+                    ((d) => {
                         const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
                         flashvars.userId = userInfo.uid || userInfo.id;
                         flashvars.username = userInfo.displayName || userInfo.name;
@@ -130,7 +130,7 @@
                                     $(".content").show();
                                 }
                             } else if (year == "2010") {
-                                swf = `https://wrapperclassic.netlify.app/animation/457/cc.swf`;
+                                swf = `https://wrapperclassic.netlify.app/animation/2010/cc_old.swf`;
                                 height = "600";
                                 width = "960";
                             } else if (window.location.pathname == "/cc") swf = `https://wrapperclassic.netlify.app/animation/2014/cc_old.swf`;
@@ -148,7 +148,7 @@
                             flashvars
                         });
                         if (jQuery.flash.available) $("#charcreatoryearselector").show();
-                    });
+                    })(Object.fromEntries(new URLSearchParams('<%= flashvarsString %>')));
                 }
                 function characterSaved() {
                     jQuery("#OG_title").text(GT.gettext("SUCCESS!"));
@@ -156,7 +156,7 @@
                     showOverlay(jQuery("#overlayGeneral"));
                 }
                 $("#charcreatoryear").change(() => {
-                    jQuery.getJSON("/api/convertUrlQuery2JSON?<%= flashvarsString %>", (d) => {
+                    ((d) => {
                         const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
                         flashvars.userId = userData.uid || userData.id;
                         flashvars.username = userData.displayName || userData.name;
@@ -187,7 +187,7 @@
                                 }
                             } else if ($("#charcreatoryear").val() == "2010") {
                                 jQuery('#<%= attrs.id %>_container').show();
-                                swf = `https://wrapperclassic.netlify.app/animation/457/cc.swf`;
+                                swf = `https://wrapperclassic.netlify.app/animation/2010/cc_old.swf`;
                                 height = "600";
                                 width = "960";
                             } else {
@@ -207,7 +207,7 @@
                             hasVersion: "10.3",
                             flashvars
                         });
-                    });
+                    })(Object.fromEntries(new URLSearchParams('<%= flashvarsString %>')));
                 })
                 function setupHTML5CharBrowser() {
                     jQuery(window).bind('hashchange', function() {

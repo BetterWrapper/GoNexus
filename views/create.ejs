@@ -142,9 +142,7 @@
                             $('#customLVM').block()
                             $('#error-message-lvmSelector').text('');
                             studio = $('#customlvmyear').val();
-                            $.getJSON(`/api/convertUrlQuery2JSON?${
-                                $('#createVideoForm').serialize()
-                            }`, newAnimation);
+                            newAnimation(Object.fromEntries(new URLSearchParams($('#createVideoForm').serialize())));
                         })()" class="btn btn-orange">Create a Video</button>
                     </center>
                 </form>
@@ -213,7 +211,6 @@
                 isLogin: "Y",
                 tlang: "en_US",
                 isWide: "0",
-                tray: tId,
                 upl: 1,
                 hb: "1",
                 pts: 0,
@@ -381,6 +378,7 @@
                                 jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:0%"></div></div>');
                                 jQuery.post('/api/getNewMovieId', d => {
                                     flashvars.presaveId = d;
+                                    flashvars.tray = tId;
                                     jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:25%"></div></div>');
                                     jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=attrs&protocall=https&method=POST&apiPath=/.netlify/functions/api", attrs, () => {
                                         jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:50%"></div></div>');

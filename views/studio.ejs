@@ -212,9 +212,9 @@ if (self !== top) {
         resize_studio = false;
     }
 
-    $.getJSON(`/api/convertUrlQuery2JSON?<%= flashvarsString %>`, (d) => {
+    ((d) => {
         studio_data.flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
-    });
+    })(Object.fromEntries(new URLSearchParams('<%= flashvarsString%>')));
     var _ccad = null;
     function getUserData() {
         return userData;
