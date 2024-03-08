@@ -7,8 +7,9 @@
     <theme id="anime" name="Anime" thumb="" cc_theme_id="anime" />
     <theme id="ninjaanime" name="Ninja Anime" thumb="" cc_theme_id="ninjaanime" />
     <theme id="chibi" name="Chibi Peepz" thumb="" cc_theme_id="chibi" />
-	<word></word>
+	<theme id="Comm" name="Community Library"/>
+	<word>Nexus</word>
 	<whiteword />
 	<excludeAssetIDs />
-	<points money="0" sharing="0" />
+	<points money="666" sharing="360" />
 </list>
