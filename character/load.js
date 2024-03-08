@@ -317,7 +317,7 @@ module.exports = function (req, res, url) {
 								error: "Unable to get your characters. userid: " + data.userId
 							}
 						]));
-						else res.end(JSON.stringify(json));
+						res.end(JSON.stringify(json));
 					});
 					break;
 				} case "/goapi/getCcCharCompositionXml/": {

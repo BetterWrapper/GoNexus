@@ -2,7 +2,8 @@
 	"name": "betterwrapper-ga4s",
 	"version": "0.0.2",
 	"scripts": {
-		"start": "nodemon server.js"
+		"start": "node server.js",
+		"test": "nodemon server.js"
 	},
 	"main": "index.js",
 	"dependencies": {

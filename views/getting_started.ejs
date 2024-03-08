@@ -11,7 +11,6 @@
         <style>
             #Player {
                 position: relative;
-                left: -100px;
                 background-color: aliceblue;
             }
             #Studio {
@@ -24,7 +23,7 @@
                 left: -300px;
                 top: -300px;
             }
-            #studioStuff {
+            #stuff {
                 position: absolute;
                 background-color: azure;
                 left: -150px;
@@ -87,29 +86,31 @@
             </div>
         </form>
         <script type="text/javascript">
+            var chars, movies;
             function checkUserChars() {
                 $("#getting_started_modal").block();
                 $.post("/api/getChars", {
                     userId: userData.id || userData.uid,
-                    cc_theme_id: getting_started_html_config.modalData.theme,
-                }, d => {
-                    if (d[0]) {
-                        if (!d[0].error) goTo('themes_selector');
-                        else {
-                            $("#getting_started_modal").unblock();
-                            alert(d[0].error);
-                        }
+                    cc_theme_id: $("#char_themes_selector").val(),
+                }, e => {
+                    const d = JSON.parse(e);
+                    if (d[0] && !d[0].error && d[0].id) {
+                        chars = d;
+                        goTo('themes_selector');
                     } else {
                         $("#getting_started_modal").unblock();
-                        alert("You have not created any characters yet.")
+                        alert(d && d[0] && d[0].error ? d[0].error : "You have not created any characters yet.")
                     }
                 });
             }
-            function checkUserVideos() {
+            function checkUserVideos(callback) {
                 $("#getting_started_modal").block();
                 $.getJSON(`/movieList?uid=${userData.id || userData.uid}`, d => {
-                    if (d[0]) goTo('video_management');
-                    else {
+                    if (d[0]) {
+                        movies = d;
+                        if (callback && typeof callback == "function") callback();
+                        else goTo('video_management');
+                    } else {
                         $("#getting_started_modal").unblock();
                         alert("You have not created any videos yet.")
                     }
@@ -117,19 +118,19 @@
             }
             var movieDataXmlStr;
             function closeWindow() {
-                $("#studioStuff").html('');
+                $("#stuff").html('');
                 $("#Studio").css("height", "");
             }
             function beginImport() {
                 function importFailed(e) {
-                    $("#studioStuff").unblock();
-                    $("#studioStuff").html(
+                    $("#stuff").unblock();
+                    $("#stuff").html(
                         '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Failed</h4><br><hr><p>Something in GoNexus\'s servers has failed that caused your asset not to import successfully and that\'s okay, it happens! you can close this window and try to import your asset again. here is the error you have gotten:</p><br><hr>' + 
                         `<small>${typeof e != "string" ? e.toString() : e}</small>`
                         + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
                     );
                 }
-                jQuery("#studioStuff").block();
+                jQuery("#stuff").block();
                 let b = new FormData();
                 b.append("file", $("#fileImport")[0].files[0]);
                 b.append("subtype", $("#subtype_selector").val());
@@ -142,14 +143,15 @@
                         if (d.suc) {
                             const importType = d.asset_data.type == "sound" ? d.asset_data.subtype : d.asset_data.type;
                             $("#Studio")[0].importerUploadComplete(importType, d.id, d.asset_data);
-                            $("#studioStuff").unblock();
-                            $("#studioStuff").html(
+                            $("#stuff").unblock();
+                            $("#stuff").html(
                                 '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Complete!</h4><br><hr>' + 
                                 `<p>Because your asset has been imported to GoNexus successfully, you may now use the asset you just imported in your video. to find your asset, go to the Your Library section in the dropdown menu in the top left corner of the lvm and find your asset based off of the file type you choose for your asset.</p><br>`
                                 + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
                             );
                         } else importFailed(d.msg);
                     },
+                    fail: importFailed,
                     processData: false,
                     contentType: false,
                     dataType: "json"
@@ -178,7 +180,7 @@
                             <td>
                                 <select name="subtype" class="form-control" id="subtype_selector">${
                                     subtypes[ext]
-                            }</select>
+                                }</select>
                             </td>
                             <td>
                                 <a class="btn btn-orange" href="javascript:beginImport();">Begin File Import</a>
@@ -190,7 +192,7 @@
             }
             function showImporter() {
                 $("#Studio").css("height", "0px");
-                $("#studioStuff").html(`<a style="float: right;" href="javascript:closeWindow()">×</a>
+                $("#stuff").html(`<a style="float: right;" href="javascript:closeWindow()">×</a>
                 <h4 style="float: left;">Importing An Asset</h4>
                 <br>
                 <hr>
@@ -225,8 +227,9 @@
                 movieDataXmlStr = dataXmlStr;
                 getting_started_html_config.player_data.flashvars.startFrame = startFrame;
                 getting_started_html_config.player_data.flashvars.isInitFromExternal = 1;
+                getting_started_html_config.player_attrs.width = "640";
                 $("#Studio").css("height", "0px");
-                $("#studioStuff").html(
+                $("#stuff").html(
                     '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>' + 
                     toObjectString(
                         getting_started_html_config.player_attrs, 
@@ -249,7 +252,7 @@
                 }">`).join(" ");
             }
             function toObjectString(attrs, params) {
-                return `<div id="studioStuff"></div><object ${Object.keys(attrs).map((key) => `${key}="${
+                return `<div id="stuff"></div><object ${Object.keys(attrs).map((key) => `${key}="${
                     attrs[key].replace(/"/g, '\\"')
                 }"`).join(" ")}>${toParamString(params)}</object>`;
             }
@@ -263,7 +266,6 @@
                 player_attrs: {
                     data: "/static/animation/player.swf",
                     type: "application/x-shockwave-flash",
-                    width: "640",
                     height: "360",
                     id: "Player"
                 },
@@ -308,20 +310,29 @@
             }
             function showMyVideo(mId) {
                 jQuery("#getting_started_modal").unblock();
-                go('next', (json_info, callback) => {
-                    delete getting_started_html_config.player_data.flashvars.startFrame;
-                    delete getting_started_html_config.player_data.flashvars.isInitFromExternal;
-                    getting_started_html_config.player_data.flashvars.movieId = mId;
-                    getting_started_html_config.player_data.flashvars.movieOwnerId = userData.id || userData.uid;
-                    jQuery("#getting_started_modal").unblock();
-                    callback(json_info);
+                goTo('lvp', (json_info, callback) => {
+                    checkUserVideos(() => {
+                        delete getting_started_html_config.player_data.flashvars.startFrame;
+                        delete getting_started_html_config.player_data.flashvars.isInitFromExternal;
+                        getting_started_html_config.player_data.flashvars.movieId = mId;
+                        getting_started_html_config.player_data.flashvars.movieOwnerId = userData.id || userData.uid;
+                        getting_started_html_config.player_attrs.width = "560";
+                        jQuery("#getting_started_modal").unblock();
+                        callback(json_info);
+                    })
                 });
             }
             function modifyVideo() {
-                go('prev', (json_info, callback) => {
-                    getting_started_html_config.studio_data.flashvars.movieId = getting_started_html_config.player_data.flashvars.movieId
+                goTo('themes_selector', (json_info, callback) => {
+                    getting_started_html_config.studio_data.flashvars.movieId = getting_started_html_config.player_data.flashvars.movieId;
+                    getting_started_html_config.player_data.flashvars.movieId = "";
                     callback(json_info);
-                    openLVM();
+                })
+            }
+            function newVideo() {
+                goTo('themes_selector', (json_info, callback) => {
+                    getting_started_html_config.studio_data.flashvars.movieId = "";
+                    callback(json_info);
                 })
             }
             function quitStudio() {
@@ -329,11 +340,11 @@
                 if (
                     getting_started_html_config.studio_data.flashvars.movieId
                     && getting_started_html_config.current == "lvm"
-                ) go('next');
+                ) goTo('lvp');
             }
             function characterSaved() {
                 jQuery("#getting_started_modal").unblock();
-                go("next");
+                goTo("cc_success");
             }
             const interactiveTutorial = {
                 isShowTutorial: true,
@@ -357,7 +368,8 @@
                     direction
                 ] || getting_started_html_config.start;
                 getJSONInfoFromConfig().then(function(json_info){
-                    if (!json_info[direction]) $(`#get_started_${direction}`).addClass("disabled");
+                    if (!json_info.next) $(`#get_started_next`).addClass("disabled");
+                    if (!json_info.prev) $(`#get_started_prev`).addClass("disabled");
                     jQuery("#getting_started_modal").unblock();
                     $("#getting_started_modal").modal('hide');
                     if (callback && typeof callback == "function") callback(json_info, showGettingStartedModal);
@@ -410,7 +422,7 @@
             }
             function openCC(tid, uid) {
                 jQuery("#getting_started_modal").block({
-                    message: `<iframe class="studioStuff cc" height="600" width="960" src="/cc_browser/embed?themeId=${
+                    message: `<iframe class="stuff cc" height="600" width="960" src="/cc_browser/embed?themeId=${
                         tid
                     }&userId=${uid}" style="border: 0px;"></iframe>`,
                     css: {
@@ -418,19 +430,6 @@
                     },
                     overlayCSS: {
                         cursor: 'auto',
-                    }
-                })
-            }
-            function openLVP() {
-                jQuery("#getting_started_modal").block({
-                    message: '<a style="float: right;" href="javascript:quitStudio()">×</a><h4 style="float: left;">View A Video</h4><br><hr>' 
-                    + toObjectString(getting_started_html_config.player_attrs, getting_started_html_config.player_data) 
-                    + '<br><hr><a class="btn btn-orange" href="javascript:quitStudio()">Close</a>',
-                    css: {
-                        cursor: 'auto'
-                    },
-                    overlayCSS: {
-                        cursor: 'auto'
                     }
                 })
             }
@@ -473,18 +472,13 @@
                             break;
                         } case "themes_selector": {
                             const themes = await getThemes();
-                            $("#get_started_prev").addClass("disabled");
                             $("#themes_selector").html(
                                 themes.map(v => `<option value="${
                                     v.attr.id
                                 }">${v.attr.name}</option>`).join("")
                             );
                             break;
-                        } case "cc_success": {
-                            $("#get_started_prev").addClass("disabled");
-                            break;
                         } case "cc": {
-                            $("#get_started_next").addClass("disabled");
                             function setupCC() {
                                 if (jQuery(".getting_started_char_creator")) {
                                     if (jQuery.flash.available) jQuery(".getting_started_char_creator").html(`You need to click <a href="javascript:openCC('${getting_started_html_config.modalData.theme}', '${userData.uid || userData.id}')">here</a> in order to use the CC.`);
@@ -495,27 +489,45 @@
                             var loop = setInterval(setupCC, 1);
                             break;
                         } case "lvm": {
-                            $("#get_started_next").addClass("disabled");
                             getting_started_html_config.studio_data.flashvars.tray = getting_started_html_config.modalData.theme;
                             getting_started_html_config.studio_data.flashvars.userId =  userData.uid || userData.id;
                             function setupStudio() {
                                 if (jQuery(".getting_started_video_maker")) {
-                                    jQuery(".getting_started_video_maker").html("You need to click <a href='javascript:openLVM()'>here</a> in order to use the LVM.");
+                                    if (jQuery.flash.available) jQuery(".getting_started_video_maker").html("You need to click <a href='javascript:openLVM()'>here</a> in order to use the LVM.");
+                                    else jQuery(".getting_started_video_maker").html("You need Adobe Flash Player in order to use the LVM.");
                                     clearInterval(loop);
                                 }
                             }
                             var loop = setInterval(setupStudio, 1);
                             break;
                         } case "lvp": {
-                            $("#get_started_prev").addClass("disabled");
-                            $(`#get_started_next`).removeClass("disabled");
                             function setupPlayer() {
-                                if (jQuery(".getting_started_video_player")) {
-                                    jQuery(".getting_started_video_player").html("You need to click <a href='javascript:openLVP()'>here</a> in order to view your video.");
+                                if (jQuery(".getting_started_video_player") && jQuery("#edit_video")) {
+                                    $("#new_video").text("New Video")
+                                    if (jQuery.flash.available) jQuery(".getting_started_video_player").html(toObjectString(getting_started_html_config.player_attrs, getting_started_html_config.player_data));
+                                    else jQuery(".getting_started_video_player").html("You need Adobe Flash Player in order to use the LVP.");
                                     clearInterval(loop);
                                 }
                             }
                             var loop = setInterval(setupPlayer, 1);
+                            break;
+                        } case "video_management": {
+                            $(".getting_started_user_videos").html(`<thead>
+                                <tr>
+                                    <td>Video Title</td>
+                                    <td>Last Modified</td>
+                                    <td>Actions</td>
+                                </tr>
+                            </thead>
+                            <tbody>${movies.map(e => {
+                                return `<tr><td>${e.title}</td><td>${
+                                    new Date(e.date).toLocaleDateString()
+                                }</td><td><a href="javascript:showMyVideo('${
+                                    e.id
+                                }')">View Video</a> | <a href="javascript:deleteVideo('${
+                                    e.id
+                                }')">Delete Video</a></td> </tr>`;
+                            })}</tbody>`);
                             break;
                         }
                     }

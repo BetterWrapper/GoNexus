@@ -1,7 +1,8 @@
 :: Important stuff
 @echo off && cls
-set APP_NAME=GoNexus
-set APP_VERSION=0.0.1
+set APP_NAME=Nexus
+set APP_VERSION=0.0.2 Beta
+set NODE_ENV=dev
 title %APP_NAME% %APP_VERSION% [Initializing]
 ::::::::::::::::::::
 :: Initialization ::
@@ -11,9 +12,9 @@ title %APP_NAME% %APP_VERSION% [Initializing]
 TASKKILL /IM node.exe /F 2>nul
 cls
 
-:::::::::::::::::::::::::
-:: Start BetterWrapper ::
-:::::::::::::::::::::::::
+:::::::::::::::::
+:: Start Nexus ::
+:::::::::::::::::
 
 :: Check for installation
 if not exist node_modules (
@@ -31,4 +32,8 @@ if not exist node_modules (
 title %APP_NAME% %APP_VERSION% [Starting]
 echo %APP_NAME% is now starting...
 echo Please navigate to http://localhost:8090 on your browser.
-npm start
+if %NODE_ENV%==dev (
+	npm test
+) else (
+	npm start
+)
