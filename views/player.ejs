@@ -532,7 +532,7 @@
                         for (const elem of movieTitleElement) elem.innerHTML = meta.title;
                         jQuery("#user-link").html(f.name);
                         if (f.id == (userData.uid || userData.id)) $(".owner-button").show();
-                        jQuery.getJSON("/api/convertUrlQuery2JSON?<%= flashvarsString%>", (d) => {
+                        ((d) => {
                             const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
                             flashvars.movieOwner = f.name;
                             flashvars.movieOwnerId = f.id;
@@ -553,7 +553,7 @@
                                 flashvars 
                             });
                             $("#videoLoadingModal").hide().removeClass("in").removeClass("on");
-                        });
+                        })(Object.fromEntries(new URLSearchParams('<%= flashvarsString%>')));
                     }
                 }, 5000));
             </script>
