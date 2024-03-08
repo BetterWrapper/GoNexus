@@ -266,7 +266,7 @@ module.exports = function (req, res, url) {
 					ctc: "go",
 					themeColor: "silver",
 					tlang: "en_US",
-					siteId: "13",
+					siteId: "11",
 					templateshow: "false",
 					forceshow: "false",
 					appCode: "go",
