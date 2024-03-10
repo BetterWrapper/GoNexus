@@ -20,7 +20,7 @@ function getJoseph() {
 		});
 	});
 }
-function makeACCCharComponentsGoInAnArrayThatIsFormattedLikeThe2010LVMSupports(component) {
+function charArray2010Format(component) {
 	let arrary = [];
 	for (let i = 0; i < component.length; i++) {
 		arrary.push(`${component[i].attr.theme_id}.${component[i].attr.type}.${component[i].attr.component_id}.swf`);
@@ -342,24 +342,8 @@ module.exports = function (req, res, url) {
 						else buf = await character.load(charId);
 						const result = new xmldoc.XmlDocument(buf);
 						if (data.actionId && data.facialId && data.facialId.endsWith(".zip") && data.actionId.endsWith(".zip")) { // 2010 tutorial (not working for some odd reason)
-							isAction = true;
-							const charpart = [];
-							whereWeAt++;
+							const components = result.children.filter(i => i.name == "component");
 							const zip = nodezip.create();
-							const files = asset.list((session.get(req)).data.current_uid, "char", 0, character.getTheme(buf));
-							let hasFoundItYet = false;
-							for (const file of files) {
-								if (file.id == charId) {
-									whereWeAt = file;
-									hasFoundItYet = true;
-									console.log("WE FOUD IT!");
-									break;
-								}
-							}
-							if (!hasFoundItYet) {
-								charpart.push(makeACCCharComponentsGoInAnArrayThatIsFormattedLikeThe2010LVMSupports(result.children.filter(i => i.name == "component")));
-								whereWeAt = charpart.length - 1;
-							}
 							const emotion = (getCharEmotionsJson({
 								action: data.facialId.split(".zip")[0]
 							}))[data.facialId.split(".zip")[0]]
@@ -368,9 +352,40 @@ module.exports = function (req, res, url) {
 							}))[data.actionId.split(".zip")[0]]
 							fUtil.addToZip(zip, "desc.xml", buf);
 							res.setHeader("Content-Type", "application/zip");
-							for (let i = 0; i < charpart[whereWeAt].length; i++) {
-								let pieces = charpart[whereWeAt][i].split(".");
-								fUtil.addToZip(zip, charpart[whereWeAt][i], fs.readFileSync(`./charStore/${pieces[0]}/${pieces[1]}/${pieces[2]}/${pieces[1] == "skeleton" || pieces[1] == "freeaction" ? action.skeleton : pieces[1] == "bodyshape" ? `thumbnail` : pieces[1] == "eye" ? emotion.eye :pieces[1] == "eyebrow" ? emotion.eyebrow : pieces[1] == "mouth" ? emotion.mouth : pieces[1] == "upper_body" ? action.upper_body : pieces[1] == "lower_body" ? action.lower_body : `default`}.swf`));
+							for (const component of components) {
+								switch (component.attr.type) {
+									case "bodyshape": {
+										fUtil.addToZip(zip, `${component.attr.theme_id}.bodyshape.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/bodyshape/${
+											component.attr.component_id
+										}/thumbnail.swf`))
+										break;
+									} case "skeleton": {
+										fUtil.addToZip(zip, `${component.attr.theme_id}.skeleton.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${component.attr.type}/${
+											component.attr.component_id
+										}/${
+											i(emotion, component.attr.type) || i(action, component.attr.type) || "stand"
+										}.swf`));
+										break;
+									} default: {
+										fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${component.attr.type}/${
+											component.attr.component_id
+										}/${
+											i(emotion, component.attr.type) || i(action, component.attr.type) || "default"
+										}.swf`));
+										break;
+									}
+								}
+							}
+							function i(json, type) {
+								for (const i in json) {
+									if (i == type) return json[type]
+								}
 							}
 							res.end(await zip.zip());				
 						} else if (data.actionId) { // now we are getting back in track. everything works normally, but not the tutorial for some reason

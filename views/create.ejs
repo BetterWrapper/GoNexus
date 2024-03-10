@@ -332,6 +332,7 @@
                     const clientThemePath = parseInt(studio) >= 2013 ? `/static/2012/477/<client_theme>?themeColor=${json.ct2012 || "go"}` : `https://wrapperclassic.netlify.app/static/tommy/${
                         $("#customlvmyear").val()
                     }/<client_theme>`;
+                    flashvars.userId = userData.uid || userData.id;
                     flashvars.presaveId = d;
                     flashvars.ctc = json.ct2010;
                     flashvars.tm = json.tutorial ? "NEW" : "FIN";
@@ -362,7 +363,7 @@
                             clientThemePath,
                             tlang: "en_US",
                             studio,
-                            userId: userData.uid || userData.id,
+                            userId: flashvars.userId,
                             isWide: json.widescreen ? 1 : 0,
                             collab: 0,
                             nextUrl: "/api/redirect",
