@@ -3,9 +3,8 @@ const header = process.env.XML_HEADER;
 const fUtil = require("../misc/file");
 const nodezip = require("node-zip");
 const base = Buffer.alloc(1, 0);
-const asset = require("./main");
 const http = require("http");
-
+const fs = require("fs");
 async function listAssets(data, isAssetSearch) {
 	const xmls = [], files = [];
 	switch (data.type) { // if we are going to do chars, then we will need to make sure that custom characters are complatable with the Community Library.
@@ -13,7 +12,9 @@ async function listAssets(data, isAssetSearch) {
 			fs.readdirSync('./.site').forEach(file => {
 				if (file.endsWith(".jpg")) {
 					files.push(file);
-					xmls.push(`<background id="${file}" enc_asset_id="${file}" name="${file}" published="1"><tags></tags></background>`);
+					xmls.push(`<background id="${file}" enc_asset_id="${file}" name="${file}" published="1">
+						<tags></tags>
+					</background>`);
 				}
 			});
 			break;
@@ -21,7 +22,11 @@ async function listAssets(data, isAssetSearch) {
 			fs.readdirSync('./.site').forEach(file => {
 				if (file.endsWith(".png")) {
 					files.push(file);
-					xmls.push(`<prop id="${file}" enc_asset_id="${file}" name="${file}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="0"><tags></tags></prop>`);
+					xmls.push(`<prop id="${file}" enc_asset_id="${file}" name="${
+						file
+					}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="0">
+						<tags></tags>
+					</prop>`);
 				}
 			});
 			break;
@@ -29,21 +34,23 @@ async function listAssets(data, isAssetSearch) {
 	}
 	const zip = nodezip.create();
 	if (!isAssetSearch) {
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${xmls.join("")}</theme>`);
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${
+			xmls.join("")
+		}</theme>`);
 		files.forEach((file) => {
 			const buffer = fs.readFileSync(`./.site/${file}`);
-			fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
+			fUtil.addToZip(zip, `${data.type}/${file}`, buffer);
 		});
 	} else {
 		let results = 0;
-		files.forEach((file) => {
-			if (file.includes(data.keywords)) {
-				results++
-				const buffer = fs.readFileSync(`./.site/${file}`);
-				fUtil.addToZip(zip, `${data.type}/${file.id}`, buffer);
-			}
+		files.filter(i => i.includes(data.keywords)).forEach((file) => {
+			results++
+			const buffer = fs.readFileSync(`./.site/${file}`);
+			fUtil.addToZip(zip, `${data.type}/${file}`, buffer);
 		});
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library" all_asset_count="${results}">${xmls.join("")}</theme>`);
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library" all_asset_count="${
+			results
+		}">${xmls.join("")}</theme>`);
 	}
 	return await zip.zip();
 }
