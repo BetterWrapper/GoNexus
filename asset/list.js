@@ -73,7 +73,6 @@ async function listAssets(data, makeZip) {
 	if (makeZip) {
 		const zip = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(xmlString));
-		console.log(data);
 		for (const file of files) {
 			switch (file.type) {
 				case "bg": {

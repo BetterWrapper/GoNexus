@@ -9,7 +9,9 @@ const nodezip = require("node-zip");
 const fUtil = require("../misc/file");
 function meta2libraryXml(w) {
 	let xml;
-	xml = `<library type="${w.type}" file="${w.component_id}" path="${w.component_id}" component_id="${w.component_id}" theme_id="${w.theme_id}"/>`
+	xml = `<library type="${w.type}" file="${w.component_id}" path="${w.component_id}" component_id="${
+		w.component_id
+	}" theme_id="${w.theme_id}"/>`
 	return xml;
 }
 function getJoseph() {
@@ -19,13 +21,6 @@ function getJoseph() {
 			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
 		});
 	});
-}
-function charArray2010Format(component) {
-	let arrary = [];
-	for (let i = 0; i < component.length; i++) {
-		arrary.push(`${component[i].attr.theme_id}.${component[i].attr.type}.${component[i].attr.component_id}.swf`);
-	}
-	return arrary;
 }
 function getCharEmotionsJson(v) {
 	return {
@@ -95,26 +90,44 @@ function meta2componentXml(v) {
 	const stuff = getCharEmotionsJson(v);
 	let xml;
 	let ty = v.type;
-	const action2 = stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action] && stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action][v.type] ? stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action][v.type] : stuff.default[v.type] ? stuff.default[v.type] : "default";
-	const action = fs.existsSync(`./charStore/${v.theme_id}/${v.type}/${v.component_id}/${action2}.swf`) ? action2 : "default";
+	const action2 = stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action] && stuff[
+		v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action
+	][v.type] ? stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action][
+		v.type
+	] : stuff.default[v.type] ? stuff.default[v.type] : "default";
+	const action = fs.existsSync(`./charStore/${v.theme_id}/${v.type}/${v.component_id}/${
+		action2
+	}.swf`) ? action2 : "default";
 	if (ty == "eye" || ty == "eyebrow" || ty == "mouth") {
 		let animetype = v.theme_id == "anime" ? "side_" + action : action;
-		xml = `<component type="${v.type}" ${isAction ? `component_id="${v.component_id}"` : ``} theme_id="${v.theme_id}" file="${animetype}.swf" path="${v.component_id}" x="${
-			v.x
-		}" y="${v.y}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" ${v.split ? `split="N"` : ``}/>`;
-	} else if (v.id) xml = `<component id="${v.id}" ${isAction ? `file="default.swf" component_id="${v.component_id}"` : ``} type="${v.type}" theme_id="${v.theme_id}" path="${v.component_id}" x="${
+		xml = `<component type="${v.type}" ${isAction ? `component_id="${v.component_id}"` : ``} theme_id="${
+			v.theme_id
+		}" file="${animetype}.swf" path="${v.component_id}" x="${v.x}" y="${v.y}" xscale="${
+			v.xscale
+		}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" ${v.split ? `split="N"` : ``}/>`;
+	} else if (v.id) xml = `<component id="${v.id}" ${isAction ? `file="default.swf" component_id="${
+		v.component_id
+	}"` : ``} type="${v.type}" theme_id="${v.theme_id}" path="${v.component_id}" x="${v.x}" y="${
+		v.y
+	}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
+	else if (
+		v.type != "skeleton" 
+		&& v.type != "bodyshape" 
+		&& v.type != "freeaction"
+	) xml = `<component type="${v.type}" theme_id="${
+		v.theme_id
+	}" ${isAction ? `file="default.swf" component_id="${v.component_id}"` : ``} path="${v.component_id}" x="${
 		v.x
 	}" y="${v.y}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
-	else if (v.type != "skeleton" && v.type != "bodyshape" && v.type != "freeaction") xml = `<component type="${v.type}" theme_id="${
-		v.theme_id
-	}" ${isAction ? `file="default.swf" component_id="${v.component_id}"` : ``} path="${v.component_id}" x="${v.x}" y="${v.y}" xscale="${
-		v.xscale
-	}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
-	else xml = `<component type="${v.type}" theme_id="${v.theme_id}" ${v.type == "skeleton" ? `file="${action}.swf"` : v.type == "freeaction" && v.theme_id == "cc2" ? `file="${
-		action
-	}.swf"` : `file="thumbnail.swf"`} path="${v.component_id}" ${isAction ? `component_id="${v.component_id}"` : ``} x="${v.x}" y="${v.y}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${
-		v.offset
-	}" rotation="${v.rotation}" />`;
+	else xml = `<component type="${v.type}" theme_id="${v.theme_id}" ${
+		v.type == "skeleton" ? `file="${
+			action
+		}.swf"` : v.type == "freeaction" && v.theme_id == "cc2" ? `file="${
+			action
+		}.swf"` : `file="thumbnail.swf"`
+	} path="${v.component_id}" ${isAction ? `component_id="${v.component_id}"` : ``} x="${v.x}" y="${
+		v.y
+	}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
 	return xml;
 }
 function getCharActionsJson(v) {
@@ -184,6 +197,7 @@ function getCharActionsJson(v) {
 			lower_body: "default"
 		},
 		talk: {
+			skeleton: "talk",
 			mouth: "talk",
 			lower_body: "default"
 		},
@@ -263,15 +277,24 @@ function getCharActionsJson(v) {
 			mouth: "happy"
 		},
 		excited: {
-			mouth: "happy"
+			mouth: "happy",
+			skeleton: "excited"
+		},
+		walk: {
+			lower_body: "walk",
+			upper_body: "walk",
+			skeleton: "walk"
 		}
 	}
 }
 function meta2componentXml2(v) {
 	const stuff = getCharActionsJson(v);
-	console.log(v);
-	const action = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][v.type] : stuff.default[v.type] ? stuff.default[v.type] : v.type != "bodyshape" || v.type != "skeleton" ? "default" : "thumbnail";
-	return `<component type="${v.type}" theme_id="${v.theme_id}" file="${action}.swf" path="${v.component_id}" component_id="${v.component_id}" x="${v.x}" y="${v.y}" xscale="${v.xscale}" yscale="${
+	const action = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][v.type] : stuff.default[
+		v.type
+	] ? stuff.default[v.type] : v.type == "bodyshape" ? 'thumbnail' : "default";
+	return `<component type="${v.type}" theme_id="${v.theme_id}" file="${action}.swf" path="${
+		v.component_id
+	}" component_id="${v.component_id}" x="${v.x}" y="${v.y}" xscale="${v.xscale}" yscale="${
 		v.yscale
 	}" offset="${v.offset}" rotation="${v.rotation}" />`;
 }
@@ -341,86 +364,119 @@ module.exports = function (req, res, url) {
 						if (charId == "4048901") buf = await getJoseph();
 						else buf = await character.load(charId);
 						const result = new xmldoc.XmlDocument(buf);
-						if (data.actionId && data.facialId && data.facialId.endsWith(".zip") && data.actionId.endsWith(".zip")) { // 2010 tutorial (not working for some odd reason)
+						if (
+							data.actionId 
+							&& data.facialId 
+							&& data.facialId.endsWith(".zip") 
+							&& data.actionId.endsWith(".zip")
+						) { // 2010 tutorial
 							const components = result.children.filter(i => i.name == "component");
+							const componentswithactions = {};
 							const zip = nodezip.create();
 							const emotion = (getCharEmotionsJson({
 								action: data.facialId.split(".zip")[0]
-							}))[data.facialId.split(".zip")[0]]
+							}))[data.facialId.split(".zip")[0].split("head_")[1]]
 							const action = (getCharActionsJson({
 								action: data.actionId.split(".zip")[0]
 							}))[data.actionId.split(".zip")[0]]
 							fUtil.addToZip(zip, "desc.xml", buf);
 							res.setHeader("Content-Type", "application/zip");
+							for (const i in action) {
+								const component = components.find(d => d.attr.type == i);
+								fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
+									component.attr.component_id
+								}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+									component.attr.type
+								}/${
+									component.attr.component_id
+								}/${action[component.attr.type]}.swf`));
+								componentswithactions[component.attr.type] = true;
+							}
+							for (const i in emotion) {
+								const component = components.find(d => d.attr.type == i);
+								fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
+									component.attr.component_id
+								}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+									component.attr.type
+								}/${
+									component.attr.component_id
+								}/${emotion[component.attr.type]}.swf`));
+								componentswithactions[component.attr.type] = true;
+							}
 							for (const component of components) {
 								switch (component.attr.type) {
 									case "bodyshape": {
 										fUtil.addToZip(zip, `${component.attr.theme_id}.bodyshape.${
 											component.attr.component_id
-										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/bodyshape/${
+										}.swf`, fs.readFileSync(`./charStore/${
+											component.attr.theme_id
+										}/bodyshape/${
 											component.attr.component_id
 										}/thumbnail.swf`))
 										break;
-									} case "skeleton": {
-										fUtil.addToZip(zip, `${component.attr.theme_id}.skeleton.${
-											component.attr.component_id
-										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${component.attr.type}/${
-											component.attr.component_id
-										}/${
-											i(emotion, component.attr.type) || i(action, component.attr.type) || "stand"
-										}.swf`));
-										break;
 									} default: {
-										fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
-											component.attr.component_id
-										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${component.attr.type}/${
-											component.attr.component_id
-										}/${
-											i(emotion, component.attr.type) || i(action, component.attr.type) || "default"
-										}.swf`));
+										if (!componentswithactions[component.attr.type]) fUtil.addToZip(
+											zip, `${component.attr.theme_id}.${component.attr.type}.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+												component.attr.type
+											}/${component.attr.component_id}/default.swf`)
+										);
 										break;
 									}
-								}
-							}
-							function i(json, type) {
-								for (const i in json) {
-									if (i == type) return json[type]
 								}
 							}
 							res.end(await zip.zip());				
 						} else if (data.actionId) { // now we are getting back in track. everything works normally, but not the tutorial for some reason
 							if (data.actionId.endsWith(".zip")) {
-								isAction = true;
-								const charpart = [];
-								whereWeAt++;
+								const components = result.children.filter(i => i.name == "component");
+								const componentswithactions = {};
 								const zip = nodezip.create();
-								const files = asset.list((session.get(req)).data.current_uid, "char", 0, character.getTheme(buf));
-								let hasFoundItYet = false;
-								for (const file of files) {
-									if (file.id == charId) {
-										whereWeAt = file;
-										hasFoundItYet = true;
-										console.log("WE FOUD IT!");
-										break;
-									}
-								}
-								if (!hasFoundItYet) {
-									charpart.push(makeACCCharComponentsGoInAnArrayThatIsFormattedLikeThe2010LVMSupports(result.children.filter(i => i.name == "component")));
-									whereWeAt = charpart.length - 1;
-								}
 								const action = (getCharActionsJson({
 									action: data.actionId.split(".zip")[0]
 								}))[data.actionId.split(".zip")[0]]
 								fUtil.addToZip(zip, "desc.xml", buf);
 								res.setHeader("Content-Type", "application/zip");
-								for (let i = 0; i < charpart[whereWeAt].length; i++) {
-									let pieces = charpart[whereWeAt][i].split(".");
-									fUtil.addToZip(zip, charpart[whereWeAt][i], fs.readFileSync(`./charStore/${pieces[0]}/${pieces[1]}/${pieces[2]}/${pieces[1] == "skeleton" || pieces[1] == "freeaction" ? action.skeleton : pieces[1] == "bodyshape" ? `thumbnail` : pieces[1] == "upper_body" ? action.upper_body : pieces[1] == "lower_body" ? action.lower_body : `default`}.swf`));
+								for (const i in action) {
+									const component = components.find(d => d.attr.type == i);
+									fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
+										component.attr.component_id
+									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+										component.attr.type
+									}/${
+										component.attr.component_id
+									}/${action[component.attr.type]}.swf`));
+									componentswithactions[component.attr.type] = true;
+								}
+								for (const component of components) {
+									switch (component.attr.type) {
+										case "bodyshape": {
+											fUtil.addToZip(zip, `${component.attr.theme_id}.bodyshape.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${
+												component.attr.theme_id
+											}/bodyshape/${
+												component.attr.component_id
+											}/thumbnail.swf`))
+											break;
+										} default: {
+											if (!componentswithactions[component.attr.type]) fUtil.addToZip(
+												zip, `${component.attr.theme_id}.${component.attr.type}.${
+													component.attr.component_id
+												}.swf`, fs.readFileSync(`./charStore/${
+													component.attr.theme_id
+												}/${component.attr.type}/${
+													component.attr.component_id
+												}/default.swf`)
+											);
+											break;
+										}
+									}
 								}
 								res.end(await zip.zip());	
 							} else if (data.actionId.endsWith(".xml")) {
-								res.setHeader("Content-Type", "application/xml");
 								isAction = true;
+								res.setHeader("Content-Type", "application/xml");
 								for (const info of result.children) {
 									switch (info.name) {
 										case "component": {
@@ -439,42 +495,63 @@ module.exports = function (req, res, url) {
 										}
 									}
 								}							
-								res.end(`<cc_char ${result.attr ? `xscale='${result.attr.xscale}' yscale='${result.attr.yscale}' hxscale='${result.attr.hxscale}' hyscale='${
-									result.attr.hyscale
-								}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``}>${componentArray.map(meta2componentXml2).join("")}${
+								res.end(`<cc_char ${
+									result.attr ? `xscale='${result.attr.xscale}' yscale='${
+										result.attr.yscale
+									}' hxscale='${result.attr.hxscale}' hyscale='${
+										result.attr.hyscale
+									}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
+								}>${componentArray.map(meta2componentXml2).join("")}${
 									colorArray.map(meta2colourXml).join("")
 								}</cc_char>`);
 							} 
 						} else if (data.facialId) {
 							if (data.facialId.endsWith(".zip")) {
-								isAction = true;
-								const charpart = [];
-								whereWeAt++;
+								const components = result.children.filter(i => i.name == "component");
+								const componentswithactions = {};
 								const zip = nodezip.create();
-								const files = asset.list((session.get(req)).data.current_uid, "char", 0, character.getTheme(buf));
-								let hasFoundItYet = false;
-								for (const file of files) {
-									if (file.id == charId) {
-										whereWeAt = file;
-										hasFoundItYet = true;
-										console.log("WE FOUD IT!");
-										break;
-									}
-								}
-								if (!hasFoundItYet) {
-									charpart.push(makeACCCharComponentsGoInAnArrayThatIsFormattedLikeThe2010LVMSupports(result.children.filter(i => i.name == "component")));
-									whereWeAt = charpart.length - 1;
-								}
 								const emotion = (getCharEmotionsJson({
 									action: data.facialId.split(".zip")[0]
-								}))[data.facialId.split(".zip")[0]]
+								}))[data.facialId.split(".zip")[0].split("head_")[1]]
 								fUtil.addToZip(zip, "desc.xml", buf);
 								res.setHeader("Content-Type", "application/zip");
-								for (let i = 0; i < charpart[whereWeAt].length; i++) {
-									let pieces = charpart[whereWeAt][i].split(".");
-									fUtil.addToZip(zip, charpart[whereWeAt][i], fs.readFileSync(`./charStore/${pieces[0]}/${pieces[1]}/${pieces[2]}/${pieces[1] == "bodyshape" ? `thumbnail` : pieces[1] == "eye" ? emotion.eye :pieces[1] == "eyebrow" ? emotion.eyebrow : pieces[1] == "mouth" ? emotion.mouth : `default`}.swf`));
+								for (const i in emotion) {
+									const component = components.find(d => d.attr.type == i);
+									fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
+										component.attr.component_id
+									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+										component.attr.type
+									}/${
+										component.attr.component_id
+									}/${emotion[component.attr.type]}.swf`));
+									componentswithactions[component.attr.type] = true;
 								}
-								res.end(await zip.zip());
+								for (const component of components) {
+									switch (component.attr.type) {
+										case "bodyshape": {
+											fUtil.addToZip(zip, `${component.attr.theme_id}.bodyshape.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${
+												component.attr.theme_id
+											}/bodyshape/${
+												component.attr.component_id
+											}/thumbnail.swf`))
+											break;
+										} default: {
+											if (!componentswithactions[component.attr.type]) fUtil.addToZip(
+												zip, `${component.attr.theme_id}.${component.attr.type}.${
+													component.attr.component_id
+												}.swf`, fs.readFileSync(`./charStore/${
+													component.attr.theme_id
+												}/${component.attr.type}/${
+													component.attr.component_id
+												}/default.swf`)
+											);
+											break;
+										}
+									}
+								}
+								res.end(await zip.zip());	
 							} else if (data.facialId.endsWith(".xml")) {
 								res.setHeader("Content-Type", "application/xml");
 								isAction = false;
