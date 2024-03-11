@@ -79,6 +79,11 @@ module.exports = {
 		const end = buffer.indexOf(`"`, beg);
 		return buffer.subarray(beg, end).toString();
 	},
+	getCharTypeViaBuff(buff) {
+		const beg = buff.indexOf(`component_id="`) + 14;
+		const end = buff.indexOf(`"`, beg);
+		return buff.subarray(beg, end).toString();
+	},
 	/**
 	 * @param {string} id
 	 * @returns {Promise<Buffer>}

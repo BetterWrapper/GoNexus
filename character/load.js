@@ -22,69 +22,26 @@ function getJoseph() {
 		});
 	});
 }
-function getCharEmotionsJson(v) {
-	return {
+function getCharEmotionsJson(v) { // loads char emotions from the cc theme xml.
+	const emotions = {
 		default: {
 			eye: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action,
 			eyebrow: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action,
 			mouth: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action
-		},
-		asleep: {
-			eye: "asleep",
-			eyebrow: "default",
-			mouth: "default"
-		},
-		chewing: {
-			eye: "default",
-			eyebrow: "default",
-			mouth: "chewing"
-		},
-		disgusted: {
-			eye: "sick",
-			eyebrow: "disgusted",
-			mouth: "sad"
-		},
-		laugh: {
-			eye: "happy",
-			eyebrow: "happy",
-			mouth: "laugh"
-		},
-		talk_angry: {
-			eye: "angry",
-			eyebrow: "angry",
-			mouth:"talk_angry"
-		},
-		talk_happy: {
-			eye: "happy",
-			eyebrow: "happy",
-			mouth:"talk_happy"
-		},
-		talk_netural_a: {
-			eye: "default",
-			eyebrow: "default",
-			mouth:"talk_a"
-		},
-		talk_netural_b: {
-			eye: "default",
-			eyebrow: "default",
-			mouth:"talk_b"
-		},
-		talk_sad: {
-			eye: "sad",
-			eyebrow: "sad",
-			mouth:"talk_sad"
-		},
-		thinking: {
-			eye: "thinking",
-			eyebrow: "sad",
-			mouth: "default"
-		},
-		taunt: {
-			eye: "angry",
-			eyebrow: "angry",
-			mouth: "taunt"
 		}
 	}
+	const ccTheme = fs.readFileSync(`./charStore/${v.theme_id}/cc_theme.xml`);
+	const result = new xmldoc.XmlDocument(ccTheme);
+	for (const facial of result.children.filter(i => i.name == "facial")) {
+		emotions[facial.attr.id] = {};
+		for (const stuff of facial.children.filter(i => i.name == "selection")) {
+			emotions[facial.attr.id][stuff.attr.type] = stuff.attr.state_id;
+		}
+	}
+	return emotions;
+}
+function getJyveeEmotions(tId) { // Jyvee we are finally loading your emotions into Nexus :)
+	const emotions = {};
 }
 function meta2componentXml(v) {
 	const stuff = getCharEmotionsJson(v);
@@ -130,162 +87,25 @@ function meta2componentXml(v) {
 	}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
 	return xml;
 }
-function getCharActionsJson(v) {
-	return {
-		stand: {
-			upper_body: "default",
-			lower_body: "default",
-			skeleton: "stand"
-		},
-		dislike: {
-			eye: "sick",
-			eyebrow: "disgusted",
-			mouth: "sad",
-			lower_body: "default",
-			upper_body: "taunt",
-			skeleton: "taunt",
-		},
-		furious: {
-			eye: "angry",
-			eyebrow: "angry",
-			mouth: "angry",
-			lower_body: "laugh",
-			upper_body: "excited",
-			skeleton: "excited",
-		},
-		grab: {
-			eye: "angry",
-			eyebrow: "angry",
-			mouth: "angry",
-			lower_body: "laugh",
-			upper_body: "laugh",
-			skeleton: "laugh",
-		},
-		makefunof: {
-			mouth: "laugh",
-			lower_body: "laugh",
-			upper_body: "point_at",
-			skeleton: "laugh",
-		},
-		laugh: {
-			mouth: "laugh",
-		},
-		punch: {
-			eye: "angry",
-			eyebrow: "angry",
-			mouth: "angry",
-			lower_body: "default",
-			upper_body: "run",
-			skeleton: "stand",
-		},
-		drive: {
-			lower_body: "sit",
-			upper_body: "run",
-			skeleton: "sit",
-		},
-		xarms: {
-			upper_body: "crossed_arms",
-			skeleton: "crossed_arms",
-			lower_body: "default"
-		},
-		xarms3: {
-			upper_body: "crossed_arms",
-			skeleton: "crossed_arms",
-			lower_body: "walk"
-		},
-		chuckle: {
-			lower_body: "default"
-		},
-		talk: {
-			skeleton: "talk",
-			mouth: "talk",
-			lower_body: "default"
-		},
-		kneelcross: {
-			upper_body: "crossed_arms",
-			skeleton: "crossed_arms",
-			lower_body: "kneel_down"
-		},
-		kneel: {
-			upper_body: "kneel_down",
-			skeleton: "sit",
-			lower_body: "kneel_down"
-		},
-		kneelphone: {
-			mouth: "talk",
-			upper_body: "talk_on_phone",
-			skeleton: "talk_on_phone",
-			lower_body: "kneel_down"
-		},
-		talk_phone: {
-			mouth: "talk",
-			upper_body: "talk_on_phone",
-			skeleton: "talk_on_phone",
-			lower_body: "default"
-		},
-		talk_phone3: {
-			mouth: "talk",
-			upper_body: "talk_on_phone",
-			skeleton: "talk_on_phone",
-			lower_body: "walk"
-		},
-		taunt: {
-			lower_body: "default",
-			mouth: "taunt"
-		},
-		pt_at: {
-			upper_body: "point_at",
-			skeleton: "point_at",
-			lower_body: "default"
-		},
-		sad: {
-			mouth: "sad",
-			eye: "sad",
-			eyebrow: "sad",
-			lower_body: "default"
-		},
-		sitchuckle: {
-			upper_body: "chuckle",
-			skeleton: "chuckle",
-			lower_body: "sit"
-		},
-		xarms2: {
-			upper_body: "crossed_arms",
-			skeleton: "crossed_arms",
-			lower_body: "sit"
-		},
-		xarmspoint: {
-			upper_body: "point_at",
-			skeleton: "point_at",
-			lower_body: "sit"
-		},
-		talk_phone2: {
-			mouth: "talk",
-			upper_body: "talk_on_phone",
-			skeleton: "talk_on_phone",
-			lower_body: "sit"
-		},
+function getCharActionsJson(v) { // loads char actions from the cc theme xml using char bs
+	const actions = {
 		default: {
 			upper_body: v.action,
 			lower_body: v.action,
 			skeleton: v.action
-		},
-		fearful: {
-			mouth: "sad"
-		},
-		dance: {
-			mouth: "happy"
-		},
-		excited: {
-			mouth: "happy",
-			skeleton: "excited"
-		},
-		walk: {
-			lower_body: "walk",
-			upper_body: "walk",
-			skeleton: "walk"
 		}
 	}
+	const ccTheme = fs.readFileSync(`./charStore/${v.theme_id}/cc_theme.xml`);
+	const result = new xmldoc.XmlDocument(ccTheme);
+	const shapes = result.children.filter(i => i.name == "bodyshape");
+	const char = shapes.find(i => i.attr.id == v.bs);
+	for (const charActions of char.children.filter(i => i.name == "action")) {
+		actions[charActions.attr.id] = {};
+		for (const act of charActions.children.filter(i => i.name == "selection")) {
+			if (!act.attr.facial_id) actions[charActions.attr.id][act.attr.type] = act.attr.state_id;
+		}
+	}
+	return actions;
 }
 function meta2componentXml2(v) {
 	const stuff = getCharActionsJson(v);
@@ -305,7 +125,7 @@ function meta2colourXml(v) {
 	else xml = `<color r="${v.r}" targetComponent="${v.targetComponent}">${v.text}</color>`;	
 	return xml;
 }
-let isAction = false, whereWeAt = -1;
+let isAction = false;
 const session = require("../misc/session");
 /**
  * @param {http.IncomingMessage} req
@@ -332,7 +152,255 @@ module.exports = function (req, res, url) {
 			break;
 		} case "POST": {
 			switch (url.pathname) {
-				case "/api/getChars": {
+				case "/goapi/getCharacter/": {
+					loadPost(req, res).then(async data => {
+						//Check first to see if its a cc theme
+						res.setHeader("Content-type", "application/zip");
+						let isCcThemeChar = false;
+						let charInfo;
+						const files = asset.list(data.userId, "char", 0);
+						for (const file of files) {
+							if (file.id == data.assetId) {
+								isCcThemeChar = true;
+								charInfo = file;
+								break;
+							}
+						}
+						//This code is so hard for people so hear are commentz
+						/*if (!isCcThemeChar) {
+							const zip = nodezip.create();
+							let num;
+							let xnl = fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm", "theme.xml")).toString();
+							let result = new xmldoc.XmlDocument(xnl);
+							const data = JSON.parse(result);
+							let hasmatch = false;
+							for (let i = 0; i < data.theme.char.length; i++) {
+								num = i;
+								if (data.theme.char[i]._attributes.id == data.assetId) {
+									// Was used for logging
+				
+									//console.log("We've found a match here..");
+									//console.log("Heres the json metainfo:", data.theme.char[i]._attributes);
+									//console.log("And the actions:", data.theme.char[num].action);
+									//Handler for one action chars
+									if (data.theme.char[num].action[0] === undefined) {
+										fUtil.addToZip(zip, `char/${data.assetId}/${data.theme.char[num].action._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", data.assetId, data.theme.char[num].action._attributes.id)));
+									}
+									else {
+										for (let b = 0; b < data.theme.char[num].action.length; b++) {
+											// Check if the action exists before going rogue to add them
+											if (fs.existsSync(path.join(__dirname, "../../server", "/static/store/Comm/char", data.assetId, data.theme.char[num].action[b]._attributes.id))) {
+												fUtil.addToZip(zip, `char/${data.assetId}/${data.theme.char[num].action[b]._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", data.assetId, data.theme.char[num].action[b]._attributes.id)));
+											}
+										}
+									}
+									hasmatch = true;
+								}
+							}
+							if (hasmatch) {
+				
+								res.end(await zip.zip());
+							}
+							else {
+								res.statusCode = "500";
+								res.json({ "status": "error", "massage": "Character not found, listed wrong" });
+							}
+						}
+						else {*/
+							const zip = nodezip.create();
+							const buf = await character.load(data.assetId);
+							const result = new xmldoc.XmlDocument(buf);
+							const themeid = charInfo.themeId;
+							const libArray = result.children.filter(i => i.name == "library");
+							let mappedLibrary;
+							if (themeid == "cc2" || themeid == "business") {
+								mappedLibrary = libArray.map(meta2libraryXml).join("");
+							}
+							const colorArray = result.children.filter(i => i.name == "color");
+							let mappedColors;
+							isAction = true;
+							mappedColors = colorArray.map(meta2colourXml).join("");
+							const componentArray = [];
+							for (const i of result.children.filter(i => i.name == "component")) {
+								const inf = i.attr;
+								inf.bs = character.getCharTypeViaBuff(buf);
+								componentArray.unshift(inf);
+							}
+							let mappedComponent;
+							mappedComponent = componentArray.map(meta2componentXml2).join("");
+							const actions = Object.keys(getCharActionsJson({
+								action: "stand",
+								bs: character.getCharTypeViaBuff(buf),
+								theme_id: themeid
+							}));
+							for (var num = 0; num < actions.length; num++) {
+								const components = result.children.filter(i => i.name == "component");
+								const componentswithactions = {};
+								const actionzip = nodezip.create();
+								fUtil.addToZip(actionzip, `desc.xml`, Buffer.from(`<cc_char ${
+									result.attr ? `xscale='${
+										result.attr.xscale
+									}' yscale='${result.attr.yscale}' hxscale='${
+										result.attr.hxscale
+									}' hyscale='${result.attr.hyscale}' headdx='${
+										result.attr.headdx
+									}' headdy='${result.attr.headdy}'` : ``
+								}>${
+									mappedColors
+								}${mappedComponent}${
+									themeid == "cc2" || themeid == "business" ? mappedLibrary : ``
+								}</cc_char>`));
+								const action = (getCharActionsJson({
+									action: actions[num],
+									bs: character.getCharTypeViaBuff(buf),
+									theme_id: themeid
+								}))[actions[num]]
+								for (const i in action) {
+									const component = components.find(d => d.attr.type == i);
+									if (component && fs.existsSync(`./charStore/${
+										component.attr.theme_id
+									}/${component.attr.type}/${component.attr.component_id}/${
+										action[component.attr.type]
+									}.swf`)) {
+										fUtil.addToZip(actionzip, `${component.attr.theme_id}.${
+											component.attr.type
+										}.${component.attr.component_id}.swf`, fs.readFileSync(`./charStore/${
+											component.attr.theme_id
+										}/${component.attr.type}/${component.attr.component_id}/${
+											action[component.attr.type]
+										}.swf`));
+										componentswithactions[component.attr.type] = true;
+									}
+								}
+								for (const component of components) {
+									switch (component.attr.type) {
+										case "bodyshape": {
+											fUtil.addToZip(actionzip, `${component.attr.theme_id}.bodyshape.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${
+												component.attr.theme_id
+											}/bodyshape/${
+												component.attr.component_id
+											}/thumbnail.swf`))
+											break;
+										} default: {
+											if (
+												!componentswithactions[component.attr.type] 
+												&& fs.existsSync(`./charStore/${
+													component.attr.theme_id
+												}/${component.attr.type}/${
+													component.attr.component_id
+												}/default.swf`)
+											) fUtil.addToZip(
+												actionzip, `${component.attr.theme_id}.${
+													component.attr.type
+												}.${
+													component.attr.component_id
+												}.swf`, fs.readFileSync(`./charStore/${
+													component.attr.theme_id
+												}/${component.attr.type}/${
+													component.attr.component_id
+												}/default.swf`)
+											);
+											break;
+										}
+									}
+								}
+								console.log(actionzip);
+								fUtil.addToZip(zip, `char/${data.assetId}/${
+									actions[num]
+								}.zip`, await actionzip.zip());
+							}
+				
+				
+							const facials = Object.keys(getCharActionsJson({
+								action: "default",
+								bs: character.getCharTypeViaBuff(buf),
+								theme_id: themeid
+							})).filter(i => i != "default");
+							for (a = 0; a < facials.length; a++) {
+								const components = result.children.filter(i => i.name == "component");
+								isAction = false;
+								const componentswithactions = {};
+								const facialzip = nodezip.create();
+								fUtil.addToZip(facialzip, `desc.xml`, Buffer.from(`<cc_char ${
+									result.attr ? `xscale='${
+										result.attr.xscale
+									}' yscale='${result.attr.yscale}' hxscale='${
+										result.attr.hxscale
+									}' hyscale='${result.attr.hyscale}' headdx='${
+										result.attr.headdx
+									}' headdy='${result.attr.headdy}'` : ``
+								}>${mappedColors}${mappedComponent}${
+									themeid == "cc2" || themeid == "business" ? mappedLibrary : ``
+								}</cc_char>`));
+								const emotion = (getCharEmotionsJson({
+									action: facials[a],
+									theme_id: themeid
+								}))[facials[a]]
+								for (const i in emotion) {
+									const component = components.find(d => d.attr.type == i);
+									if (component && fs.existsSync(`./charStore/${component.attr.theme_id}/${
+										component.attr.type
+									}/${
+										component.attr.component_id
+									}/${emotion[component.attr.type]}.swf`)) {
+										fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
+											component.attr.type
+										}.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+											component.attr.type
+										}/${
+											component.attr.component_id
+										}/${emotion[component.attr.type]}.swf`));
+										componentswithactions[component.attr.type] = true;
+									}
+								}
+								for (const component of components) {
+									switch (component.attr.type) {
+										case "bodyshape": {
+											fUtil.addToZip(facialzip, `${component.attr.theme_id}.bodyshape.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${
+												component.attr.theme_id
+											}/bodyshape/${
+												component.attr.component_id
+											}/thumbnail.swf`))
+											break;
+										} default: {
+											if (
+												!componentswithactions[component.attr.type] 
+												&& fs.existsSync(`./charStore/${
+													component.attr.theme_id
+												}/${
+													component.attr.type
+												}/${component.attr.component_id}/default.swf`)
+											) fUtil.addToZip(
+												facialzip, `${component.attr.theme_id}.${
+													component.attr.type
+												}.${
+													component.attr.component_id
+												}.swf`, fs.readFileSync(`./charStore/${
+													component.attr.theme_id
+												}/${
+													component.attr.type
+												}/${component.attr.component_id}/default.swf`)
+											);
+											break;
+										}
+									}
+								}
+								console.log(facialzip);
+								fUtil.addToZip(zip, `char/${data.assetId}/head/head_${
+									facials[a]
+								}.zip`, await facialzip.zip());
+							}
+							console.log(zip);
+							res.end(await zip.zip());
+						//}
+					})
+				} case "/api/getChars": {
 					loadPost(req, res).then(async data => {
 						const json = asset.list(data.userId, 'char', 0, data.cc_theme_id);
 						if (!json) return res.end(JSON.stringify([
@@ -374,34 +442,43 @@ module.exports = function (req, res, url) {
 							const componentswithactions = {};
 							const zip = nodezip.create();
 							const emotion = (getCharEmotionsJson({
-								action: data.facialId.split(".zip")[0]
-							}))[data.facialId.split(".zip")[0].split("head_")[1]]
+								action: data.facialId.split(".zip")[0],
+								theme_id: character.getTheme(buf)
+							}))[data.facialId.split(".zip")[0]]
 							const action = (getCharActionsJson({
-								action: data.actionId.split(".zip")[0]
+								action: data.actionId.split(".zip")[0],
+								bs: character.getCharTypeViaBuff(buf),
+								theme_id: character.getTheme(buf)
 							}))[data.actionId.split(".zip")[0]]
 							fUtil.addToZip(zip, "desc.xml", buf);
 							res.setHeader("Content-Type", "application/zip");
 							for (const i in action) {
 								const component = components.find(d => d.attr.type == i);
-								fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
-									component.attr.component_id
-								}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
-									component.attr.type
-								}/${
-									component.attr.component_id
-								}/${action[component.attr.type]}.swf`));
-								componentswithactions[component.attr.type] = true;
+								if (component) {
+									fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
+										component.attr.component_id
+									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+										component.attr.type
+									}/${
+										component.attr.component_id
+									}/${action[component.attr.type]}.swf`));
+									componentswithactions[component.attr.type] = true;
+								}
 							}
 							for (const i in emotion) {
 								const component = components.find(d => d.attr.type == i);
-								fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
-									component.attr.component_id
-								}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
-									component.attr.type
-								}/${
-									component.attr.component_id
-								}/${emotion[component.attr.type]}.swf`));
-								componentswithactions[component.attr.type] = true;
+								if (component) {
+									fUtil.addToZip(zip, `${component.attr.theme_id}.${
+										component.attr.type
+									}.${
+										component.attr.component_id
+									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+										component.attr.type
+									}/${
+										component.attr.component_id
+									}/${emotion[component.attr.type]}.swf`));
+									componentswithactions[component.attr.type] = true;
+								}
 							}
 							for (const component of components) {
 								switch (component.attr.type) {
@@ -433,7 +510,9 @@ module.exports = function (req, res, url) {
 								const componentswithactions = {};
 								const zip = nodezip.create();
 								const action = (getCharActionsJson({
-									action: data.actionId.split(".zip")[0]
+									action: data.actionId.split(".zip")[0],
+									bs: character.getCharTypeViaBuff(buf),
+									theme_id: character.getTheme(buf)
 								}))[data.actionId.split(".zip")[0]]
 								fUtil.addToZip(zip, "desc.xml", buf);
 								res.setHeader("Content-Type", "application/zip");
@@ -482,6 +561,7 @@ module.exports = function (req, res, url) {
 										case "component": {
 											const inf = info.attr;
 											inf.action = data.actionId.split(".xml")[0];
+											inf.bs = character.getCharTypeViaBuff(buf);
 											const themeid = inf.theme_id;
 											/*const libArray = data.cc_char.library;
 											if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
@@ -511,8 +591,9 @@ module.exports = function (req, res, url) {
 								const componentswithactions = {};
 								const zip = nodezip.create();
 								const emotion = (getCharEmotionsJson({
-									action: data.facialId.split(".zip")[0]
-								}))[data.facialId.split(".zip")[0].split("head_")[1]]
+									action: data.facialId.split(".zip")[0],
+									theme_id: character.getTheme(buf)
+								}))[data.facialId.split(".zip")[0]]
 								fUtil.addToZip(zip, "desc.xml", buf);
 								res.setHeader("Content-Type", "application/zip");
 								for (const i in emotion) {
@@ -570,7 +651,9 @@ module.exports = function (req, res, url) {
 										}
 									}
 								}
-								res.end(`<facial>${componentArray.map(meta2componentXml).join("")}${colorArray.map(meta2colourXml).join("")}</facial>`);
+								res.end(`<facial>${componentArray.map(meta2componentXml).join("")}${
+									colorArray.map(meta2colourXml).join("")
+								}</facial>`);
 							}
 						}
 					} catch (e) {

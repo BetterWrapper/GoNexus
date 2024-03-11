@@ -204,7 +204,6 @@
                 staticserver: "https://wrapperclassic.netlify.app/",
                 isEmbed: 1,
                 ut: "50",
-                studio,
                 appCode: "go",
                 siteId: window.location.host.startsWith("localhost") ? 7 : "go",
                 lid: window.location.host.startsWith("localhost") ? 7 : 13,
@@ -332,6 +331,7 @@
                     const clientThemePath = parseInt(studio) >= 2013 ? `/static/2012/477/<client_theme>?themeColor=${json.ct2012 || "go"}` : `https://wrapperclassic.netlify.app/static/tommy/${
                         $("#customlvmyear").val()
                     }/<client_theme>`;
+                    flashvars.studio = studio;
                     flashvars.userId = userData.uid || userData.id;
                     flashvars.presaveId = d;
                     flashvars.ctc = json.ct2010;

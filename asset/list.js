@@ -18,10 +18,10 @@ function getTid(tId) {
 }
 const motionsxml = '<motion id="run.xml" name="Run" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="walk.xml" name="Walk" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="xarms3.xml" name="Walk - Crossed arms" loop="Y" totalframe="24" enable="Y"/><motion id="talk_phone3.xml" name="Walk - Talk on phone" loop="Y" totalframe="115" enable="Y"/>'
 const motionszip = '<motion id="run.zip" name="Run" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="walk.zip" name="Walk" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="xarms3.zip" name="Walk - Crossed arms" loop="Y" totalframe="24" enable="Y"/><motion id="talk_phone3.zip" name="Walk - Talk on phone" loop="Y" totalframe="115" enable="Y"/>'
-function search4fatials(tId, type, facialId) {
-	for (const folder2 of fs.readdirSync(`./charStore/${tId}/${type}`)) {
-		for (const i of fs.readdirSync(`./charStore/${tId}/${type}/${folder2}`)) {
-			if (fs.existsSync(`./charStore/${tId}/${type}/${folder2}/${facialId}.swf`)) return true;
+function search4fatials(tId, data) {
+	for (const folder2 of fs.readdirSync(`./charStore/${tId}/${data.attr.type}`)) {
+		for (const i of fs.readdirSync(`./charStore/${tId}/${data.attr.type}/${folder2}`)) {
+			return fs.existsSync(`./charStore/${tId}/${data.attr.type}/${folder2}/${data.attr.state_id}.swf`);
 		}
 	}
 }
@@ -48,10 +48,8 @@ async function listAssets(data, makeZip) {
 					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${file.themeId}/cc_theme.xml`));
 					for (const info of data.children.filter(i => i.name == 'facial')) {
 						for (const data of info.children.filter(i => i.name == 'selection')) {
-							if (!fatials[file.id].find(i => i.id == info.attr.id) && search4fatials(tId, data.attr.type, info.attr.id.split("head_")[1])) {
-								const inf = info.attr;
-								inf.id = info.attr.id + ".xml";
-								fatials[file.id].unshift(inf);
+							if (!fatials[file.id].find(i => i.id == info.attr.id) && search4fatials(file.themeId, data)) {
+								fatials[file.id].unshift(info.attr);
 							}
 						}
 					}
@@ -59,7 +57,7 @@ async function listAssets(data, makeZip) {
 						file.themeId
 					}" default="stand${fileExtention}" motion="walk${fileExtention}" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${file.tags || ""}</tags>${
 						actions[await char.getCharType(file.id)]
-					}${fatials[file.id].map(v => `<facial id="${v.id}" name="${v.name}" enable="${v.enable}"/>`).join("")}${data.studio == "20110" ? motionszip : motionsxml}</char>`;
+					}${fatials[file.id].map(v => `<facial id="${v.id + fileExtention}" name="${v.name}" enable="${v.enable}"/>`).join("")}${data.studio == "2010" ? motionszip : motionsxml}</char>`;
 				}
 				xmlString += `</ugc>`;
 			}
