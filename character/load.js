@@ -22,6 +22,14 @@ function getJoseph() {
 		});
 	});
 }
+function getDaniel() {
+	return new Promise((res, rej) => {
+		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004797.xml', r => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+		});
+	});
+}
 function getDavidEscobar() {
 	return new Promise((res, rej) => {
 		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004414.xml', r => {
@@ -30,9 +38,41 @@ function getDavidEscobar() {
 		});
 	});
 }
+function getRage() {
+	return new Promise((res, rej) => {
+		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/6667041.xml', r => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+		});
+	});
+}
 function getBluePeacocks() {
 	return new Promise((res, rej) => {
 		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004418.xml', r => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+		});
+	});
+}
+function getTutGirl() {
+	return new Promise((res, rej) => {
+		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000001.xml', r => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+		});
+	});
+}
+function getOwen() {
+	return new Promise((res, rej) => {
+		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000000.xml', r => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+		});
+	});
+}
+function getJyvee() {
+	return new Promise((res, rej) => {
+		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004416.xml', r => {
 			const buffers = [];
 			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
 		});
@@ -333,8 +373,13 @@ module.exports = function (req, res, url) {
 						const charId = data.charId.split(".")[0];
 						let buf;
 						if (charId == "4048901") buf = await getJoseph();
+						else if (charId == "4715202") buf = await getTutGirl();
 						else if (charId == "192") buf = await getDavidEscobar();
 						else if (charId == "60897073") buf = await getBluePeacocks();
+						else if (charId == "66670973") buf = await getJyvee();
+						else if (charId == "4635901") buf = await getOwen();
+						else if (charId == "0000000") buf = await getRage();
+						else if (charId == "666") buf = await getDaniel();
 						else buf = await character.load(charId);
 						const result = new xmldoc.XmlDocument(buf);
 						if (
@@ -388,11 +433,11 @@ module.exports = function (req, res, url) {
 							for (const component of components) {
 								switch (component.attr.type) {
 									case "bodyshape": {
-										fUtil.addToZip(zip, `${component.attr.theme_id}.bodyshape.${
+										fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
 											component.attr.component_id
 										}.swf`, fs.readFileSync(`./charStore/${
 											component.attr.theme_id
-										}/bodyshape/${
+										}/${component.attr.type}/${
 											component.attr.component_id
 										}/thumbnail.swf`))
 										break;
