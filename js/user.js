@@ -356,6 +356,7 @@ function loggedIn(user) {
     switch (window.location.pathname) {
         case "/create": {
             checkStudioLoadingStatus();
+            reloadCCListForTut();
             break;
         } case "/public_index": {
             addLink2Element("banner_btn", '/create')

@@ -304,7 +304,7 @@
                 $("#error-message-lvmSelector").text(msg);
             }
             function newAnimation(json) {
-                if (studio == '2010' && json.tutorial && !tmcId && hasChars) lvmSelectorError('Please select a character to use in the 2010 LVM tutorial');
+                if (studio == '2010' && json.tutorial && !($('#devs_selector').val() || tmcId) && hasChars) lvmSelectorError('Please select a character to use in the 2010 LVM tutorial');
                 else if (json.lvmmode == "block") jQuery.post('/api/getNewMovieId', d => {
                     if (studio == "2010" && window.location.host.startsWith("localhost") && tId != "retro") {
                         const themeInfo = themes.find(i => i.id == tId);
@@ -336,7 +336,7 @@
                     flashvars.presaveId = d;
                     flashvars.ctc = json.ct2010;
                     flashvars.tm = json.tutorial ? "NEW" : "FIN";
-                    if (json.tutorial && studio == "2010") flashvars.tmcc = tmcId;
+                    if (json.tutorial && studio == "2010") flashvars.tmcc = $('#devs_selector').val() || tmcId;
                     if (studio != '2010') jQuery("#studiodiv").flash({
                         id: "Studio",
                         swf,
@@ -423,16 +423,8 @@
                 const yesorno = confirm(`Before you leave the ${l || studio} LVM, please save any changes that you made to your video.`);
                 if (!yesorno) {
                     switch (l || studio) {
+                        case "2010":
                         case "custom": {
-                            jQuery.post("/api/deleteParamInfo", new URLSearchParams({
-                                apiHost: 'wrapperclassic.netlify.app',
-                                types: 'attrs_params',
-                                protocall: 'https',
-                                method: 'POST',
-                                apiPath: '/.netlify/functions/api'
-                            }).toString());
-                            break;
-                        } case "2010": {
                             jQuery.post("/api/deleteParamInfo", new URLSearchParams({
                                 apiHost: 'wrapperclassic.netlify.app',
                                 types: 'attrs_params',
@@ -452,16 +444,8 @@
             }
             function closeStudio2(l) {
                 switch (l || studio) {
+                    case "2010":
                     case "custom": {
-                        jQuery.post("/api/deleteParamInfo", new URLSearchParams({
-                            apiHost: 'wrapperclassic.netlify.app',
-                            types: 'attrs_params',
-                            protocall: 'https',
-                            method: 'POST',
-                            apiPath: '/.netlify/functions/api'
-                        }).toString());
-                        break;
-                    } case "2010": {
                         jQuery.post("/api/deleteParamInfo", new URLSearchParams({
                             apiHost: 'wrapperclassic.netlify.app',
                             types: 'attrs_params',
@@ -506,12 +490,34 @@
                     $("#lvmmode").hide();
                     if (!window.location.host.startsWith("localhost")) {
                         $("input[name='tutorial']").prop("checked") ? $(".tutorialchar2010").show() : $(".tutorialchar2010").hide()
+                        const devs = [
+                            {
+                                name: "Joseph",
+                                id: "4048901"
+                            },
+                            {
+                                name: "Jyvee",
+                                people: [
+                                    {
+                                        name: "David Escobar",
+                                        id: "192"
+                                    }
+                                ]
+                            },
+                            {
+                                name: "BluePeacocks",
+                                id: "60897073"
+                            }
+                        ]
                         for (const d of chars) {
                             hasChars = true;
                             break;
                         }
-                        $("#tutorial-chars").html(`<p id="grid-item">You have not created any characters yet. but that's okay, we will use Joseph as your character instead.</p>`);
-                        tmcId = "4048901";
+                        if (!hasChars) $("#tutorial-chars").html(`<p id="grid-item">You have not created any characters yet. but that's okay, you can use the GoNexus developers as your character instead.</p><br><label for="devs_selector">GoNexus Developers <select id="devs_selector">${devs.map(oi => {
+                            if (oi.people) return `<optgroup label="${oi.name}">${oi.people.map(v => `<option value="${v.id}">${v.name}</option>`)}</optgroup>`;
+                            else return `<option value="${oi.id}">${oi.name}</option>`
+                        })}</select></label>`);
+                        tmcId = $('#devs_selector').val() || "4048901";
                     } else $(".tutorial").hide();
                 } else {
                     $("#lvmmode").show();
