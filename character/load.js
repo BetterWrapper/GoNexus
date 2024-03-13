@@ -46,7 +46,7 @@ function getRage() {
 		});
 	});
 }
-function getBluePeacocks() {
+function getBluePeacocks() { // Does not work (probably because the 2010 lvm char does not support some face)
 	return new Promise((res, rej) => {
 		https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004418.xml', r => {
 			const buffers = [];
@@ -161,7 +161,7 @@ function getCharActionsJson(v) { // loads char actions from the cc theme xml usi
 		default: {
 			upper_body: v.action,
 			lower_body: v.action,
-			skeleton: v.action
+			skeleton: v.action == "default" ? "stand" : v.action
 		}
 	}
 	const ccTheme = fs.readFileSync(`./charStore/${v.theme_id}/cc_theme.xml`);
@@ -223,29 +223,28 @@ module.exports = function (req, res, url) {
 			switch (url.pathname) {
 				case "/goapi/getCharacter/": {
 					loadPost(req, res).then(async data => {
+						const buf = await character.load(data.assetId);
 						//Check first to see if its a cc theme
-						res.setHeader("Content-type", "application/zip");
 						let isCcThemeChar = false;
-						let charInfo;
-						const files = asset.list(data.userId, "char", 0);
-						for (const file of files) {
-							if (file.id == data.assetId) {
+						const files = asset.list(data.userId, "char", 0, character.getTheme(buf));
+						for (const file in files) {
+							if (files[file].id == data.assetId) {
 								isCcThemeChar = true;
-								charInfo = file;
 								break;
 							}
 						}
 						//This code is so hard for people so hear are commentz
-						/*if (!isCcThemeChar) {
+						/*
+						if (!isCcThemeChar) {
 							const zip = nodezip.create();
 							let num;
 							let xnl = fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm", "theme.xml")).toString();
-							let result = new xmldoc.XmlDocument(xnl);
+							let result = convert.xml2json(xnl, { compact: true, spaces: 4 });
 							const data = JSON.parse(result);
 							let hasmatch = false;
 							for (let i = 0; i < data.theme.char.length; i++) {
 								num = i;
-								if (data.theme.char[i]._attributes.id == data.assetId) {
+								if (data.theme.char[i]._attributes.id == req.body.assetId) {
 									// Was used for logging
 				
 									//console.log("We've found a match here..");
@@ -253,13 +252,13 @@ module.exports = function (req, res, url) {
 									//console.log("And the actions:", data.theme.char[num].action);
 									//Handler for one action chars
 									if (data.theme.char[num].action[0] === undefined) {
-										fUtil.addToZip(zip, `char/${data.assetId}/${data.theme.char[num].action._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", data.assetId, data.theme.char[num].action._attributes.id)));
+										fUtil.addToZip(zip, `char/${req.body.assetId}/${data.theme.char[num].action._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action._attributes.id)));
 									}
 									else {
 										for (let b = 0; b < data.theme.char[num].action.length; b++) {
 											// Check if the action exists before going rogue to add them
-											if (fs.existsSync(path.join(__dirname, "../../server", "/static/store/Comm/char", data.assetId, data.theme.char[num].action[b]._attributes.id))) {
-												fUtil.addToZip(zip, `char/${data.assetId}/${data.theme.char[num].action[b]._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", data.assetId, data.theme.char[num].action[b]._attributes.id)));
+											if (fs.existsSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action[b]._attributes.id))) {
+												fUtil.addToZip(zip, `char/${req.body.assetId}/${data.theme.char[num].action[b]._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action[b]._attributes.id)));
 											}
 										}
 									}
@@ -277,72 +276,186 @@ module.exports = function (req, res, url) {
 						}
 						else {*/
 							const zip = nodezip.create();
-							const buf = await character.load(data.assetId);
+							console.log(buf);
 							const result = new xmldoc.XmlDocument(buf);
-							const themeid = charInfo.themeId;
-							const actions = Object.keys(getJyveeActions(themeid));
-							for (const action of actions) {
-								isAction = true;
+							const themeid = character.getTheme(buf);
+							isAction = true;
+							const components = result.children.filter(i => i.name == "component");
+							res.setHeader("Content-type", "application/zip");
+							const actions = getJyveeActions(themeid);
+							const actionproperties = ["stand","walk"]
+							for (var num = 0; num < actionproperties.length; num++) {
+								const action = actions[actionproperties[num]];
 								const libArray = []
-								const colorArray = [];
-								const componentArray = [];
+								const mappedColors = [];
+								const mappedComponent = [];
+								const componentswithactions = {};
+								const actionzip = nodezip.create();
 								for (const info of result.children) {
 									switch (info.name) {
 										case "component": {
 											const inf = info.attr;
-											inf.action = action;
+											inf.action = actionproperties[num];
 											inf.bs = character.getCharTypeViaBuff(buf);
 											const themeid = inf.theme_id;
 											/*const libArray = data.cc_char.library;
 											if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
-											componentArray.unshift(inf);
+											mappedComponent.unshift(inf);
 											break;
 										} case "color": {
 											const inf = info.attr;
 											inf.text = info.val;
-											colorArray.unshift(inf);
+											mappedColors.unshift(inf);
 											break;
 										}
 									}
-								}							
-								fUtil.addToZip(zip, `char/${data.assetId}/${action}.xml`, `<cc_char ${
+								}
+								fUtil.addToZip(actionzip, `desc.xml`, `<cc_char ${
 									result.attr ? `xscale='${result.attr.xscale}' yscale='${
 										result.attr.yscale
 									}' hxscale='${result.attr.hxscale}' hyscale='${
 										result.attr.hyscale
 									}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
-								}>${componentArray.map(meta2componentXml2).join("")}${
-									colorArray.map(meta2colourXml).join("")
+								}>${mappedComponent.map(meta2componentXml2).join("")}${
+									mappedColors.map(meta2colourXml).join("")
 								}</cc_char>`);
-							}
-							const facials = Object.keys(getJyveeEmotions(themeid));
-							for (const facial of facials) {
-								isAction = false;
-								const libArray = []
-								const colorArray = [];
-								const componentArray = [];
-								for (const info of result.children) {
-									switch (info.name) {
-										case "component": {
-											const inf = info.attr;
-											inf.action = facial
-											componentArray.unshift(inf);
+								for (const i in action) {
+									const component = components.find(d => d.attr.type == i);
+									if (component) {
+										fUtil.addToZip(actionzip, `${component.attr.theme_id}.${
+											component.attr.type
+										}.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+											component.attr.type
+										}/${
+											component.attr.component_id
+										}/${action[component.attr.type]}.swf`));
+										componentswithactions[component.attr.type] = true;
+									}
+								}
+								for (const component of components) {
+									switch (component.attr.type) {
+										case "bodyshape": {
+											fUtil.addToZip(actionzip, `${component.attr.theme_id}.${
+												component.attr.type
+											}.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${
+												component.attr.theme_id
+											}/${component.attr.type}/${
+												component.attr.component_id
+											}/thumbnail.swf`))
 											break;
-										} case "color": {
-											const inf = info.attr;
-											inf.text = info.val;
-											colorArray.unshift(inf);
+										} default: {
+											if (!componentswithactions[component.attr.type]) fUtil.addToZip(
+												actionzip, `${component.attr.theme_id}.${component.attr.type}.${
+													component.attr.component_id
+												}.swf`, fs.readFileSync(`./charStore/${
+													component.attr.theme_id
+												}/${
+													component.attr.type
+												}/${component.attr.component_id}/${
+													component.attr.type == "skeleton" ? "stand" : "default"
+												}.swf`)
+											);
 											break;
 										}
 									}
 								}
-								fUtil.addToZip(zip, `char/${data.assetId}/head/${facial}.xml`, `<facial>${
-									componentArray.map(meta2componentXml).join("")
-								}${colorArray.map(meta2colourXml).join("")}</facial>`);
+								fUtil.addToZip(zip, `char/${data.assetId}/${
+									actionproperties[num]
+								}.zip`, Buffer.from(await actionzip.zip()));
 							}
+				
+				
+							if (themeid == "family") {
+								const facials = getJyveeEmotions(themeid);
+								// i don't know why but there seems to be a limit how many actions and emotions can be loaded on the 2010 lvm.
+								const testfacials = ["head_neutral","head_shocked","head_angry","head_sad"]
+								for (a = 0; a < testfacials.length; a++) {
+									isAction = false;
+									const libArray = []
+									const mappedColors = [];
+									const mappedComponent = [];
+									const componentswithactions = {};
+									const facialzip = nodezip.create();
+									for (const info of result.children) {
+										switch (info.name) {
+											case "component": {
+												const inf = info.attr;
+												inf.action = testfacials[a];
+												inf.bs = character.getCharTypeViaBuff(buf);
+												const themeid = inf.theme_id;
+												/*const libArray = data.cc_char.library;
+												if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
+												mappedComponent.unshift(inf);
+												break;
+											} case "color": {
+												const inf = info.attr;
+												inf.text = info.val;
+												mappedColors.unshift(inf);
+												break;
+											}
+										}
+									}
+									fUtil.addToZip(facialzip, `desc.xml`, `<facial>${
+										mappedComponent.map(meta2componentXml).join("")
+									}${mappedColors.map(meta2colourXml).join("")}</facial>`);
+									for (const i in facials[testfacials[a]]) {
+										const component = components.find(d => d.attr.type == i);
+										if (component) {
+											fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
+												component.attr.type
+											}.${
+												component.attr.component_id
+											}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+												component.attr.type
+											}/${
+												component.attr.component_id
+											}/${facials[testfacials[a]][component.attr.type]}.swf`));
+											componentswithactions[component.attr.type] = true;
+										}
+									}
+									for (const component of components) {
+										switch (component.attr.type) {
+											case "bodyshape": {
+												fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
+													component.attr.type
+												}.${
+													component.attr.component_id
+												}.swf`, fs.readFileSync(`./charStore/${
+													component.attr.theme_id
+												}/${component.attr.type}/${
+													component.attr.component_id
+												}/thumbnail.swf`))
+												break;
+											} default: {
+												if (!componentswithactions[component.attr.type]) fUtil.addToZip(
+													facialzip, `${component.attr.theme_id}.${component.attr.type}.${
+														component.attr.component_id
+													}.swf`, fs.readFileSync(`./charStore/${
+														component.attr.theme_id
+													}/${
+														component.attr.type
+													}/${component.attr.component_id}/${
+														component.attr.type == "skeleton" ? "stand" : "default"
+													}.swf`)
+												);
+												break;
+											}
+										}
+									}
+									fUtil.addToZip(zip, `char/${data.assetId}/head/${
+										testfacials[a]
+									}.zip`, Buffer.from(await facialzip.zip()));
+								}
+							}
+							console.log(zip);
 							res.end(await zip.zip());
 						//}
 					})
+					break;
 				} case "/api/getChars": {
 					loadPost(req, res).then(async data => {
 						const json = asset.list(data.userId, 'char', 0, data.cc_theme_id);
