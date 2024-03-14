@@ -16,10 +16,11 @@ module.exports = (req, res, url) => {
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
         } else if (url.pathname.includes("/store/")) {
-            https.get(`https://goanimate-wrapper.github.io/GoAnimate-Assets/store/3a981f5cb2739137${url.pathname.split("/static/store")[1]}`, (r) => {
+            if (!url.pathname.includes("/cc_store/")) https.get(`https://goanimate-wrapper.github.io/GoAnimate-Assets/store/3a981f5cb2739137${url.pathname.split("/static/store")[1]}`, (r) => {
                 const buffers = [];
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
+            else res.end(fs.readFileSync(`./charStore${url.pathname.split("/static/store/cc_store")[1]}`));
         } else res.end(fs.readFileSync(`.${url.pathname}`));
     } else if (!url.pathname.includes("/2012/")) {
         if (url.pathname.includes("/animation/")) {
@@ -38,10 +39,7 @@ module.exports = (req, res, url) => {
                 const buffers = [];
                 r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
             }).on("error", console.error);
-            else https.get(`https://file.garden/ZP0Nfnn29AiCnZv5/cc_store${url.pathname.split("/static/2011/store/cc_store")[1]}`, (r) => {
-                const buffers = [];
-                r.on("data", (b) => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers))).on("error", console.error);
-            }).on("error", console.error);
+            else res.end(fs.readFileSync(`./charStore${url.pathname.split("/static/2011/store/cc_store")[1]}`));
         } else res.end(fs.readFileSync(`.${url.pathname}`));
     } else {
         if (url.pathname.includes("/animation/")) {

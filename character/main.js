@@ -65,8 +65,8 @@ function getHeadPath(id) {
 
 module.exports = {
 	/**
-	 * @param {string} id
-	 * @returns {Promise<string>}
+	 * @param {Buffer} buffer
+	 * @returns {Buffer}
 	 */
 	getTheme(buffer) {
 		const beg = buffer.indexOf(`theme_id="`) + 10;
@@ -74,10 +74,7 @@ module.exports = {
 		return buffer.subarray(beg, end).toString();
 	},
 	async getCharType(id) {
-		const buffer = await this.load(id);
-		const beg = buffer.indexOf(`component_id="`) + 14;
-		const end = buffer.indexOf(`"`, beg);
-		return buffer.subarray(beg, end).toString();
+		return this.getCharTypeViaBuff(await this.load(id))
 	},
 	getCharTypeViaBuff(buff) {
 		const beg = buff.indexOf(`component_id="`) + 14;

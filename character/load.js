@@ -101,7 +101,6 @@ function getJyveeEmotions(tId) { // Jyvee we are finally loading your emotions i
 	fs.readdirSync(`./charStore/${tId}/emotions`).filter(i => i.startsWith("head_")).forEach(feeling => {
 		emotions[feeling.split(".")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${feeling}`));
 	});
-	console.log(emotions);
 	return emotions;
 }
 function getJyveeActions(tId) { // Jyvee we are finally loading your actions into Nexus :)
@@ -109,7 +108,6 @@ function getJyveeActions(tId) { // Jyvee we are finally loading your actions int
 	fs.readdirSync(`./charStore/${tId}/emotions`).filter(i => !i.startsWith("head_")).forEach(act => {
 		actions[act.split(".")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${act}`));
 	});
-	console.log(actions);
 	return actions;
 }
 function meta2componentXml(v) {
@@ -483,7 +481,7 @@ module.exports = function (req, res, url) {
 					loadPost(req, res).then(async data => { try {
 						const componentArray = [];
 						const colorArray = [];
-						const charId = data.charId.split(".")[0];
+						const charId = data.charId.includes(".") ? data.charId.split(".")[0] : data.charId;
 						let buf;
 						if (charId == "4048901") buf = await getJoseph();
 						else if (charId == "4715202") buf = await getTutGirl();

@@ -578,9 +578,128 @@ module.exports = {
 		fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 		return buffer;
 	},
+	getStuffForOldStockChar(charId) {
+		return new Promise(async (res, rej) => {
+			function getJoseph() {
+				return new Promise((res, rej) => {
+					https.get('https://wrapperclassic.netlify.app/chars/4048901.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getDaniel() {
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004797.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getDavidEscobar() {
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004414.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getRage() {
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/6667041.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getBluePeacocks() { // Does not work (probably because the 2010 lvm char does not support some face)
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004418.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getTutGirl() {
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000001.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getOwen() {
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000000.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			function getJyvee() {
+				return new Promise((res, rej) => {
+					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004416.xml', r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+					});
+				});
+			}
+			let buf;
+			if (charId == "4048901") buf = await getJoseph();
+			else if (charId == "4715202") buf = await getTutGirl();
+			else if (charId == "192") buf = await getDavidEscobar();
+			else if (charId == "60897073") buf = await getBluePeacocks();
+			else if (charId == "66670973") buf = await getJyvee();
+			else if (charId == "4635901") buf = await getOwen();
+			else if (charId == "0000000") buf = await getRage();
+			else if (charId == "666") buf = await getDaniel();
+			const charJSON = {
+				xmls: '',
+				defaults: ''
+			};
+			let groupEmotionXml = '<category name="emotion">';
+			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${char.getTheme(buf)}/cc_theme.xml`));
+			function getActions(isCat = false) {
+				for (const info of xml.children.filter(i => i.name == "bodyshape")) {
+					if (info.attr.id == char.getCharTypeViaBuff(buf)) {
+						charJSON.defaults = `default="${info.attr.action_thumb}.xml" motion="${info.attr.default_motion}"`;
+						for (const data of info.children.filter(i => i.name == "action")) {
+							for (const info of data.children.filter(i => i.name == "selection")) {
+								if (
+									isCat
+									&& info.attr.type == "facial"
+									&& info.attr.facial_id != "head_neutral"
+								) groupEmotionXml +=  `<${
+									data.attr.is_motion == "Y" ? 'motion' : 'action'
+								} id="${data.attr.id}.xml" name="${data.attr.name}" loop="${data.attr.loop}" totalframe="${
+									data.attr.totalframe
+								}" enable="${data.attr.enable}" is_motion="${data.attr.is_motion}"/>`
+								else charJSON.xmls += `<${
+									data.attr.is_motion == "Y" ? 'motion' : 'action'
+								} id="${data.attr.id}.xml" name="${data.attr.name}" loop="${data.attr.loop}" totalframe="${
+									data.attr.totalframe
+								}" enable="${data.attr.enable}" is_motion="${data.attr.is_motion}"/>`
+							}
+						}
+					}
+				}
+			}
+			getActions(true);
+			charJSON.xmls += groupEmotionXml + '</category>';
+			getActions();
+			for (const info of xml.children.filter(i => i.name == "facial")) {
+				for (const data of info.children.filter(i => i.name == "selection")) {
+					if (data.attr.type != "facial" && !data.attr.facial_id) charJSON.xmls += `<facial id="${data.attr.id}.xml" name="${
+						data.attr.name
+					}" enable="${data.attr.enable}"/>`
+				}
+			}
+			res(charJSON);
+		});
+	},
 	/**
 	 * @summary Checks to see if any audio exists in the xml as the current exporter does not have audio yet
-	 * @param {Buffer} xml
+	 * @param {Buffer} xmlBuffer
 	 * @returns {Boolean}
 	 */
 	check4XmlAudio(xmlBuffer) {

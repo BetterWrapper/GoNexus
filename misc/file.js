@@ -122,6 +122,17 @@ module.exports = {
 	},
 	/**
 	 *
+	 * @param {Buffer} buf
+	 * @param {string} zipName
+	 */
+	makeZipFromBuffer(buf, zipName) {
+		if (buf.length <= 0) return Promise.reject();
+		const zip = nodezip.create();
+		this.addToZip(zip, zipName, buf);
+		return zip.zip();
+	},
+	/**
+	 *
 	 * @summary Fixed version of ZipFile.add
 	 * @param {nodezip.ZipFile} zip
 	 * @param {string} zipName

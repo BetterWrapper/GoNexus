@@ -16,9 +16,7 @@ function getTid(tId) {
 		default: return tId;
 	}
 }
-const motionsxml = '<motion id="run.xml" name="Run" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="walk.xml" name="Walk" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="xarms3.xml" name="Walk - Crossed arms" loop="Y" totalframe="24" enable="Y"/><motion id="talk_phone3.xml" name="Walk - Talk on phone" loop="Y" totalframe="115" enable="Y"/>'
-const motionszip = '<motion id="run.zip" name="Run" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="walk.zip" name="Walk" loop="Y" totalframe="24" is_motion="Y" enable="Y"/><motion id="xarms3.zip" name="Walk - Crossed arms" loop="Y" totalframe="24" enable="Y"/><motion id="talk_phone3.zip" name="Walk - Talk on phone" loop="Y" totalframe="115" enable="Y"/>'
-function search4fatials(tId, data) {
+function searchStuff(tId, data) {
 	for (const folder2 of fs.readdirSync(`./charStore/${tId}/${data.attr.type}`)) {
 		for (const i of fs.readdirSync(`./charStore/${tId}/${data.attr.type}/${folder2}`)) {
 			return fs.existsSync(`./charStore/${tId}/${data.attr.type}/${folder2}/${data.attr.state_id}.swf`);
@@ -31,35 +29,60 @@ async function listAssets(data, makeZip) {
 		case "char": {
 			const tId = data.cc_theme_id || getTid(data.themeId);
 			const fatials = {};
-			const fileExtention = data.studio == "2010" ? ".zip" : ".xml";
-			const actions = {
-				adam: `<action id="stand${fileExtention}" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="sit${fileExtention}" name="Sit" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="kneel${fileExtention}" name="Kneel down" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="kneelphone${fileExtention}" name="Kneel down - Talk on phone" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="excited${fileExtention}" name="Excited / Cheers" loop="Y" totalframe="80" enable="Y" category="emotion" is_motion="N"/><action id="furious${fileExtention}" name="Furious" loop="Y" totalframe="80" enable="Y" category="emotion" is_motion="N"/><action id="xarms2${fileExtention}" name="Sit - Crossed arms" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="xarmspoint${fileExtention}" name="Sit - Point at" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="kneelcross${fileExtention}" name="Kneel down - Crossed arms" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="dislike${fileExtention}" name="Dislike" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="taunt${fileExtention}" name="Taunt" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="makefunof${fileExtention}" name="Make fun of" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="grab${fileExtention}" name="Grab" loop="Y" totalframe="60" enable="Y" is_motion="N"/><action id="chuckle${fileExtention}" name="Chuckle" loop="Y" totalframe="6" enable="Y" category="emotion" is_motion="N"/><action id="sitchuckle${fileExtention}" name="Sit - Chuckle" loop="Y" totalframe="6" enable="Y" category="emotion" is_motion="N"/><action id="pt_at${fileExtention}" name="Point at" loop="Y" totalframe="30" enable="Y" is_motion="N"/><action id="laugh${fileExtention}" name="Laugh" loop="Y" totalframe="6" enable="Y" category="emotion" is_motion="N"/><action id="sad${fileExtention}" name="Sad" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="talk_phone${fileExtention}" name="Talk on phone" loop="Y" totalframe="115" enable="Y" is_motion="N"/><action id="talk_phone2${fileExtention}" name="Sit - Talk on phone" loop="Y" totalframe="115" enable="Y" is_motion="N"/><action id="punch${fileExtention}" name="Punch" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="dance${fileExtention}" name="Dance" loop="Y" totalframe="23" enable="Y" is_motion="N"/><action id="fearful${fileExtention}" name="Fearful" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="talk${fileExtention}" name="Talk" loop="Y" totalframe="100" enable="Y" is_motion="N"/><action id="drive${fileExtention}" name="Drive" loop="Y" totalframe="1" enable="Y" category="traveling" is_motion="N"/>`,
-				bob: '',
-				eve: `<action id="stand${fileExtention}" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="movearms${fileExtention}" name="Move arms" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="sit${fileExtention}" name="Sit 1" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="lie${fileExtention}" name="Lie down" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="kneel${fileExtention}" name="Kneel down" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="xarms${fileExtention}" name="Crossed arms" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="useitem${fileExtention}" name="Use item" loop="Y" totalframe="1" enable="Y" category="fighting" is_motion="N"/><action id="excited${
-					fileExtention
-				}" name="Excited / Cheers" loop="Y" totalframe="80" enable="Y" category="emotion" is_motion="N"/><action id="furious${fileExtention}" name="Furious" loop="Y" totalframe="80" enable="Y" category="emotion" is_motion="N"/><action id="xarmspoint${fileExtention}" name="Sit - Point at" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="kneelcross${fileExtention}" name="Kneel down - Crossed arms" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="makefunof${fileExtention}" name="Make fun of" loop="Y" totalframe="60" enable="Y" category="fighting" is_motion="N"/><action id="bendover${fileExtention}" name="Bend over" loop="Y" totalframe="60" enable="Y" is_motion="N"/><action id="doublepunch${fileExtention}" name="Double punch" loop="Y" totalframe="80" enable="Y" category="fighting" is_motion="N"/><action id="creep${fileExtention}" name="Creep" loop="Y" totalframe="80" enable="Y" category="traveling" is_motion="N"/><action id="grab${fileExtention}" name="Grab" loop="Y" totalframe="6" enable="Y" is_motion="N"/><action id="xarms2${fileExtention}" name="Sit - Crossed arms" loop="Y" totalframe="1" enable="Y" is_motion="N"/><action id="taunt${fileExtention}" name="Taunt" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="chuckle${fileExtention}" name="Chuckle" loop="Y" totalframe="6" enable="Y" category="emotion" is_motion="N"/><action id="pt_at${fileExtention}" name="Point at" loop="Y" totalframe="30" enable="Y" is_motion="N"/><action id="laugh${fileExtention}" name="Laugh" loop="Y" totalframe="6" enable="Y" category="emotion" is_motion="N"/><action id="sad${fileExtention}" name="Sad" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="blowkiss${fileExtention}" name="Blow kiss" loop="Y" totalframe="60" enable="Y" is_motion="N"/><action id="talk_phone${fileExtention}" name="Talk on phone" loop="Y" totalframe="115" enable="Y" is_motion="N"/><action id="talk_phone2${fileExtention}" name="Sit - Talk on phone" loop="Y" totalframe="115" enable="Y" is_motion="N"/><action id="dance${fileExtention}" name="Dance" loop="Y" totalframe="23" enable="Y" is_motion="N"/><action id="fearful${fileExtention}" name="Fearful" loop="Y" totalframe="60" enable="Y" category="emotion" is_motion="N"/><action id="talk${fileExtention}" name="Talk" loop="Y" totalframe="100" enable="Y" is_motion="N"/>`,
-				rocky: ''
-			};
+			const actions = {};
+			const defaultActions = {};
 			files = asset.list(data.userId, "char", 0, tId);
-			if (parseInt(data.studio) <= 2012) {
+			if (parseInt(data.studio) <= 2012 && parseInt(data.studio) > 2010) {
 				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
+					actions[file.id] = actions[file.id] || [];
+					defaultActions[file.id] = defaultActions[file.id] || {};
 					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${file.themeId}/cc_theme.xml`));
 					for (const info of data.children.filter(i => i.name == 'facial')) {
 						for (const data of info.children.filter(i => i.name == 'selection')) {
-							if (!fatials[file.id].find(i => i.id == info.attr.id) && search4fatials(file.themeId, data)) {
-								fatials[file.id].unshift(info.attr);
+							if (
+								!fatials[file.id].find(i => i.id == info.attr.id) 
+								&& searchStuff(file.themeId, data)
+							) fatials[file.id].unshift(info.attr);
+						}
+					}
+					for (const i of data.children.filter(i => i.name == 'bodyshape')) {
+						if (i.attr.id == await char.getCharType(file.id)) {
+							defaultActions[file.id].default = i.attr.default_action;
+							defaultActions[file.id].motion = i.attr.default_motion;
+							for (const info of i.children.filter(i => i.name == 'action')) {
+								if (info.attr.id == "stand") continue;
+								for (const data of info.children.filter(i => i.name == 'selection')) {
+									if (
+										!actions[file.id].find(i => i.id == info.attr.id) 
+										&& data.attr.type != "facial"
+										&& searchStuff(file.themeId, data) 
+									) actions[file.id].unshift(info.attr);
+								}
 							}
 						}
 					}
-					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${file.title || ""}" cc_theme_id="${
-						file.themeId
-					}" default="stand${fileExtention}" motion="walk${fileExtention}" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${file.tags || ""}</tags>${
-						actions[await char.getCharType(file.id)]
-					}${fatials[file.id].map(v => `<facial id="${v.id + fileExtention}" name="${v.name}" enable="${v.enable}"/>`).join("")}${data.studio == "2010" ? motionszip : motionsxml}</char>`;
+					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
+						file.title || ""
+					}" cc_theme_id="${file.themeId}" default="${
+						defaultActions[file.id].default
+					}.xml" motion="${
+						defaultActions[file.id].motion
+					}.xml" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
+						file.tags || ""
+					}</tags>${fatials[file.id].map(v => `<facial id="${v.id}.xml" name="${v.name}" enable="${
+						v.enable
+					}"/>`).join("")}<action id="stand.xml" name="Stand " loop="Y" totalframe="1" enable="Y" is_motion="N"/>${
+						actions[file.id].map(v => `<${
+							v.is_motion == "Y" ? "motion" : "action"
+						} id="${v.id}.xml" name="${v.name}" loop="${v.loop}" totalframe="${v.totalframe}" enable="${v.enable}" is_motion="${
+							v.is_motion
+						}"/>`).join("")
+					}</char>`;
 				}
 				xmlString += `</ugc>`;
+				console.log(xmlString);
 			}
 			break;
 		} default: {
