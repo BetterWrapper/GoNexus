@@ -32,27 +32,42 @@ async function listAssets(data, makeZip) {
 			const actions = {};
 			const defaultActions = {};
 			files = asset.list(data.userId, "char", 0, tId);
-			if (parseInt(data.studio) <= 2012 && parseInt(data.studio) > 2010) {
+			if (parseInt(data.studio) >= 2010 && parseInt(data.studio) < 2012) {
+				const isZip = data.studio == "2010" ? ".zip" : ".xml"
 				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
 					actions[file.id] = actions[file.id] || [];
 					defaultActions[file.id] = defaultActions[file.id] || {};
-					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${file.themeId}/cc_theme.xml`));
-					for (const info of data.children.filter(i => i.name == 'facial')) {
-						for (const data of info.children.filter(i => i.name == 'selection')) {
-							if (
-								!fatials[file.id].find(i => i.id == info.attr.id) 
-								&& searchStuff(file.themeId, data)
-							) fatials[file.id].unshift(info.attr);
+					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
+						file.themeId
+					}/cc_theme.xml`));
+					function get(stuff, param, com, com2) {
+						if (!com2) for (const info of data.children.filter(i => i.name == com)) {
+							for (const data of info.children.filter(i => i.name == "selection")) {
+								if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+							}
+						}
+						else for (const i of data.children.filter(i => i.name == com2)) {
+							for (const info of i.children.filter(i => i.name == com)) {
+								for (const data of info.children.filter(i => i.name == "selection")) {
+									if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+								}
+							}
 						}
 					}
-					for (const i of data.children.filter(i => i.name == 'bodyshape')) {
+					fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+						if (i.startsWith("head_")) fatials[file.id].unshift({
+							id: i.split(".json")[0],
+							name: i.split("head_")[1].split(".json")[0],
+							enable: get(i.split(".json")[0], "enable", "facial") || "Y"
+						})
+					});
+					if (isZip == ".xml") for (const i of data.children.filter(i => i.name == 'bodyshape')) {
 						if (i.attr.id == await char.getCharType(file.id)) {
 							defaultActions[file.id].default = i.attr.default_action;
 							defaultActions[file.id].motion = i.attr.default_motion;
 							for (const info of i.children.filter(i => i.name == 'action')) {
-								if (info.attr.id == "stand") continue;
 								for (const data of info.children.filter(i => i.name == 'selection')) {
 									if (
 										!actions[file.id].find(i => i.id == info.attr.id) 
@@ -63,26 +78,81 @@ async function listAssets(data, makeZip) {
 							}
 						}
 					}
+					else fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+						defaultActions[file.id].default = "stand"
+						defaultActions[file.id].motion = "walk"
+						if (!i.startsWith("head_")) actions[file.id].unshift({
+							id: i.split(".json")[0],
+							name: i.split(".json")[0],
+							loop: get(i.split(".json")[0], "loop", "action", "bodyshape") || "Y",
+							totalframe: get(i.split(".json")[0], "totalframe", "action", "bodyshape") || "1",
+							enable: get(i.split(".json")[0], "enable", "action", "bodyshape") || "Y",
+							is_motion: get(i.split(".json")[0], "is_motion", "action", "bodyshape") || "N"
+						})
+					});
 					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
 						file.title || ""
 					}" cc_theme_id="${file.themeId}" default="${
-						defaultActions[file.id].default
-					}.xml" motion="${
-						defaultActions[file.id].motion
-					}.xml" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
+						defaultActions[file.id].default + isZip
+					}" motion="${
+						defaultActions[file.id].motion + isZip
+					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
 						file.tags || ""
-					}</tags>${fatials[file.id].map(v => `<facial id="${v.id}.xml" name="${v.name}" enable="${
+					}</tags>${fatials[file.id].map(v => `<facial id="${v.id + isZip}" name="${v.name}" enable="${
 						v.enable
-					}"/>`).join("")}<action id="stand.xml" name="Stand " loop="Y" totalframe="1" enable="Y" is_motion="N"/>${
+					}"/>`).join("")}${
 						actions[file.id].map(v => `<${
 							v.is_motion == "Y" ? "motion" : "action"
-						} id="${v.id}.xml" name="${v.name}" loop="${v.loop}" totalframe="${v.totalframe}" enable="${v.enable}" is_motion="${
+						} id="${v.id + isZip}" name="${v.name}" loop="${v.loop}" totalframe="${
+							v.totalframe
+						}" enable="${v.enable}" is_motion="${
 							v.is_motion
 						}"/>`).join("")
 					}</char>`;
 				}
 				xmlString += `</ugc>`;
-				console.log(xmlString);
+				console.log(actions, fatials, defaultActions)
+			}
+			else if (data.studio == "2012") {
+				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
+				for (const file of files) {
+					fatials[file.id] = fatials[file.id] || [];
+					function get(stuff, param, com, com2) {
+						const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
+							file.themeId
+						}/cc_theme.xml`));
+						if (!com2) for (const info of data.children.filter(i => i.name == com)) {
+							for (const data of info.children.filter(i => i.name == "selection")) {
+								if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+							}
+						}
+						else for (const i of data.children.filter(i => i.name == com2)) {
+							for (const info of i.children.filter(i => i.name == com)) {
+								for (const data of info.children.filter(i => i.name == "selection")) {
+									if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+								}
+							}
+						}
+					}
+					fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+						if (i.startsWith("head_")) fatials[file.id].unshift({
+							id: i.split(".json")[0],
+							name: i.split("head_")[1].split(".json")[0],
+							enable: get(i.split(".json")[0], "enable", "facial")
+						})
+						
+					});
+					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
+						file.title || ""
+					}" cc_theme_id="${file.themeId}" default="stand${
+						fileExtenstion
+					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
+						file.tags || ""
+					}</tags>${fatials[file.id].map(v => `<facial id="${v.id}.xml" name="${v.name}" enable="${
+						v.enable
+					}"/>`).join("")}<action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/></char>`;
+				}
+				xmlString += `</ugc>`;
 			}
 			break;
 		} default: {

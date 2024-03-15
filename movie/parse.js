@@ -578,8 +578,9 @@ module.exports = {
 		fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 		return buffer;
 	},
-	getStuffForOldStockChar(charId) {
+	getStuffForOldStockChar(charId, data) {
 		return new Promise(async (res, rej) => {
+			const ziporxml = data.studio == "2010" ? ".zip" : ".xml"
 			function getJoseph() {
 				return new Promise((res, rej) => {
 					https.get('https://wrapperclassic.netlify.app/chars/4048901.xml', r => {
@@ -659,41 +660,34 @@ module.exports = {
 			};
 			let groupEmotionXml = '<category name="emotion">';
 			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${char.getTheme(buf)}/cc_theme.xml`));
-			function getActions(isCat = false) {
-				for (const info of xml.children.filter(i => i.name == "bodyshape")) {
-					if (info.attr.id == char.getCharTypeViaBuff(buf)) {
-						charJSON.defaults = `default="${info.attr.action_thumb}.xml" motion="${info.attr.default_motion}"`;
-						for (const data of info.children.filter(i => i.name == "action")) {
-							for (const info of data.children.filter(i => i.name == "selection")) {
-								if (
-									isCat
-									&& info.attr.type == "facial"
-									&& info.attr.facial_id != "head_neutral"
-								) groupEmotionXml +=  `<${
-									data.attr.is_motion == "Y" ? 'motion' : 'action'
-								} id="${data.attr.id}.xml" name="${data.attr.name}" loop="${data.attr.loop}" totalframe="${
-									data.attr.totalframe
-								}" enable="${data.attr.enable}" is_motion="${data.attr.is_motion}"/>`
-								else charJSON.xmls += `<${
-									data.attr.is_motion == "Y" ? 'motion' : 'action'
-								} id="${data.attr.id}.xml" name="${data.attr.name}" loop="${data.attr.loop}" totalframe="${
-									data.attr.totalframe
-								}" enable="${data.attr.enable}" is_motion="${data.attr.is_motion}"/>`
-							}
-						}
+			for (const info of xml.children.filter(i => i.name == "bodyshape")) {
+				if (info.attr.id == char.getCharTypeViaBuff(buf)) {
+					charJSON.defaults = `default="${info.attr.action_thumb + ziporxml}" motion="${
+						info.attr.default_motion + ziporxml
+					}"`;
+					for (const data of info.children.filter(i => i.name == "action")) {
+						if (data.attr.category && data.attr.category == "emotion") groupEmotionXml +=  `<${
+							data.attr.is_motion == "Y" ? 'motion' : 'action'
+						} id="${data.attr.id + ziporxml}" name="${data.attr.name}" loop="${
+							data.attr.loop
+						}" totalframe="${
+							data.attr.totalframe
+						}" enable="${data.attr.enable}" is_motion="${data.attr.is_motion}"/>`
+						else charJSON.xmls += `<${
+							data.attr.is_motion == "Y" ? 'motion' : 'action'
+						} id="${data.attr.id + ziporxml}" name="${data.attr.name}" loop="${
+							data.attr.loop
+						}" totalframe="${
+							data.attr.totalframe
+						}" enable="${data.attr.enable}" is_motion="${data.attr.is_motion}"/>`
 					}
 				}
 			}
-			getActions(true);
 			charJSON.xmls += groupEmotionXml + '</category>';
-			getActions();
 			for (const info of xml.children.filter(i => i.name == "facial")) {
-				for (const data of info.children.filter(i => i.name == "selection")) {
-					if (data.attr.type != "facial" && !data.attr.facial_id) charJSON.xmls += `<facial id="${data.attr.id}.xml" name="${
-						data.attr.name
-					}" enable="${data.attr.enable}"/>`
-				}
+				charJSON.xmls += `<facial id="${info.attr.id + ziporxml}" name="${info.attr.name}" enable="${info.attr.enable}"/>`
 			}
+			charJSON.xmls = charJSON.xmls.toString("utf-8");
 			res(charJSON);
 		});
 	},

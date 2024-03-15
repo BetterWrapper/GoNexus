@@ -29,7 +29,7 @@ module.exports = function (req, res, url) {
 					var xml2zip = (fs.readFileSync(`./_THEMES/${theme}old.xml`)).toString().split("</theme>")[0];
 					for (const stockChar of stockChars) {
 						for (const v of stockChar.people) {
-							const charJSON = await parse.getStuffForOldStockChar(v.id);
+							const charJSON = await parse.getStuffForOldStockChar(v.id, data);
 							function getJoseph() {
 								return new Promise((res, rej) => {
 									https.get('https://wrapperclassic.netlify.app/chars/4048901.xml', r => {
@@ -103,7 +103,6 @@ module.exports = function (req, res, url) {
 							else if (v.id == "4635901") buf = await getOwen();
 							else if (v.id == "0000000") buf = await getRage();
 							else if (v.id == "666") buf = await getDaniel();
-							console.log(charJSON);
 							xml2zip += `<char id="${v.id}" enc_asset_id="${v.id}" thumb="${
 								v.id
 							}.zip" is_premium="N" sharing="0" money="0" name="${
@@ -117,6 +116,7 @@ module.exports = function (req, res, url) {
 							}</tags>${charJSON.xmls}</char>`
 						}
 					}
+					fs.writeFileSync('./jyvee.xml', (xml2zip + '</theme>').toString("utf-8"))
 					return xml2zip + '</theme>';
 				}
 				res.setHeader("Content-Type", "application/zip");

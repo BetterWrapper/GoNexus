@@ -78,7 +78,22 @@ function getJyvee() {
 		});
 	});
 }
-function getCharEmotionsJson(v) { // loads char emotions from the cc theme xml.
+function meta2componentXml3(v) {
+	let xml;
+	let ty = v.attr.type;
+
+	if (ty == "eye" || ty == "eyebrow" || ty == "mouth") {
+		let animetype = v.attr.theme_id == "anime" ? "side_" + trim2[ty] : v.attr.theme_id == "business" ? "front_" + trim2[ty] : trim2[ty];
+		xml = `<component type="${v.attr.type}" ${isAction ? `component_id="${v.attr.component_id}"` : ``} theme_id="${v.attr.theme_id}" file="${animetype}.swf" path="${v.attr.component_id}" x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" ${v.attr.split ? `split="N"` : ``}/>`;
+	}
+	else {
+		if (v.attr.id) xml = `<component id="${v.attr.id}" ${isAction ? `file="default.swf"` : ``} type="${v.attr.type}" theme_id="${v.attr.theme_id}" ${isAction ? `component_id="${v.attr.component_id}"` : ``} path="${v.attr.component_id}" x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" />`;
+		else if (v.attr.type != "skeleton" && v.attr.type != "bodyshape" && v.attr.type != "freeaction") xml = `<component type="${v.attr.type}" theme_id="${v.attr.theme_id}" ${isCC || isAction && v.attr.theme_id != "business" ? `file="default.swf"` : v.attr.theme_id == "business" ? `file="front_default.swf"` : ``} ${isAction ? `component_id="${v.attr.component_id}"` : ``} path="${v.attr.component_id}" x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" />`;
+		else xml = `<component type="${v.attr.type}" theme_id="${v.attr.theme_id}" ${v.attr.type == "skeleton" ? `file="stand.swf"` : v.attr.type == "freeaction" && v.attr.theme_id == "cc2" ? `file="stand.swf"` : v.attr.type == "freeaction" && v.attr.theme_id == "business" ? `file="stand01.swf"` : `file="thumbnail.swf"`} path="${v.attr.component_id}" ${isAction ? `component_id="${v.attr.component_id}"` : ``} x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" />`;
+	}
+	return xml;
+}
+function getCharEmotionsJson(v) { // loads char emotions from the cc theme xml (not all emotions work).
 	const emotions = {
 		default: {
 			eye: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action,
@@ -99,26 +114,26 @@ function getCharEmotionsJson(v) { // loads char emotions from the cc theme xml.
 function getJyveeEmotions(tId) { // Jyvee we are finally loading your emotions into Nexus :)
 	const emotions = {};
 	fs.readdirSync(`./charStore/${tId}/emotions`).filter(i => i.startsWith("head_")).forEach(feeling => {
-		emotions[feeling.split(".")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${feeling}`));
+		emotions[feeling.split(".json")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${
+			feeling
+		}`));
 	});
 	return emotions;
 }
 function getJyveeActions(tId) { // Jyvee we are finally loading your actions into Nexus :)
 	const actions = {};
 	fs.readdirSync(`./charStore/${tId}/emotions`).filter(i => !i.startsWith("head_")).forEach(act => {
-		actions[act.split(".")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${act}`));
+		actions[act.split(".json")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${act}`));
 	});
 	return actions;
 }
 function meta2componentXml(v) {
-	const stuff = getCharEmotionsJson(v);
+	const stuff = getJyveeEmotions(v.theme_id);
 	let xml;
 	let ty = v.type;
-	const action2 = stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action] && stuff[
-		v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action
-	][v.type] ? stuff[v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action][
+	const action2 = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][
 		v.type
-	] : stuff.default[v.type] ? stuff.default[v.type] : "default";
+	] : stuff.head_neutral[v.type];
 	const action = fs.existsSync(`./charStore/${v.theme_id}/${v.type}/${v.component_id}/${
 		action2
 	}.swf`) ? action2 : "default";
@@ -242,21 +257,21 @@ module.exports = function (req, res, url) {
 							let hasmatch = false;
 							for (let i = 0; i < data.theme.char.length; i++) {
 								num = i;
-								if (data.theme.char[i]._attributes.id == req.body.assetId) {
+								if (data.theme.char[i].attr.id == req.body.assetId) {
 									// Was used for logging
 				
 									//console.log("We've found a match here..");
-									//console.log("Heres the json metainfo:", data.theme.char[i]._attributes);
+									//console.log("Heres the json metainfo:", data.theme.char[i].attr);
 									//console.log("And the actions:", data.theme.char[num].action);
 									//Handler for one action chars
 									if (data.theme.char[num].action[0] === undefined) {
-										fUtil.addToZip(zip, `char/${req.body.assetId}/${data.theme.char[num].action._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action._attributes.id)));
+										fUtil.addToZip(zip, `char/${req.body.assetId}/${data.theme.char[num].action.attr.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action.attr.id)));
 									}
 									else {
 										for (let b = 0; b < data.theme.char[num].action.length; b++) {
 											// Check if the action exists before going rogue to add them
-											if (fs.existsSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action[b]._attributes.id))) {
-												fUtil.addToZip(zip, `char/${req.body.assetId}/${data.theme.char[num].action[b]._attributes.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action[b]._attributes.id)));
+											if (fs.existsSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action[b].attr.id))) {
+												fUtil.addToZip(zip, `char/${req.body.assetId}/${data.theme.char[num].action[b].attr.id}`, fs.readFileSync(path.join(__dirname, "../../server", "/static/store/Comm/char", req.body.assetId, data.theme.char[num].action[b].attr.id)));
 											}
 										}
 									}
@@ -281,7 +296,7 @@ module.exports = function (req, res, url) {
 							const components = result.children.filter(i => i.name == "component");
 							res.setHeader("Content-type", "application/zip");
 							const actions = getJyveeActions(themeid);
-							const actionproperties = ["stand","walk"]
+							const actionproperties = Object.keys(actions);
 							for (var num = 0; num < actionproperties.length; num++) {
 								const action = actions[actionproperties[num]];
 								const libArray = []
@@ -370,7 +385,7 @@ module.exports = function (req, res, url) {
 							if (themeid == "family") {
 								const facials = getJyveeEmotions(themeid);
 								// i don't know why but there seems to be a limit how many actions and emotions can be loaded on the 2010 lvm.
-								const testfacials = ["head_neutral","head_shocked","head_angry","head_sad"]
+								const testfacials = ["head_neutral"]
 								for (a = 0; a < testfacials.length; a++) {
 									isAction = false;
 									const libArray = []
@@ -397,9 +412,15 @@ module.exports = function (req, res, url) {
 											}
 										}
 									}
-									fUtil.addToZip(facialzip, `desc.xml`, `<facial>${
-										mappedComponent.map(meta2componentXml).join("")
-									}${mappedColors.map(meta2colourXml).join("")}</facial>`);
+									fUtil.addToZip(facialzip, `desc.xml`, `<cc_char ${
+										result.attr ? `xscale='${result.attr.xscale}' yscale='${
+											result.attr.yscale
+										}' hxscale='${result.attr.hxscale}' hyscale='${
+											result.attr.hyscale
+										}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
+									}>${mappedComponent.map(meta2componentXml).join("")}${
+										mappedColors.map(meta2colourXml).join("")
+									}</cc_char>`);
 									for (const i in facials[testfacials[a]]) {
 										const component = components.find(d => d.attr.type == i);
 										if (component) {
@@ -417,6 +438,9 @@ module.exports = function (req, res, url) {
 									}
 									for (const component of components) {
 										switch (component.attr.type) {
+											case "lower_body":
+											case "upper_body":
+											case "skeleton": break;
 											case "bodyshape": {
 												fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
 													component.attr.type
@@ -436,9 +460,7 @@ module.exports = function (req, res, url) {
 														component.attr.theme_id
 													}/${
 														component.attr.type
-													}/${component.attr.component_id}/${
-														component.attr.type == "skeleton" ? "stand" : "default"
-													}.swf`)
+													}/${component.attr.component_id}/default.swf`)
 												);
 												break;
 											}
