@@ -106,7 +106,7 @@ function getCharEmotionsJson(v) { // loads char emotions from the cc theme xml (
 	for (const facial of result.children.filter(i => i.name == "facial")) {
 		emotions[facial.attr.id] = {};
 		for (const stuff of facial.children.filter(i => i.name == "selection")) {
-			emotions[facial.attr.id][stuff.attr.type] = stuff.attr.state_id;
+			if (stuff.attr.state_id != "default") emotions[facial.attr.id][stuff.attr.type] = stuff.attr.state_id;
 		}
 	}
 	return emotions;
@@ -128,7 +128,7 @@ function getJyveeActions(tId) { // Jyvee we are finally loading your actions int
 	return actions;
 }
 function meta2componentXml(v) {
-	const stuff = getJyveeEmotions(v.theme_id);
+	const stuff = getCharEmotionsJson(v);
 	let xml;
 	let ty = v.type;
 	const action2 = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][

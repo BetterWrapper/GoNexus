@@ -56,13 +56,21 @@ async function listAssets(data, makeZip) {
 							}
 						}
 					}
-					fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+					for (const info of data.children.filter(i => i.name == 'facial')) {
+						for (const data of info.children.filter(i => i.name == 'selection')) {
+							if (
+								!fatials[file.id].find(i => i.id == info.attr.id) 
+								&& searchStuff(file.themeId, data) 
+							) fatials[file.id].unshift(info.attr);
+						}
+					}
+					/*fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
 						if (i.startsWith("head_")) fatials[file.id].unshift({
 							id: i.split(".json")[0],
 							name: i.split("head_")[1].split(".json")[0],
 							enable: get(i.split(".json")[0], "enable", "facial") || "Y"
 						})
-					});
+					});*/
 					if (isZip == ".xml") for (const i of data.children.filter(i => i.name == 'bodyshape')) {
 						if (i.attr.id == await char.getCharType(file.id)) {
 							defaultActions[file.id].default = i.attr.default_action;
@@ -144,9 +152,7 @@ async function listAssets(data, makeZip) {
 					});
 					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
 						file.title || ""
-					}" cc_theme_id="${file.themeId}" default="stand${
-						fileExtenstion
-					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
+					}" cc_theme_id="${file.themeId}" default="stand.xml" motion="walk.xml" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
 						file.tags || ""
 					}</tags>${fatials[file.id].map(v => `<facial id="${v.id}.xml" name="${v.name}" enable="${
 						v.enable
