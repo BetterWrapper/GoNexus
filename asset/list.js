@@ -64,7 +64,7 @@ async function listAssets(data, makeZip) {
 							) fatials[file.id].unshift(info.attr);
 						}
 					}
-					else for (var a = 0; a < 2; a++) {
+					else for (var a = 0; a < 4; a++) {
 						const i = fs.readdirSync(`./charStore/${file.themeId}/emotions`)[a];
 						if (i.startsWith("head_")) fatials[file.id].unshift({
 							id: i.split(".json")[0],

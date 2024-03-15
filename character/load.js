@@ -382,7 +382,7 @@ module.exports = function (req, res, url) {
 				
 							const facials = getJyveeEmotions(themeid)
 							const testfacials = Object.keys(facials);
-							for (a = 0; a < 2; a++) {
+							for (a = 0; a < 3; a++) {
 								isAction = false;
 								const libArray = []
 								const mappedColors = [];
