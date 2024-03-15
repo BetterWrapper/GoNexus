@@ -56,7 +56,7 @@ async function listAssets(data, makeZip) {
 							}
 						}
 					}
-					for (const info of data.children.filter(i => i.name == 'facial')) {
+					if (isZip == ".xml") for (const info of data.children.filter(i => i.name == 'facial')) {
 						for (const data of info.children.filter(i => i.name == 'selection')) {
 							if (
 								!fatials[file.id].find(i => i.id == info.attr.id) 
@@ -64,13 +64,14 @@ async function listAssets(data, makeZip) {
 							) fatials[file.id].unshift(info.attr);
 						}
 					}
-					/*fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+					else for (var a = 0; a < 2; a++) {
+						const i = fs.readdirSync(`./charStore/${file.themeId}/emotions`)[a];
 						if (i.startsWith("head_")) fatials[file.id].unshift({
 							id: i.split(".json")[0],
 							name: i.split("head_")[1].split(".json")[0],
 							enable: get(i.split(".json")[0], "enable", "facial") || "Y"
 						})
-					});*/
+					}
 					if (isZip == ".xml") for (const i of data.children.filter(i => i.name == 'bodyshape')) {
 						if (i.attr.id == await char.getCharType(file.id)) {
 							defaultActions[file.id].default = i.attr.default_action;
@@ -142,14 +143,14 @@ async function listAssets(data, makeZip) {
 							}
 						}
 					}
-					fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
-						if (i.startsWith("head_")) fatials[file.id].unshift({
-							id: i.split(".json")[0],
-							name: i.split("head_")[1].split(".json")[0],
-							enable: get(i.split(".json")[0], "enable", "facial")
-						})
-						
-					});
+					for (const info of data.children.filter(i => i.name == 'facial')) {
+						for (const data of info.children.filter(i => i.name == 'selection')) {
+							if (
+								!fatials[file.id].find(i => i.id == info.attr.id) 
+								&& searchStuff(file.themeId, data) 
+							) fatials[file.id].unshift(info.attr);
+						}
+					}
 					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
 						file.title || ""
 					}" cc_theme_id="${file.themeId}" default="stand.xml" motion="walk.xml" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${

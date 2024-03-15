@@ -289,7 +289,6 @@ module.exports = function (req, res, url) {
 						}
 						else {*/
 							const zip = nodezip.create();
-							console.log(buf);
 							const result = new xmldoc.XmlDocument(buf);
 							const themeid = character.getTheme(buf);
 							isAction = true;
@@ -381,97 +380,92 @@ module.exports = function (req, res, url) {
 								}.zip`, Buffer.from(await actionzip.zip()));
 							}
 				
-				
-							if (themeid == "family") {
-								const facials = getJyveeEmotions(themeid);
-								// i don't know why but there seems to be a limit how many actions and emotions can be loaded on the 2010 lvm.
-								const testfacials = ["head_neutral"]
-								for (a = 0; a < testfacials.length; a++) {
-									isAction = false;
-									const libArray = []
-									const mappedColors = [];
-									const mappedComponent = [];
-									const componentswithactions = {};
-									const facialzip = nodezip.create();
-									for (const info of result.children) {
-										switch (info.name) {
-											case "component": {
-												const inf = info.attr;
-												inf.action = testfacials[a];
-												inf.bs = character.getCharTypeViaBuff(buf);
-												const themeid = inf.theme_id;
-												/*const libArray = data.cc_char.library;
-												if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
-												mappedComponent.unshift(inf);
-												break;
-											} case "color": {
-												const inf = info.attr;
-												inf.text = info.val;
-												mappedColors.unshift(inf);
-												break;
-											}
+							const facials = getJyveeEmotions(themeid)
+							const testfacials = Object.keys(facials);
+							for (a = 0; a < 2; a++) {
+								isAction = false;
+								const libArray = []
+								const mappedColors = [];
+								const mappedComponent = [];
+								const componentswithactions = {};
+								const facialzip = nodezip.create();
+								for (const info of result.children) {
+									switch (info.name) {
+										case "component": {
+											const inf = info.attr;
+											inf.action = testfacials[a];
+											inf.bs = character.getCharTypeViaBuff(buf);
+											const themeid = inf.theme_id;
+											/*const libArray = data.cc_char.library;
+											if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
+											mappedComponent.unshift(inf);
+											break;
+										} case "color": {
+											const inf = info.attr;
+											inf.text = info.val;
+											mappedColors.unshift(inf);
+											break;
 										}
 									}
-									fUtil.addToZip(facialzip, `desc.xml`, `<cc_char ${
-										result.attr ? `xscale='${result.attr.xscale}' yscale='${
-											result.attr.yscale
-										}' hxscale='${result.attr.hxscale}' hyscale='${
-											result.attr.hyscale
-										}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
-									}>${mappedComponent.map(meta2componentXml).join("")}${
-										mappedColors.map(meta2colourXml).join("")
-									}</cc_char>`);
-									for (const i in facials[testfacials[a]]) {
-										const component = components.find(d => d.attr.type == i);
-										if (component) {
+								}
+								fUtil.addToZip(facialzip, `desc.xml`, `<cc_char ${
+									result.attr ? `xscale='${result.attr.xscale}' yscale='${
+										result.attr.yscale
+									}' hxscale='${result.attr.hxscale}' hyscale='${
+										result.attr.hyscale
+									}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
+								}>${mappedComponent.map(meta2componentXml2).join("")}${
+									mappedColors.map(meta2colourXml).join("")
+								}</cc_char>`);
+								for (const i in facials[testfacials[a]]) {
+									const component = components.find(d => d.attr.type == i);
+									if (component) {
+										fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
+											component.attr.type
+										}.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+											component.attr.type
+										}/${
+											component.attr.component_id
+										}/${facials[testfacials[a]][component.attr.type]}.swf`));
+										componentswithactions[component.attr.type] = true;
+									}
+								}
+								for (const component of components) {
+									switch (component.attr.type) {
+										case "lower_body":
+										case "upper_body":
+										case "skeleton": break;
+										case "bodyshape": {
 											fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
 												component.attr.type
 											}.${
 												component.attr.component_id
-											}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
-												component.attr.type
-											}/${
+											}.swf`, fs.readFileSync(`./charStore/${
+												component.attr.theme_id
+											}/${component.attr.type}/${
 												component.attr.component_id
-											}/${facials[testfacials[a]][component.attr.type]}.swf`));
-											componentswithactions[component.attr.type] = true;
-										}
-									}
-									for (const component of components) {
-										switch (component.attr.type) {
-											case "lower_body":
-											case "upper_body":
-											case "skeleton": break;
-											case "bodyshape": {
-												fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
-													component.attr.type
-												}.${
+											}/thumbnail.swf`))
+											break;
+										} default: {
+											if (!componentswithactions[component.attr.type]) fUtil.addToZip(
+												facialzip, `${component.attr.theme_id}.${component.attr.type}.${
 													component.attr.component_id
 												}.swf`, fs.readFileSync(`./charStore/${
 													component.attr.theme_id
-												}/${component.attr.type}/${
-													component.attr.component_id
-												}/thumbnail.swf`))
-												break;
-											} default: {
-												if (!componentswithactions[component.attr.type]) fUtil.addToZip(
-													facialzip, `${component.attr.theme_id}.${component.attr.type}.${
-														component.attr.component_id
-													}.swf`, fs.readFileSync(`./charStore/${
-														component.attr.theme_id
-													}/${
-														component.attr.type
-													}/${component.attr.component_id}/default.swf`)
-												);
-												break;
-											}
+												}/${
+													component.attr.type
+												}/${component.attr.component_id}/default.swf`)
+											);
+											break;
 										}
 									}
-									fUtil.addToZip(zip, `char/${data.assetId}/head/${
-										testfacials[a]
-									}.zip`, Buffer.from(await facialzip.zip()));
 								}
+								fUtil.addToZip(zip, `char/${data.assetId}/head/${
+									testfacials[a]
+								}.zip`, Buffer.from(await facialzip.zip()));
 							}
-							console.log(zip);
 							res.end(await zip.zip());
 						//}
 					})
