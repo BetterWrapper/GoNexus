@@ -426,7 +426,7 @@
                             apiserver: "/",
                             storePath,
                             isEmbed: 1,
-                            ctc: studio == "2010" ? json.ct2010 : "go",
+                            ctc: "go",
                             ut: parseInt(studio) <= 2012 ? 60 : 23,
                             tm: json.tutorial ? "NEW" : "FIN",
                             appCode: "go",
@@ -442,7 +442,7 @@
                             isWide: json.widescreen ? 1 : 0,
                             collab: 0,
                             nextUrl: "/api/redirect",
-                            themeColor: studio == "2013" ? json.ct2012 : "go",
+                            themeColor: parseInt(studio) <= 2012 ? json.ct2012 : "go",
                             presaveId: d
                         }
                     });

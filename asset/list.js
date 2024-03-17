@@ -30,6 +30,7 @@ async function listAssets(data, makeZip) {
 			const tId = data.cc_theme_id || getTid(data.themeId);
 			const fatials = {};
 			const actions = {};
+			const action_cat = {};
 			const defaultActions = {};
 			files = asset.list(data.userId, "char", 0, tId);
 			if (parseInt(data.studio) >= 2010 && parseInt(data.studio) < 2012) {
@@ -37,6 +38,7 @@ async function listAssets(data, makeZip) {
 				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
+					action_cat[file.id] = action_cat[file.id] || {};
 					actions[file.id] = actions[file.id] || [];
 					defaultActions[file.id] = defaultActions[file.id] || {};
 					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
@@ -77,11 +79,22 @@ async function listAssets(data, makeZip) {
 							defaultActions[file.id].default = i.attr.default_action;
 							defaultActions[file.id].motion = i.attr.default_motion;
 							for (const info of i.children.filter(i => i.name == 'action')) {
+								actions[file.id] = actions[file.id] || [];
+								if (info.attr.category) {
+									if (!action_cat[file.id][info.attr.category]) action_cat[file.id][
+										info.attr.category
+									] = {
+										array: [],
+										xml: `<category name="${info.attr.category}">`
+									};
+									action_cat[file.id][info.attr.category].array.unshift(info.attr);
+								}
 								for (const data of info.children.filter(i => i.name == 'selection')) {
 									if (
 										!actions[file.id].find(i => i.id == info.attr.id) 
 										&& data.attr.type != "facial"
 										&& searchStuff(file.themeId, data) 
+										&& !info.attr.category
 									) actions[file.id].unshift(info.attr);
 								}
 							}
@@ -99,6 +112,17 @@ async function listAssets(data, makeZip) {
 							is_motion: get(i.split(".json")[0], "is_motion", "action", "bodyshape") || "N"
 						})
 					});
+					if (isZip == ".xml") for (const i in action_cat[file.id]) {
+						action_cat[file.id][i].xml += action_cat[file.id][i].array.map(v => `<${
+							v.is_motion == "Y" ? "motion" : "action"
+						} id="${v.id + isZip}" name="${
+							v.name
+						}" loop="${v.loop}" totalframe="${
+							v.totalframe
+						}" enable="${v.enable}" is_motion="${
+							v.is_motion
+						}"/>`).join("");
+					}
 					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
 						file.title || ""
 					}" cc_theme_id="${file.themeId}" default="${
@@ -107,9 +131,9 @@ async function listAssets(data, makeZip) {
 						defaultActions[file.id].motion + isZip
 					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
 						file.tags || ""
-					}</tags>${fatials[file.id].map(v => `<facial id="${v.id + isZip}" name="${v.name}" enable="${
-						v.enable
-					}"/>`).join("")}${
+					}</tags>${Object.keys(action_cat[file.id]).map(i => {
+						return action_cat[file.id][i].xml + '</category>'
+					})}${
 						actions[file.id].map(v => `<${
 							v.is_motion == "Y" ? "motion" : "action"
 						} id="${v.id + isZip}" name="${v.name}" loop="${v.loop}" totalframe="${
@@ -117,19 +141,20 @@ async function listAssets(data, makeZip) {
 						}" enable="${v.enable}" is_motion="${
 							v.is_motion
 						}"/>`).join("")
-					}</char>`;
+					}${fatials[file.id].map(v => `<facial id="${v.id + isZip}" name="${v.name}" enable="${
+						v.enable
+					}"/>`).join("")}</char>`;
 				}
 				xmlString += `</ugc>`;
-				console.log(actions, fatials, defaultActions)
 			}
 			else if (data.studio == "2012") {
 				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
+					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
+						file.themeId
+					}/cc_theme.xml`));
 					function get(stuff, param, com, com2) {
-						const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
-							file.themeId
-						}/cc_theme.xml`));
 						if (!com2) for (const info of data.children.filter(i => i.name == com)) {
 							for (const data of info.children.filter(i => i.name == "selection")) {
 								if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
