@@ -259,8 +259,13 @@
             <div class="create-header">
                 <h1 class="h3">Select a Theme</h1>
             </div>
-            <div class="themes row" id="themes" data-row-1></div>
-            <div class="themes row" id="themes" data-row-2></div>
+            <div class="themes row" id="themes_row_1"></div>
+            <div class="themes row" id="themes_row_2"></div>
+            <div class="themes row" id="themes_row_3"></div>
+            <div class="themes row" id="themes_row_4"></div>
+            <div class="themes row" id="themes_row_5"></div>
+            <div class="themes row" id="themes_row_6"></div>
+            <div class="themes row" id="themes_row_7"></div>
         </div>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
@@ -532,28 +537,59 @@
                 };
             }
             jQuery.getJSON("/api/themes/get", (d) => {
-                let count = 0;
+                const counts = {
+                    normal: 0,
+                    rows: 1
+                }
                 const imgbase = 'https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/1ea6ff3d5d8b1cff8148745784632fa1fef8399a/server/pages/img/themes/';
                 for (const theme of d) {
+                    if (theme.attr.id == "Comm") continue;
                     themes.push(theme.attr);
-                    if (count < 3) $("[data-row-1]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
-                        <img src="${imgbase}${theme.attr.id}.jpg" alt="${theme.attr.name}">
-                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
-                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
-                         <a class="btn btn-default" title="" data-original-title="Custom LVM" data-toggle="modal" data-target="#customLVM" onclick="tId = '${theme.attr.id}'">Custom LVM</a>                         
-                         ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
-                         ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
-                    </div>
-                    </div></div></div></div>`);
-                    else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
-                        <img src="${imgbase}${theme.attr.id}.jpg" alt="${theme.attr.name}">
-                    </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
-                        <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>  
-                        <a class="btn btn-default" title="" data-original-title="Custom LVM" data-toggle="modal" data-target="#customLVM" onclick="tId = '${theme.attr.id}'">Custom LVM</a>                      
-                        ${theme.attr.cc_theme_id ? `<a class="btn btn-default" href="/cc_browser?themeId=${theme.attr.cc_theme_id}" title="" data-original-title="Character Creator"><i class="i-cc"></i></a>` : ''}
-                        ${theme.attr.id == "custom" ? `<a class="btn btn-default" href="/quickvideo?filename=everydaylife" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : theme.attr.id == "action" ? `<a class="btn btn-default" href="/quickvideo?filename=basketball" title="" data-original-title="QVM Template"><i class="i-qvm"></i></a>` : ''}
-                    </div></div></div></div></div>`);
-                    count++
+                    const elem = `<div class="col-sm-6 col-md-4 col-lg-4">
+                        <div class="theme" id="thm-${theme.attr.id}">
+                            <div class="theme-cell">
+                                <div class="theme-cover launch">
+                                    <img src="${imgbase}${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                                </div>
+                                <div class="theme-meat">
+                                    <div class="apps">
+                                        <h3>${theme.attr.name}</h3>
+                                        <a class="btn btn-orange" href="/go_full?tray=${
+                                            theme.attr.id
+                                        }" title="" data-original-title="LVM">Make A Video</a>
+                                        <a class="btn btn-default" title="" data-original-title="Custom LVM" 
+                                            data-toggle="modal" data-target="#customLVM" onclick="tId = '${
+                                                theme.attr.id
+                                            }'">Custom LVM
+                                        </a>
+                                        ${
+                                            theme.attr.cc_theme_id ? `<a class="btn btn-default" 
+                                                href="/cc_browser?themeId=${
+                                                    theme.attr.cc_theme_id
+                                                }" title="" data-original-title="Character Creator">
+                                                <i class="i-cc"></i>
+                                            </a>` : ''
+                                        }
+                                        ${
+                                            theme.attr.id == "custom" ? `<a class="btn btn-default" 
+                                                href="/quickvideo?filename=everydaylife" title="" 
+                                                data-original-title="QVM Template"><i class="i-qvm"></i>
+                                            </a>` : theme.attr.id == "action" ? `<a class="btn btn-default" 
+                                                href="/quickvideo?filename=basketball" title="" 
+                                                data-original-title="QVM Template"><i class="i-qvm"></i>
+                                            </a>` : ''
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    if (counts.normal >= 3) {
+                        counts.normal = 0;
+                        counts.rows++;
+                    }
+                    $(`#themes_row_${counts.rows}`).append(elem);
+                    counts.normal++
                 }
             });
             function tutCharOption(s) {
