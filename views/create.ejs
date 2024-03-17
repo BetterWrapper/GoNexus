@@ -62,7 +62,7 @@
     </head>
     <body class="page-action-videomaker">
         <div class="modal" id="studioBlock">
-            <div class="modal-dialog modal-lg" style="width: 991px;">
+            <div class="modal-dialog modal-lg" style="width: 990px;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" id="closeStudio">
@@ -96,6 +96,63 @@
                         </p>
                         <br>
                     </center>
+                    <script>
+                        var nexus_devs = [
+                            {
+                                name: "Works Perfectly",
+                                people: [
+                                    {
+                                        name: "Joseph",
+                                        id: "4048901"
+                                    },
+                                    {
+                                        name: "Rage (Side Dev)",
+                                        id: "0000000"
+                                    },
+                                    {
+                                        name: "Owen",
+                                        id: "4635901"
+                                    },
+                                    {
+                                        name: "2010 LVM Tutorial Woman (Not a dev but added her to bring back nostalgia)",
+                                        id: "4715202"
+                                    },
+                                    {
+                                         name: "David Escobar (Not a dev but added him cuz why not)",
+                                         id: "192"
+                                    },
+                                    {
+                                         name: "Daniel (Not a dev but added him cuz why not)",
+                                         id: "666"
+                                    },
+                                    {
+                                        name: "BluePeacocks",
+                                        id: "60897073"
+                                    },
+                                    {
+                                        name: "Jyvee",
+                                        id: "66670973"
+                                    }
+                                ]
+                            },
+                            {
+                                
+                                name: "Does Not Work",
+                                people: [
+                                    {
+                                        disabled: true,
+                                        name: "Jerry",
+                                        id: ""
+                                    }
+                                ]
+                            },
+                            {
+                                disabled: true,
+                                name: "Work In Progress",
+                                people: []
+                            }
+                        ]
+                    </script>
                     <center class="modal-footer">
                         <h2>Other options</h2>
                         <div id="other-options">
@@ -105,7 +162,20 @@
                                 <h4>Select Your Character To Use For The 2010 LVM Tutorial</h4><br>
                                 <p>Because the 2010 lvm tutorial only supports the characters from Comedy World, you will only be allowed to select any characters from Comedy World. <br>
                                     we are not sure if the 2010 lvm tutorial also supports characters from other themes. <br>
-                                    but for now, this is what we are doing.</p><br>
+                                    but for now, this is what we are doing.
+                                </p><br>
+                                <script>
+                                    document.write(`<label for="devs_selector">GoNexus Developers <select id="devs_selector">${
+                                        nexus_devs.map(oi => {
+                                            if (oi.people) return `<optgroup label="${oi.name}" ${oi.disabled ? 'disabled' : ''}>${
+                                                oi.people.map(v => `<option value="${
+                                                    v.id
+                                                }" ${v.disabled ? 'disabled' : ''}>${v.name}</option>`)
+                                        }</optgroup>`;
+                                        else return `<option value="${oi.id}" ${oi.disabled ? 'disabled' : ''}>${oi.name}</option>`;
+                                    })}</select></label><br>`)
+                                </script>
+                                <label>Custom Characters</label>
                                 <div id="tutorial-chars"></div>
                             </div>
                         </div>
@@ -386,7 +456,7 @@
                                         jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=params&protocall=https&method=POST&apiPath=/.netlify/functions/api", params, () => {
                                             jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:100%"></div></div>');
                                             jQuery.post('/api/lvmVarsStatus?apiHost=wrapperclassic.netlify.app&protocall=https&method=POST&apiPath=/.netlify/functions/api', d => {
-                                                if (d.isThere) jQuery("#studiodiv").html(`<embed height="630" width="960" src="https://wrapperclassic.netlify.app/lvmEmbed.html"></embed>`)
+                                                if (d.isThere) jQuery("#studiodiv").html(`<embed height="630" width="969" src="https://wrapperclassic.netlify.app/lvmEmbed.html"></embed>`)
                                                 else jQuery("#studiodiv").html('<center>Some data was not sent in successfully to wrapper: classic. Please relaunch the 2010 Video Maker.</center>');
                                             });
                                         });
@@ -463,10 +533,11 @@
             }
             jQuery.getJSON("/api/themes/get", (d) => {
                 let count = 0;
+                const imgbase = 'https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/1ea6ff3d5d8b1cff8148745784632fa1fef8399a/server/pages/img/themes/';
                 for (const theme of d) {
                     themes.push(theme.attr);
                     if (count < 3) $("[data-row-1]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
-                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                        <img src="${imgbase}${theme.attr.id}.jpg" alt="${theme.attr.name}">
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                          <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>
                          <a class="btn btn-default" title="" data-original-title="Custom LVM" data-toggle="modal" data-target="#customLVM" onclick="tId = '${theme.attr.id}'">Custom LVM</a>                         
@@ -475,7 +546,7 @@
                     </div>
                     </div></div></div></div>`);
                     else if (count < 6) $("[data-row-2]").append(`<div class="col-sm-6 col-md-4 col-lg-4"><div class="theme" id="thm-${theme.attr.id}"><div class="theme-cell"><div class="theme-cover launch">
-                        <img src="https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/main/server/pages/img/themes/${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                        <img src="${imgbase}${theme.attr.id}.jpg" alt="${theme.attr.name}">
                     </div><div class="theme-meat"><div class="apps"><h3>${theme.attr.name}</h3>
                         <a class="btn btn-orange" href="/go_full?tray=${theme.attr.id}" title="" data-original-title="LVM">Make A Video</a>  
                         <a class="btn btn-default" title="" data-original-title="Custom LVM" data-toggle="modal" data-target="#customLVM" onclick="tId = '${theme.attr.id}'">Custom LVM</a>                      
@@ -490,68 +561,11 @@
                     $("#lvmmode").hide();
                     if (!window.location.host.startsWith("localhost")) {
                         $("input[name='tutorial']").prop("checked") ? $(".tutorialchar2010").show() : $(".tutorialchar2010").hide()
-                        const devs = [
-                            {
-                                name: "Works Perfectly",
-                                people: [
-                                    {
-                                        name: "Joseph",
-                                        id: "4048901"
-                                    },
-                                    {
-                                        name: "Rage (Side Dev)",
-                                        id: "0000000"
-                                    },
-                                    {
-                                        name: "Owen",
-                                        id: "4635901"
-                                    },
-                                    {
-                                        name: "2010 LVM Tutorial Woman (Not a dev but added her to bring back nostalgia)",
-                                        id: "4715202"
-                                    },
-                                    {
-                                         name: "David Escobar (Not a dev but added him cuz why not)",
-                                         id: "192"
-                                    },
-                                    {
-                                         name: "Daniel (Not a dev but added him cuz why not)",
-                                         id: "666"
-                                    }
-                                ]
-                            },
-                            {
-                                disabled: true,
-                                name: "Does Not Work",
-                                people: [
-                                    {
-                                        name: "BluePeacocks",
-                                        id: "60897073"
-                                    },{
-                                        name: "Jerry",
-                                        id: ""
-                                    }
-                                ]
-                            },
-                            {
-                                disabled: true,
-                                name: "Work In Progress",
-                                people: [
-                                    {
-                                        name: "Jyvee",
-                                        id: "66670973"
-                                    }
-                                ]
-                            }
-                        ]
                         for (const d of chars) {
                             hasChars = true;
                             break;
                         }
-                        if (!hasChars) $("#tutorial-chars").html(`<p id="grid-item">You have not created any characters yet. but that's okay, you can use the GoNexus developers as your character instead.</p><br><label for="devs_selector">GoNexus Developers <select id="devs_selector">${devs.filter(i => !i.disabled).map(oi => {
-                            if (oi.people) return `<optgroup label="${oi.name}">${oi.people.filter(i => !i.disabled).map(v => `<option value="${v.id}">${v.name}</option>`)}</optgroup>`;
-                            else return `<option value="${oi.id}">${oi.name}</option>`;
-                        })}</select></label>`);
+                        if (!hasChars) $("#tutorial-chars").html(`<p id="grid-item">You have not created any characters yet.</p>`);
                         tmcId = $('#devs_selector').val() || "4048901";
                     } else $(".tutorial").hide();
                 } else {
@@ -583,8 +597,13 @@
             }
             function selectTutChar(cId) {
                 tmcId = cId;
-                $(".tutorial-char-active").addClass("tutorial-char").removeClass("tutorial-char-active");
-                $(`#char${cId}`).addClass("tutorial-char-active").removeClass("tutorial-char");
+                if ($(`#char${cId}`).hasClass("tutorial-char-active")) {
+                    tmcId = $('#devs_selector').val() || "4048901";
+                    $(`#char${cId}`).removeClass("tutorial-char-active").removeClass("tutorial-char");
+                } else {
+                    $(".tutorial-char-active").addClass("tutorial-char").removeClass("tutorial-char-active");
+                    $(`#char${cId}`).addClass("tutorial-char-active").removeClass("tutorial-char");
+                }
             }
         </script>
         <%- include("includes/footer.ejs") %>

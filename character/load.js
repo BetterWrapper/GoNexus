@@ -78,21 +78,6 @@ function getJyvee() {
 		});
 	});
 }
-function meta2componentXml3(v) {
-	let xml;
-	let ty = v.attr.type;
-
-	if (ty == "eye" || ty == "eyebrow" || ty == "mouth") {
-		let animetype = v.attr.theme_id == "anime" ? "side_" + trim2[ty] : v.attr.theme_id == "business" ? "front_" + trim2[ty] : trim2[ty];
-		xml = `<component type="${v.attr.type}" ${isAction ? `component_id="${v.attr.component_id}"` : ``} theme_id="${v.attr.theme_id}" file="${animetype}.swf" path="${v.attr.component_id}" x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" ${v.attr.split ? `split="N"` : ``}/>`;
-	}
-	else {
-		if (v.attr.id) xml = `<component id="${v.attr.id}" ${isAction ? `file="default.swf"` : ``} type="${v.attr.type}" theme_id="${v.attr.theme_id}" ${isAction ? `component_id="${v.attr.component_id}"` : ``} path="${v.attr.component_id}" x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" />`;
-		else if (v.attr.type != "skeleton" && v.attr.type != "bodyshape" && v.attr.type != "freeaction") xml = `<component type="${v.attr.type}" theme_id="${v.attr.theme_id}" ${isCC || isAction && v.attr.theme_id != "business" ? `file="default.swf"` : v.attr.theme_id == "business" ? `file="front_default.swf"` : ``} ${isAction ? `component_id="${v.attr.component_id}"` : ``} path="${v.attr.component_id}" x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" />`;
-		else xml = `<component type="${v.attr.type}" theme_id="${v.attr.theme_id}" ${v.attr.type == "skeleton" ? `file="stand.swf"` : v.attr.type == "freeaction" && v.attr.theme_id == "cc2" ? `file="stand.swf"` : v.attr.type == "freeaction" && v.attr.theme_id == "business" ? `file="stand01.swf"` : `file="thumbnail.swf"`} path="${v.attr.component_id}" ${isAction ? `component_id="${v.attr.component_id}"` : ``} x="${v.attr.x}" y="${v.attr.y}" xscale="${v.attr.xscale}" yscale="${v.attr.yscale}" offset="${v.attr.offset}" rotation="${v.attr.rotation}" />`;
-	}
-	return xml;
-}
 function getCharEmotionsJson(v) { // loads char emotions from the cc theme xml (not all emotions work).
 	const emotions = {
 		default: {
@@ -237,11 +222,10 @@ module.exports = function (req, res, url) {
 				case "/goapi/getCharacter/": {
 					loadPost(req, res).then(async data => {
 						const buf = await character.load(data.assetId);
-						//Check first to see if its a cc theme
 						let isCcThemeChar = false;
 						const files = asset.list(data.userId, "char", 0, character.getTheme(buf));
-						for (const file in files) {
-							if (files[file].id == data.assetId) {
+						for (const file of files) {
+							if (file.id == data.assetId) {
 								isCcThemeChar = true;
 								break;
 							}
