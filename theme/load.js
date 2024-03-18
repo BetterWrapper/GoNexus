@@ -116,7 +116,6 @@ module.exports = function (req, res, url) {
 							}</tags>${charJSON.xmls}</char>`
 						}
 					}
-					fs.writeFileSync('./jyvee.xml', (xml2zip + '</theme>').toString("utf-8"))
 					return xml2zip + '</theme>';
 				}
 				res.setHeader("Content-Type", "application/zip");
@@ -181,7 +180,6 @@ module.exports = function (req, res, url) {
 				if (data.studio) {
 					filename += '-old';
 					if (data.studio == '2010' || data.studio == '2012') filename += `-${data.studio}`;
-					if (data.studio == "2010" && data.ctc == "domo") filename += `-domo`;
 				}
 				res.setHeader("Content-Type", "application/zip");
 				fUtil.makeZip(`${folder}/${filename}.xml`, "themelist.xml").then((b) => res.end(b));

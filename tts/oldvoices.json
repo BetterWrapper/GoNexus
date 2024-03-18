@@ -1,0 +1,32 @@
+{
+    "david": {
+        "source": "voiceforge",
+        "arg": "David",
+        "name": "David"
+    },
+    "paul": {
+        "arg": [3, 1, 2],
+        "source": "vocalware",
+        "name": "Paul"
+    },
+    "dallas": {
+        "source": "voiceforge",
+        "arg": "Dallas",
+        "name": "Dallas"
+    },
+    "callie": {
+        "source": "voiceforge",
+        "arg": "Callie",
+        "name": "Callie"
+    },
+    "kayla": {
+        "source": "voiceforge",
+        "arg": "Kayla",
+        "name": "Kayla"
+    },
+    "lawrence": {
+        "source": "voiceforge",
+        "arg": "Lawrence",
+        "name": "Lawrence"
+    }
+}

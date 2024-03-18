@@ -34,7 +34,17 @@ async function listAssets(data, isAssetSearch) {
 	}
 	const zip = nodezip.create();
 	if (!isAssetSearch) {
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library">${
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library"${
+			parseInt(data.studio) <= 2012 ? (function() {
+				switch (data.type) {
+					case "bg": return ' moreBG="0"'
+					default: {
+						const letter = data.type.slice(0, data.type.length - 1);
+						return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="0"`
+					}
+				}
+			})() : ''
+		}>${
 			xmls.join("")
 		}</theme>`);
 		files.forEach((file) => {

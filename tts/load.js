@@ -3,7 +3,7 @@ const mp3Duration = require("mp3-duration");
 const asset = require("../asset/main");
 const tts = require("./main");
 const http = require("http");
-
+const oldvoices = require("./oldvoices");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -16,8 +16,10 @@ module.exports = function (req, res, url) {
 		if (data.movieId && data.movieId.startsWith("ft-")) {
 			res.end(1 + `<error><code>ERR_ASSET_404</code><message>Because you are using a video that has been imported from FlashThemes, you cannot generate TTS voices to this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.</message><text></text></error>`);
 		} else try {
-			const buffer = await tts.genVoice(data.voice, data.text, data.userId);
-			const voice = tts.getVoiceInfo(data.voice);
+			const buffer = await tts.genVoice(data);
+			let voice;
+			if (data.studio == "2010") voice = oldvoices[data.voice.toLowerCase()];
+			else voice = tts.getVoiceInfo(data.voice);
 			mp3Duration(buffer, (e, d) => {
 				var dur = d * 1e3;
 				if (e || !dur) return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${

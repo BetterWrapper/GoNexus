@@ -8,11 +8,9 @@ const https = require("https");
 const nodezip = require("node-zip");
 const fUtil = require("../misc/file");
 function meta2libraryXml(w) {
-	let xml;
-	xml = `<library type="${w.type}" file="${w.component_id}" path="${w.component_id}" component_id="${
+	return `<library type="${w.type}" file="${w.component_id}.swf" path="${
 		w.component_id
-	}" theme_id="${w.theme_id}"/>`
-	return xml;
+	}" component_id="${w.component_id}" theme_id="${w.theme_id}"/>`
 }
 function getJoseph() {
 	return new Promise((res, rej) => {
@@ -275,27 +273,26 @@ module.exports = function (req, res, url) {
 							const zip = nodezip.create();
 							const result = new xmldoc.XmlDocument(buf);
 							const themeid = character.getTheme(buf);
-							isAction = true;
 							const components = result.children.filter(i => i.name == "component");
 							res.setHeader("Content-type", "application/zip");
 							const actions = getJyveeActions(themeid);
 							const actionproperties = Object.keys(actions);
 							for (var num = 0; num < actionproperties.length; num++) {
 								const action = actions[actionproperties[num]];
-								const libArray = []
+								const libArray = [];
 								const mappedColors = [];
 								const mappedComponent = [];
 								const componentswithactions = {};
 								const actionzip = nodezip.create();
 								for (const info of result.children) {
 									switch (info.name) {
-										case "component": {
+										case "library": {
+											libArray.unshift(info.attr);
+											break;
+										} case "component": {
 											const inf = info.attr;
 											inf.action = actionproperties[num];
 											inf.bs = character.getCharTypeViaBuff(buf);
-											const themeid = inf.theme_id;
-											/*const libArray = data.cc_char.library;
-											if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
 											mappedComponent.unshift(inf);
 											break;
 										} case "color": {
@@ -314,7 +311,7 @@ module.exports = function (req, res, url) {
 									}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
 								}>${mappedComponent.map(meta2componentXml2).join("")}${
 									mappedColors.map(meta2colourXml).join("")
-								}</cc_char>`);
+								}${libArray.map(meta2libraryXml).join("")}</cc_char>`);
 								for (const i in action) {
 									const component = components.find(d => d.attr.type == i);
 									if (component) {
@@ -367,7 +364,6 @@ module.exports = function (req, res, url) {
 							const facials = getJyveeEmotions(themeid)
 							const testfacials = Object.keys(facials);
 							for (a = 0; a < 3; a++) {
-								isAction = false;
 								const libArray = []
 								const mappedColors = [];
 								const mappedComponent = [];
@@ -375,13 +371,13 @@ module.exports = function (req, res, url) {
 								const facialzip = nodezip.create();
 								for (const info of result.children) {
 									switch (info.name) {
-										case "component": {
+										case "library": {
+											libArray.unshift(info.attr);
+											break;
+										} case "component": {
 											const inf = info.attr;
 											inf.action = testfacials[a];
 											inf.bs = character.getCharTypeViaBuff(buf);
-											const themeid = inf.theme_id;
-											/*const libArray = data.cc_char.library;
-											if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
 											mappedComponent.unshift(inf);
 											break;
 										} case "color": {
@@ -400,7 +396,7 @@ module.exports = function (req, res, url) {
 									}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
 								}>${mappedComponent.map(meta2componentXml2).join("")}${
 									mappedColors.map(meta2colourXml).join("")
-								}</cc_char>`);
+								}${libArray.map(meta2libraryXml).join("")}</cc_char>`);
 								for (const i in facials[testfacials[a]]) {
 									const component = components.find(d => d.attr.type == i);
 									if (component) {
@@ -481,6 +477,7 @@ module.exports = function (req, res, url) {
 					loadPost(req, res).then(async data => { try {
 						const componentArray = [];
 						const colorArray = [];
+						const libArray = [];
 						const charId = data.charId.includes(".") ? data.charId.split(".")[0] : data.charId;
 						let buf;
 						if (charId == "4048901") buf = await getJoseph();
@@ -498,7 +495,7 @@ module.exports = function (req, res, url) {
 							&& data.facialId 
 							&& data.facialId.endsWith(".zip") 
 							&& data.actionId.endsWith(".zip")
-						) { // 2010 tutorial
+						) {
 							const components = result.children.filter(i => i.name == "component");
 							const componentswithactions = {};
 							const zip = nodezip.create();
@@ -565,7 +562,7 @@ module.exports = function (req, res, url) {
 								}
 							}
 							res.end(await zip.zip());				
-						} else if (data.actionId) { // now we are getting back in track. everything works normally, but not the tutorial for some reason
+						} else if (data.actionId) {
 							if (data.actionId.endsWith(".zip")) {
 								const components = result.children.filter(i => i.name == "component");
 								const componentswithactions = {};
@@ -579,14 +576,18 @@ module.exports = function (req, res, url) {
 								res.setHeader("Content-Type", "application/zip");
 								for (const i in action) {
 									const component = components.find(d => d.attr.type == i);
-									fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
-										component.attr.component_id
-									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
-										component.attr.type
-									}/${
-										component.attr.component_id
-									}/${action[component.attr.type]}.swf`));
-									componentswithactions[component.attr.type] = true;
+									if (component) {
+										fUtil.addToZip(zip, `${component.attr.theme_id}.${
+											component.attr.type
+										}.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+											component.attr.type
+										}/${
+											component.attr.component_id
+										}/${action[component.attr.type]}.swf`));
+										componentswithactions[component.attr.type] = true;
+									}
 								}
 								for (const component of components) {
 									switch (component.attr.type) {
@@ -615,17 +616,16 @@ module.exports = function (req, res, url) {
 								}
 								res.end(await zip.zip());	
 							} else if (data.actionId.endsWith(".xml")) {
-								isAction = true;
 								res.setHeader("Content-Type", "application/xml");
 								for (const info of result.children) {
 									switch (info.name) {
-										case "component": {
+										case "library": {
+											libArray.unshift(info.attr);
+											break;
+										} case "component": {
 											const inf = info.attr;
 											inf.action = data.actionId.split(".xml")[0];
 											inf.bs = character.getCharTypeViaBuff(buf);
-											const themeid = inf.theme_id;
-											/*const libArray = data.cc_char.library;
-											if (themeid == "cc2") charXml += libArray.map(meta2libraryXml).join("");*/
 											componentArray.unshift(inf);
 											break;
 										} case "color": {
@@ -644,7 +644,7 @@ module.exports = function (req, res, url) {
 									}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
 								}>${componentArray.map(meta2componentXml2).join("")}${
 									colorArray.map(meta2colourXml).join("")
-								}</cc_char>`);
+								}${libArray.map(meta2libraryXml).join("")}</cc_char>`);
 							} 
 						} else if (data.facialId) {
 							if (data.facialId.endsWith(".zip")) {
@@ -659,17 +659,24 @@ module.exports = function (req, res, url) {
 								res.setHeader("Content-Type", "application/zip");
 								for (const i in emotion) {
 									const component = components.find(d => d.attr.type == i);
-									fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
-										component.attr.component_id
-									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
-										component.attr.type
-									}/${
-										component.attr.component_id
-									}/${emotion[component.attr.type]}.swf`));
-									componentswithactions[component.attr.type] = true;
+									if (component) {
+										fUtil.addToZip(zip, `${component.attr.theme_id}.${
+											component.attr.type
+										}.${
+											component.attr.component_id
+										}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+											component.attr.type
+										}/${
+											component.attr.component_id
+										}/${emotion[component.attr.type]}.swf`));
+										componentswithactions[component.attr.type] = true;
+									}
 								}
 								for (const component of components) {
 									switch (component.attr.type) {
+										case "upper_body":
+										case "lower_body":
+										case "skeleton": break;
 										case "bodyshape": {
 											fUtil.addToZip(zip, `${component.attr.theme_id}.bodyshape.${
 												component.attr.component_id
@@ -696,7 +703,6 @@ module.exports = function (req, res, url) {
 								res.end(await zip.zip());	
 							} else if (data.facialId.endsWith(".xml")) {
 								res.setHeader("Content-Type", "application/xml");
-								isAction = false;
 								for (const info of result.children) {
 									switch (info.name) {
 										case "component": {

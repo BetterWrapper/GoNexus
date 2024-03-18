@@ -277,14 +277,12 @@
                 tts_enabled: 1,
 			    upl: 1,
 			    hb: 1,
-			    pts: 1,
 			    appCode: "go",
 			    uisa: 1,
 			    isLogin: "Y",
 			    tlang: "en_US",
 			    isEmbed: 1,
 			    isWide: "0",
-			    stutype: "tiny_studio",
 			    nextUrl: "javascript:parent.closeStudio2()",
                 siteId: window.location.host.startsWith("localhost") ? 7 : "go",
                 lid: window.location.host.startsWith("localhost") ? 7 : 13,
@@ -479,7 +477,9 @@
                         backdrop: "static"
                     });
                 }); 
-                else location.href = `/go_full?y=${studio}&isWide=${json.widescreen == "on" ? '1' : '0'}&tutorial=${json.tutorial == "on" ? true : false}&tray=${tId}`
+                else location.href = `/go_full?y=${studio}&isWide=${
+                    json.widescreen == "on" ? '1' : '0'
+                }&tutorial=${json.tutorial == "on" ? true : false}&tray=${tId}`
                 if (studio == "2010") {
                     if (!window.location.host.startsWith("localhost")) $("#closeStudio").on("click", () => {
                         if (closeStudio()) $("#closeStudio").off("click");
@@ -624,12 +624,13 @@
                     },
                     dataType: 'json',
                     success: function(data) {
-                        console.log(data);
+                        chars = [];
+                        $("#tutorial-chars").html('');
                         for (const cc of data) {
                             $("#tutorial-chars").append(`<a href="javascript:;" id="char${cc.id}" onclick="selectTutChar('${cc.id}')" class="tutorial-char"><img src="${cc.head_url}"><h2>${
                                 cc.title
                             }</h2></a>`);
-                            chars.push(cc);
+                            chars.unshift(cc);
                         }
                     }
                 });

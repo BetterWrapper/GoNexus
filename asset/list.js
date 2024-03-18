@@ -30,6 +30,7 @@ async function listAssets(data, makeZip) {
 			const tId = data.cc_theme_id || getTid(data.themeId);
 			const fatials = {};
 			const actions = {};
+			const actionPack = {};
 			const action_cat = {};
 			const defaultActions = {};
 			files = asset.list(data.userId, "char", 0, tId);
@@ -39,6 +40,7 @@ async function listAssets(data, makeZip) {
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
 					action_cat[file.id] = action_cat[file.id] || {};
+					actionPack[file.id] = actionPack[file.id] || {};
 					actions[file.id] = actions[file.id] || [];
 					defaultActions[file.id] = defaultActions[file.id] || {};
 					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
@@ -73,20 +75,40 @@ async function listAssets(data, makeZip) {
 						if (i.attr.id == await char.getCharType(file.id)) {
 							defaultActions[file.id].default = i.attr.default_action;
 							defaultActions[file.id].motion = i.attr.default_motion;
-							for (const info of i.children.filter(i => i.name == 'action')) {
-								const inf = info.attr;
-								const data = info.children.filter(i => i.name == "selection");
-								inf.facial = data[0].attr.facial_id;
-								actions[file.id] = actions[file.id] || [];
-								if (inf.category) {
-									if (!action_cat[file.id][inf.category]) action_cat[file.id][
-										inf.category
-									] = {
-										array: [],
-										xml: `<category name="${inf.category}">`
-									};
-									action_cat[file.id][inf.category].array.unshift(inf);
-								} else actions[file.id].unshift(inf);
+							switch (file.themeId) {
+								case "cctoonadventure":
+								case "family": {
+									for (const info of i.children.filter(i => i.name == 'action')) {
+										const inf = info.attr;
+										const data = info.children.filter(i => i.name == "selection");
+										inf.facial = data[0].attr.facial_id;
+										actions[file.id] = actions[file.id] || [];
+										if (inf.category) {
+											if (!action_cat[file.id][inf.category]) action_cat[file.id][
+												inf.category
+											] = {
+												array: [],
+												xml: `<category name="${inf.category}">`
+											};
+											action_cat[file.id][inf.category].array.unshift(inf);
+										} else actions[file.id].unshift(inf);
+									}
+									break;
+								} default: {
+									for (const info of i.children.filter(i => i.name == 'actionpack')) {
+										const inf = info.attr;
+										if (!actionPack[file.id][inf.id]) actionPack[file.id][
+											inf.id
+										] = {
+											array: info.children.filter(i => i.name == 'action'),
+											xml: `<actionpack id="${inf.id}" name="${
+												inf.name
+											}" money="${inf.money}" sharing="${inf.sharing}" enable="${
+												inf.enable
+											}">`
+										};
+									}
+								}
 							}
 						}
 					}
@@ -102,6 +124,26 @@ async function listAssets(data, makeZip) {
 							is_motion: get(i.split(".json")[0], "is_motion", "action", "bodyshape") || "N"
 						})
 					});
+					if (isZip == ".xml") for (const i in actionPack[file.id]) {
+						for (const info of actionPack[file.id][i].array) {
+							const inf = info.attr;
+							const data = info.children.filter(i => i.name == "selection");
+							inf.facial = data[0].attr.facial_id;
+							if (inf.category) {
+								if (!action_cat[file.id][inf.category]) action_cat[file.id][
+									inf.category
+								] = {
+									array: [],
+									xml: `<category name="${inf.category}">`
+								};
+								action_cat[file.id][inf.category].array.unshift(inf);
+							} else actionPack[file.id][i].xml += `<action id="${inf.id}" name="${
+								inf.name
+							}" loop="${inf.loop}" totalframe="${inf.totalframe}" enable="${
+								inf.enable
+							}" is_motion="${inf.is_motion}"/>`
+						}
+					}
 					if (isZip == ".xml") for (const i in action_cat[file.id]) {
 						action_cat[file.id][i].xml += action_cat[file.id][i].array.map(v => `<${
 							v.is_motion == "Y" ? "motion" : "action"
@@ -121,9 +163,19 @@ async function listAssets(data, makeZip) {
 						defaultActions[file.id].motion + isZip
 					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
 						file.tags || ""
-					}</tags>${Object.keys(action_cat[file.id]).map(i => {
-						return action_cat[file.id][i].xml + '</category>'
-					})}${
+					}</tags>${(() => {
+						switch (file.themeId) {
+							case "cctoonadventure":
+							case "family": return Object.keys(action_cat[file.id]).map(i => {
+								return action_cat[file.id][i].xml + '</category>'
+							});
+							default: return Object.keys(actionPack[file.id]).map(d => {
+								return Object.keys(action_cat[file.id]).map(i => {
+									return action_cat[file.id][i].xml + '</category>'
+								}) + actionPack[file.id][d].xml + '</actionpack>';
+							})
+						}
+					})()}${
 						actions[file.id].map(v => `<${
 							v.is_motion == "Y" ? "motion" : "action"
 						} id="${v.id + isZip}" name="${v.name}" loop="${v.loop}" totalframe="${
@@ -136,8 +188,12 @@ async function listAssets(data, makeZip) {
 					}"/>`).join("")}</char>`;
 				}
 				xmlString += `</ugc>`;
-			}
-			else if (data.studio == "2012") {
+				console.log(xmlString);
+			} else if (data.studio == "2012") {
+				const defaults = {
+					family: `<action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`,
+					cc2: `<action id="stand.xml" name="Standing" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`
+				}
 				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
@@ -172,7 +228,7 @@ async function listAssets(data, makeZip) {
 						file.tags || ""
 					}</tags>${fatials[file.id].map(v => `<facial id="${v.id}.xml" name="${v.name}" enable="${
 						v.enable
-					}"/>`).join("")}<action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/></char>`;
+					}"/>`).join("")}${defaults[file.themeId]}</char>`;
 				}
 				xmlString += `</ugc>`;
 			}
@@ -182,7 +238,17 @@ async function listAssets(data, makeZip) {
 			break;
 		}
 	}
-	if (!xmlString) xmlString = `${header}<ugc more="0">${files.map(asset.meta2Xml).join("")}</ugc>`;
+	if (!xmlString) xmlString = `${header}<ugc more="0"${
+		parseInt(data.studio) <= 2012 ? (function() {
+			switch (data.type) {
+				case "bg": return ' moreBG="0"'
+				default: {
+					const letter = data.type.slice(0, data.type.length - 1);
+					return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="0"`
+				}
+			}
+		})() : ''
+	}>${files.map(asset.meta2Xml).join("")}</ugc>`;
 	if (makeZip) {
 		const zip = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(xmlString));
