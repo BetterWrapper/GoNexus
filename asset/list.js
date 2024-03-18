@@ -27,7 +27,7 @@ async function listAssets(data, makeZip) {
 	var files, xmlString;
 	switch (data.type) {
 		case "char": {
-			const tId = data.cc_theme_id || getTid(data.themeId);
+			const tId = data.cc_theme_id || getTid(data.themeId) || "family";
 			const fatials = {};
 			const actions = {};
 			const actionPack = {};

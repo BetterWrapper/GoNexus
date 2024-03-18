@@ -37,10 +37,10 @@ async function listAssets(data, isAssetSearch) {
 		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library"${
 			parseInt(data.studio) <= 2012 ? (function() {
 				switch (data.type) {
-					case "bg": return ' moreBG="0"'
+					case "bg": return ' moreBG="1"'
 					default: {
 						const letter = data.type.slice(0, data.type.length - 1);
-						return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="0"`
+						return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="1"`
 					}
 				}
 			})() : ''
