@@ -64,6 +64,9 @@ function getHeadPath(id) {
 }
 
 module.exports = {
+	async getThemeFromCharId(id) {
+		return this.getTheme(await this.load(id))
+	},
 	/**
 	 * @param {Buffer} buffer
 	 * @returns {Buffer}
@@ -77,9 +80,8 @@ module.exports = {
 		return this.getCharTypeViaBuff(await this.load(id))
 	},
 	getCharTypeViaBuff(buff) {
-		const beg = buff.indexOf(`component_id="`) + 14;
-		const end = buff.indexOf(`"`, beg);
-		return buff.subarray(beg, end).toString();
+		const beg = buff.toString().split(`<component type="bodyshape" component_id="`)[1]
+		return beg.split(`"`)[0]
 	},
 	/**
 	 * @param {string} id

@@ -59,12 +59,7 @@ async function listAssets(data, makeZip) {
 						}
 					}
 					if (isZip == ".xml") for (const info of data.children.filter(i => i.name == 'facial')) {
-						for (const data of info.children.filter(i => i.name == 'selection')) {
-							if (
-								!fatials[file.id].find(i => i.id == info.attr.id) 
-								&& searchStuff(file.themeId, data) 
-							) fatials[file.id].unshift(info.attr);
-						}
+						fatials[file.id].unshift(info.attr);
 					}
 					else for (var a = 0; a < 4; a++) {
 						const i = fs.readdirSync(`./charStore/${file.themeId}/emotions`)[a];
@@ -79,24 +74,19 @@ async function listAssets(data, makeZip) {
 							defaultActions[file.id].default = i.attr.default_action;
 							defaultActions[file.id].motion = i.attr.default_motion;
 							for (const info of i.children.filter(i => i.name == 'action')) {
+								const inf = info.attr;
+								const data = info.children.filter(i => i.name == "selection");
+								inf.facial = data[0].attr.facial_id;
 								actions[file.id] = actions[file.id] || [];
-								if (info.attr.category) {
-									if (!action_cat[file.id][info.attr.category]) action_cat[file.id][
-										info.attr.category
+								if (inf.category) {
+									if (!action_cat[file.id][inf.category]) action_cat[file.id][
+										inf.category
 									] = {
 										array: [],
-										xml: `<category name="${info.attr.category}">`
+										xml: `<category name="${inf.category}">`
 									};
-									action_cat[file.id][info.attr.category].array.unshift(info.attr);
-								}
-								for (const data of info.children.filter(i => i.name == 'selection')) {
-									if (
-										!actions[file.id].find(i => i.id == info.attr.id) 
-										&& data.attr.type != "facial"
-										&& searchStuff(file.themeId, data) 
-										&& !info.attr.category
-									) actions[file.id].unshift(info.attr);
-								}
+									action_cat[file.id][inf.category].array.unshift(inf);
+								} else actions[file.id].unshift(inf);
 							}
 						}
 					}

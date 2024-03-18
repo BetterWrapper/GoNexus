@@ -62,7 +62,7 @@
     </head>
     <body class="page-action-videomaker">
         <div class="modal" id="studioBlock">
-            <div class="modal-dialog modal-lg" style="width: 990px;">
+            <div class="modal-dialog modal-lg" style="width: 991px;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" id="closeStudio">
@@ -274,21 +274,24 @@
         <script>
             let tId, tmcId, studio = "2016", chars = [], hasChars = false, themes = [], loadingStudio = false, previewerMovieXML, previewerFlashvars;
             const flashvars = {
+                tts_enabled: 1,
+			    upl: 1,
+			    hb: 1,
+			    pts: 1,
+			    appCode: "go",
+			    uisa: 1,
+			    isLogin: "Y",
+			    tlang: "en_US",
+			    isEmbed: 1,
+			    isWide: "0",
+			    stutype: "tiny_studio",
+			    nextUrl: "javascript:parent.closeStudio2()",
+                siteId: window.location.host.startsWith("localhost") ? 7 : "go",
+                lid: window.location.host.startsWith("localhost") ? 7 : 13,
+			    ut: "50",
                 isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
                 apiserver: window.location.origin + "/",
                 staticserver: "https://wrapperclassic.netlify.app/",
-                isEmbed: 1,
-                ut: "50",
-                appCode: "go",
-                siteId: window.location.host.startsWith("localhost") ? 7 : "go",
-                lid: window.location.host.startsWith("localhost") ? 7 : 13,
-                isLogin: "Y",
-                tlang: "en_US",
-                isWide: "0",
-                upl: 1,
-                hb: "1",
-                pts: 0,
-                nextUrl: "javascript:parent.closeStudio2()"
             };
             function showImporter() {
                 showOverlayOnElement("#studiodiv", $("#import_popup_container"));
@@ -461,7 +464,7 @@
                                         jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=params&protocall=https&method=POST&apiPath=/.netlify/functions/api", params, () => {
                                             jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:100%"></div></div>');
                                             jQuery.post('/api/lvmVarsStatus?apiHost=wrapperclassic.netlify.app&protocall=https&method=POST&apiPath=/.netlify/functions/api', d => {
-                                                if (d.isThere) jQuery("#studiodiv").html(`<embed height="630" width="969" src="https://wrapperclassic.netlify.app/lvmEmbed.html"></embed>`)
+                                                if (d.isThere) jQuery("#studiodiv").html(`<embed height="629" width="954" src="https://wrapperclassic.netlify.app/lvmEmbed.html"></embed>`)
                                                 else jQuery("#studiodiv").html('<center>Some data was not sent in successfully to wrapper: classic. Please relaunch the 2010 Video Maker.</center>');
                                             });
                                         });
