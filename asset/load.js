@@ -7,6 +7,7 @@ const {
 const http = require("http");
 const base = Buffer.alloc(1, 0);
 const fs = require("fs");
+const fUtil = require("../misc/file");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -62,9 +63,22 @@ module.exports = function (req, res, url) {
 							});
 							else b = asset.load(aId);
 							res.setHeader("Content-Length", b.length);
-							res.setHeader("Content-Type", "audio/mp3");
-							if (data.studio) res.end(Buffer.concat([base, b]));
-							else res.end(b);
+							if (data.studio) {
+								if (data.studio == "2010") {
+									const r = asset.load(aId, true);
+									fUtil.convert(r, "mp3", "swf", "audioBitrate", 4.4e4).then(r => {
+										res.setHeader("Content-Type", "application/x-shockwave-flash");
+										const buffers = [];
+										r.on("data", b => buffers.push(b)).on("end", () => res.end(Buffer.concat([base, Buffer.concat(buffers)])));
+									})
+								} else {
+									res.setHeader("Content-Type", "audio/mp3");
+									res.end(Buffer.concat([base, b]));
+								}
+							} else {
+								res.setHeader("Content-Type", "audio/mp3");
+								res.end(b);
+							}
 						} catch (e) {
 							res.statusCode = 404;
 							console.log(e);

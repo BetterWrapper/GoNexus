@@ -13,6 +13,7 @@ function getTid(tId) {
 	switch (tId) {
 		case "custom": return "family";
 		case "action": return "cc2";
+		case "toonadv": return "cctoonadventure";
 		default: return tId;
 	}
 }
@@ -27,13 +28,17 @@ async function listAssets(data, makeZip) {
 	var files, xmlString;
 	switch (data.type) {
 		case "char": {
-			const tId = data.cc_theme_id || getTid(data.themeId) || "family";
+			const tId = (() => {
+				if (data.cc_theme_id) return data.cc_theme_id;
+				if (data.themeId) return getTid(data.themeId);
+				if (data.studio) return data.studio == "2010" ? "family" : "";
+			})();
 			const fatials = {};
 			const actions = {};
 			const actionPack = {};
 			const action_cat = {};
 			const defaultActions = {};
-			files = asset.list(data.userId, "char", 0, tId);
+			files = asset.list(data.page || '', data.userId, "char", 0, tId);
 			if (parseInt(data.studio) >= 2010 && parseInt(data.studio) < 2012) {
 				const isZip = data.studio == "2010" ? ".zip" : ".xml"
 				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
@@ -234,7 +239,7 @@ async function listAssets(data, makeZip) {
 			}
 			break;
 		} default: {
-			files = asset.list(data.userId, data.type);
+			files = asset.list(data.page, data.userId, data.type);
 			break;
 		}
 	}

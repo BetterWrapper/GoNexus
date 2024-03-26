@@ -23,6 +23,9 @@ module.exports = function (req, res, url) {
 					case "family": {
 						theme = "custom";
 						break;
+					} case "cctoonadventure": {
+						theme = "toonadv";
+						break;
 					}
 				}
 				async function oldStockCharsXML(stockChars) {

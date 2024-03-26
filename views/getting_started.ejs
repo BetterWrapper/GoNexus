@@ -6,7 +6,7 @@
         <meta name="description" content="">
         <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
         <meta name="generator" content="Hugo 0.101.0">
-        <title>Getting Started - GoNexus</title>
+        <title>Getting Started - Nexus</title>
         <link rel="stylesheet" href="/ui/css/common_combined.css">
         <style>
             #Player {
@@ -85,7 +85,29 @@
                 </div>
             </div>
         </form>
+        <div class="lightbox" id="video_share" style="display: none;">
+            <div class="lightbox_wrapper">
+                <h3 class="modal-title">Sharing a video</h3>
+                <hr>
+                <h4 class="compact">Below you may share the url of this video to users who are logged in to Nexus.</h4>
+                <p>Anyone who isn't logged in to Nexus will have no access to this video.</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">URL</span>
+                            <input id="videoShareURL" class="form-control" type="text" onclick="this.focus(); this.select();" readonly style="margin: 0px; width: 540px; height: 35px;"/>
+                        </div>
+                    </div>
+                </div>
+                <center><button class="btn btn-default" type="button" onclick="hideOverlayOnElement()">Close</button></center>
+                <a onclick="hideOverlayOnElement()" class="close_btn">&#215;</a>
+            </div>
+        </div>
         <script type="text/javascript">
+            function shareMyVideo(mId) {
+                $("#videoShareURL").val(`${window.location.origin}/videos?movieId=${mId}`);
+                showOverlayOnElement("#getting_started_modal", $("#video_share"))
+            }
             var chars, movies;
             function checkUserChars() {
                 $("#getting_started_modal").block();
@@ -125,7 +147,7 @@
                 function importFailed(e) {
                     $("#stuff").unblock();
                     $("#stuff").html(
-                        '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Failed</h4><br><hr><p>Something in GoNexus\'s servers has failed that caused your asset not to import successfully and that\'s okay, it happens! you can close this window and try to import your asset again. here is the error you have gotten:</p><br><hr>' + 
+                        '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Failed</h4><br><hr><p>Something in Nexus\'s servers has failed that caused your asset not to import successfully and that\'s okay, it happens! you can close this window and try to import your asset again. here is the error you have gotten:</p><br><hr>' + 
                         `<small>${typeof e != "string" ? e.toString() : e}</small>`
                         + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
                     );
@@ -146,7 +168,7 @@
                             $("#stuff").unblock();
                             $("#stuff").html(
                                 '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Complete!</h4><br><hr>' + 
-                                `<p>Because your asset has been imported to GoNexus successfully, you may now use the asset you just imported in your video. to find your asset, go to the Your Library section in the dropdown menu in the top left corner of the lvm and find your asset based off of the file type you choose for your asset.</p><br>`
+                                `<p>Because your asset has been imported to Nexus successfully, you may now use the asset you just imported in your video. to find your asset, go to the Your Library section in the dropdown menu in the top left corner of the lvm and find your asset based off of the file type you choose for your asset.</p><br>`
                                 + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
                             );
                         } else importFailed(d.msg);
@@ -197,7 +219,7 @@
                 <br>
                 <hr>
                 <p>
-                    The Import Window/Sidebar is a place where you can import all of your images/sounds to GoNexus so that you can use them in your video.
+                    The Import Window/Sidebar is a place where you can import all of your images/sounds to Nexus so that you can use them in your video.
                 </p>
                 <br>
                 <hr>
@@ -303,6 +325,30 @@
 					    clientThemePath: "/static/<client_theme>",
 					    tlang: "en_US",
 					    isWide: 1,
+					    nextUrl: "javascript:showMyVideo('<movieId>')",
+                    },
+                    allowScriptAccess: "always"
+				},
+                custom_studio_attrs: {
+                    type: "application/x-shockwave-flash",
+                    width: `960`,
+                    height: "630",
+                    id: "Studio"
+                },
+                custom_studio_data: {
+					flashvars: {
+                        apiserver: window.location.origin + "/",
+					    storePath: "/static/store/<store>",
+					    isEmbed: 1,
+					    ctc: "go",
+					    ut: 10,
+					    appCode: "go",
+					    siteId: "13",
+					    lid: 13,
+                        uisa: 1,
+					    clientThemePath: "/static/<client_theme>",
+					    tlang: "en_US",
+					    isWide: 0,
 					    nextUrl: "javascript:showMyVideo('<movieId>')",
                     },
                     allowScriptAccess: "always"
@@ -451,7 +497,7 @@
             }
             function getThemes() {
                 return new Promise((res, rej) => {
-                    jQuery.getJSON("/api/themes/get", res);
+                    jQuery.getJSON("/api/themes/get", d => res(d.filter(i => !i.attr.isHidden)));
                 })
             }
             function showGettingStartedModal(json) {
@@ -461,22 +507,32 @@
                     for (const i in htmlConfig) {
                         jQuery('#getting_started_'+i).html(htmlConfig[i]);
                     }
+                    function tHTML(tJSON) {
+                        if (getting_started_html_config.current.startsWith("char_")) return tJSON.filter(
+                            i => i.attr.cc_theme_id
+                        ).map(v => `<option value="${v.attr.cc_theme_id}">${v.attr.name}</option>`).join("")
+                        return tJSON.map(v => `<option value="${v.attr.cc_theme_id}">${v.attr.name}</option>`).join("")
+                    }
                     switch (getting_started_html_config.current) {
-                        case "char_themes_selector": {
+                        case "char_themes_selector": 
+                        case "themes_selector": 
+                        case "custom_lvm_themes_selector": {
                             const themes = await getThemes();
-                            $("#char_themes_selector").html(
-                                themes.filter(i => i.attr.cc_theme_id).map(v => `<option value="${
-                                    v.attr.cc_theme_id
-                                }">${v.attr.name}</option>`).join("")
-                            );
-                            break;
-                        } case "themes_selector": {
-                            const themes = await getThemes();
-                            $("#themes_selector").html(
-                                themes.map(v => `<option value="${
-                                    v.attr.id
-                                }">${v.attr.name}</option>`).join("")
-                            );
+                            $("#themes_selector").html(tHTML(themes));
+                            switch (getting_started_html_config.current) {
+                                case "custom_lvm_themes_selector": {
+                                    $("#other_options_custom_lvm").html(`
+                                        <label style="margin: 30px;">
+                                            https://wrapperclassic.netify.app/animation/<input type="text" value="2010" style="width: 35px;"/>/<input type="text" value="old_full.swf" style="width: 102px;"/>
+                                        </label>
+                                        <label for="tutoogle" style="float: left;">
+                                            Tutorial <input id="tutoggle" type="checkbox" onchange="tutoogle()"/>
+                                        </label>
+                                        <div id="tutStuff"></div>
+                                    `)
+                                    break;
+                                }
+                            }
                             break;
                         } case "cc": {
                             function setupCC() {
@@ -520,11 +576,13 @@
                                 </tr>
                             </thead>
                             <tbody>${movies.map(e => {
-                                return `<tr><td>${e.title}</td><td>${
-                                    new Date(e.date).toLocaleDateString()
-                                }</td><td><a href="javascript:showMyVideo('${
+                                return `<tr><td><a href="javascript:showMyVideo('${
                                     e.id
-                                }')">View Video</a> | <a href="javascript:deleteVideo('${
+                                }')">${e.title}</a></td><td>${
+                                    new Date(e.date).toLocaleDateString()
+                                }</td><td><a href="javascript:shareMyVideo('${
+                                    e.id
+                                }')">Share Video</a> | <a href="javascript:deleteVideo('${
                                     e.id
                                 }')">Delete Video</a></td> </tr>`;
                             })}</tbody>`);
@@ -544,7 +602,7 @@
             <!-- END OF HEADER -->
             <h2>Getting Started</h2>
             <div class="alert alert-info">
-                <h3>Welcome To GoNexus's Interactive Getting Started Guide!</h3>
+                <h3>Welcome To Nexus's Interactive Getting Started Guide!</h3>
                 <p>To proceed with the steps, please click on the Start Now button to get started</p><br>
                 <button class="btn btn-orange" onclick="showGettingStartedModal()">Start Now ></button>
             </div>

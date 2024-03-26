@@ -1,4 +1,4 @@
-<%- include("usercss.ejs") %>
+<%- css %>
 <style>
     .has-school,
     .is_school_admin {
@@ -647,6 +647,7 @@
     </div>
 </div>
 <script>
+    var currentCustomCSS = `<%= css %>`;
     const school_permissions_list = [
         {
             permission: 'publicvids',

@@ -50,9 +50,15 @@ function fetchCharOrder(themeId, pathname) {
  */
 module.exports = function (req, res, url) {
 	if (req.method != "GET") return;
+	let uInfo = {};
 	const query = url.query;
 	const userSession = session.get(req);
 	var attrs, params, title, filename, charOrder = '';
+	if (
+		userSession 
+		&& userSession.data 
+		&& userSession.data.current_uid
+	) uInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == userSession.data.current_uid);
 	if (
 		req.headers.host == "localhost" 
 		|| req.headers.host == `localhost:${process.env.SERVER_PORT}` 
@@ -279,13 +285,12 @@ module.exports = function (req, res, url) {
 					msg_index: "",
 					ad: 0,
 					has_asset_bg: 1,
-					has_asset_char: 0,
+					has_asset_char: 1,
 					initcb: "studioLoaded",
 					retut: 0,
 					featured_categories: null,
 					st: "",
 					uisa: 0,
-					u_info: "OjI6elg5SnZCOUEyTHZiY2lhZGRXTm9Nd0ljVWhNbEpGaXJFdkpEdkltdEp6RWhrQ0VIbXZIVTBjRTlhUGZKMjJoVHVTUE5vZk1XYnFtSE1vZG5TeldyQVJNcDFmUFB2NDVtR0FTSlZZ",
 					tm: "FIN",
 					tray: "custom",
 					isWide: 1,
@@ -365,7 +370,9 @@ module.exports = function (req, res, url) {
 		}
 	}
 	Object.assign(params ? params.flashvars : {}, query);
+	console.log(uInfo);
 	ejs.renderFile(`./views/${filename}.ejs`, {
+		css: `<style>${uInfo.settings ? uInfo.settings.api.customcss : ""}</style>`,
 		returnto: url.query.returnto,
 		title,
 		attrs,

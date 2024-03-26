@@ -71,9 +71,6 @@
                             <a class="list-group-item nav-cate active" id="all-videos" onclick="switchFilters('all')">
                                 All Videos <span class="badge" id="all-videos-count">0</span>
                             </a>
-                            <a class="list-group-item nav-cate" id="qvm-videos" onclick="switchFilters('qvm')">
-                                Made With The QVM <span class="badge" id="qvm-videos-count">0</span>
-                            </a>
                         </div>
                     </div>
                     <div class="col-md-8 col-md-pull-4">
@@ -87,7 +84,10 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span class="sr-only">Close</span>
+                            </button>
                             <h4 class="modal-title"></h4>
                         </div>
                         <div class="modal-body">
@@ -132,17 +132,13 @@
                         allowScriptAccess: "always",
                         allowFullScreen: "true",
                     }));
-                    $('#video-modal-wistia').modal({keyboard: false, backdrop: true}).find(".modal-title").text(movieTitle);
+                    $('#video-modal-wistia').modal('show').find(".modal-title").text(movieTitle);
                 }
                 function showByCate(cate) {
                     $('.video-row').each(function(index, element) {
                         switch (cate) {
                             case "all": {
                                 $(element).show();
-                                break;
-                            } case "qvm": {
-                                $(element).hide();
-                                $(".is-qvm").show();
                                 break;
                             } default: {
                                 $(element).hide();
@@ -158,23 +154,17 @@
                     return $(document).width() > 991;
                 }
                 $.post("/api/getAllUsers").done(d => {
-                    let qvmVidsCount = 0;
                     let allVidsCount = 0;
-                    let type = '';
                     for (const userInfo of d) {
                         $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${userInfo.id}')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
                         $(`#${userInfo.id}-videos-count`).text(userInfo.movies.length);
                         for (const movieInfo of userInfo.movies) {
                             allVidsCount++
-                            if (movieInfo.hiddenTag == "qvm") {
-                                qvmVidsCount++
-                                type += ` is-qvm ${userInfo.id}`;
-                            } else type = ` ${userInfo.id}`;
-                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer${type}" data-uid="${userInfo.id}">
+                            $("#allvideos").append(`<div class="row video-row video-row-cate-explainer ${userInfo.id}" data-uid="${userInfo.id}">
                                 <div class="col-sm-4">
                                     <div class="video-thumbnail">
                                         <div class="video-thumbnail-explainer">
-                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', \`${movieInfo.title}\`, '${userInfo.id}')">
+                                            <a class="video-play video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">
                                                 <img src="/movie_thumbs/${movieInfo.id}.png"/>
                                                 <div class="video-cate video-cate-explainer clearfix">
                                                     <span>${movieInfo.title}</span>
@@ -186,7 +176,7 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="video-title">
-                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', \`${movieInfo.title}\`, '${userInfo.id}')">${movieInfo.title}</a>
+                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">${movieInfo.title}</a>
                                     </div>
                                     <div class="video-length">${movieInfo.durationString}</div>
                                     <div class="video-desc">${movieInfo.desc}</div>
@@ -195,7 +185,6 @@
                             if ((new URLSearchParams(window.location.search)).get("movieId") && (new URLSearchParams(window.location.search)).get("movieId") == movieInfo.id) loadVideoPlayer(movieInfo.id, movieInfo.title, userInfo.id);
                         }
                     }
-                    $("#qvm-videos-count").text(qvmVidsCount);
                     $("#all-videos-count").text(allVidsCount);
                 });
                 $.waypoints('extendFn', 'sticky', function(opt) {

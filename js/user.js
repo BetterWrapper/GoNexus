@@ -1,5 +1,5 @@
 /**
- * Account System For GoNexus (Codename: BetterWrapper).
+ * Account System For Nexus (Codenames: GoNexus & BetterWrapper).
  * Firebase is required in order to run this file.
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
@@ -209,7 +209,6 @@ auth.onAuthStateChanged(user => {
         });
         if (!user.emailVerified) {
             jQuery.post(`/api/fetchAPIKeys`, (d) => {
-                console.log(d);
                 const json = JSON.parse(d);
                 addVal2Element('freeconvert-key', json.freeConvertKey);
                 addVal2Element('topmediaai-key', json.topMediaAIKey);
@@ -327,6 +326,7 @@ function logout(t) {
     });
 }
 function loggedIn(user) {
+    jQuery.blockUI();
     jQuery.post(`/api/getUserSWFFiles?userId=${user.uid || user.id}`, files => {
         for (const file of files) {
             $("#FlashGamePlayer_swfFilesDropdown").show();
@@ -342,13 +342,19 @@ function loggedIn(user) {
         admin: user.admin,
         uid: user.uid || user.id
     }, () => {
-        jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
-            console.log(d);
-            const json = JSON.parse(d);
-            addVal2Element('freeconvert-key', json.freeConvertKey);
-            addVal2Element('topmediaai-key', json.topMediaAIKey);
-            if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
-        });
+        jQuery.post("/api/checkCurrentCustomCSS", {
+            current: currentCustomCSS.split("&lt;style&gt;")[1].split("&lt;/style&gt;")[0],
+            uid: user.id || user.uid
+        }, d => {
+            if (JSON.parse(d).reload) window.location.reload();
+            else jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
+                const json = JSON.parse(d);
+                jQuery.unblockUI();
+                addVal2Element('freeconvert-key', json.freeConvertKey);
+                addVal2Element('topmediaai-key', json.topMediaAIKey);
+                if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
+            });
+        })
     });
     hideElement('signup-button');
     hideElement('login-button');
@@ -367,38 +373,14 @@ function loggedIn(user) {
             break;
         } case "/dashboard": {
             if (user.role) {
-                $(`#${user.role}-stuff`).show();
-                if (user.role == "student") $("#GoNexus_intro").hide();
-            }
-            else $(`#personal-stuff`).show();
+                if (user.role != "student") $(`#${user.role}-stuff`).show();
+            } else $(`#personal-stuff`).show();
             $("#loadFTUserFeeds").text('load more');
             $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
             loadFTUserFeeds();
             break;
         } case "/movies": {
-            jQuery.getJSON(`/movieList?uid=${user.uid || user.id}`, (meta) => {
-                document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
-                if (meta.length < 1) {
-                    jQuery("#myvideos").hide();
-                    jQuery("#novideos").show();
-                    jQuery("#allvideos").hide();
-                } else for (const tbl of meta) {
-                    videoCounts.all++
-                    const date = tbl.date.split("T")[0];
-                    const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
-                    jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${
-                        tbl.desc
-                    }</div><div>${
-                        tbl.durationString
-                    }</div></td><td>${usDate}</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${
-                        tbl.id
-                    }')"></a><a href="javascript:movieRedirect('/go_full?movieId=${tbl.id}', '${tbl.id}')"></a><a href="javascript:movieRedirect('/movies/${
-                        tbl.id
-                    }.zip', '${tbl.id}')"></a><a onclick="deleteMovie('${
-                        tbl.id
-                    }')"></a></td></tr>`);
-                }
-            })
+            refreshMovieList();
             break;
         } case "/quickvideo": {
             GoLite.showSelectCCOverlay = function(y) {
@@ -603,7 +585,7 @@ function loadUserContent(userData) {
                 addText2Element('user-name', meta.name);
                 addText2Element('user-link', meta.name);
                 addLink2Element('user-link', `/user?id=${params.get("id")}`)
-                document.title = `${meta.name} On GoNexus`;
+                document.title = `${meta.name} On Nexus`;
                 $.getJSON(`/movieList?uid=${params.get("id")}`, (d) => {
                     let json;
                     if (userData && hasPermission('publicvids') && params.get("id") == userData.uid) json = d;

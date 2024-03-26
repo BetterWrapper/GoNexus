@@ -93,17 +93,13 @@ var GT = new Gettext({'locale_data': json_locale_data});
 
 <div class="container">
     <div class="page-header">
-        <h1 class="h2">
-            <ol class="breadcrumb video-breadcrumb">
-                <li class="base" data-folder-id="" data-category="all" data-page="1" data-sort-by="lastmod" data-status="" data-keyword="" data-folder-name="">Your Videos</li>
-            </ol>
-        </h1>
+        <h1 class="h2">Your Videos</h1>
     </div>
 
     <div class="row" id="video-listing">
         <div class="col-md-4 col-md-push-8">
             <div id="videos-nav" class="list-group folder-list folder-access">
-                <div class="list-group-item folder-item active" data-folder-id="" data-category="all" data-page="1" data-sort-by="lastmod" data-status="" data-keyword="" data-folder-name="">
+                <div class="list-group-item folder-item active">
                     <span class="title folder-name">Your Videos</span>
                     (<span class="video-count count-all">0</span>)
                 </div>
@@ -111,11 +107,10 @@ var GT = new Gettext({'locale_data': json_locale_data});
         </div>
 
         <div class="col-md-8 col-md-pull-4">
-            <input type="hidden" name="ct" value="FqKXQlssBymA4syBJy5c1wqQq5_QLuWMrWvTH07Cdtp05gvmlOvqho7pEGo4ljDAD6KcXYaTaoxjtjrkZUaCo0PNrF5PQDFOgKmpXlBNwsYkKBnK7efEphlvMXfG8wdYyzzH+TXCmkMJEWo+yA3ADlgAN8mTBUOqO0tZi5Mx1QWH+cuVVyihsSmXtpoa0NYHq8f3HwFfmhuo71WHPtH8lSTwNcvGX5Q96YPHhSuqk=">
 
 <div class="grid video-listing-grid hide-folders folder-access" id="video-listing-grid">
 
-    <div class="grid-viewport video-listing" id="videos">
+    <form class="grid-viewport video-listing" id="videos" action="javascript:;">
         <table class="table table-hover table-generic" id="novideos" style="display:none">
             <tfoot>
                 <tr>
@@ -131,15 +126,17 @@ var GT = new Gettext({'locale_data': json_locale_data});
         <table class="table table-hover table-generic" id="myvideos">
             <thead class="video-list-head">
                 <tr class="video-list-tr">
+                    <td><input type="checkbox" onchange="selectAllMovies()"/></td>
+                    <td><button class="btn btn-white" onclick="deleteSelectedMovies()"><i class="glyphicon glyphicon-folder-close"></i> Delete</button></td>
                     <td></td>
-                    <td>Video Title</td>
-                    <td>Last Modified</td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                 </tr>
             </thead>
             <tbody class="video-list-body" id="allvideos"></tbody>
         </table>
-    </div>
+    </form>
 
 
 </div>
@@ -267,9 +264,6 @@ var videoCounts = {
     all: "0",
     trash: "0"
 };
-
-// Folder counts. To be updated by myvideos.js.
-var folderCounts = 0;
 function refreshMovieList() {
     jQuery.getJSON(`/movieList?uid=${userData.uid || userData.id}`, (meta) => {
         document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
@@ -283,22 +277,36 @@ function refreshMovieList() {
             jQuery("#allvideos").show();
             for (const tbl of meta) {
                 videoCounts.all++
-                const date = tbl.date.split("T")[0];
-                const usDate = `${date.split("-")[1]}/${date.split("-")[2]}/${date.split("-")[0]}`;
-                jQuery("#allvideos").append(`<tr><td><img src="/movie_thumbs/${tbl.id}.png"></td><td><div>${tbl.title}</div><div>${tbl.desc}</div><div>${
-                    tbl.durationString
-                }</div></td><td>${
-                    usDate
-                }</td><td><a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${tbl.id}')"></a><a href="javascript:movieRedirect('/go_full?movieId=${
-                    tbl.id
-                }', '${tbl.id}')"></a><a href="javascript:movieRedirect('/movies/${tbl.id}.zip', '${tbl.id}')"></a><a onclick="deleteMovie('${
-                    tbl.id
-                }')"></a></td></tr>`);
+                const date = new Date(tbl.date).toLocaleDateString();
+                jQuery("#allvideos").append(`<tr>
+                    <td>
+                        <input type="checkbox" name="${tbl.id}" id="movieSelect_${tbl.id}"/>
+                    </td>
+                    <td>
+                        <img src="/movie_thumbs/${tbl.id}.png" width="50" height="30"/>
+                        <a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${tbl.id}')">${tbl.title}</a><br>Modified on ${
+                            date
+                        }
+                    </td><td></td><td>
+                        <a onclick="shareMovie('${tbl.id}')"><i class="glyphicon glyphicon-share-alt"></i></a>
+                    </td>
+                    <td>
+                        <a href="javascript:movieRedirect('/go_full?movieId=${
+                            tbl.id
+                        }', '${tbl.id}')"><i class="glyphicon glyphicon-edit"></i></a>
+                    </td>
+                    <td>
+                        <a onclick="deleteMovie('${
+                            tbl.id
+                        }')"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
+                </tr>`);
             }
         }
     })
 }
 function movieRedirect(url, mId) { // movie version of a redirect. i don't know why it's here lol
+    jQuery.blockUI();
     let action;
     switch (url) {
         case `/player?movieId=${mId}`: {
@@ -345,9 +353,9 @@ function movieCallback(action, mId, callback) { // movie version of a callback. 
     });
     else alert("you need to specify an action and callback function in order to do a movie version of a callback.");
 }
-function deleteMovie(mId) {
+function deleteMovie(mId, bypassConfirm = false) {
     movieCallback("delete your movie", mId, () => {
-        const yesorno = confirm(`Are you sure that you want to delete movie ${mId}?`);
+        const yesorno = bypassConfirm || confirm(`Are you sure that you want to delete movie ${mId}?`);
         if (yesorno) $.post('/api/movie/delete', {
             mId, 
             uId: userData.uid || userData.id
@@ -370,97 +378,6 @@ function deleteMovie(mId) {
 <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
 <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
 <script src="/js/user.js"></script>
-<style>
-thead.video-list-head {
-	border-bottom: 2px solid #ddd;
-	border-top: 1px solid #ddd;
-}
-
-tbody.video-list-body>tr.video-list-tr {
-	border-top: 0;
-	border-bottom: 1px solid #ddd;
-}
-
-tbody.video-list-body>tr.video-list-tr:hover {
-	background-color: #f5f5f5;
-}
-
-tr.video-list-tr>:nth-child(1) {
-	width: 64px;
-}
-
-tr.video-list-tr>:nth-child(1)>img {
-	height: 36px;
-}
-
-tr.video-list-tr>:nth-child(1) {
-	word-break: break-word;
-}
-
-tr.video-list-tr>:nth-child(2) {
-	color: #999;
-}
-
-tr.video-list-tr>:nth-child(2)>:nth-child(1) {
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-tr.video-list-tr>:nth-child(2)>:nth-child(2) {
-	font-family: monospace;
-}
-
-tr.video-list-tr>:nth-child(3) {
-	width: 200px;
-}
-
-tr.video-list-tr>:nth-child(3)>* {
-	font-family: monospace;
-	display: inline-block;
-	text-align: center;
-	font-size: 14px;
-}
-
-tr.video-list-tr>:nth-child(4) {
-	font-family: 'GlyphiconsRegular';
-	text-decoration: none;
-	padding-top: 5px;
-	font-size: 14px;
-	width: 122px;
-}
-
-tr.video-list-tr>:nth-child(4)>a {
-	display: inline-block;
-	text-decoration: none;
-	padding-right: 10px;
-	color: #474747;
-}
-
-tr.video-list-tr>:nth-child(4)>a:hover {
-	color: #2d9e88;
-}
-
-tr.video-list-tr>:nth-child(4)>:nth-child(1)::before {
-	content: '\E174';
-}
-
-tr.video-list-tr>:nth-child(4)>:nth-child(2)::before {
-	content: '\E235';
-}
-
-tr.video-list-tr>:nth-child(4)>:nth-child(3)::before {
-	content: '\E182';
-}
-tr.video-list-tr>:nth-child(4)>:nth-child(4)::before {
-	content: '\E017';
-}
-@font-face {
-    font-family: 'GlyphiconsRegular';
-    src: url('/html/fonts/glyphicons-regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-</style>
 <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video.js.gz.js"></script>
 <script src="/js/mymovies.js"></script>
 

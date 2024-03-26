@@ -62,17 +62,21 @@ module.exports = function (req, res, url) {
 				break;
 			} case "/goapi/saveCCThumbs/": {
 				loadPost(req, res).then(data => {
-					var id = data.assetId;
-					var thumb = Buffer.from(data.thumbdata, "base64");
-					character.saveThumb(thumb, id);
-					res.end(`0${id}`);
+					// fake a thumb save because we have no thumbdata
+					res.end(`0${data.assetId}`);
 				});
 				break;
 			} case "/ajax/saveCCCharacterTemplate": {
 				loadPost(req, res).then(data => {
 					const newId = fUtil.getNextFileId("char-", ".xml");
 					if (!data.assetId.startsWith("c-")) {
-						fs.readdirSync(`./premadeChars`).forEach(folder => {
+						(
+							[
+								"xml",
+								"thumb",
+								"head"
+							]
+						).forEach(folder => {
 							fs.readdirSync(`./premadeChars/${folder}`).forEach(file => {
 								const buffer = fs.readFileSync(`./premadeChars/${folder}/${file}`);
 								if (file.startsWith(data.assetId)) {

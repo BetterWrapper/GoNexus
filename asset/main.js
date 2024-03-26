@@ -3,8 +3,8 @@ const fs = require("fs");
 
 module.exports = {
 	folder: './_ASSETS',
-	load(aId) {
-		return fs.readFileSync(`${this.folder}/${aId}`);
+	load(aId, isStream = false) {
+		return fs[isStream ? 'createReadStream' : 'readFileSync'](`${this.folder}/${aId}`);
 	},
 	update(data) {
 		const meta = {
@@ -45,7 +45,8 @@ module.exports = {
 			} else if (info.id.startsWith("c-")) {
 				const paths = [
 					fUtil.getFileIndex("char-", ".xml", info.id.substr(2)),
-					fUtil.getFileIndex("char-", ".png", info.id.substr(2))
+					fUtil.getFileIndex("char-", ".png", info.id.substr(2)),
+					fUtil.getFileIndex("head-", ".png", info.id.substr(2))
 				];
 				for (const path of paths) fs.unlinkSync(path);
 			} else fs.unlinkSync(`${this.folder}/${info.id}`);
@@ -61,7 +62,8 @@ module.exports = {
 			} if (data.id.startsWith("c-")) {
 				const paths = [
 					fUtil.getFileIndex("char-", ".xml", data.id.substr(2)),
-					fUtil.getFileIndex("char-", ".png", data.id.substr(2))
+					fUtil.getFileIndex("char-", ".png", data.id.substr(2)),
+					fUtil.getFileIndex("head-", ".png", data.id.substr(2))
 				];
 				for (const path of paths) fs.unlinkSync(path);
 			} else fs.unlinkSync(`${this.folder}/${data.id}`);
@@ -82,12 +84,20 @@ module.exports = {
 			return meta.id;
 		}
 	},
-	list(uId, type, subtype, themeId) {
+	list(page, uId, type, subtype, themeId) {
 		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`)).users.find(i => i.id == uId);
 		let aList = json.assets.filter(i => i.type == type);
 		if (subtype) aList = aList.filter(i => i.subtype == subtype);
 		if (themeId) aList = aList.filter(i => i.themeId == themeId);
-		return aList;
+		const table = [];
+		console.log(4 * page, 4 * page + 4);
+		if (type == "char" && page) for (var i = 4 * page; i < 4 * page + 4; i++) {
+			console.log(i, aList[i])
+			if (aList[i]) table.unshift(aList[i]);
+		}
+		else for (const i of aList) table.unshift(i);
+		console.log(table);
+		return table;
 	},
 	meta2Xml(v) {
 		let xml;

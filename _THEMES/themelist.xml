@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <list version="1.0">
 	<fvm_meta theme_code="" is_biz="0" />
-	<theme id="custom" name="Comedy World" thumb="" cc_theme_id="family" />
-	<theme id="action" name="Lil' Peepz" thumb="" cc_theme_id="cc2" />
-	<theme id="retro" name="Cartoon Classics" thumb="ann-stand.swf" />
-    <theme id="anime" name="Anime" thumb="" cc_theme_id="anime" />
-    <theme id="ninjaanime" name="Ninja Anime" thumb="" cc_theme_id="ninjaanime" />
-    <theme id="chibi" name="Chibi Peepz" thumb="" cc_theme_id="chibi" />
-	<theme id="Comm" name="Community Library"/>
+	<theme id="custom" name="Comedy World" ext="jpg" cc_theme_id="family" qvm="everydaylife" />
+	<theme id="action" name="Lil' Peepz" ext="jpg" cc_theme_id="cc2" qvm="basketball" />
+	<theme id="retro" name="Cartoon Classics" ext="jpg" />
+    <theme id="anime" name="Anime" ext="jpg" cc_theme_id="anime" />
+    <theme id="ninjaanime" name="Ninja Anime" ext="jpg" cc_theme_id="ninjaanime" />
+    <theme id="chibi" name="Chibi Peepz" ext="jpg" cc_theme_id="chibi" />
+	<theme id="toonadv" name="Toon Adventure" ext="png" cc_theme_id="cctoonadventure" />
+	<theme id="Comm" name="Community Library" isHidden="1"/>
 	<word>Nexus</word>
 	<whiteword />
 	<excludeAssetIDs />

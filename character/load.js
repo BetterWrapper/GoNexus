@@ -452,13 +452,30 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/api/getChars": {
 					loadPost(req, res).then(async data => {
-						const json = asset.list(data.userId, 'char', 0, data.cc_theme_id);
-						if (!json) return res.end(JSON.stringify([
-							{
-								error: "Unable to get your characters. userid: " + data.userId
-							}
-						]));
-						res.end(JSON.stringify(json));
+						try {
+							const json = asset.list('', data.userId, 'char', 0, data.cc_theme_id);
+							if (!json) return res.end(
+								JSON.stringify(
+									[
+										{
+											error: "Unable to get your characters. userid: " + data.userId
+										}
+									]
+								)
+							);
+							res.end(JSON.stringify(json));
+						} catch (e) {
+							console.log(e);
+							res.end(
+								JSON.stringify(
+									[
+										{
+											error: e.toString()
+										}
+									]
+								)
+							);
+						}
 					});
 					break;
 				} case "/goapi/getCcCharCompositionXml/": {
@@ -615,6 +632,11 @@ module.exports = function (req, res, url) {
 									}
 								}
 								res.end(await zip.zip());	
+							} else if (data.actionId.endsWith(".swf")) {
+								res.setHeader("Content-Type", "application/x-shockwave-flash");
+								res.end(fs.readFileSync(`./premadeChars/${
+									charId
+								}/${data.actionId}`));
 							} else if (data.actionId.endsWith(".xml")) {
 								res.setHeader("Content-Type", "application/xml");
 								for (const info of result.children) {
@@ -701,6 +723,11 @@ module.exports = function (req, res, url) {
 									}
 								}
 								res.end(await zip.zip());	
+							} else if (data.facialId.endsWith(".swf")) {
+								res.setHeader("Content-Type", "application/x-shockwave-flash");
+								res.end(fs.readFileSync(`./premadeChars/${
+									charId
+								}/head/${data.facialId}`));
 							} else if (data.facialId.endsWith(".xml")) {
 								res.setHeader("Content-Type", "application/xml");
 								for (const info of result.children) {

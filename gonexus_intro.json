@@ -19,7 +19,7 @@
             "p": "In order to make a character in Nexus, you need to select a theme in order to get started.",
             "select": {
                 "class": "form-control",
-                "id": "char_themes_selector",
+                "id": "themes_selector",
                 "name": "theme"
             }
         },
@@ -123,6 +123,48 @@
                 "class": "table getting_started_user_videos"
             }
         },
-        "footer": ""
+        "footer": "",
+        "next": "custom_lvm_themes_selector"
+    },
+    "custom_lvm_themes_selector": {
+        "header": {
+            "h4": "Custom LVM"
+        },
+        "body": {
+            "p": "Sometimes, you may want to see what the Video Maker for GoAnimate looked like a few years after GoAnimate was made. Thankfully we brought along a feature to help with just that. Below, you may select what lvm year you want and a filename you want displayed after it. There are some pretty cool hidden features you can enable on the LVM as well using the Other Options section below.",
+            "small": "First, Select a theme.",
+            "select": {
+                "class": "form-control",
+                "id": "themes_selector",
+                "name": "theme"
+            },
+            "h6": "Secondly, select what features you want enabled on the LVM while you are making a video.",
+            "div": {
+                "id": "other_options_custom_lvm"
+            }
+        },
+        "footer": {
+            "input": {
+                "type": "button",
+                "class": "btn btn-orange",
+                "onclick": "newAnimation()",
+                "value": "Create A Video"
+            }
+        },
+        "next": "custom_lvm"
+    },
+    "custom_lvm": {
+        "header": {
+            "h4": "Custom LVM"
+        },
+        "body": {
+            "p": "You have selected what year and filename you wanted for the LVM and enabled some options as well.",
+            "small": "Below, you should see the Studio load now. If not, flash may not be enabled.",
+            "div": {
+                "class": "getting_started_custom_lvm_video_maker"
+            }
+        },
+        "footer": "",
+        "prev": "custom_lvm_themes_selector"
     }
 }

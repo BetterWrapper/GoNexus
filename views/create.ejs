@@ -338,9 +338,16 @@
                 loadingStudio = true;
             }
             function checkStudioLoadingStatus() {
-                if (loadingStudio && studio == (new URLSearchParams(window.location.search)).get("lvm") && tId == (new URLSearchParams(window.location.search)).get("tId")) {
+                const params = new URLSearchParams(window.location.search);
+                if (loadingStudio && studio == params.get("lvm") && tId == params.get("tId")) {
                     $("#studioLoading").modal('hide');
-                    newAnimation();
+                    newAnimation({
+                        customlvmfile: studio == "2016" ? "go" : "old" + "_full.swf",
+                        tutorial: false,
+                        lvmmode: "block",
+                        ct2012: "go",
+                        year: params.get("lvm")
+                    });
                 }
             }
             const interactiveTutorial = {
@@ -395,17 +402,17 @@
                         if (e) e.returnValue = 'You are about to lose all your unsaved changes in the studio.';
                     };
                     const attrs = {
-                        data: `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val()}/${json.customlvmfile}`,
+                        data: `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val() || json.year}/${json.customlvmfile}`,
                         width: "100%",
                         height: "100%",
                         type: "application/x-shockwave-flash"
                     };
                     const swf = parseInt(studio) >= 2013 ? `/api/serveLVMViaURL?i=https://wrapperclassic.netlify.app/animation/${
-                        $("#customlvmyear").val()
-                    }/${json.customlvmfile}` : `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val()}/${json.customlvmfile}`;
+                        $("#customlvmyear").val() || json.year
+                    }/${json.customlvmfile}` : `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val() || json.year}/${json.customlvmfile}`;
                     const storePath = parseInt(studio) >= 2013 ? `/static/2011/store/<store>` : `https://wrapperclassic.netlify.app/static/store/<store>`;
                     const clientThemePath = parseInt(studio) >= 2013 ? `/static/2012/477/<client_theme>?themeColor=${json.ct2012 || "go"}` : `https://wrapperclassic.netlify.app/static/tommy/${
-                        $("#customlvmyear").val()
+                        $("#customlvmyear").val() || json.year
                     }/<client_theme>`;
                     flashvars.studio = studio;
                     flashvars.userId = userData.uid || userData.id;
@@ -546,13 +553,13 @@
                 }
                 const imgbase = 'https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/1ea6ff3d5d8b1cff8148745784632fa1fef8399a/server/pages/img/themes/';
                 for (const theme of d) {
-                    if (theme.attr.id == "Comm") continue;
+                    if (theme.attr.isHidden == "1") continue;
                     themes.push(theme.attr);
                     const elem = `<div class="col-sm-6 col-md-4 col-lg-4">
                         <div class="theme" id="thm-${theme.attr.id}">
                             <div class="theme-cell">
                                 <div class="theme-cover launch">
-                                    <img src="${imgbase}${theme.attr.id}.jpg" alt="${theme.attr.name}">
+                                    <img src="${imgbase}${theme.attr.id}.${theme.attr.ext}" alt="${theme.attr.name}">
                                 </div>
                                 <div class="theme-meat">
                                     <div class="apps">
@@ -574,11 +581,8 @@
                                             </a>` : ''
                                         }
                                         ${
-                                            theme.attr.id == "custom" ? `<a class="btn btn-default" 
-                                                href="/quickvideo?filename=everydaylife" title="" 
-                                                data-original-title="QVM Template"><i class="i-qvm"></i>
-                                            </a>` : theme.attr.id == "action" ? `<a class="btn btn-default" 
-                                                href="/quickvideo?filename=basketball" title="" 
+                                            theme.attr.qvm ? `<a class="btn btn-default" 
+                                                href="/quickvideo?filename=${theme.attr.qvm}" title="" 
                                                 data-original-title="QVM Template"><i class="i-qvm"></i>
                                             </a>` : ''
                                         }

@@ -87,7 +87,7 @@ module.exports = {
 								"Icy-Metadata": "1",
 							}
 						}, (r) => {
-							fUtil.convertToMp3(r, "wav").then(r => {
+							fUtil.convert(r, "wav", "mp3", "audioBitrate", 4.4e4).then(r => {
 								const buffers = [];
 								r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
 							}).catch(rej);

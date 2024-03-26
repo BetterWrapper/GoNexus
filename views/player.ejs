@@ -43,8 +43,8 @@
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-        <script src="/js/user.js"></script>
         <script src="/js/common_combined.js"></script>
+        <script src="/js/user.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.swfobject.min.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.blockUI-2.66.0.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.scrollTo.min.js"></script>
@@ -253,7 +253,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-addon">URL</span>
-                                        <textarea id="videoShareURL" class="form-control gtm-ga-event" type="text" data-gtmv-action="Share - Click text field" data-gtmv-category="" data-gtmv-label="10753900 - Guest" onclick="this.focus(); this.select(); restrictSizeChange()" readonly="" style="margin: 0px; width: 515px; height: 36px;"></textarea>
+                                        <textarea id="videoShareURL" class="form-control gtm-ga-event" type="text" data-gtmv-action="Share - Click text field" data-gtmv-category="" data-gtmv-label="10753900 - Guest" onclick="this.focus(); this.select(); restrictSizeChange()" readonly="" style="margin: 0px; width: 520px; height: 40px;"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -522,14 +522,14 @@
                     location.href = "/go_full?loadFromAutosave=true&movieId=<%= params.flashvars.movieId %>";
                 })
                 function restrictSizeChange() {
-                    $(".form-control, .gtm-ga-event").css("margin", "0px").css("width", "515px").css("height", "36px");
+                    $(".form-control, .gtm-ga-event").css("margin", "0px").css("width", "520px").css("height", "40px");
                 }
                 $("#videoShareURL").val(`${window.location.origin}/videos?movieId=<%= params.flashvars.movieId %>`);
                 jQuery.post("/api/getAllUsers", d => setTimeout(() => {
                     for (const f of d) {
                         const meta = f.movies.find(i => i.id == '<%= params.flashvars.movieId %>');
                         const movieTitleElement = document.getElementsByClassName('movie-title');
-                        for (const elem of movieTitleElement) elem.innerHTML = meta.title;
+                        if (meta) for (const elem of movieTitleElement) elem.innerHTML = meta.title;
                         jQuery("#user-link").html(f.name);
                         if (f.id == (userData.uid || userData.id)) $(".owner-button").show();
                         ((d) => {
