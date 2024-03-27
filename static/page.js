@@ -370,7 +370,6 @@ module.exports = function (req, res, url) {
 		}
 	}
 	Object.assign(params ? params.flashvars : {}, query);
-	console.log(uInfo);
 	ejs.renderFile(`./views/${filename}.ejs`, {
 		css: `<style>${uInfo.settings ? uInfo.settings.api.customcss : ""}</style>`,
 		returnto: url.query.returnto,

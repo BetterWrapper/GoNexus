@@ -343,7 +343,7 @@ function loggedIn(user) {
         uid: user.uid || user.id
     }, () => {
         jQuery.post("/api/checkCurrentCustomCSS", {
-            current: currentCustomCSS.split("&lt;style&gt;")[1].split("&lt;/style&gt;")[0],
+            current: currentCustomCSS.split("&lt;style&gt;")[1].split("&lt;/style&gt;")[0].split("&amp;").join("&").split("&#34;").join('"'),
             uid: user.id || user.uid
         }, d => {
             if (JSON.parse(d).reload) window.location.reload();

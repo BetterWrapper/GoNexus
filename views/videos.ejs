@@ -91,9 +91,7 @@
                             <h4 class="modal-title"></h4>
                         </div>
                         <div class="modal-body">
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <object class="embed-responsive-item" id="wistia-player" data="/static/animation/player.swf" type="application/x-shockwave-flash" height="100%" width="100%"></object>
-                            </div>
+                            <div class="embed-responsive embed-responsive-16by9" id="modal-player"></div>
                         </div>
                     </div>
                 </div>
@@ -104,22 +102,31 @@
             <script src="/js/user.js"></script>
             <script>
                 function toAttrString(table) {
-                    return typeof table == "object"
-                        ? Object.keys(table)
-                                .filter((key) => table[key] !== null)
-                                .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`)
-                                .join("&")
-                        : table.replace(/"/g, '\\"');
+                    return typeof table == "object" ? Object.keys(table).filter((key) => table[key] !== null).map((key) => `${
+                        encodeURIComponent(key)
+                    }=${encodeURIComponent(table[key]) }`).join("&") : table.replace(/"/g, '\\"');
                 }
                 function toParamString(table) {
-                    return Object.keys(table)
-                        .map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`)
-                        .join(" ");
+                    return Object.keys(table).map((key) => `<param name="${key}" value="${toAttrString(table[key])}">`).join(" ");
+                }
+                function toObjectString(attrs, params) {
+                    return `<object ${Object.keys(attrs).map((key) => `${key}="${attrs[key].replace(/"/g, '\\"')}"`).join(" ")}>${
+                        toParamString(params)
+                    }</object>`;
                 }
                 function loadVideoPlayer(movieId, movieTitle, uid) {
-                    if (!movieId) return;
-                    $('#wistia-player').html(toParamString({
+                    if (!movieId) return
+                    $('#video-modal-wistia').modal('show').find(".modal-title").text(movieTitle);
+                    $("#modal-player").html(toObjectString({
+                        class: "embed-responsive-item",
+                        id: "wistia-player",
+                        data: "/static/animation/player.swf",
+                        type: "application/x-shockwave-flash",
+                        height: "100%",
+                        width: "100%",
+                    }, {
                         flashvars: {
+                            thumbnailURL: `/movie_thumbs/${movieId}.png`,
                             movieOwnerId: uid,
                             movieId,
                             apiserver: "/",
@@ -132,7 +139,6 @@
                         allowScriptAccess: "always",
                         allowFullScreen: "true",
                     }));
-                    $('#video-modal-wistia').modal('show').find(".modal-title").text(movieTitle);
                 }
                 function showByCate(cate) {
                     $('.video-row').each(function(index, element) {
@@ -239,6 +245,9 @@
                     }, 200);
                     return false;
                 }
+                $("#video-modal-wistia").on('hide.bs.modal', function(e) {
+                    $("#modal-player").empty();
+                });
             </script>
             <!-- FOOTER -->
             <%- include("includes/footer.ejs") %>
