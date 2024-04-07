@@ -30,6 +30,10 @@ async function listAssets(data, isAssetSearch) {
 				}
 			});
 			break;
+		} case "char": {
+			const charsXML = fs.readFileSync('./_PREMADE/Comm.xml');
+			xmls.push(charsXML.toString().substr(7).slice(0, -8));
+			break;
 		}
 	}
 	const zip = nodezip.create();
