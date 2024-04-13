@@ -1,0 +1,218 @@
+{
+    "Albert": {
+        "vid": "Albert",
+        "name": "Albert",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Alex": {
+        "vid": "Alex",
+        "name": "Alex",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Agnes": {
+        "vid": "Agnes",
+        "name": "Agnes",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Bad News": {
+        "vid": "Bad News",
+        "name": "Bad News",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Bahh": {
+        "vid": "Bahh",
+        "name": "Bahh",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Bells": {
+        "vid": "Bells",
+        "name": "Bells",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Boing": {
+        "vid": "Boing",
+        "name": "Boing (Klasky Csupo)",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Bruce": {
+        "vid": "Bruce",
+        "name": "Bruce",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Cellos": {
+        "vid": "Cellos",
+        "name": "Cellos",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Deranged": {
+        "vid": "Deranged",
+        "name": "Deranged",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Fred": {
+        "vid": "Fred",
+        "name": "Fred",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Good News": {
+        "vid": "Good News",
+        "name": "Good News",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Hysterical": {
+        "vid": "Hysterical",
+        "name": "Hysterical",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Junior": {
+        "vid": "Junior",
+        "name": "Junior",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Kathy": {
+        "vid": "Kathy",
+        "name": "Kathy",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Pipe Organ": {
+        "vid": "Pipe Organ",
+        "name": "Pipe Organ",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Princess": {
+        "vid": "Princess",
+        "name": "Princess",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Ralph": {
+        "vid": "Ralph",
+        "name": "Ralph",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "sirious": {
+        "vid": "sirious",
+        "name": "Siri",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Trinoids": {
+        "vid": "Trinoids",
+        "name": "Trinoids",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "f",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Whisper": {
+        "vid": "Whisper",
+        "name": "Whisper",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Vicki": {
+        "vid": "Vicki",
+        "name": "Vicki",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Victoria": {
+        "vid": "Victoria",
+        "name": "Victoria",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "Zarvox": {
+        "vid": "Zarvox",
+        "name": "Zarvox",
+        "isLocal": true,
+        "provider": "macintalk",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    }
+}

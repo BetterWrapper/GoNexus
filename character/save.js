@@ -12,53 +12,88 @@ const fUtil = require("../misc/file");
 module.exports = function (req, res, url) {
 	if (req.method == "POST") {
 		switch (url.pathname) {
-			case "/goapi/saveCCCharacter/": {
-				loadPost(req, res).then(data => character.save(Buffer.from(data.body)).then((id) => {
-					if (parseInt(data.v) <= 2013) {
-						var thumb = Buffer.from(data.imagedata, "base64");
-						character.saveThumb(thumb, id);
-						const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
-						const json = userFile.users.find(i => i.id == data.userId);
-						json.assets.unshift({
+			case "/goapi/saveCCCharacterTemplate/": {
+				loadPost(req, res).then(async data => {
+					const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
+					const json = userFile.users.find(i => i.id == data.userId);
+					json.gopoints -= 5;
+					const id = await character.save(await character.load(data.assetId));
+					json.assets.unshift({ 
+						id,
+						enc_asset_id: id,
+						file: id + ".xml",
+						type: "char",
+						subtype: 0,
+						title: "Untitled",
+						published: 0,
+						tags: "",
+						themeId: character.getTheme(await character.load(data.assetId))
+					});
+					fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(userFile, null, "\t"));
+					res.end(`0<points sharing="${json.gopoints}" money="0" asset_id="${info.id}"/>`);
+				});
+				break;
+			} case "/goapi/saveCCCharacter/": {
+				loadPost(req, res).then(async data => {
+					const id = await character.save(data.body);
+					if (parseInt(data.v || data.studio) <= 2013) {
+						const info = {
 							id,
 							enc_asset_id: id,
 							file: id + ".xml",
 							type: "char",
 							subtype: 0,
-							title: data.title,
+							title: data.title || "Untitled",
 							published: 0,
 							tags: "",
-							themeId: data.themeId
-						});
+							themeId: character.getTheme(Buffer.from(data.body))
+						}
+						var head;
+						if (data.imagedata) {
+							info.head_url = `/char_heads/${id}.png`;
+							head = Buffer.from(data.imagedata, "base64");
+							character.saveHead(head, id);
+						}
+						const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
+						const json = userFile.users.find(i => i.id == data.userId);
+						const stuff = data.studio && data.studio == "2010" ? (() => {
+							json.gopoints -= 5;
+							return `<points sharing="${json.gopoints}" money="0" asset_id="${id}"/>`;
+						})() : id;
+						console.log(stuff);
+						json.assets.unshift(info);
 						fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(userFile, null, "\t"));
-						res.end(`0${id}`);
+						res.end(`0${stuff}`);
 					} else {
-						var thumb = Buffer.from(data.thumbdata, "base64");
-						var head = Buffer.from(data.imagedata, "base64");
-						character.saveThumb(thumb, id);
-						character.saveHead(head, id);
-						const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
-						const json = userFile.users.find(i => i.id == data.userId);
-						json.assets.unshift({
+						var thumb, head;
+						const info = {
 							id,
 							enc_asset_id: id,
 							file: id + ".xml",
-							head_url: `/char_heads/${id}.png`,
-							thumb_url: `/char_thumbs/${id}.png`,
 							type: "char",
 							subtype: 0,
-							title: "Untitled",
+							title: data.title || "Untitled",
 							published: 0,
 							tags: "",
-							themeId: data.themeId
-						});
+							themeId: character.getTheme(Buffer.from(data.body))
+						}
+						if (data.thumbdata) {
+							info.thumb_url = `/char_thumbs/${id}.png`;
+							thumb = Buffer.from(data.thumbdata, "base64");
+							character.saveThumb(thumb, id);
+						}
+						if (data.imagedata) {
+							info.head_url = `/char_heads/${id}.png`;
+							head = Buffer.from(data.imagedata, "base64");
+							character.saveHead(head, id);
+						}
+						const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
+						const json = userFile.users.find(i => i.id == data.userId);
+						json.assets.unshift(info);
 						fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(userFile, null, "\t"));
 						res.end(`0${id}`);
 					}
-				}).catch(e => {
-					console.log(e);
-					res.end(`10`);
-				}));
+				});
 				break;
 			} case "/goapi/saveCCThumbs/": {
 				loadPost(req, res).then(data => {

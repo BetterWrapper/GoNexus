@@ -215,7 +215,7 @@ module.exports = function (req, res, url) {
 			};
 			params = {
 				flashvars: {
-					apiserver: "/",
+					apiserver: req.headers.host + "/",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
 					themeId: "family",
@@ -258,7 +258,7 @@ module.exports = function (req, res, url) {
 					loadas: 0,
 					asId: "",
 					originalId: "",
-					apiserver: "/",
+					apiserver: req.headers.host + "/",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
 					animationPath: process.env.SWF_URL + "/",
@@ -326,7 +326,7 @@ module.exports = function (req, res, url) {
 					movieLid: "0",
 					ut: "23",
 					numContact: "",
-					apiserver: "/",
+					apiserver: req.headers.host + "/",
 					playcount: 1,
 					ctc: "go",
 					tlang: "en_US",
@@ -371,7 +371,8 @@ module.exports = function (req, res, url) {
 	}
 	Object.assign(params ? params.flashvars : {}, query);
 	ejs.renderFile(`./views/${filename}.ejs`, {
-		css: `<style>${uInfo.settings ? uInfo.settings.api.customcss : ""}</style>`,
+		gopoints: uInfo.gopoints,
+		css: uInfo.settings ? `<style>${uInfo.settings.api.customcss}</style>` : '<script></script>',
 		returnto: url.query.returnto,
 		title,
 		attrs,

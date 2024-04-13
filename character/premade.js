@@ -21,15 +21,19 @@ module.exports = function (req, res, url) {
 	switch (url.pathname) {
 		case "/goapi/getCCPreMadeCharacters": {
 			loadPost(req, res).then(async data => {
-				let chars = process.env.XML_HEADER;
-				if (data.v == "2010" && fs.existsSync(`./_PREMADE/${data.themeId}.xml`)) try { // only show stock chars for the 2010 char creator because this does not work on the 2012/2013 char creators for some reason.
-					const realresult = new xmldoc.XmlDocument(fs.readFileSync(`./_PREMADE/${data.themeId}.xml`));
-					for (const meta of realresult.children) {
-						if (meta.attr) {
-							const buf = await character.load(meta.attr.id)
-							chars += `<cc_char aid="${meta.attr.id}" tags="family,_category_${meta.children[1].val.includes("Specialties") ? "professions" : "celebrities"}" id="${meta.attr.id}" name="${
-								meta.attr.name
-							}" ${buf.toString().split("<cc_char")[1]}`;
+				let chars = '';
+				if (data.v == "2010" && fs.existsSync(`./_PREMADE/${data.theme_code || data.themeId}.json`)) try { 
+					const json = JSON.parse(fs.readFileSync(`./_PREMADE/${data.theme_code || data.themeId}.json`));
+					for (const meta of json) {
+						for (const s of meta.people) {
+							const buf = await character.load(s.id);
+							chars += buf.toString().split("<cc_char").join(`<cc_char is_premium="Y" sharing="5" money="0" aid="${
+								s.id
+							}" tags="${data.theme_code || data.themeId},_category_${
+								meta.tag
+							}" id="${s.id}" name="${
+								s.name
+							}"`)
 						}
 					}
 					res.setHeader("Content-Type", "application/xml");

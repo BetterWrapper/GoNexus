@@ -129,36 +129,42 @@ module.exports = {
 					}
 				}
 				else {
-					const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(
-						i => i.id == uid
-					);
 					const voice = this.getVoiceInfo(voiceName);
-					const body = new URLSearchParams({
-						service: json.settings.api.ttstype.value.split("+").join(" "),
-						voice: voice.vid,
-						text
-					}).toString();
-					https.request({
-						hostname: "lazypy.ro",
-						path: "/tts/request_tts.php",
-						method: "POST",
-						headers: { 
-							"Content-type": "application/x-www-form-urlencoded"
-						}
-					}, r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => {
-							const json = JSON.parse(Buffer.concat(buffers));
-							if (json.success && json.audio_url) {
-								https.get(json.audio_url, r => {
-									const buffers = [];
-									r.on("data", b => buffers.push(b)).on("end", () => res(
-										Buffer.concat(buffers)
-									));
-								})
+					if (voice.isLocal && voice.provider) {
+						const tts = require(`./${voice.provider}/main`);
+						const buffer = await tts[tts.mp3BufferFunction](voice.vid, text);
+						typeof buffer == "string" ? rej(buffer) : res(buffer);
+					} else {
+						const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(
+							i => i.id == uid
+						);
+						const body = new URLSearchParams({
+							service: json.settings.api.ttstype.value.split("+").join(" "),
+							voice: voice.vid,
+							text
+						}).toString();
+						https.request({
+							hostname: "lazypy.ro",
+							path: "/tts/request_tts.php",
+							method: "POST",
+							headers: { 
+								"Content-type": "application/x-www-form-urlencoded"
 							}
-						}).on("error", rej);
-					}).end(body).on("error", rej);
+						}, r => {
+							const buffers = [];
+							r.on("data", b => buffers.push(b)).on("end", () => {
+								const json = JSON.parse(Buffer.concat(buffers));
+								if (json.success && json.audio_url) {
+									https.get(json.audio_url, r => {
+										const buffers = [];
+										r.on("data", b => buffers.push(b)).on("end", () => res(
+											Buffer.concat(buffers)
+										));
+									})
+								}
+							}).on("error", rej);
+						}).end(body).on("error", rej);
+					}
 				}
 			} catch (e) {
 				rej(e);

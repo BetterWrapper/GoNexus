@@ -1,0 +1,222 @@
+[
+    { 
+        "tag": "_category_professions",
+        "people": [
+            {
+                "name": "2010 LVM Tutorial Woman",
+                "id": "4715202",
+                "cat": "GoAnimate 2010 Characters"
+            },
+            {
+                 "name": "David Escobar",
+                 "id": "192",
+                 "cat": "Jyvee's Frends"
+            },
+            {
+                 "name": "Daniel",
+                 "id": "666",
+                 "cat": "Jyvee's Frends"
+            },
+            {
+                "id": "325084254",
+                "name": "GA4S Man",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084241",
+                "name": "GA4S Basket-Ball Player",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084260",
+                "name": "GA4S Old Man",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084270",
+                "name": "GA4S Fat Woman",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084290",
+                "name": "GA4S Woman",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084283",
+                "name": "GA4S Woman",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084277",
+                "name": "GA4S Cheerleader",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084296",
+                "name": "GA4S Woman",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084304",
+                "name": "GA4S Strong Person",
+                "cat": "GA4S Stock Characters"
+            },
+            {
+                "id": "325084300",
+                "name": "GA4S Strong Man",
+                "cat": "GA4S Stock Characters"
+            }
+        ]
+    },
+    {
+        "tag": "_category_celebrities",
+        "people": [
+            {
+                "name": "BluePeacocks",
+                "id": "60897073",
+                "cat": "Nexus Developers"
+            },
+            {
+                "name": "Jyvee",
+                "id": "66670973",
+                "cat": "Nexus Developers"
+            },
+            {
+                "name": "Joseph",
+                "id": "4048901",
+                "cat": "Nexus Developers"
+            },
+            {
+                "name": "Rage",
+                "id": "0000000",
+                "cat": "Nexus Side Developers"
+            },
+            {
+                "name": "Owen",
+                "id": "4635901",
+                "cat": "Nexus Developers"
+            },
+            {
+                "id": "327412169",
+                "name": "GoTube",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327275957",
+                "name": "LukeAnimate",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764308",
+                "name": "BrentAnimate",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764453",
+                "name": "RareYellowWUUTBee",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764148",
+                "name": "CanadianScout",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764650",
+                "name": "Isaac Anderson Animations",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "400001042",
+                "name": "NathanSB (SaturnBoi)",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764259",
+                "name": "Tbone Animate",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764372",
+                "name": "African Vulture",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "327764522",
+                "name": "The FunEditor4",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764594",
+                "name": "sasmter5677",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "330469767",
+                "name": "Fartnoise9",
+                "cat": "GoAnimators"
+            }, 
+            {
+                "id": "400001002",
+                "name": "GoTest334",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "327764590",
+                "name": "Brendan Barney",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "327779791",
+                "name": "Richie Verdi",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "400001004",
+                "name": "Rack Animate",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "400001003",
+                "name": "Poke Animations",
+                "cat": "GoAnimators" 
+            }, 
+            {
+                "id": "400001005",
+                "name": "VittorioTheVyonder2003",
+                "cat": "GoAnimators"
+            }, 
+            {
+                "id": "330470251",
+                "name": "HanIflmranAnimator",
+                "cat": "GoAnimators"
+            },
+            {
+                "id": "330873615",
+                "name": "Cewyah",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "400001001",
+                "name": "papermariofan",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "400001008",
+                "name": "TheVideoEditorGuy6579",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "400001009",
+                "name": "CyanAnimate",
+                "cat": "GoAnimators" 
+            },
+            {
+                "id": "400001034",
+                "name": "TBPG Studios",
+                "cat": "GoAnimators" 
+            }
+        ]
+    }
+]

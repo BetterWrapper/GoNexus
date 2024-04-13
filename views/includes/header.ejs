@@ -4,6 +4,10 @@
     .is_school_admin {
         display: none;
     }
+    #top_nav_points {
+        background: transparent url(/ui/img/ico_point.png) no-repeat 0 0;
+        height:24px;
+    }
 </style>
 <link href="https://wrapperclassic.netlify.app/cc/overlay.css" rel="stylesheet" type="text/css">
 <nav class="navbar site-nav" role="navigation">
@@ -35,6 +39,10 @@
                         <li><a href="/account">Account Settings</a></li>
                         <li class="divider"></li>
                         <li><a class="logout-link" href="javascript:userLogout()">Logout</a></li>
+                        <li class="divider"></li>
+                        <li id="top_nav_points">
+                            <p style="margin: 25px;"><%- gopoints %></p>
+                        </li>
                     </ul>
                 </li>
                 <li class="dropdown" id="isAccountAdmin" style="display: none;">

@@ -101,7 +101,7 @@
             <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
             <script src="/js/user.js"></script>
             <script>
-                function loadCC(userInfo) {
+                function loadCC(userInfo, v) {
                     ((d) => {
                         const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
                         flashvars.userId = userInfo.uid || userInfo.id;
@@ -110,18 +110,24 @@
                         let swf = "<%= attrs.data %>";
                         let height = "<%= attrs.height %>";
                         let width = "<%= attrs.width %>";
-                        const year = localStorage.getItem("charcreatoryear") || "2016";
+                        if (v) {
+                            localStorage.setItem("charcreatoryear", v);
+                            $(".content").hide();
+                            $("#<%= attrs.id %>_container").show();
+                        }
+                        const year = v || localStorage.getItem("charcreatoryear") || "2016";
                         flashvars.v = year;
                         if (year == "2013") $(".ccbrowsercontainer").addClass(`old`);
                         else if (year == "2012") $(".ccbrowsercontainer").addClass(`older`);
                         $("#charcreatoryear").find(`option[value='${year}']`).prop("selected", true);
-                        if (parseInt(year) <= 2014) {
-                            flashvars.staticserver = "https://wrapperclassic.netlify.app/";
-                            flashvars.storePath = "https://wrapperclassic.netlify.app/static/store/<store>";
-                            flashvars.clientThemePath = `https://wrapperclassic.netlify.app/static/tommy/${year}/<client_theme>`;
-                            if (year == "2013" || year == "2012") {
+                        flashvars.apiserver = window.location.origin + '/';
+                        switch (year) {
+                            case "2013":
+                            case "2012": {
                                 if (window.location.pathname == "/cc") {
-                                    swf = `https://wrapperclassic.netlify.app/animation/${year}/cc_old.swf`;
+                                    flashvars.clientThemePath = `/static/<client_theme>?v=${year}`;
+                                    flashvars.storePath = `/static/store/<store>?v=2010`;
+                                    swf = `/static/animation/cc.swf?v=${year}`;
                                     height = "600";
                                     width = "960";
                                 } else {
@@ -129,11 +135,20 @@
                                     $("#<%= attrs.id %>_container").hide();
                                     $(".content").show();
                                 }
-                            } else if (year == "2010") {
-                                swf = `https://wrapperclassic.netlify.app/animation/2010/cc_old.swf`;
+                                break;
+                            } case "2010": {
+                                swf = `/static/animation/cc.swf?v=2010`;
                                 height = "600";
                                 width = "960";
-                            } else if (window.location.pathname == "/cc") swf = `https://wrapperclassic.netlify.app/animation/2014/cc_old.swf`;
+                                break;
+                            } default: {
+                                if (window.location.pathname == "/cc") {
+                                    flashvars.clientThemePath = `/static/<client_theme>?v=${year}`;
+                                    flashvars.storePath = `/static/store/<store>?v=2010`;
+                                    swf = `/static/animation/cc.swf?v=${year}`;
+                                }
+                                break;
+                            }
                         }
                         jQuery('#<%= attrs.id %>_container').flash({
                             id: "<%= attrs.id %>",
@@ -156,58 +171,7 @@
                     });
                 }
                 $("#charcreatoryear").change(() => {
-                    ((d) => {
-                        const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
-                        flashvars.userId = userData.uid || userData.id;
-                        flashvars.username = userData.displayName || userData.name;
-                        flashvars.uemail = userData.email;
-                        let swf = "<%= attrs.data %>";
-                        let height = "<%= attrs.height %>";
-                        let width = "<%= attrs.width %>";
-                        flashvars.v = $("#charcreatoryear").val();
-                        localStorage.setItem("charcreatoryear", $("#charcreatoryear").val());
-                        $(".content").hide();
-                        if ($(".ccbrowsercontainer").hasClass(`older`)) $(".ccbrowsercontainer").removeClass(`older`);
-                        else if ($(".ccbrowsercontainer").hasClass(`old`)) $(".ccbrowsercontainer").removeClass(`old`);
-                        if ($("#charcreatoryear").val() == "2013") $(".ccbrowsercontainer").addClass(`old`);
-                        else if ($("#charcreatoryear").val() == "2012") $(".ccbrowsercontainer").addClass(`older`);
-                        if (parseInt($("#charcreatoryear").val()) <= 2014) {
-                            flashvars.staticserver = "https://wrapperclassic.netlify.app/";
-                            flashvars.storePath = "https://wrapperclassic.netlify.app/static/store/<store>";
-                            flashvars.clientThemePath = `https://wrapperclassic.netlify.app/static/tommy/${$("#charcreatoryear").val()}/<client_theme>`;
-                            if ($("#charcreatoryear").val() == "2013" || $("#charcreatoryear").val() == "2012") {
-                                if (window.location.pathname == "/cc") {
-                                    swf = `https://wrapperclassic.netlify.app/animation/${$("#charcreatoryear").val()}/cc_old.swf`;
-                                    height = "600";
-                                    width = "960";
-                                } else {
-                                    setupHTML5CharBrowser();
-                                    $("#<%= attrs.id %>_container").hide();
-                                    $(".content").show();
-                                }
-                            } else if ($("#charcreatoryear").val() == "2010") {
-                                jQuery('#<%= attrs.id %>_container').show();
-                                swf = `https://wrapperclassic.netlify.app/animation/2010/cc_old.swf`;
-                                height = "600";
-                                width = "960";
-                            } else {
-                                if (window.location.pathname == "/cc") swf = `https://wrapperclassic.netlify.app/animation/2014/cc_old.swf`;
-                                jQuery('#<%= attrs.id %>_container').show();
-                            }
-                        } else jQuery('#<%= attrs.id %>_container').show();
-                        jQuery('#<%= attrs.id %>_container').flash({
-                            id: "<%= attrs.id %>",
-                            swf,
-                            height,
-                            width,
-                            align: "middle",
-                            allowScriptAccess: "always",
-                            allowFullScreen: "true",
-                            wmode: "transparent",
-                            hasVersion: "10.3",
-                            flashvars
-                        });
-                    })(Object.fromEntries(new URLSearchParams('<%= flashvarsString %>')));
+                    loadCC(userData, $("#charcreatoryear").val());
                 })
                 function setupHTML5CharBrowser() {
                     jQuery(window).bind('hashchange', function() {

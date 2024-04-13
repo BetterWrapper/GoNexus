@@ -103,12 +103,17 @@
                 "type": "button",
                 "onclick": "modifyVideo()",
                 "class": "btn btn-orange",
-                "value": "Edit This Video"
+                "value": "Edit Video"
             },
             "a": {
                 "href": "javascript:newVideo()",
                 "class": "btn btn-orange",
-                "id": "new_video"
+                "html": "New Video"
+            },
+            "span": {
+                "onclick": "switchLvp2('custom')",
+                "html": "Switch To The Custom LVP",
+                "class": "btn btn-orange"
             }
         },
         "next": "video_management"
@@ -135,6 +140,7 @@
             "small": "First, Select a theme.",
             "select": {
                 "class": "form-control",
+                "onchange": "tutInit(this)",
                 "id": "themes_selector",
                 "name": "theme"
             },
@@ -143,14 +149,7 @@
                 "id": "other_options_custom_lvm"
             }
         },
-        "footer": {
-            "input": {
-                "type": "button",
-                "class": "btn btn-orange",
-                "onclick": "newAnimation()",
-                "value": "Create A Video"
-            }
-        },
+        "prev": "video_management",
         "next": "custom_lvm"
     },
     "custom_lvm": {
@@ -166,5 +165,40 @@
         },
         "footer": "",
         "prev": "custom_lvm_themes_selector"
+    },
+    "custom_lvp": {
+        "header": {
+            "h4": "Custom LVP"
+        },
+        "body": {
+            "p": "You are done making a video with (or without) the custom LVM. now you will be able to see what the LVP looked like a few years after GoAnimate was made. By using the year you typed (or selected) into the custom lvm (or year input) field, your video will be shown to you using the LVP from the year you typed into the custom lvm field.",
+            "small": "Below, you should see the Player load now. If not, flash may not be enabled.",
+            "h6": {
+                "style": "color: red;",
+                "html": "Please keep in mind that this feature is still in beta. Please send a bug report to us if you encounter any problems with the custom lvp."
+            },
+            "div": {
+                "class": "getting_started_custom_video_player"
+            }
+        },
+        "footer": {
+            "input": {
+                "type": "button",
+                "onclick": "goTo('custom_lvm_themes_selector')",
+                "class": "btn btn-orange",
+                "value": "Edit Video"
+            },
+            "a": {
+                "href": "javascript:newAnimation()",
+                "class": "btn btn-orange",
+                "id": "new_video",
+                "html": "New Video"
+            },
+            "span": {
+                "onclick": "goTo('lvp')",
+                "class": "btn btn-orange",
+                "html": "Switch To The Normal LVP"
+            }
+        }
     }
 }

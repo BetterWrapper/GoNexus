@@ -30,6 +30,7 @@ const https = require("https");
 const framerate = 24;
 const frameToSec = (f) => f / framerate;
 const nodemailer = require('nodemailer');
+const xmldoc = require("xmldoc");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -77,7 +78,65 @@ module.exports = function (req, res, url) {
 			break;
 		} case "POST": {
 			switch (url.pathname) {
-				case "/api/uploadMovie2FlashThemes": {
+				case "/goapi/getPointStatus/":
+				case "/goapi/buyPremiumAsset/": {
+					loadPost(req, res).then(data => {
+						const users = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
+						const userInfo = users.users.find(i => i.id == data.userId);
+						res.setHeader("Content-Type", "application/xml");
+						if (data.theme_id) https.get(data.storePath.split("<store>").join(`${data.theme_id}/theme.xml`), r => {
+							const buffers = [];
+							r.on("data", b => buffers.push(b)).on("end", () => {
+								const json = new xmldoc.XmlDocument(Buffer.concat(buffers));
+								const json2 = json.children.filter(i => i.name == "char").find(i => i.attr.aid == data.aid);
+								if (
+									userInfo.gopoints < json2.attr.sharing
+								) return res.end(`1You need at least ${
+									json2.attr.sharing - userInfo.gopoints
+								} GoPoints in order to get ${json2.attr.name}.`);
+								userInfo.gopoints -= json2.attr.sharing;
+								if (!userInfo.purchased) userInfo.purchased = [];
+								userInfo.purchased.unshift(json2.attr);
+								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(users, null, "\t"));
+								res.end(`0<?xml version="1.0" encoding="UTF-8"?><points money="0" sharing="${userInfo.gopoints}" />`);
+							})
+						})
+						else res.end(`0<?xml version="1.0" encoding="UTF-8"?><points money="0" sharing="${userInfo.gopoints}" />`);
+					})
+					break;
+				} case "/goapi/jpg_download/": {
+					loadPost(req, res).then(data => {
+
+					});
+					break;
+				}
+				case "/goapi/tutaction/": {
+					loadPost(req, res).then(data => {
+						const users = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
+						const userInfo = users.users.find(i => i.id == data.userId);
+						userInfo.gopoints += 5;
+						fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(users, null, "\t"));
+						res.end(`<points sharing="${userInfo.gopoints}" money="0"/>`);
+					})
+					break;
+				} case "/goapi/getInitParams/": {
+					loadPost(req, res).then(data => {
+						// scrapped because a user cannot see the error message. we will just make the features work in ut 10 instead.
+						/*const users = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
+						const userInfo = users.users.find(i => i.id == data.userId);
+						if (userInfo.gopoints < 5) return res.end(JSON.stringify({
+							result: false,
+							message: "You do not have enough GoPoints to peform this action."
+						}));
+						userInfo.gopoints -= 5;
+						fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(users, null, "\t"));*/
+						res.end(JSON.stringify({
+							result: true,
+							ut: parseInt(data.ut) + 10
+						}));
+					})
+					break;
+				} case "/api/uploadMovie2FlashThemes": {
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						res.setHeader("Content-Type", "application/json");
 						const userInfo = session.get(req);

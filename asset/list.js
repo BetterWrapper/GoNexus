@@ -31,170 +31,16 @@ async function listAssets(data, makeZip) {
 			const tId = (() => {
 				if (data.cc_theme_id) return data.cc_theme_id;
 				if (data.themeId) return getTid(data.themeId);
-				if (data.studio) return data.studio == "2010" ? "family" : "";
+				if (data.v) return data.v == "2010" ? "family" : "";
 			})();
 			const fatials = {};
 			const actions = {};
 			const actionPack = {};
 			const action_cat = {};
 			const defaultActions = {};
-			files = asset.list(data.page || '', data.userId, "char", 0, tId);
-			if (parseInt(data.studio) >= 2010 && parseInt(data.studio) < 2012) {
-				const isZip = data.studio == "2010" ? ".zip" : ".xml"
-				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
-				for (const file of files) {
-					fatials[file.id] = fatials[file.id] || [];
-					action_cat[file.id] = action_cat[file.id] || {};
-					actionPack[file.id] = actionPack[file.id] || {};
-					actions[file.id] = actions[file.id] || [];
-					defaultActions[file.id] = defaultActions[file.id] || {};
-					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
-						file.themeId
-					}/cc_theme.xml`));
-					function get(stuff, param, com, com2) {
-						if (!com2) for (const info of data.children.filter(i => i.name == com)) {
-							for (const data of info.children.filter(i => i.name == "selection")) {
-								if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
-							}
-						}
-						else for (const i of data.children.filter(i => i.name == com2)) {
-							for (const info of i.children.filter(i => i.name == com)) {
-								for (const data of info.children.filter(i => i.name == "selection")) {
-									if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
-								}
-							}
-						}
-					}
-					if (isZip == ".xml") for (const info of data.children.filter(i => i.name == 'facial')) {
-						fatials[file.id].unshift(info.attr);
-					}
-					else for (var a = 0; a < 4; a++) {
-						const i = fs.readdirSync(`./charStore/${file.themeId}/emotions`)[a];
-						if (i.startsWith("head_")) fatials[file.id].unshift({
-							id: i.split(".json")[0],
-							name: i.split("head_")[1].split(".json")[0],
-							enable: get(i.split(".json")[0], "enable", "facial") || "Y"
-						})
-					}
-					if (isZip == ".xml") for (const i of data.children.filter(i => i.name == 'bodyshape')) {
-						if (i.attr.id == await char.getCharType(file.id)) {
-							defaultActions[file.id].default = i.attr.default_action;
-							defaultActions[file.id].motion = i.attr.default_motion;
-							switch (file.themeId) {
-								case "cctoonadventure":
-								case "family": {
-									for (const info of i.children.filter(i => i.name == 'action')) {
-										const inf = info.attr;
-										const data = info.children.filter(i => i.name == "selection");
-										inf.facial = data[0].attr.facial_id;
-										actions[file.id] = actions[file.id] || [];
-										if (inf.category) {
-											if (!action_cat[file.id][inf.category]) action_cat[file.id][
-												inf.category
-											] = {
-												array: [],
-												xml: `<category name="${inf.category}">`
-											};
-											action_cat[file.id][inf.category].array.unshift(inf);
-										} else actions[file.id].unshift(inf);
-									}
-									break;
-								} default: {
-									for (const info of i.children.filter(i => i.name == 'actionpack')) {
-										const inf = info.attr;
-										if (!actionPack[file.id][inf.id]) actionPack[file.id][
-											inf.id
-										] = {
-											array: info.children.filter(i => i.name == 'action'),
-											xml: `<actionpack id="${inf.id}" name="${
-												inf.name
-											}" money="${inf.money}" sharing="${inf.sharing}" enable="${
-												inf.enable
-											}">`
-										};
-									}
-								}
-							}
-						}
-					}
-					else fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
-						defaultActions[file.id].default = "stand"
-						defaultActions[file.id].motion = "walk"
-						if (!i.startsWith("head_")) actions[file.id].unshift({
-							id: i.split(".json")[0],
-							name: i.split(".json")[0],
-							loop: get(i.split(".json")[0], "loop", "action", "bodyshape") || "Y",
-							totalframe: get(i.split(".json")[0], "totalframe", "action", "bodyshape") || "1",
-							enable: get(i.split(".json")[0], "enable", "action", "bodyshape") || "Y",
-							is_motion: get(i.split(".json")[0], "is_motion", "action", "bodyshape") || "N"
-						})
-					});
-					if (isZip == ".xml") for (const i in actionPack[file.id]) {
-						for (const info of actionPack[file.id][i].array) {
-							const inf = info.attr;
-							const data = info.children.filter(i => i.name == "selection");
-							inf.facial = data[0].attr.facial_id;
-							if (inf.category) {
-								if (!action_cat[file.id][inf.category]) action_cat[file.id][
-									inf.category
-								] = {
-									array: [],
-									xml: `<category name="${inf.category}">`
-								};
-								action_cat[file.id][inf.category].array.unshift(inf);
-							} else actionPack[file.id][i].xml += `<action id="${inf.id}" name="${
-								inf.name
-							}" loop="${inf.loop}" totalframe="${inf.totalframe}" enable="${
-								inf.enable
-							}" is_motion="${inf.is_motion}"/>`
-						}
-					}
-					if (isZip == ".xml") for (const i in action_cat[file.id]) {
-						action_cat[file.id][i].xml += action_cat[file.id][i].array.map(v => `<${
-							v.is_motion == "Y" ? "motion" : "action"
-						} id="${v.id + isZip}" name="${
-							v.name
-						}" loop="${v.loop}" totalframe="${
-							v.totalframe
-						}" enable="${v.enable}" is_motion="${
-							v.is_motion
-						}"/>`).join("");
-					}
-					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
-						file.title || ""
-					}" cc_theme_id="${file.themeId}" default="${
-						defaultActions[file.id].default + isZip
-					}" motion="${
-						defaultActions[file.id].motion + isZip
-					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
-						file.tags || ""
-					}</tags>${(() => {
-						switch (file.themeId) {
-							case "cctoonadventure":
-							case "family": return Object.keys(action_cat[file.id]).map(i => {
-								return action_cat[file.id][i].xml + '</category>'
-							});
-							default: return Object.keys(actionPack[file.id]).map(d => {
-								return Object.keys(action_cat[file.id]).map(i => {
-									return action_cat[file.id][i].xml + '</category>'
-								}) + actionPack[file.id][d].xml + '</actionpack>';
-							})
-						}
-					})()}${
-						actions[file.id].map(v => `<${
-							v.is_motion == "Y" ? "motion" : "action"
-						} id="${v.id + isZip}" name="${v.name}" loop="${v.loop}" totalframe="${
-							v.totalframe
-						}" enable="${v.enable}" is_motion="${
-							v.is_motion
-						}"/>`).join("")
-					}${fatials[file.id].map(v => `<facial id="${v.id + isZip}" name="${v.name}" enable="${
-						v.enable
-					}"/>`).join("")}</char>`;
-				}
-				xmlString += `</ugc>`;
-				console.log(xmlString);
-			} else if (data.studio == "2012") {
+			files = asset.list(data.count || '', data.page || '', data.include_ids_only, data.userId, "char", 0, tId);
+			if (data.include_ids_only) console.log(files);
+			async function getOldChars2() {
 				const defaults = {
 					family: `<action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`,
 					cc2: `<action id="stand.xml" name="Standing" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`
@@ -237,22 +83,144 @@ async function listAssets(data, makeZip) {
 				}
 				xmlString += `</ugc>`;
 			}
+			async function getOldChars() {
+				const isZip = data.v == "2010" ? ".zip" : ".xml"
+				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
+				for (const file of files) {
+					fatials[file.id] = fatials[file.id] || [];
+					action_cat[file.id] = action_cat[file.id] || {};
+					actionPack[file.id] = actionPack[file.id] || {};
+					actions[file.id] = actions[file.id] || [];
+					defaultActions[file.id] = defaultActions[file.id] || {};
+					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
+						file.themeId
+					}/cc_theme.xml`));
+					function get(stuff, param, com, com2) {
+						if (!com2) for (const info of data.children.filter(i => i.name == com)) {
+							for (const data of info.children.filter(i => i.name == "selection")) {
+								if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+							}
+						}
+						else for (const i of data.children.filter(i => i.name == com2)) {
+							for (const info of i.children.filter(i => i.name == com)) {
+								for (const data of info.children.filter(i => i.name == "selection")) {
+									if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+								}
+							}
+						}
+					}
+					if (isZip == ".xml") for (const info of data.children.filter(i => i.name == 'facial')) {
+						fatials[file.id].unshift(info.attr);
+					}
+					else for (var a = 0; a < 4; a++) {
+						const i = fs.readdirSync(`./charStore/${file.themeId}/emotions`)[a];
+						if (i.startsWith("head_")) fatials[file.id].unshift({
+							id: i.split(".json")[0],
+							name: i.split("head_")[1].split(".json")[0],
+							enable: get(i.split(".json")[0], "enable", "facial") || "Y"
+						})
+					}
+					if (isZip == ".xml") for (const i of data.children.filter(i => i.name == 'bodyshape')) {
+						if (i.attr.id == await char.getCharType(file.id)) {
+							defaultActions[file.id].default = i.attr.default_action;
+							defaultActions[file.id].motion = i.attr.default_motion;
+							function actionsInsert(i) {
+								for (const info of i.children.filter(i => i.name == 'action')) {
+									const inf = info.attr;
+									const data = info.children.filter(i => i.name == "selection");
+									inf.facial = data[0].attr.facial_id;
+									actions[file.id] = actions[file.id] || [];
+									if (inf.category) {
+										if (!action_cat[file.id][inf.category]) action_cat[file.id][
+											inf.category
+										] = {
+											array: [],
+											xml: `<category name="${inf.category}">`
+										};
+										action_cat[file.id][inf.category].array.unshift(inf);
+									} else actions[file.id].unshift(inf);
+								}
+							}
+							switch (file.themeId) {
+								case "cctoonadventure":
+								case "family": {
+									actionsInsert(i);
+									break;
+								} default: {
+									for (const d of i.children.filter(i => i.name == 'actionpack')) actionsInsert(d);
+								}
+							}
+						}
+					}
+					else fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+						defaultActions[file.id].default = "stand"
+						defaultActions[file.id].motion = "walk"
+						if (!i.startsWith("head_")) actions[file.id].unshift({
+							id: i.split(".json")[0],
+							name: i.split(".json")[0],
+							loop: get(i.split(".json")[0], "loop", "action", "bodyshape") || "Y",
+							totalframe: get(i.split(".json")[0], "totalframe", "action", "bodyshape") || "1",
+							enable: get(i.split(".json")[0], "enable", "action", "bodyshape") || "Y",
+							is_motion: get(i.split(".json")[0], "is_motion", "action", "bodyshape") || "N"
+						})
+					});
+					if (isZip == ".xml") for (const i in action_cat[file.id]) {
+						action_cat[file.id][i].xml += action_cat[file.id][i].array.map(v => `<${
+							v.is_motion == "Y" ? "motion" : "action"
+						} id="${v.id + isZip}" name="${
+							v.name
+						}" loop="${v.loop}" totalframe="${
+							v.totalframe
+						}" enable="${v.enable}" is_motion="${
+							v.is_motion
+						}"/>`).join("");
+					}
+					xmlString += `<char id="${file.id}" thumb="${file.id}.zip" name="${
+						file.title || ""
+					}" cc_theme_id="${file.themeId}" default="${
+						defaultActions[file.id].default + isZip
+					}" motion="${
+						defaultActions[file.id].motion + isZip
+					}" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0"><tags>${
+						file.tags || ""
+					}</tags>${Object.keys(action_cat[file.id]).map(i => action_cat[file.id][i].xml + '</category>')}${
+						actions[file.id].map(v => `<${
+							v.is_motion == "Y" ? "motion" : "action"
+						} id="${v.id + isZip}" name="${v.name}" loop="${v.loop}" totalframe="${
+							v.totalframe
+						}" enable="${v.enable}" is_motion="${
+							v.is_motion
+						}"/>`).join("")
+					}${fatials[file.id].map(v => `<facial id="${v.id + isZip}" name="${v.name}" enable="${
+						v.enable
+					}"/>`).join("")}</char>`;
+				}
+				xmlString += `</ugc>`;
+			}
+			if (parseInt(data.v) >= 2010 && parseInt(data.v) < 2013) await getOldChars();
+			else switch (data.v) {
+				case "2013": {
+					if (data.file == "old_full_2013.swf") await getOldChars();
+					break;
+				}
+			}
 			break;
 		} default: {
-			files = asset.list(data.page, data.userId, data.type);
+			files = asset.list(data.count || '', data.page || '', data.include_ids_only, data.userId, data.type);
 			break;
 		}
 	}
-	if (!xmlString) xmlString = `${header}<ugc more="0"${
-		parseInt(data.studio) <= 2012 ? (function() {
-			switch (data.type) {
-				case "bg": return ' moreBG="0"'
-				default: {
-					const letter = data.type.slice(0, data.type.length - 1);
-					return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="0"`
-				}
+	function stuff() {
+		switch (data.type) {
+			case "bg": return ' moreBG="0"'
+			default: {
+				const letter = data.type.slice(0, data.type.length - 1);
+				return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="0"`
 			}
-		})() : ''
+		}
+	}
+	if (!xmlString) xmlString = `${header}<ugc more="0"${
+		parseInt(data.v) <= 2012 ? stuff() : data.v == "2013" && data.file == "old_full_2013.swf" ? stuff() : ''
 	}>${files.map(asset.meta2Xml).join("")}</ugc>`;
 	if (makeZip) {
 		const zip = nodezip.create();
@@ -311,7 +279,7 @@ module.exports = function (req, res, url) {
 					const type = makeZip ? "application/zip" : "text/xml";
 					res.setHeader("Content-Type", type);
 					if (makeZip) {
-						if (!data.studio) res.write(base);
+						if (!data.v) res.write(base);
 						else return res.end(Buffer.concat([base2, buff]));
 					}
 					res.end(buff);

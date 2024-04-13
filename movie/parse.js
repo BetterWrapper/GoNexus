@@ -58,7 +58,7 @@ const {
 	THEME_FOLDER: themeFolder,
 	CLIENT_URL2: source,
 	XML_HEADER: header,
-	STORE_URL2: store
+	STORE_URL2: store1
 } = process.env;
 
 /**
@@ -216,7 +216,7 @@ module.exports = {
 
 			let filepath;
 			if (themeId == "ugc") filepath = `${asset.folder}/${pieces[pieces.length - 1]}`;
-			else filepath = `${store}/${pieces.join("/")}`;
+			else filepath = `${store1}/${pieces.join("/")}`;
 
 			return {
 				filepath,
@@ -244,14 +244,14 @@ module.exports = {
 	 * @param {Array} ownAssets
 	 * @returns {Buffer}
 	 */
-	async packMovie(xmlBuffer, uId, packThumb, mId, ownAssets) {
+	async packMovie(xmlBuffer, data, packThumb, mId, ownAssets) {
 		if (xmlBuffer.length == 0) throw null;
-
+		const store = data.v ? "https://file.garden/ZP0Nfnn29AiCnZv5/static/store" : store1;
 		const zip = nodezip.create();
 		const themes = { common: true };
 		var ugc = `${header}<theme id="ugc" name="ugc">`;
 		fUtil.addToZip(zip, "movie.xml", xmlBuffer);
-
+		const uId = data.movieOwnerId || data.userId;
 		// this is common in this file
 		async function basicParse(file, type, subtype) {
 			const pieces = file.split(".");
@@ -336,27 +336,32 @@ module.exports = {
 								if (!file) continue;
 								const pieces = file.split(".");
 								const themeId = pieces[0];
-
+								const action = pieces[2];
 								const ext = pieces.pop();
 								pieces[pieces.length - 1] += "." + ext;
 								pieces.splice(1, 0, elem2.name);
-	
+								console.log(action);
 								if (themeId == "ugc") {
 									// remove the action from the array
 									pieces.splice(3, 1);
 
 									const id = pieces[2];
 									try {
-										const buffer = await char.load(id);
-										const filename = pieces.join(".");
-
-										ugc += asset.meta2Xml({
+										const buffer = await char[data.v == "2010" ? 'packZip' : 'load'](data.v == "2010" ? {
+											assetId: id,
+											userId: uId,
+											action
+										} : id);
+										const filename = data.v == "2010" ? file : pieces.join(".") + ".xml"
+										console.log(filename)
+										ugc += await asset[data.v == "2010" ? 'meta2OldXml' : 'meta2Xml']({
 											// i can't just select the character data because of stock chars
-											id: id,
+											id,
 											type: "char",
-											themeId: char.getTheme(buffer)
+											themeId: char.getTheme(data.v == "2010" ? await char.load(id) : buffer),
+											data
 										});
-										fUtil.addToZip(zip, filename + ".xml", buffer);
+										fUtil.addToZip(zip, filename, buffer);
 									} catch (e) {
 										console.error(`WARNING: ${id}:`, e);
 										continue;
@@ -578,88 +583,15 @@ module.exports = {
 		fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 		return buffer;
 	},
-	getStuffForOldStockChar(charId, data) {
+	getStuffForOldStockChar(buf, data, tId) {
 		return new Promise(async (res, rej) => {
 			const ziporxml = data.studio == "2010" ? ".zip" : ".xml"
-			function getJoseph() {
-				return new Promise((res, rej) => {
-					https.get('https://wrapperclassic.netlify.app/chars/4048901.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getDaniel() {
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004797.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getDavidEscobar() {
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004414.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getRage() {
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/6667041.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getBluePeacocks() { // Does not work (probably because the 2010 lvm char does not support some face)
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004418.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getTutGirl() {
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000001.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getOwen() {
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000000.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			function getJyvee() {
-				return new Promise((res, rej) => {
-					https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004416.xml', r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-					});
-				});
-			}
-			let buf;
-			if (charId == "4048901") buf = await getJoseph();
-			else if (charId == "4715202") buf = await getTutGirl();
-			else if (charId == "192") buf = await getDavidEscobar();
-			else if (charId == "60897073") buf = await getBluePeacocks();
-			else if (charId == "66670973") buf = await getJyvee();
-			else if (charId == "4635901") buf = await getOwen();
-			else if (charId == "0000000") buf = await getRage();
-			else if (charId == "666") buf = await getDaniel();
 			const charJSON = {
 				xmls: '',
 				defaults: ''
 			};
 			let groupEmotionXml = '<category name="emotion">';
-			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${char.getTheme(buf)}/cc_theme.xml`));
+			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${tId}/cc_theme.xml`));
 			for (const info of xml.children.filter(i => i.name == "bodyshape")) {
 				if (info.attr.id == char.getCharTypeViaBuff(buf)) {
 					charJSON.defaults = `default="${info.attr.action_thumb + ziporxml}" motion="${

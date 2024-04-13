@@ -16,7 +16,7 @@ module.exports = function (req, res, url) {
 			const trigAutosave = data.is_triggered_by_autosave;
 			if (trigAutosave && (!data.movieId || !data.thumbnail_large)) thumb = await movie.genImage();
 			else thumb = Buffer.from(data.thumbnail_large, "base64");
-			const body = Buffer.from(data.body_zip, "base64");
+			const body = data.body || Buffer.from(data.body_zip, "base64");
 			res.end(0 + await movie.save(body, thumb, data, false, req));
 		} catch (e) {
 			console.log(e);

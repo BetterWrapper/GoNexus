@@ -6,6 +6,7 @@ const http = require("http");
 const parse = require("../movie/parse");
 const char = require("../character/main");
 const fs = require("fs");
+const xmldoc = require("xmldoc");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -23,98 +24,59 @@ module.exports = function (req, res, url) {
 					case "family": {
 						theme = "custom";
 						break;
+					} case "cc2": {
+						theme = "action";
+						break;
 					} case "cctoonadventure": {
 						theme = "toonadv";
 						break;
 					}
 				}
-				async function oldStockCharsXML(stockChars) {
+				async function getThemeXML() {
+					let filename = 'themelist';
+					if (data.v) {
+						filename += '-old';
+						if (data.v == '2010' || data.v == '2012') filename += `-${data.v}`;
+					}
+					const json = new xmldoc.XmlDocument(fs.readFileSync(`${folder}/${filename}.xml`));
+					const tJSON = json.children.filter(i => i.name == "theme").find(i => i.attr.id == theme);
+					/*if (tJSON.attr.cc_theme_id && fs.existsSync(`./_PREMADE/${tJSON.attr.cc_theme_id}.json`)) {
+						const json = JSON.parse(fs.readFileSync(`./_PREMADE/${tJSON.attr.cc_theme_id}.json`));
+						if (
+							data.v
+							&& parseInt(data.v) <= 2012
+						) return await oldStockCharsXML(json, tJSON.attr.cc_theme_id);
+						else return await stockCharsXML(json, tJSON.attr.cc_theme_id);
+					} else */return fs.readFileSync(`./_THEMES/${theme}${parseInt(data.v) <= 2012 ? 'old' : ''}.xml`)
+				}
+				async function stockCharsXML(stockChars, tId) {
+					var xml2zip = (fs.readFileSync(`./_THEMES/${theme}.xml`)).toString().split("</theme>")[0];
+					for (const stockChar of stockChars) {
+						for (const v of stockChar.people) {
+							const id = stockChar.id ? stockChar.id + v.id : v.id;
+							xml2zip += `<char id="${id}" name="${
+								v.name
+							}" thumbnail_url="/char-default.png" cc_theme_id="${
+								tId
+							}" copyable="Y"><tags>${tId},_free,_cat:${v.cat}</tags></char>`
+						}
+					}
+					return xml2zip + '</theme>';
+				}
+				async function oldStockCharsXML(stockChars, tId) {
 					var xml2zip = (fs.readFileSync(`./_THEMES/${theme}old.xml`)).toString().split("</theme>")[0];
 					for (const stockChar of stockChars) {
 						for (const v of stockChar.people) {
-							const charJSON = await parse.getStuffForOldStockChar(v.id, data);
-							function getJoseph() {
-								return new Promise((res, rej) => {
-									https.get('https://wrapperclassic.netlify.app/chars/4048901.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getDaniel() {
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004797.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getDavidEscobar() {
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004414.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getRage() {
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/6667041.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getBluePeacocks() { // Does not work (probably because the 2010 lvm char does not support some face)
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004418.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getTutGirl() {
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000001.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getOwen() {
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0000000.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							function getJyvee() {
-								return new Promise((res, rej) => {
-									https.get('https://file.garden/ZP0Nfnn29AiCnZv5/0004416.xml', r => {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
-									});
-								});
-							}
-							let buf;
-							if (v.id == "4048901") buf = await getJoseph();
-							else if (v.id == "4715202") buf = await getTutGirl();
-							else if (v.id == "192") buf = await getDavidEscobar();
-							else if (v.id == "60897073") buf = await getBluePeacocks();
-							else if (v.id == "66670973") buf = await getJyvee();
-							else if (v.id == "4635901") buf = await getOwen();
-							else if (v.id == "0000000") buf = await getRage();
-							else if (v.id == "666") buf = await getDaniel();
-							xml2zip += `<char id="${v.id}" enc_asset_id="${v.id}" thumb="${
-								v.id
-							}.zip" is_premium="N" sharing="0" money="0" name="${
+							const id = stockChar.id ? stockChar.id + v.id : v.id;
+							const buf = await char.load(id);
+							const charJSON = await parse.getStuffForOldStockChar(buf, data, tId);
+							xml2zip += `<char id="${id}" enc_asset_id="${v.id}" thumb="${id}.zip" is_premium="Y" sharing="5" money="0" name="${
 								v.name
-							}" cc_theme_id="${char.getTheme(buf)}" editable="N" ${
+							}" cc_theme_id="${tId}" editable="N" ${
 								charJSON.defaults
 							} enable="Y" copyable="Y" isCC="Y" locked="Y" facing="left" published="1"><tags>${
-								char.getTheme(buf)
-							},_category_${
+								tId
+							},${
 								stockChar.tag
 							}</tags>${charJSON.xmls}</char>`
 						}
@@ -122,70 +84,21 @@ module.exports = function (req, res, url) {
 					return xml2zip + '</theme>';
 				}
 				res.setHeader("Content-Type", "application/zip");
-				if (
-					theme != "custom" 
-					&& themeInfo 
-					&& themeInfo.attr
-					&& themeInfo.attr.cc_theme_id 
-					&& data.studio
-				) fUtil.makeZip(`${folder}/${theme}${
-					themeInfo && themeInfo.attr && themeInfo.attr.cc_theme_id && data.studio ? 'old' : ''
-				}.xml`, "theme.xml").then((b) => res.end(b));
-				else fUtil.makeZipFromBuffer(await oldStockCharsXML([
-					{ // professions (not developers of GoNexus)
-						tag: "professions",
-						people: [
-							{
-								name: "2010 LVM Tutorial Woman",
-								id: "4715202"
-							},
-							{
-								 name: "David Escobar",
-								 id: "192"
-							},
-							{
-								 name: "Daniel",
-								 id: "666"
-							}
-						]
-					},
-					{ // celebrities (developers of GoNexus)
-						tag: "celebrities",
-						people: [
-							{
-								name: "BluePeacocks",
-								id: "60897073"
-							},
-							{
-								name: "Jyvee",
-								id: "66670973"
-							},
-							{
-								name: "Joseph",
-								id: "4048901"
-							},
-							{
-								name: "Rage",
-								id: "0000000"
-							},
-							{
-								name: "Owen",
-								id: "4635901"
-							},
-						]
-					},
-				]), "theme.xml").then((b) => res.end(b));
+				fUtil.makeZipFromBuffer(await getThemeXML(), "theme.xml").then((b) => res.end(b));
 			});
 			break;
 		} case "/goapi/getThemeList/": {
-			loadPost(req, res).then(data => {
+			loadPost(req, res).then(async data => {
 				let filename = 'themelist';
-				if (data.studio) {
+				if (data.v) {
 					filename += '-old';
-					if (data.studio == '2010' || data.studio == '2012') filename += `-${data.studio}`;
+					if (data.v == '2010' || data.v == '2012') filename += `-${data.v}`;
 				}
 				res.setHeader("Content-Type", "application/zip");
-				fUtil.makeZip(`${folder}/${filename}.xml`, "themelist.xml").then((b) => res.end(b));
+				const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
+				const tXML = fs.readFileSync(`${folder}/${filename}.xml`).toString().split("points").join(`points money="0" sharing="${userInfo.gopoints}"`);
+				fUtil.makeZipFromBuffer(Buffer.from(tXML), "themelist.xml").then((b) => res.end(b));
+
 			})
 			break;
 		} default: return;

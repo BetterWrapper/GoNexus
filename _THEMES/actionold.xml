@@ -186,9 +186,4 @@
     <state id="msp_vending_drink_vending_drink.swf" name="front" enable="Y" default="Y"/>
     <state id="msp_vending_drink_ncc_vending_drink_side.swf" name="side" enable="Y"/>
   </prop>
-   <char id="9190b3a" enc_asset_id="char1" thumb="9190b3a.zip" is_premium="Y" sharing="0" money="100" name="Me! Me!" cc_theme_id="cc2" editable="Y" default="stand.xml" motion="walk.xml" enable="Y" copyable="Y" isCC="Y" locked="Y" facing="left" published="0">
-   <tags>_domain_studio</tags>
-    <action id="stand.xml" name="Stand" loop="Y" totalframe="1" is_motion="N" enable="Y"/>
-    <motion id="walk.xml" name="Walk" loop="Y" totalframe="24" is_motion="Y" enable="Y"/>
-   </char>
 </theme>

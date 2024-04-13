@@ -5,6 +5,7 @@ const nodezip = require("node-zip");
 const base = Buffer.alloc(1, 0);
 const http = require("http");
 const fs = require("fs");
+const xmldoc = require("xmldoc");
 async function listAssets(data, isAssetSearch) {
 	const xmls = [], files = [];
 	switch (data.type) { // if we are going to do chars, then we will need to make sure that custom characters are complatable with the Community Library.
@@ -30,15 +31,13 @@ async function listAssets(data, isAssetSearch) {
 				}
 			});
 			break;
-		} case "char": {
-			const charsXML = fs.readFileSync('./_PREMADE/Comm.xml');
-			xmls.push(charsXML.toString().substr(7).slice(0, -8));
-			break;
 		}
 	}
 	const zip = nodezip.create();
+	const charsXML = fs.readFileSync('./_PREMADE/Comm.xml');
+	const charsXml = charsXML.slice(7, charsXML.indexOf("</chars>")).toString();
 	if (!isAssetSearch) {
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library"${
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="ugc" name="Community Library"${
 			parseInt(data.studio) <= 2012 ? (function() {
 				switch (data.type) {
 					case "bg": return ' moreBG="1"'
@@ -49,12 +48,24 @@ async function listAssets(data, isAssetSearch) {
 				}
 			})() : ''
 		}>${
-			xmls.join("")
+			data.type != "char" ? xmls.join("") : charsXml
 		}</theme>`);
-		files.forEach((file) => {
+		if (data.type != "char") files.forEach((file) => {
 			const buffer = fs.readFileSync(`./.site/${file}`);
 			fUtil.addToZip(zip, `${data.type}/${file}`, buffer);
 		});
+		else try {
+			const result = new xmldoc.XmlDocument(charsXML);
+			for (const i of result.children) {
+				if (i.children) for (const d of i.children.filter(i => i.name == "action")) {
+					if (fs.existsSync(`./_PREMADE/comm_chars/${i.attr.id}/${
+						d.attr.id
+					}`)) fUtil.addToZip(zip, `char/${i.attr.id}/${d.attr.id}`, fs.readFileSync(`./_PREMADE/comm_chars/${i.attr.id}/${d.attr.id}`));
+				}
+			}
+		} catch (e) {
+			console.log(e);
+		}
 	} else {
 		let results = 0;
 		files.filter(i => i.includes(data.keywords)).forEach((file) => {

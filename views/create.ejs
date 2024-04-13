@@ -298,7 +298,6 @@
                 return previewerMovieXML;
             }
             function initPreviewPlayer(dataXmlStr, startFrame) {
-                console.log(flashvars);
                 previewerMovieXML = dataXmlStr;
                 if (typeof startFrame == 'undefined') {
                     startFrame = 1;
@@ -319,7 +318,6 @@
                         tlang: "en_US",
                         isInitFromExternal: 1,
                         startFrame,
-                        isPreview: 1,
                         movieId: flashvars.presaveId,
                         autostart: 1,
                         storePath: "https://wrapperclassic.netlify.app/static/store/<store>",
@@ -418,7 +416,7 @@
                     flashvars.userId = userData.uid || userData.id;
                     flashvars.presaveId = d;
                     flashvars.ctc = json.ct2010;
-                    flashvars.tm = json.tutorial ? "NEW" : "FIN";
+                    flashvars.tm = json.tutorial ? "SEMI" : "FIN";
                     if (json.tutorial && studio == "2010") flashvars.tmcc = $('#devs_selector').val() || tmcId;
                     if (studio != '2010') jQuery("#studiodiv").flash({
                         id: "Studio",

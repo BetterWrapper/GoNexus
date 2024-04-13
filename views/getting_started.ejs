@@ -29,6 +29,9 @@
                 left: -150px;
                 top: -300px;
             }
+            .custom_studio {
+                width: 991px;
+            }
             @font-face {
                 font-family: 'Lato';
                 font-style: normal;
@@ -46,11 +49,11 @@
         <script type="text/javascript">
             var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
         </script>
+        <script src="/js/common_combined.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
         <script src="/js/user.js"></script>
-        <script src="/js/common_combined.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.swfobject.min.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.blockUI-2.66.0.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.scrollTo.min.js"></script>
@@ -113,7 +116,7 @@
                 $("#getting_started_modal").block();
                 $.post("/api/getChars", {
                     userId: userData.id || userData.uid,
-                    cc_theme_id: $("#char_themes_selector").val(),
+                    cc_theme_id: $("#themes_selector").val(),
                 }, e => {
                     const d = JSON.parse(e);
                     if (d[0] && !d[0].error && d[0].id) {
@@ -139,9 +142,15 @@
                 });
             }
             var movieDataXmlStr;
-            function closeWindow() {
-                $("#stuff").html('');
-                $("#Studio").css("height", "");
+            function closeWindow(isSaveVideo = false) {
+                if (getting_started_html_config.current == "custom_lvm") {
+                    $("#getting_started_modal").unblock()
+                    if (isSaveVideo) $("#Studio")[0].onExternalPreviewPlayerPublish();
+                } else {
+                    $("#stuff").html('');
+                    $("#Studio").css("height", "");
+                    if (isSaveVideo) $("#Studio")[0].onExternalPreviewPlayerPublish();
+                }
             }
             function beginImport() {
                 function importFailed(e) {
@@ -247,18 +256,47 @@
             }
             function initPreviewPlayer(dataXmlStr, startFrame) {
                 movieDataXmlStr = dataXmlStr;
-                getting_started_html_config.player_data.flashvars.startFrame = startFrame;
-                getting_started_html_config.player_data.flashvars.isInitFromExternal = 1;
-                getting_started_html_config.player_attrs.width = "640";
-                $("#Studio").css("height", "0px");
-                $("#stuff").html(
-                    '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>' + 
-                    toObjectString(
-                        getting_started_html_config.player_attrs, 
-                        getting_started_html_config.player_data
-                    )
-                    + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:closeWindow()" onclick="document.getElementById(\'Studio\').onExternalPreviewPlayerPublish()">Save & Close</a><br>'
-                );
+                if (getting_started_html_config.current == "custom_lvm") {
+                    getting_started_html_config.custom_player_data.flashvars.v = getting_started_html_config.modalData.year;
+                    getting_started_html_config.custom_player_data.flashvars.startFrame = startFrame || 1;
+                    getting_started_html_config.custom_player_data.flashvars.isInitFromExternal = 1;
+                    getting_started_html_config.custom_player_data.flashvars.autostart = 1;
+                    getting_started_html_config.custom_player_attrs.data = `/static/tommy/${
+                        getting_started_html_config.modalData.year
+                    }/animation/player.swf`
+                    getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/${
+                        getting_started_html_config.modalData.year
+                    }/<client_theme>`
+                    $("#getting_started_modal").block({
+                        message: '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>' + 
+                        toObjectString(
+                            getting_started_html_config.custom_player_attrs, 
+                            getting_started_html_config.custom_player_data
+                        )
+                        + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:closeWindow()" onclick="document.getElementById(\'Studio\').onExternalPreviewPlayerPublish()">Save & Close</a><br>',
+                        css: {
+                            cursor: 'auto',
+                            width: '640px'
+                        },
+                        overlayCSS: {
+                            cursor: 'auto',
+                            width: '640px'
+                        }
+                    });
+                } else {
+                    getting_started_html_config.player_data.flashvars.startFrame = startFrame || 1;
+                    getting_started_html_config.player_data.flashvars.isInitFromExternal = 1;
+                    getting_started_html_config.player_attrs.width = "640";
+                    $("#Studio").css("height", "0px");
+                    $("#stuff").html(
+                        '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>' + 
+                        toObjectString(
+                            getting_started_html_config.player_attrs, 
+                            getting_started_html_config.player_data
+                        )
+                        + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:;" onclick="closeWindow(true)">Save & Close</a><br>'
+                    );
+                }
             }
             function retrievePreviewPlayerData() { 
                 return movieDataXmlStr;
@@ -285,6 +323,42 @@
                 ),
                 start: "welcome_screen",
                 current: "welcome_screen",
+                custom_player_attrs: {
+                    id: "Player", 
+                    width: "550", 
+                    height: "384", 
+                    hasVersion: "10.0.12"
+                },
+                custom_player_data: {
+                    allowScriptAccess: "always",
+                    wmode: "transparent",
+                    flashvars: {
+                        storePath: "/static/tommy/2010/store/<store>",
+                        ut: "10",
+                        apiserver: window.location.origin + "/",
+                        copyable: "0",
+                        isPublished: "0",
+                        ctc: "go",
+                        tlang: "en_US",
+                        is_private_shared: "0",
+                        autostart: "0",
+                        appCode: "go",
+                        is_slideshow: "0",
+                        isEmbed: "0",
+                        refuser: "",
+                        utm_source: "",
+                        uid: "",
+                        isTemplate: "0",
+                        showButtons: "1",
+                        showshare: "embed",
+                        averageRating: "0",
+                        ratingCount: "0",
+                        fb_app_url: window.location.origin + "/",
+                        numContact: ""
+                    },
+                    scale: "exactfit",
+                    allowFullScreen: "true",
+                },
                 player_attrs: {
                     data: "/static/animation/player.swf",
                     type: "application/x-shockwave-flash",
@@ -333,27 +407,53 @@
                     type: "application/x-shockwave-flash",
                     width: `960`,
                     height: "630",
-                    id: "Studio"
+                    id: "custom_studio"
                 },
                 custom_studio_data: {
 					flashvars: {
+                        tts_enabled: 1,
+			            upl: 1,
+			            hb: 1,
+                        pts: 1,
+			            appCode: "go",
+			            uisa: 1,
+			            isLogin: "Y",
+			            tlang: "en_US",
+			            isEmbed: 1,
+			            isWide: "0",
+			            nextUrl: "javascript:showMyVideoUsingLVMYear('<movieId>')",
+                        siteId: window.location.host.startsWith("localhost") ? 7 : "go",
+                        lid: window.location.host.startsWith("localhost") ? 7 : 13,
+			            ut: "10",
+                        isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
                         apiserver: window.location.origin + "/",
-					    storePath: "/static/store/<store>",
-					    isEmbed: 1,
-					    ctc: "go",
-					    ut: 10,
-					    appCode: "go",
-					    siteId: "13",
-					    lid: 13,
-                        uisa: 1,
-					    clientThemePath: "/static/<client_theme>",
-					    tlang: "en_US",
-					    isWide: 0,
-					    nextUrl: "javascript:showMyVideo('<movieId>')",
+                        staticserver: "https://wrapperclassic.netlify.app/"
                     },
                     allowScriptAccess: "always"
 				}
             }
+            function showMyVideoUsingLVMYear(mId) {
+                jQuery("#getting_started_modal").block();
+                const oldModalData = getting_started_html_config.modalData;
+                goTo('custom_lvp', (json_info, callback) => {
+                    checkUserVideos(() => {
+                        getting_started_html_config.player_data.flashvars.autostart = 0;
+                        delete getting_started_html_config.player_data.flashvars.startFrame;
+                        delete getting_started_html_config.player_data.flashvars.isInitFromExternal;
+                        getting_started_html_config.custom_player_data.flashvars.clientThemePath = `https://file.garden/ZP0Nfnn29AiCnZv5/static/2012/<client_theme>`;
+                        getting_started_html_config.custom_player_data.flashvars.v = oldModalData.year;
+                        getting_started_html_config.custom_player_data.flashvars.movieOwnerId = userData.id || userData.uid;
+                        getting_started_html_config.custom_player_data.flashvars.movieOwner = userData.displayName;
+                        getting_started_html_config.custom_player_data.flashvars.thumbnailURL = `movie_thumbs/${mId}.png`
+                        getting_started_html_config.custom_player_data.flashvars.movieId = mId;
+                        getting_started_html_config.custom_player_attrs.data = `https://file.garden/ZP0Nfnn29AiCnZv5/animation/${
+                            data.year
+                        }/player.swf`;
+                        jQuery("#getting_started_modal").unblock();
+                        callback(json_info);
+                    })
+                });
+            } 
             function showMyVideo(mId) {
                 jQuery("#getting_started_modal").unblock();
                 goTo('lvp', (json_info, callback) => {
@@ -458,9 +558,10 @@
                         else {
                             var attrs = '';
                             for (const g in d[i][e]) {
+                                if (g == "html") continue;
                                 attrs += `${g}="${d[i][e][g]}" `;
                             }
-                            htmls[i] += `<${e} ${attrs}></${e}>`;
+                            htmls[i] += `<${e} ${attrs}>${d[i][e].html || ""}</${e}>`;
                         }
                     }
                 }
@@ -495,10 +596,128 @@
                     });
                 })
             }
+            function yearSubmit() {
+                $("#getting_started_modal").block();
+                const data = Object.fromEntries(new URLSearchParams($("#year_input").serialize()));
+                function experimentalConfirm() {
+                    const stuff = [
+                        "retro_times",
+                        "business_times"
+                    ]
+                    for (const i of stuff) {
+                        const d = $(`#${i}`).find(`option[value="${data.year}"]`);
+                        if (d && d.data("is-experimental")) return confirm("NOTE: The year you selected is currently in it's experimental state right now. By clicking OK, you are understanding that the swf files included in that year are not stable for production use yet and are risking unstable performace from the SWF files included in the year you selected. Are you sure that you want to proceed to the next step without reconsidering first?");
+                    }
+                    return true;
+                }
+                if (experimentalConfirm()) switch (data.for) {
+                    case "lvp": {
+                        goTo('custom_lvp', (json_info, callback) => {
+                            checkUserVideos(() => {
+                                for (const i in data) getting_started_html_config.modalData[i] = data[i];;
+                                getting_started_html_config.custom_player_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;
+                                getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/${
+                                    parseInt(data.year) >= 2012 ? "2012" : data.year
+                                }/<client_theme>`;
+                                getting_started_html_config.custom_player_data.flashvars.v = data.year;
+                                getting_started_html_config.custom_player_data.flashvars.movieOwnerId = userData.id || userData.uid;
+                                getting_started_html_config.custom_player_data.flashvars.movieOwner = userData.displayName;
+                                getting_started_html_config.custom_player_data.flashvars.thumbnailURL = `/movie_thumbs/${
+                                    getting_started_html_config.player_data.flashvars.movieId
+                                }.png`
+                                getting_started_html_config.custom_player_data.flashvars.movieId = getting_started_html_config.player_data.flashvars.movieId;
+                                getting_started_html_config.custom_player_attrs.data = `/static/animation/player.swf?v=${
+                                    data.year
+                                }`;
+                                jQuery("#getting_started_modal").unblock();
+                                callback(json_info);
+                            })
+                        });
+                        break;
+                    }
+                } else {
+                    $("#getting_started_modal").unblock();
+                    $("#getting_started_modal").block({
+                        message: $("#year_input"),
+                        css: {
+                            cursor: 'auto'
+                        },
+                        overlayCSS: {
+                            cursor: 'auto'
+                        }
+                    });
+                }
+            }
+            function switchLvp2(where) {
+                switch (where) {
+                    case "custom": {
+                        $("#year_input_data_for").val('lvp');
+                        $("#getting_started_modal").block({
+                            message: $("#year_input"),
+                            css: {
+                                cursor: 'auto'
+                            },
+                            overlayCSS: {
+                                cursor: 'auto'
+                            }
+                        });
+                        break;
+                    } case "normal": {
+                        goTo('lvp');
+                        break;
+                    }
+                }
+            }
             function getThemes() {
                 return new Promise((res, rej) => {
                     jQuery.getJSON("/api/themes/get", d => res(d.filter(i => !i.attr.isHidden)));
                 })
+            }
+            function tutInit(obj) {
+                $("#getting_started_modal").block();
+                const modalData = Object.fromEntries(
+                    new URLSearchParams($("#getting_started_modal").serialize())
+                );
+                function empty() {
+                    $("#tutStuff").empty()
+                    $("#getting_started_modal").unblock();
+                }
+                if (modalData.year != "2010") empty();
+                else (async () => {
+                    const charIds = {};
+                    for (const v of await getThemes()) charIds[v.attr.id] = v.attr.cc_theme_id;
+                    $.post("/api/getChars", {
+                        userId: userData.id || userData.uid,
+                        cc_theme_id: charIds[obj ? $(obj).val() : modalData.theme] || "family",
+                    }, e => {
+                        const d = JSON.parse(e);
+                        if (d[0] && !d[0].error && d[0].id) $(
+                            "#tutStuff"
+                        ).html(`<center><h1>Select A Character</h1></center><br><div id="row_chars" class="row">${
+                            d.map(v => `<div class="col-md-2" title="${v.title}"><input id="${v.id}" type="radio" name="tutchar" value="${
+                                v.id
+                            }" style="float: left;"/><img src="${v.head_url}"/></div>`).join("")
+                        }</div>`)
+                        else $("#tutStuff").html(
+                            d 
+                            && d[0] 
+                            && d[0].error 
+                            ? d[0].error 
+                            : "You have not created any characters for this theme yet."
+                        );
+                        $("#getting_started_modal").unblock();
+                    });
+                })();
+            }
+            function tutoogle() {
+                const modalData = Object.fromEntries(
+                    new URLSearchParams($("#getting_started_modal").serialize())
+                );
+                $("#tutStuff")[modalData.tutorial == "on" ? "show" : "hide"]();
+            }
+            function newAnimation() {
+                getting_started_html_config.custom_studio_data.flashvars.movieId = "";
+                goTo('custom_lvm_themes_selector');
             }
             function showGettingStartedModal(json) {
                 jQuery.blockUI();
@@ -511,8 +730,13 @@
                         if (getting_started_html_config.current.startsWith("char_")) return tJSON.filter(
                             i => i.attr.cc_theme_id
                         ).map(v => `<option value="${v.attr.cc_theme_id}">${v.attr.name}</option>`).join("")
-                        return tJSON.map(v => `<option value="${v.attr.cc_theme_id}">${v.attr.name}</option>`).join("")
+                        return tJSON.map(v => `<option id="${v.attr.id}" value="${v.attr.id}" data-charTid="${
+                            v.attr.cc_theme_id
+                        }">${v.attr.name}</option>`).join("")
                     }
+                    if (
+                        $("#getting_started_modal").find(".modal-dialog").hasClass("custom_studio")
+                    ) $("#getting_started_modal").find(".modal-dialog").removeClass("custom_studio");
                     switch (getting_started_html_config.current) {
                         case "char_themes_selector": 
                         case "themes_selector": 
@@ -522,18 +746,45 @@
                             switch (getting_started_html_config.current) {
                                 case "custom_lvm_themes_selector": {
                                     $("#other_options_custom_lvm").html(`
-                                        <label style="margin: 30px;">
-                                            https://wrapperclassic.netify.app/animation/<input type="text" value="2010" style="width: 35px;"/>/<input type="text" value="old_full.swf" style="width: 102px;"/>
+                                        <label style="margin: 10px;">
+                                            /static/animation/<input name="file" type="text" value="old_full.swf" style="width: 102px;"/>?v=<input oninput="tutInit()" name="year" type="text" value="2010" style="width: 40px;"/>
                                         </label>
                                         <label for="tutoogle" style="float: left;">
-                                            Tutorial <input id="tutoggle" type="checkbox" onchange="tutoogle()"/>
+                                            Tutorial <input id="tutoggle" type="checkbox" onchange="tutoogle()" name="tutorial"/>
                                         </label>
-                                        <div id="tutStuff"></div>
-                                    `)
+                                        <div id="tutStuff" style="display: none;"></div>
+                                    `);
+                                    tutInit();
                                     break;
                                 }
                             }
                             break;
+                        } case "custom_lvm": {
+                            const dat = getting_started_html_config.modalData;
+                            if (dat.year == "2010" && dat.tutorial == "on" && !dat.tutchar) {
+                                go('prev');
+                                alert("You need to select a character to use for the 2010 lvm tutorial.");
+                            } else jQuery.post("/api/getNewMovieId", d => {
+                                $("#getting_started_modal").find(".modal-dialog").addClass("custom_studio");
+                                getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${dat.year}/animation/${dat.file}`;
+                                getting_started_html_config.custom_studio_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;
+                                getting_started_html_config.custom_studio_data.flashvars.clientThemePath = `/static/tommy/${dat.year}/<client_theme>`;
+                                getting_started_html_config.custom_studio_data.flashvars.movieId = getting_started_html_config.custom_player_data.flashvars.movieId || "";
+                                getting_started_html_config.custom_studio_data.flashvars.presaveId = getting_started_html_config.custom_player_data.flashvars.movieId || d
+                                getting_started_html_config.custom_studio_data.flashvars.studio = dat.year
+                                getting_started_html_config.custom_studio_data.flashvars.file = dat.file
+                                getting_started_html_config.custom_studio_data.flashvars.v = dat.year
+                                getting_started_html_config.custom_studio_data.flashvars.tray = dat.theme;
+                                getting_started_html_config.custom_studio_data.flashvars.tm = dat.tutorial == "on" ? "NEW" : "FIN";
+                                getting_started_html_config.custom_studio_data.flashvars.tmcc = dat.tutchar || "";
+                                getting_started_html_config.custom_studio_data.flashvars.userId = userData.id || userData.uid;
+                                $(".getting_started_custom_lvm_video_maker").html(
+                                    toObjectString(
+                                        getting_started_html_config.custom_studio_attrs, 
+                                        getting_started_html_config.custom_studio_data
+                                    )
+                                )
+                            });
                         } case "cc": {
                             function setupCC() {
                                 if (jQuery(".getting_started_char_creator")) {
@@ -556,11 +807,18 @@
                             }
                             var loop = setInterval(setupStudio, 1);
                             break;
+                        } case "custom_lvp": {
+                            console.log(getting_started_html_config.custom_player_attrs, getting_started_html_config.custom_player_data)
+                            jQuery(".getting_started_custom_video_player").html(
+                                toObjectString(getting_started_html_config.custom_player_attrs, getting_started_html_config.custom_player_data)
+                            );
+                            break;
                         } case "lvp": {
                             function setupPlayer() {
                                 if (jQuery(".getting_started_video_player") && jQuery("#edit_video")) {
-                                    $("#new_video").text("New Video")
-                                    if (jQuery.flash.available) jQuery(".getting_started_video_player").html(toObjectString(getting_started_html_config.player_attrs, getting_started_html_config.player_data));
+                                    if (jQuery.flash.available) jQuery(".getting_started_video_player").html(
+                                        toObjectString(getting_started_html_config.player_attrs, getting_started_html_config.player_data)
+                                    );
                                     else jQuery(".getting_started_video_player").html("You need Adobe Flash Player in order to use the LVP.");
                                     clearInterval(loop);
                                 }
@@ -594,6 +852,28 @@
                 })();
             }
         </script>
+        <form id="year_input" style="display: none;">
+            <input type="hidden" id="year_input_data_for" name="for"/>
+            <center>
+                <h1><a style="float: right;" href="javascript:;" onclick="jQuery('#getting_started_modal').unblock()">&times;</a></h1><br>
+                <h3>Please select an lvm year.</h3><br>
+                <select name="year">
+                    <optgroup label="The Retro Times" id="retro_times">
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2011b" data-is-experimental="true">Mid 2012 (EXPERIMENTAL)</option>
+                        <option value="2012">Late 2012</option>
+                    </optgroup>
+                    <optgroup label="The Business Times" id="business_times">
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                    </optgroup>
+                </select><br>
+                <a href="javascript:yearSubmit()" class="btn btn-orange">Submit</a>
+            </center>
+        </form>
         <div class="page-container">
             <!-- HEADER -->
             <%- include("includes/header.ejs", {

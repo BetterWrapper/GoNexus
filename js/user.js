@@ -326,7 +326,12 @@ function logout(t) {
     });
 }
 function loggedIn(user) {
-    jQuery.blockUI();
+    jQuery.extend(CCStandaloneBannerAdUI, {
+        actionshopSWF: "/static/tommy/2011/animation/actionshop.swf",
+        apiserver: window.location.origin + "/",
+        clientThemePath: "/static/tommy/2011/<client_theme>",
+        userId: user.uid || user.id
+    });
     jQuery.post(`/api/getUserSWFFiles?userId=${user.uid || user.id}`, files => {
         for (const file of files) {
             $("#FlashGamePlayer_swfFilesDropdown").show();
@@ -342,18 +347,11 @@ function loggedIn(user) {
         admin: user.admin,
         uid: user.uid || user.id
     }, () => {
-        jQuery.post("/api/checkCurrentCustomCSS", {
-            current: currentCustomCSS.split("&lt;style&gt;")[1].split("&lt;/style&gt;")[0].split("&amp;").join("&").split("&#34;").join('"'),
-            uid: user.id || user.uid
-        }, d => {
-            if (JSON.parse(d).reload) window.location.reload();
-            else jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
-                const json = JSON.parse(d);
-                jQuery.unblockUI();
-                addVal2Element('freeconvert-key', json.freeConvertKey);
-                addVal2Element('topmediaai-key', json.topMediaAIKey);
-                if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
-            });
+        jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
+            const json = JSON.parse(d);
+            addVal2Element('freeconvert-key', json.freeConvertKey);
+            addVal2Element('topmediaai-key', json.topMediaAIKey);
+            if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
         })
     });
     hideElement('signup-button');
@@ -446,6 +444,7 @@ function loggedIn(user) {
             break;
         } case "/go_full": {
             $(document).ready(function() {
+                studio_data.flashvars.apiserver = window.location.origin + '/';
                 if (enable_full_screen) {
         
                     if (!true) {

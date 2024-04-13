@@ -46,24 +46,36 @@ const loadPost = require("../misc/post_body");
 const fs = require("fs");
 function getVoicesXml(apiName) {
 	return new Promise((res, rej) => {
-		https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
+		function genXml(json) {
+			const xmls = {};
+			for (const voiceInfo of json.voices) {
+				voices[voiceInfo.vid.split("-").join("").toLowerCase()] = voiceInfo;
+				xmls[voiceInfo.lang] = xmls[voiceInfo.lang] || [];
+				xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.split("-").join("").toLowerCase()}" desc="${
+					voiceInfo.name
+				}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
+			}
+			const xml = `${process.env.XML_HEADER}<voices>${Object.keys(xmls).sort().map((i) => {
+				const v = xmls[i],
+				l = getLangPre(i);
+				return `<language id="${l}" desc="${i}">${v.join("")}</language>`;
+			}).join("")}</voices>`
+			res(xml);
+		}
+		if (apiName.startsWith("local_")) {
+			const json = {
+				voices: []
+			};
+			const voices = JSON.parse(fs.readFileSync(`./tts/${apiName.split("_")[1]}/voices.json`));
+			for (const i in voices) {
+				json.voices.unshift(voices[i]);
+			}
+			genXml(json);
+		} else https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
 			const buffers = [];
 			r.on("data", b => buffers.push(b)).on("end", () => {
 				try {
-					const json = JSON.parse(Buffer.concat(buffers))[apiName];
-					const xmls = {};
-					for (const voiceInfo of json.voices) {
-						voices[voiceInfo.vid.split("-").join("").toLowerCase()] = voiceInfo;
-						xmls[voiceInfo.lang] = xmls[voiceInfo.lang] || [];
-						xmls[voiceInfo.lang].push(`<voice id="${voiceInfo.vid.split("-").join("").toLowerCase()}" desc="${voiceInfo.name}" sex="${voiceInfo.gender}" demo-url="" country="${voiceInfo.flag}" plus="N"/>`)
-					}
-					const xml = `${process.env.XML_HEADER}<voices credit="50">${Object.keys(xmls).sort().map((i) => {
-						const v = xmls[i],
-						l = getLangPre(i);
-						return `<language id="${l}" desc="${i}">${v.join("")}</language>`;
-					}).join("")}</voices>`
-					console.log(xml);
-					res(xml);
+					genXml(JSON.parse(Buffer.concat(buffers))[apiName]);
 				} catch (e) {
 					rej(e);
 				}
@@ -73,35 +85,56 @@ function getVoicesXml(apiName) {
 }
 function getVoicesJson(apiName) {
 	return new Promise((res, rej) => {
-		https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
+		function genJson(json) {
+			const table = {};
+			for (const voiceInfo of json.voices) {
+				voices[voiceInfo.vid] = voiceInfo;
+				table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${
+					(getLangPre(voiceInfo.lang)).toUpperCase()
+				}.png`) || fs.existsSync(`./ui/img/voiceflag_${
+					getLangPre(voiceInfo.lang)
+				}.png`) ? voiceInfo.lang : "More"] = table[voiceInfo.flag.length <= 2 && getLangPre(
+					voiceInfo.lang
+				) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${
+					getLangPre(voiceInfo.lang)
+				}.png`) ? voiceInfo.lang : "More"] || [];
+				table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${
+					(getLangPre(voiceInfo.lang)).toUpperCase()
+				}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"].unshift({
+					id: voiceInfo.vid,
+					desc: voiceInfo.name,
+					sex: voiceInfo.gender,
+					vendor: json.apiName || apiName,
+					demo: "",
+					country: voiceInfo.flag.length <= 2 ? voiceInfo.flag : false,
+					lang: getLangPre(voiceInfo.lang) || false,
+					plus: false
+				})
+			}
+			const json2 = {};
+			Object.keys(table).sort().map((i) => {
+				json2[i == "More" ? "default" : getLangPre(i)] = {
+					desc: i,
+					options: table[i]
+				}
+			});
+			res(json2);
+		}
+		if (apiName.startsWith("local_")) {
+			const json = {
+				voices: []
+			};
+			const voices = JSON.parse(fs.readFileSync(`./tts/${apiName.split("_")[1]}/voices.json`));
+			for (const i in voices) {
+				json.voices.unshift(voices[i]);
+			}
+			genJson(json);
+		}
+		else https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
 			const buffers = [];
 			r.on("data", b => buffers.push(b)).on("end", () => {
 				try {
-					const json = JSON.parse(Buffer.concat(buffers))[apiName];
-					const table = {};
-					for (const voiceInfo of json.voices) {
-						voices[voiceInfo.vid] = voiceInfo;
-						table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"] = table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"] || [];
-						table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"].unshift({
-							id: voiceInfo.vid,
-							desc: voiceInfo.name,
-							sex: voiceInfo.gender,
-							vendor: apiName,
-							demo: "",
-							country: voiceInfo.flag.length <= 2 ? voiceInfo.flag : false,
-							lang: getLangPre(voiceInfo.lang) || false,
-							plus: false
-						})
-					}
-					const json2 = {};
-					Object.keys(table).sort().map((i) => {
-						json2[i == "More" ? "default" : getLangPre(i)] = {
-							desc: i,
-							options: table[i]
-						}
-					});
-					console.log(json2);
-					res(json2);
+					genJson(JSON.parse(Buffer.concat(buffers))[apiName]);
 				} catch (e) {
 					rej(e);
 				}
