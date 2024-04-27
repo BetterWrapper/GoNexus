@@ -512,10 +512,16 @@ module.exports = {
 						else if (id == "4635901") res(await this.getOwen());
 						else if (id == "0000000") res(await this.getRage());
 						else if (id == "666") res(await this.getDaniel());
-						else if (prefix) get(`https://file.garden/ZP0Nfnn29AiCnZv5/${prefix}_chardump/${
-							suffix.slice(0, -3) + "000"
-						}.txt`).then(b => res(b.toString("utf8").split(suffix.substr(6))[1].split("</cc_char>")[0] + "</cc_char>")).catch(rej);
-						else {
+						else if (prefix) try {
+							const b = fs.readFileSync(`./premadeChars/TXT/${suffix.slice(0, -3) + "000"}.TXT`);
+							res(b.toString("utf8").split(suffix.substr(6))[1].split("</cc_char>")[0] + "</cc_char>")
+						} catch (e) {
+							get(`https://file.garden/ZP0Nfnn29AiCnZv5/${prefix}_chardump/${
+								suffix.slice(0, -3) + "000"
+							}.txt`).then(
+								b => res(b.toString("utf8").split(suffix.substr(6))[1].split("</cc_char>")[0] + "</cc_char>")
+							).catch(rej);
+						} else {
 							var nId = parseInt(suffix);
 							var xmlSubId = nId % fw;
 							var fileId = nId - xmlSubId;
@@ -586,7 +592,7 @@ module.exports = {
 				try {
 					res(fs.readFileSync(`./premadeChars/thumb/${id}.png`));
 				} catch (e) {
-					res('poop');
+					res('');
 				}
 			}
 		});
@@ -599,7 +605,7 @@ module.exports = {
 				try {
 					res(fs.readFileSync(`./premadeChars/head/${id}.png`));
 				} catch (e) {
-					res('poop');
+					res('');
 				}
 			}
 		});
