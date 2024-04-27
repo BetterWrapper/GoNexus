@@ -157,6 +157,10 @@
             "h4": "Custom LVM"
         },
         "body": {
+            "span": {
+                "style": "float: right; display: none;",
+                "id": "old_stuffs_selector"
+            },
             "p": "You have selected what year and filename you wanted for the LVM and enabled some options as well.",
             "small": "Below, you should see the Studio load now. If not, flash may not be enabled.",
             "div": {

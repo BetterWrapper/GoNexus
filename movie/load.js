@@ -15,6 +15,7 @@ const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
 const templateAssets = [];
+const ncs = require("../ncs/modules/search");
 function getMp3Duration(buffer) {
 	return new Promise((res, rej) => {
 		mp3Duration(buffer, (e, d) => {
@@ -31,6 +32,7 @@ const framerate = 24;
 const frameToSec = (f) => f / framerate;
 const nodemailer = require('nodemailer');
 const xmldoc = require("xmldoc");
+const { URLSearchParams } = require("url");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -78,6 +80,107 @@ module.exports = function (req, res, url) {
 			break;
 		} case "POST": {
 			switch (url.pathname) {
+				case "/goapi/getSysTemplateAttributes/": {
+					loadPost(req, res).then(data => {
+						
+					})
+				}
+				case "/goapi/startPhoneRecord/": {
+					loadPost(req, res).then(data => {
+						// the api URL is https://api.myvox.com/ (that does not work so an error will occur)
+						res.end('<phoneRecord success="Y"><phone_number></phone_number><ivr_pin></ivr_pin><country>US</country><session_key></session_key></phoneRecord>')
+					})
+					break;
+				} case "/goapi/saveSoundByUrl/": {
+					loadPost(req, res).then(data => {
+						https.get(data.url, r => {
+							const buffers = [];
+							r.on("data", b => buffers.push(b)).on("end", () => {
+								const buffer = Buffer.concat(buffers);
+								const info = {
+									type: data.type,
+									subtype: data.subtype,
+									published: 0,
+									title: data.title,
+									tags: data.keywords,
+									downloadtype: "progressive",
+									ext: "mp3"
+								}
+								mp3Duration(buffer, (e, d) => {
+									const dur = info.duration = d * 1e3;
+									if (e || !dur) return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${
+										e || "Unable to retrieve MP3 stream."
+									}</message><text></text></error>`);
+									const id = asset.save(buffer, info, data);
+									res.end(`0<asset><id>${id}</id><enc_asset_id>${
+										id
+									}</enc_asset_id><type>${info.type}</type><subtype>${info.subtype}</subtype><title>${
+										info.title
+									}</title><published>0</published><tags>${info.tags}</tags><duration>${
+										dur
+									}</duration><downloadtype>${info.downloadtype}</downloadtype><file>${
+										id
+									}</file></asset>`);
+								});
+							})
+						})
+					});
+					break;
+				} case "/goapi/searchSoundSnap/": {
+					loadPost(req, res).then(async data => {
+						const musicals = 'regular-instrumental';
+						let xml = '0<sound>';
+						for (const version of musicals.split("-")) {
+							const results = await ncs.search(
+								{
+									search: data.keywords,
+									version
+								}
+							);
+							for (const info of results) {
+								let tags = '';
+								for (const tag of info.tags) {
+									tags += `${tag.name},`;
+								}
+								xml += `<sounds><title>${info.name} [${
+									version
+								}]</title><tags>${tags.slice(0, -1)}</tags><link>${info.download[version]}</link></sounds>`;
+							}
+						};
+						res.end(xml + '</sound>');
+					});
+					break;
+				} case "/goapi/getSysTemplates/": {
+					loadPost(req, res).then(async data => {
+						if (data.type == "movie") try {
+							var xml = '<ugc moreMovie="0">';
+							const zip = nodezip.create();
+							const counts = {
+								min: data.count * data.page,
+								max: parseInt(((data.count * data.page) + data.count).substr(1))
+							}
+							const files = fs.readdirSync(`./_EXAMPLES`);
+							console.log(counts, files);
+							for (; counts.min < counts.max; counts.min++) {
+								const file = files[counts.min];
+								if (!file) continue;
+								const meta = await movie.extractMeta(file, `./_EXAMPLES`, 'e');
+								xml += `<movie${Object.keys(meta).filter(i => i != "tags").map(v => ` ${v}="${meta[v]}"`).join("")}><tags>${
+									meta.tags
+								}</tags></movie>`;
+								fUtil.addToZip(zip, file.slice(0, -3) + "png", fs.readFileSync(`./premadeChars/head/123.png`));
+							}
+							xml += '</ugc>';
+							console.log(xml);
+							fUtil.addToZip(zip, 'desc.xml', xml);
+							res.end(Buffer.concat([base, await zip.zip()]));
+						} catch (e) {
+							console.log(e);
+							res.end("1")
+						}
+					})
+					break;
+				}
 				case "/goapi/getPointStatus/":
 				case "/goapi/buyPremiumAsset/": {
 					loadPost(req, res).then(data => {

@@ -107,6 +107,22 @@
             </div>
         </div>
         <script type="text/javascript">
+            function blockCustomStudio(elem, c, type, css) {
+                const config = {
+                    message: elem,
+                    css: {
+                        cursor: 'auto',
+                        width: '640px'
+                    },
+                    overlayCSS: {
+                        cursor: 'auto',
+                    }
+                };
+                if (c && typeof c == "object") for (const i in c) config[i] = c[i];
+                if (css && typeof css == "object" && type) for (const i in css) config[type][i] = css[i];
+                console.log(config);
+                $(".getting_started_custom_lvm_video_maker").block(config);
+            }
             function shareMyVideo(mId) {
                 $("#videoShareURL").val(`${window.location.origin}/videos?movieId=${mId}`);
                 showOverlayOnElement("#getting_started_modal", $("#video_share"))
@@ -144,8 +160,8 @@
             var movieDataXmlStr;
             function closeWindow(isSaveVideo = false) {
                 if (getting_started_html_config.current == "custom_lvm") {
-                    $("#getting_started_modal").unblock()
-                    if (isSaveVideo) $("#Studio")[0].onExternalPreviewPlayerPublish();
+                    $(".getting_started_custom_lvm_video_maker").unblock()
+                    if (isSaveVideo) $("#custom_studio")[0].onExternalPreviewPlayerPublish();
                 } else {
                     $("#stuff").html('');
                     $("#Studio").css("height", "");
@@ -153,13 +169,15 @@
                 }
             }
             function beginImport() {
+                const elem = getting_started_html_config.current == "custom_lvm" ? "#custom_studio" : "#Studio"
                 function importFailed(e) {
-                    $("#stuff").unblock();
-                    $("#stuff").html(
-                        '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Failed</h4><br><hr><p>Something in Nexus\'s servers has failed that caused your asset not to import successfully and that\'s okay, it happens! you can close this window and try to import your asset again. here is the error you have gotten:</p><br><hr>' + 
-                        `<small>${typeof e != "string" ? e.toString() : e}</small>`
-                        + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
-                    );
+                    const html = '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Failed</h4><br><hr><p>Something in Nexus\'s servers has failed that caused your asset not to import successfully and that\'s okay, it happens! you can close this window and try to import your asset again. here is the error you have gotten:</p><br><hr>' + 
+                    `<small>${typeof e != "string" ? e.toString() : e}</small>`
+                    + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
+                    if (elem != "#custom_studio") {
+                        $("#stuff").unblock();
+                        $("#stuff").html(html);
+                    } else blockCustomStudio(html)
                 }
                 jQuery("#stuff").block();
                 let b = new FormData();
@@ -173,13 +191,14 @@
                     success: (d) => {
                         if (d.suc) {
                             const importType = d.asset_data.type == "sound" ? d.asset_data.subtype : d.asset_data.type;
-                            $("#Studio")[0].importerUploadComplete(importType, d.id, d.asset_data);
-                            $("#stuff").unblock();
-                            $("#stuff").html(
-                                '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Complete!</h4><br><hr>' + 
-                                `<p>Because your asset has been imported to Nexus successfully, you may now use the asset you just imported in your video. to find your asset, go to the Your Library section in the dropdown menu in the top left corner of the lvm and find your asset based off of the file type you choose for your asset.</p><br>`
-                                + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
-                            );
+                            $(elem)[0].importerUploadComplete(importType, d.id, d.asset_data);
+                            const html = '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Complete!</h4><br><hr>' + 
+                            `<p>Because your asset has been imported to Nexus successfully, you may now use the asset you just imported in your video. to find your asset, go to the Your Library section in the dropdown menu in the top left corner of the lvm and find your asset based off of the file type you choose for your asset.</p><br>`
+                            + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
+                            if (elem != "#custom_studio") {
+                                $("#stuff").unblock();
+                                $("#stuff").html(html);
+                            } else blockCustomStudio(html);
                         } else importFailed(d.msg);
                     },
                     fail: importFailed,
@@ -222,8 +241,7 @@
                 $("#importer_quene").html(createImporterHTML);
             }
             function showImporter() {
-                $("#Studio").css("height", "0px");
-                $("#stuff").html(`<a style="float: right;" href="javascript:closeWindow()">×</a>
+                const elem = `<a style="float: right;" href="javascript:closeWindow()">×</a>
                 <h4 style="float: left;">Importing An Asset</h4>
                 <br>
                 <hr>
@@ -252,10 +270,15 @@
                 </center>
                 <br>
                 <hr>
-                <button class="btn btn-orange" onclick="closeWindow()">Close</button>`);
+                <a class="btn btn-orange" href="javascript:closeWindow()">Close</a>`;
+                if (getting_started_html_config.current != "custom_lvm") {
+                    $("#Studio").css("height", "0px");
+                    $("#stuff").html(elem)
+                } else blockCustomStudio(elem);
             }
             function initPreviewPlayer(dataXmlStr, startFrame) {
                 movieDataXmlStr = dataXmlStr;
+                const html = '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>toObjectString<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:closeWindow()" onclick="document.getElementById(\'Studio\').onExternalPreviewPlayerPublish()">Save & Close</a><br>'
                 if (getting_started_html_config.current == "custom_lvm") {
                     getting_started_html_config.custom_player_data.flashvars.v = getting_started_html_config.modalData.year;
                     getting_started_html_config.custom_player_data.flashvars.startFrame = startFrame || 1;
@@ -267,35 +290,23 @@
                     getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/${
                         getting_started_html_config.modalData.year
                     }/<client_theme>`
-                    $("#getting_started_modal").block({
-                        message: '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>' + 
-                        toObjectString(
-                            getting_started_html_config.custom_player_attrs, 
-                            getting_started_html_config.custom_player_data
-                        )
-                        + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:closeWindow()" onclick="document.getElementById(\'Studio\').onExternalPreviewPlayerPublish()">Save & Close</a><br>',
-                        css: {
-                            cursor: 'auto',
-                            width: '640px'
-                        },
-                        overlayCSS: {
-                            cursor: 'auto',
-                            width: '640px'
-                        }
+                    blockCustomStudio(html.split("toObjectString").join(toObjectString(
+                        getting_started_html_config.custom_player_attrs,
+                        getting_started_html_config.custom_player_data
+                    )), {
+                        centerY: false
+                    }, 'css', {
+                        top: '0px'
                     });
                 } else {
                     getting_started_html_config.player_data.flashvars.startFrame = startFrame || 1;
                     getting_started_html_config.player_data.flashvars.isInitFromExternal = 1;
                     getting_started_html_config.player_attrs.width = "640";
                     $("#Studio").css("height", "0px");
-                    $("#stuff").html(
-                        '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>' + 
-                        toObjectString(
-                            getting_started_html_config.player_attrs, 
-                            getting_started_html_config.player_data
-                        )
-                        + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:;" onclick="closeWindow(true)">Save & Close</a><br>'
-                    );
+                    $("#stuff").html(html.split("toObjectString").join(toObjectString(
+                        getting_started_html_config.custom_player_attrs,
+                        getting_started_html_config.custom_player_data
+                    )));
                 }
             }
             function retrievePreviewPlayerData() { 
@@ -411,7 +422,6 @@
                 },
                 custom_studio_data: {
 					flashvars: {
-                        tts_enabled: 1,
 			            upl: 1,
 			            hb: 1,
                         pts: 1,
@@ -427,6 +437,7 @@
 			            ut: "10",
                         isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
                         apiserver: window.location.origin + "/",
+                        newusr: 1,
                         staticserver: "https://wrapperclassic.netlify.app/"
                     },
                     allowScriptAccess: "always"
@@ -493,6 +504,7 @@
                 goTo("cc_success");
             }
             const interactiveTutorial = {
+                show_by_default: true,
                 isShowTutorial: true,
                 neverDisplay: function(a) {
                     if (a === undefined) {
@@ -600,13 +612,15 @@
                 $("#getting_started_modal").block();
                 const data = Object.fromEntries(new URLSearchParams($("#year_input").serialize()));
                 function experimentalConfirm() {
-                    const stuff = [
+                    for (const i of [
                         "retro_times",
                         "business_times"
-                    ]
-                    for (const i of stuff) {
+                    ]) {
                         const d = $(`#${i}`).find(`option[value="${data.year}"]`);
-                        if (d && d.data("is-experimental")) return confirm("NOTE: The year you selected is currently in it's experimental state right now. By clicking OK, you are understanding that the swf files included in that year are not stable for production use yet and are risking unstable performace from the SWF files included in the year you selected. Are you sure that you want to proceed to the next step without reconsidering first?");
+                        if (
+                            d 
+                            && d.data("is-experimental")
+                        ) return confirm("NOTE: The year you selected is currently in it's experimental state right now. By clicking OK, you are understanding that the swf files included in that year are not stable for production use yet and are risking unstable performace from the SWF files included in the year you selected. Are you sure that you want to proceed to the next step without reconsidering first?");
                     }
                     return true;
                 }
@@ -614,7 +628,7 @@
                     case "lvp": {
                         goTo('custom_lvp', (json_info, callback) => {
                             checkUserVideos(() => {
-                                for (const i in data) getting_started_html_config.modalData[i] = data[i];;
+                                for (const i in data) getting_started_html_config.modalData[i] = data[i];
                                 getting_started_html_config.custom_player_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;
                                 getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/${
                                     parseInt(data.year) >= 2012 ? "2012" : data.year
@@ -678,6 +692,9 @@
                 const modalData = Object.fromEntries(
                     new URLSearchParams($("#getting_started_modal").serialize())
                 );
+                getting_started_html_config.jsonData = {
+                    elem: $("#yearInput").find(`option[value="${modalData.year}"]`)
+                }
                 function empty() {
                     $("#tutStuff").empty()
                     $("#getting_started_modal").unblock();
@@ -713,11 +730,35 @@
                 const modalData = Object.fromEntries(
                     new URLSearchParams($("#getting_started_modal").serialize())
                 );
+                getting_started_html_config.jsonData = {
+                    elem: $("#yearInput").find(`option[value="${modalData.year}"]`)
+                }
                 $("#tutStuff")[modalData.tutorial == "on" ? "show" : "hide"]();
             }
             function newAnimation() {
                 getting_started_html_config.custom_studio_data.flashvars.movieId = "";
                 goTo('custom_lvm_themes_selector');
+            }
+            function onSwfChange(obj) {
+                getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${
+                    getting_started_html_config.modalData.year
+                }/animation/${$(obj).val()}`;
+                getting_started_html_config.custom_studio_data.flashvars.file = $(obj).val();
+                $(".getting_started_custom_lvm_video_maker").html(
+                    toObjectString(
+                        getting_started_html_config.custom_studio_attrs, 
+                        getting_started_html_config.custom_studio_data
+                    )
+                )
+            }
+            function customLVMFullScreen() {
+                const modalData = Object.fromEntries(
+                    new URLSearchParams($("#getting_started_modal").serialize())
+                );
+                const elem = $("#yearInput").find(`option[value="${modalData.year}"]`);
+                window.location.href = `/go_full?${$("#getting_started_modal").serialize()}&swfPath=/static/tommy/${
+                    modalData.year
+                }/animation/${elem.data("fullscreen-apath") || "go_full.swf"}&storePath=/static/tommy/2010/store/<store>`;
             }
             function showGettingStartedModal(json) {
                 jQuery.blockUI();
@@ -746,12 +787,93 @@
                             switch (getting_started_html_config.current) {
                                 case "custom_lvm_themes_selector": {
                                     $("#other_options_custom_lvm").html(`
-                                        <label style="margin: 10px;">
-                                            /static/animation/<input name="file" type="text" value="old_full.swf" style="width: 102px;"/>?v=<input oninput="tutInit()" name="year" type="text" value="2010" style="width: 40px;"/>
+                                        <label style="margin: 30px;">
+                                            /static/animation/old_full.swf?v=<select onchange="tutInit()" name="year" id="yearInput">
+                                                <option value="2010" data-fullscreen-apath="457/old_full.swf" data-old-stuffs='[
+                                                    {
+                                                        "month": "May",
+                                                        "paths": [
+                                                            "old_full.swf",
+                                                            "erfhuhijfewhe.swf",
+                                                            "olad_full.swf",
+                                                            "old_full copy 2.swf",
+                                                            "old_full copy.swf"
+                                                        ]
+                                                    }
+                                                ]'>2010</option>
+                                                <option value="2011" data-old-stuffs='[
+                                                    {
+                                                        "month": "September",
+                                                        "paths": [
+                                                            "old_full.swf",
+                                                            "FIXEDDDD.swf",
+                                                            "go_full.swf",
+                                                            "old_full copy 2.swf",
+                                                            "old_full copy.swf",
+                                                            "ollld_full.swf"
+                                                        ]
+                                                    }
+                                                ]'>2011</option>
+                                                <option value="2011b" data-is-experimental="true">2011b</option>
+                                                <option value="2012" data-fullscreen-apath="old_full.swf~/old_full.swf" data-old-stuffs='[
+                                                    {
+                                                        "month": "Feburary",
+                                                        "paths": [
+                                                            "old_full.swf",
+                                                            "guy.swf",
+                                                            "KL.swf"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "month": "September",
+                                                        "paths": [
+                                                            "go_full.swf"
+                                                        ]
+                                                    }
+                                                ]'>2012</option>
+                                                <option value="2013" data-old-stuffs='[
+                                                    {
+                                                        "month": "September",
+                                                        "paths": [
+                                                            "old_full.swf",
+                                                            "ld_full.swf",
+                                                            "go_full.swf"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "month": "August",
+                                                        "paths": [
+                                                            "old_full_2013.swf"
+                                                        ]
+                                                    }
+                                                ]'>2013</option>
+                                                <option value="2014" data-old-stuffs='[
+                                                    {
+                                                        "month": "January",
+                                                        "paths": [
+                                                            "old_full.swf",
+                                                            "aaaa.swf"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "month": "April",
+                                                        "paths": [
+                                                            "go_full.swf"
+                                                        ]
+                                                    }
+                                                ]'>2014</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2016">2016</option>
+                                            </select>
                                         </label>
-                                        <label for="tutoogle" style="float: left;">
-                                            Tutorial <input id="tutoggle" type="checkbox" onchange="tutoogle()" name="tutorial"/>
-                                        </label>
+                                        <div style="float: left;">
+                                            <label for="tutoogle" style="float: left;">
+                                                Tutorial <input id="tutoggle" type="checkbox" onchange="tutoogle()" name="tutorial"/>
+                                            </label>
+                                        </div>
+                                        <div style="float: right;">
+                                            <a href="javascript:customLVMFullScreen()">Full Screen</a>
+                                        </div>
                                         <div id="tutStuff" style="display: none;"></div>
                                     `);
                                     tutInit();
@@ -761,21 +883,41 @@
                             break;
                         } case "custom_lvm": {
                             const dat = getting_started_html_config.modalData;
-                            if (dat.year == "2010" && dat.tutorial == "on" && !dat.tutchar) {
+                            interactiveTutorial.isShowTutorial = dat.tutorial == "on";
+                            function experimentalConfirm() {
+                                return getting_started_html_config.jsonData.elem.data("is-experimental") ? confirm(
+                                    'You are trying to access a studio that isn\'t stable and is currently under developer testing right now meaning that it is not yet ready for production use yet. Are you sure that you want to take all of the risks by using this studio?'
+                                ) : true
+                            }
+                            if (dat.year == "2010" && interactiveTutorial.isShowTutorial && !dat.tutchar) {
+                                interactiveTutorial.isShowTutorial = interactiveTutorial.show_by_default;
                                 go('prev');
                                 alert("You need to select a character to use for the 2010 lvm tutorial.");
-                            } else jQuery.post("/api/getNewMovieId", d => {
+                            } else if (experimentalConfirm()) jQuery.post("/api/getNewMovieId", d => {
                                 $("#getting_started_modal").find(".modal-dialog").addClass("custom_studio");
-                                getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${dat.year}/animation/${dat.file}`;
+                                if (getting_started_html_config.jsonData.elem.data("old-stuffs")) {
+                                    var html = '<label>Filename: <select onchange="onSwfChange(this)">';
+                                    for (const stuff of getting_started_html_config.jsonData.elem.data("old-stuffs")) {
+                                        html += `<optgroup label="${stuff.month}">`;
+                                        for (const path of stuff.paths) {
+                                            html += `<option value="${path}">${path}</option>`;
+                                        }
+                                        html += '</optgroup>';
+                                    }
+                                    $("#old_stuffs_selector").html(html + '</select></label>').show();
+                                }
+                                getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${dat.year}/animation/old_full.swf`;
                                 getting_started_html_config.custom_studio_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;
-                                getting_started_html_config.custom_studio_data.flashvars.clientThemePath = `/static/tommy/${dat.year}/<client_theme>`;
+                                getting_started_html_config.custom_studio_data.flashvars.clientThemePath = `/static/tommy/${
+                                    dat.year
+                                }/<client_theme>`;
                                 getting_started_html_config.custom_studio_data.flashvars.movieId = getting_started_html_config.custom_player_data.flashvars.movieId || "";
                                 getting_started_html_config.custom_studio_data.flashvars.presaveId = getting_started_html_config.custom_player_data.flashvars.movieId || d
                                 getting_started_html_config.custom_studio_data.flashvars.studio = dat.year
-                                getting_started_html_config.custom_studio_data.flashvars.file = dat.file
+                                getting_started_html_config.custom_studio_data.flashvars.file = 'old_full.swf'
                                 getting_started_html_config.custom_studio_data.flashvars.v = dat.year
                                 getting_started_html_config.custom_studio_data.flashvars.tray = dat.theme;
-                                getting_started_html_config.custom_studio_data.flashvars.tm = dat.tutorial == "on" ? "NEW" : "FIN";
+                                getting_started_html_config.custom_studio_data.flashvars.tm = interactiveTutorial.isShowTutorial ? "NEW" : "FIN";
                                 getting_started_html_config.custom_studio_data.flashvars.tmcc = dat.tutchar || "";
                                 getting_started_html_config.custom_studio_data.flashvars.userId = userData.id || userData.uid;
                                 $(".getting_started_custom_lvm_video_maker").html(
@@ -785,6 +927,7 @@
                                     )
                                 )
                             });
+                            else go('prev');
                         } case "cc": {
                             function setupCC() {
                                 if (jQuery(".getting_started_char_creator")) {

@@ -119,6 +119,14 @@ module.exports = {
 		else for (const i of aList) table.unshift(i);
 		return table;
 	},
+	checkcode(count, page, uId, type, subtype, themeId) {
+		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`)).users.find(i => i.id == uId);
+		let aList = json.assets.filter(i => i.type == type);
+		if (subtype) aList = aList.filter(i => i.subtype == subtype);
+		if (themeId) aList = aList.filter(i => i.themeId == themeId);
+		const e = `${count * page + count}`;
+		return parseInt(e.substr(1)) >= aList.length ? '0' : '1';
+	},
 	meta2Xml(v) {
 		let xml;
 		switch (v.type) {
@@ -133,19 +141,19 @@ module.exports = {
 			} case "sound": {
 				xml = `<sound subtype="${v.subtype}" id="${v.id}" name="${v.title}" enable="Y" duration="${
 					v.duration
-				}" downloadtype="progressive"/>`;
+				}" downloadtype="progressive"><tags>${v.tags || ""}</tags></sound>`;
 				break;
 			}	
 			case "movie": {
-				xml = `<movie id="${v.id}" enc_asset_id="${v.id}" path="/_SAVED/${v.id}" numScene="1" title="${
+				xml = `<movie id="${v.id}" enc_asset_id="${v.id}" path="${v.id}.png" numScene="1" title="${
 					v.title
-				}" thumbnail_url="/movie_thumbs/${v.id}.png"><tags></tags></movie>`;
+				}" thumbnail_url="/movie_thumbs/${v.id}.png"><tags>${v.tags || ""}</tags></movie>`;
 				break;
 			}
 			case "prop": {
 				xml = `<prop subtype="0" id="${v.id}" name="${v.title}" enable="Y" ${
 					v.ptype != "placeable" ? `${v.ptype}="1"` : ''
-				} placeable="1" facing="left" width="0" height="0" asset_url="/assets/${v.id}"/>`;
+				} placeable="1" facing="left" width="0" height="0" asset_url="/goapi/getAsset/${v.id}"/>`;
 				break;
 			}
 		}

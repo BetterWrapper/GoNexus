@@ -5,17 +5,21 @@ const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
 module.exports = {
 	/**
-	 * converts a readable stream to any ext
+	 * converts a readable stream to any audio ext
 	 * @param {import("stream".Readable)} data
 	 * @param {string} from
 	 * @param {string} to
 	 * @returns {Promise<import("stream").Writable | import("stream").PassThrough>}
 	 */
-	convert(data, from, to, stuff, param) {
+	convertStreamAudio(data, from, to) {
 		return new Promise((res, rej) => {
-			const command = ffmpeg(data)
-				.inputFormat(from)
-				.toFormat(to)[stuff](param).on("error", (err) => rej(err));
+			const command = ffmpeg(data).inputFormat(from).toFormat(to).audioBitrate(4.4e4).on("error", (err) => rej(err));
+			res(command.pipe());
+		});
+	},
+	convertStreamFile(data, from, to) {
+		return new Promise((res, rej) => {
+			const command = ffmpeg(data).inputFormat(from).toFormat(to).on("error", (err) => rej(err));
 			res(command.pipe());
 		});
 	},

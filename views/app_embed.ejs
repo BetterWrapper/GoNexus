@@ -1,7 +1,9 @@
 <script src="/js/common_combined.js"></script>
 <script>
+    var flashvars;
     $.getJSON(`/api/convertUrlQuery2JSON?<%= flashvarsString %>`, (d) => {
-        document.title='<%= title %>',flashvars=JSON.parse(JSON.stringify(d).split("amp;").join(""));
+        document.title = '<%= title %>';
+        flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
     });
 </script>
 <body style="margin:0px">
@@ -9,14 +11,13 @@
 </body>
 <% if (params.type == "cc") { %>
     <script>
-        function characterSaved() {
-            parent.characterSaved()
+        function characterSaved(id) {
+            parent.characterSaved(id)
         }
     </script>
 <% } else if (params.type == "go_full") { %>
     <iframe style="display: none" name="dummy"></iframe>
-    <form style="display: none;" id="uploadbanner" enctype="multipart/form-data" method="post" 
-        action="/api/embed/upload_asset" target="dummy">
+    <form style="display: none;" id="uploadbanner" enctype="multipart/form-data" method="post" action="/api/embed/upload_asset" target="dummy">
         <input type="text" name="params"/>
         <input id="fileupload" name="import" type="file" onchange="importComplete(
             this

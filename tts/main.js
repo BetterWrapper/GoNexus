@@ -69,7 +69,7 @@ module.exports = {
 					text, 
 					userId: uid
 				} = data;
-				if (data.studio == "2010") switch (oldvoices[voiceName.toLowerCase()].source) {
+				if (data.v == "2010") switch (oldvoices[voiceName.toLowerCase()].source) {
 					case "voiceforge": {
 						const q = new URLSearchParams({						
 							msg: text,
@@ -87,7 +87,7 @@ module.exports = {
 								"Icy-Metadata": "1",
 							}
 						}, (r) => {
-							fUtil.convert(r, "wav", "mp3", "audioBitrate", 4.4e4).then(r => {
+							fUtil.convertStreamAudio(r, "wav", "swf").then(r => {
 								const buffers = [];
 								r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
 							}).catch(rej);
@@ -101,7 +101,7 @@ module.exports = {
 							LID: oldvoices[voiceName.toLowerCase()].arg[1],
 							VID: oldvoices[voiceName.toLowerCase()].arg[2],
 							TXT: text,
-							EXT: "mp3",
+							EXT: "wav",
 							IS_UTF8: 1,
 							ACC: 5883747,
 							cache_flag: 3,
@@ -119,10 +119,10 @@ module.exports = {
 								},
 							},
 							(r) => {
-								var buffers = [];
-								r.on("data", (d) => buffers.push(d));
-								r.on("end", () => res(Buffer.concat(buffers)));
-								r.on("error", rej);
+								fUtil.convertStreamAudio(r, "wav", "swf").then(r => {
+									const buffers = [];
+									r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers)));
+								}).catch(rej);
 							}
 						);
 						break;

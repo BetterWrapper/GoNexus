@@ -1,5 +1,6 @@
 const loadPost = require("../misc/post_body");
 const asset = require("./main");
+const https = require("https");
 const {
 	getBuffersOnline,
 	getBuffersOnlineViaRequestModule
@@ -17,24 +18,50 @@ const fUtil = require("../misc/file");
 module.exports = function (req, res, url) {
 	switch (req.method) {
 		case "GET": {
-			const match = req.url.match(/\/assets\/([^/]+)$/);
-			if (!match) return;
+			switch (url.pathname) {
+				default: {
+					const match = req.url.match(/\/goapi\/getAsset\/([^/]+)$/);
+					if (!match) return;
 
-			const aId = match[1];
-			try {
-				const b = asset.load(aId);
-				res.statusCode = 200;
-				res.end(b);
-			} catch (e) {
-				res.statusCode = 404;
-				console.log(e);
-				res.end("Not found");
+					const aId = match[1];
+					try {
+						const b = asset.load(aId);
+						res.statusCode = 200;
+						res.end(b);
+					} catch (e) {
+						res.statusCode = 404;
+						console.log(e);
+						res.end("Not found");
+					}
+					break;
+				}
 			}
 			return true;
 		}
 
 		case "POST": {
 			switch (url.pathname) {
+				case "/goapi/getAssetEx/":
+				case "/goapi/getAsset/": {
+					loadPost(req, res).then(async data => {
+						const aId = data.assetId || data.enc_asset_id;
+						try {
+							let b;
+							if (data.movieId && data.movieId.startsWith("ft-")) b = await getBuffersOnline({
+								hostname: "flashthemes.net",
+								path: `/goapi/getAsset/${aId}`
+							});
+							else b = asset.load(aId);
+							if (data.file == "old_full_2013.swf" || parseInt(data.v) <= 2012) res.end(Buffer.concat([base, b]));
+							else res.end(b);
+						} catch (e) {
+							res.statusCode = 404;
+							console.log(e);
+							res.end();
+						}
+					});
+					return true;
+				}
 				case "/goapi/deleteAsset/":
 				case "/goapi/deleteUserTemplate/":
 				case "/goapi/DeleteUserTemplate/": {
@@ -48,68 +75,6 @@ module.exports = function (req, res, url) {
 						}
 					});
 					break;
-				} case "/goapi/getAsset/": {
-					loadPost(req, res).then(async data => {
-						const aId = data.assetId;
-
-						try {
-							let b;
-							if (data.movieId && data.movieId.startsWith("ft-")) b = await getBuffersOnline({
-								hostname: "flashthemes.net",
-								path: `/goapi/getAsset/${aId}`,
-								headers: { 
-									"Content-type": "audio/mp3"
-								}
-							});
-							else b = asset.load(aId);
-							res.setHeader("Content-Length", b.length);
-							if (data.studio) {
-								if (data.studio == "2010") {
-									const r = asset.load(aId, true);
-									fUtil.convert(r, "mp3", "swf", "audioBitrate", 4.4e4).then(r => {
-										res.setHeader("Content-Type", "application/x-shockwave-flash");
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res.end(Buffer.concat([base, Buffer.concat(buffers)])));
-									})
-								} else {
-									res.setHeader("Content-Type", "audio/mp3");
-									res.end(Buffer.concat([base, b]));
-								}
-							} else {
-								res.setHeader("Content-Type", "audio/mp3");
-								res.end(b);
-							}
-						} catch (e) {
-							res.statusCode = 404;
-							console.log(e);
-							res.end();
-						}
-					});
-					return true;
-				} case "/goapi/getAssetEx/": {
-					loadPost(req, res).then(async data => {
-						const aId = data.enc_asset_id;
-
-						try {
-							let b;
-							if (data.movieId && data.movieId.startsWith("ft-")) b = await getBuffersOnline({
-								hostname: "flashthemes.net",
-								path: `/goapi/getAsset/${aId}`,
-								headers: { 
-									"Content-type": "audio/mp3"
-								}
-							});
-							else b = asset.load(aId);
-							res.setHeader("Content-Length", b.length);
-							res.setHeader("Content-Type", "audio/mp3");
-							res.end(Buffer.concat([base, b]));
-						} catch (e) {
-							res.statusCode = 404;
-							console.log(e);
-							res.end();
-						}
-					});
-					return true;
 				} case "/goapi/updateAsset/": {
 					loadPost(req, res).then(data => {
 						try {
@@ -133,14 +98,15 @@ module.exports = function (req, res, url) {
 										wfid: data.wfid
 									}
 								}))
+								default: if (fs.existsSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`)) return res.end(fs.readFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`));
 							}
-						} else if (fs.existsSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`)) res.end(fs.readFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`));
+						} else if (fs.existsSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`)) res.end(fs.readFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`));
 						else console.log(data);
 					});
 					break;
 				} case "/goapi/saveWaveform/": {
 					loadPost(req, res).then(data => {
-						fs.writeFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.wf`, data.waveform);
+						fs.writeFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`, data.waveform);
 						res.end("0");
 					});
 					break;

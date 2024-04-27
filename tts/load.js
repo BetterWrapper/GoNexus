@@ -17,36 +17,36 @@ module.exports = function (req, res, url) {
 			res.end(1 + `<error><code>ERR_ASSET_404</code><message>Because you are using a video that has been imported from FlashThemes, you cannot generate TTS voices to this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.</message><text></text></error>`);
 		} else try {
 			const buffer = await tts.genVoice(data);
-			let voice;
-			if (data.studio == "2010") voice = oldvoices[data.voice.toLowerCase()];
-			else voice = tts.getVoiceInfo(data.voice);
-			mp3Duration(buffer, (e, d) => {
-				var dur = d * 1e3;
+			const voice = data.v == "2010" ? oldvoices[data.voice.toLowerCase()] : tts.getVoiceInfo(data.voice);
+			const info = {
+				type: "sound",
+				subtype: "tts",
+				published: 0,
+				title: `[${voice.name}] ${data.text}`,
+				tags: "",
+				downloadtype: "progressive",
+				ext: data.v == "2010" ? 'swf' : "mp3"
+			}
+			if (!data.v || data.v != "2010") mp3Duration(buffer, (e, d) => {
+				const dur = info.duration = d * 1e3;
 				if (e || !dur) return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${
 					e || "Unable to retrieve MP3 stream."
 				}</message><text></text></error>`);
-				const title = `[${voice.name}] ${data.text}`;
-				const id = asset.save(buffer, {
-					type: "sound",
-					subtype: "tts",
-					title,
-					published: 0,
-					tags: "",
-					duration: dur,
-					downloadtype: "progressive",
-					ext: "mp3"
-				}, data);
-				if (!data.studio) res.end(`0<response><asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>tts</subtype><title>${
-					title
+				const id = asset.save(buffer, info, data);
+				const assetXml = `<asset><id>${id}</id><enc_asset_id>${
+					id
+				}</enc_asset_id><type>sound</type><signature></signature><subtype>tts</subtype><title>${
+					info.title
 				}</title><published>0</published><tags></tags><duration>${dur}</duration><downloadtype>progressive</downloadtype><file>${
 					id
-				}</file></asset></response>`);
-				else res.end(`0<asset><id>${id}</id><enc_asset_id>${id}</enc_asset_id><type>sound</type><subtype>tts</subtype><title>${
-					title
-				}</title><published>0</published><tags></tags><duration>${dur}</duration><downloadtype>progressive</downloadtype><file>${
-					id
-				}</file></asset>`);
+				}</file></asset>`;
+				if (!data.v) res.end(`0<response>${assetXml}</response>`);
+				else res.end('0' + assetXml);
 			});
+			else {
+				// i honestly have no idea what to do for the 2010 lvm anymore.
+				res.end("1");
+			}
 		} catch (e) {
 			console.log(e);
 			res.end(1 + `<error><code>ERR_ASSET_404</code><message>${e}</message><text></text></error>`);

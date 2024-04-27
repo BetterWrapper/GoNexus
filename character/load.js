@@ -5,6 +5,7 @@ const http = require("http");
 const xmldoc = require("xmldoc");
 const fs = require("fs");
 const https = require("https");
+const base = Buffer.alloc(1, 0);
 const nodezip = require("node-zip");
 const fUtil = require("../misc/file");
 const session = require("../misc/session");
@@ -255,6 +256,13 @@ module.exports = function (req, res, url) {
 						}
 					} catch (e) {
 						console.log(e);
+						const path = `./char/${data.charId}`;
+						if (data.actionId && fs.existsSync(`${path}/${
+							data.actionId
+						}`)) res.end(Buffer.concat([base, fs.readFileSync(`${path}/${data.actionId}`)]));
+						else if (data.facialId && fs.existsSync(`${path}/head/${
+							data.facialId
+						}`)) res.end(fs.readFileSync(`${path}/head/${data.facialId}`));
 					}});
 				} default: return;
 			}

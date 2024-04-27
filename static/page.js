@@ -247,7 +247,7 @@ module.exports = function (req, res, url) {
 			title = "Video Editor";
 			filename = "studio";
 			attrs = {
-				data: process.env.SWF_URL + "/go_full.swf",
+				data: query.swfPath ? query.swfPath : process.env.SWF_URL + "/go_full.swf",
 				type: "application/x-shockwave-flash",
 				width: "100%",
 				height: "100%",
@@ -255,53 +255,34 @@ module.exports = function (req, res, url) {
 			params = {
 				flashvars: {
 					presaveId: presave,
-					loadas: 0,
-					asId: "",
-					originalId: "",
-					apiserver: req.headers.host + "/",
+					v: query.year,
+					apiserver: "/",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
-					animationPath: process.env.SWF_URL + "/",
-					numContact: "0",
-					ut: 23,
-					ve: false,
+					ut: 20,
 					isEmbed: 0,
 					nextUrl: "/api/redirect",
-					bgload: process.env.SWF_URL + "/go_full.swf",
-					lid: "13",
+					lid: "11",
 					ctc: "go",
-					themeColor: "silver",
 					tlang: "en_US",
 					siteId: "11",
-					templateshow: "false",
-					forceshow: "false",
 					appCode: "go",
-					lang: "en",
-					tmcc: 4048901,
-					fb_app_url: "/",
 					upl: 1,
 					hb: "1",
 					pts: "1",
-					msg_index: "",
-					ad: 0,
-					has_asset_bg: 1,
 					has_asset_char: 1,
 					initcb: "studioLoaded",
-					retut: 0,
-					featured_categories: null,
-					st: "",
-					uisa: 0,
-					tm: "FIN",
-					tray: "custom",
-					isWide: 1,
-					newusr: 1,
-					goteam_draft_only: 0
+					uisa: 1,
+					tray: query.theme || "custom",
+					isWide: 1
 				},
 				allowScriptAccess: "always",
 			};
 			break;
 		} case "/player": {
-			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(url.query.movieId.lastIndexOf("-") + 1)) : url.query.movieId.startsWith(
+			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(
+				url.query.movieId.lastIndexOf("-") + 1
+			)) : url.query.movieId.startsWith(
 				"ft-"
 			) ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "";
 			if ((url.query.movieId.startsWith("m-") || url.query.movieId.startsWith("ft-")) && existsSync(path)) filename = "player";
@@ -326,7 +307,7 @@ module.exports = function (req, res, url) {
 					movieLid: "0",
 					ut: "23",
 					numContact: "",
-					apiserver: req.headers.host + "/",
+					apiserver: "/",
 					playcount: 1,
 					ctc: "go",
 					tlang: "en_US",
@@ -371,8 +352,8 @@ module.exports = function (req, res, url) {
 	}
 	Object.assign(params ? params.flashvars : {}, query);
 	ejs.renderFile(`./views/${filename}.ejs`, {
-		gopoints: uInfo.gopoints,
-		css: uInfo.settings ? `<style>${uInfo.settings.api.customcss}</style>` : '<script></script>',
+		gopoints: uInfo.gopoints || 0,
+		css: uInfo.settings ? `<style>${uInfo.settings.api.customcss}</style>` : '<script>checkIfSiteNeeds2ReloadAfterLogin()</script>',
 		returnto: url.query.returnto,
 		title,
 		attrs,
@@ -384,7 +365,7 @@ module.exports = function (req, res, url) {
 	}, function(err, str){
 		if (err) {
 			console.log(err);
-			res.end('Not Found');
+			res.end(err.toString());
 		} else {
 			res.setHeader("Content-Type", "text/html; charset=UTF-8");
 			res.end(str);

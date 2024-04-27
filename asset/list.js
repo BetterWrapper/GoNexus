@@ -26,8 +26,12 @@ function searchStuff(tId, data) {
 }
 async function listAssets(data, makeZip) {
 	var files, xmlString;
+	const id = data.assetId ? data.assetId == 'null' ? data.include_ids_only : data.assetId : data.include_ids_only;
 	switch (data.type) {
-		case "char": {
+		case "prop": {
+			files = data.subtype == "video" ? [] : asset.list(data.count || '', data.page || '', id, data.userId, "prop");
+			break;
+		} case "char": {
 			const tId = (() => {
 				if (data.cc_theme_id) return data.cc_theme_id;
 				if (data.themeId) return getTid(data.themeId);
@@ -38,14 +42,15 @@ async function listAssets(data, makeZip) {
 			const actionPack = {};
 			const action_cat = {};
 			const defaultActions = {};
-			files = asset.list(data.count || '', data.page || '', data.include_ids_only, data.userId, "char", 0, tId);
+			files = asset.list(data.count || '', data.page || '', id, data.userId, "char", 0, tId);
 			if (data.include_ids_only) console.log(files);
 			async function getOldChars2() {
 				const defaults = {
 					family: `<action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`,
 					cc2: `<action id="stand.xml" name="Standing" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`
 				}
-				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
+				xmlString = `${header}<theme id="ugc" moreChar="${asset.checkcode(data.count || '', data.page || '', data.userId, 'char', 0, tId)}">`;
+				console.log(xmlString);
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
 					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
@@ -81,11 +86,12 @@ async function listAssets(data, makeZip) {
 						v.enable
 					}"/>`).join("")}${defaults[file.themeId]}</char>`;
 				}
-				xmlString += `</ugc>`;
+				xmlString += `</theme>`;
 			}
 			async function getOldChars() {
 				const isZip = data.v == "2010" ? ".zip" : ".xml"
-				xmlString = `${header}<ugc id="ugc" name="ugc" more="0" moreChar="0">`;
+				xmlString = `${header}<theme id="ugc" moreChar="${asset.checkcode(data.count || '', data.page || '', data.userId, 'char', 0, tId)}">`;
+				console.log(xmlString);
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
 					action_cat[file.id] = action_cat[file.id] || {};
@@ -195,45 +201,55 @@ async function listAssets(data, makeZip) {
 						v.enable
 					}"/>`).join("")}</char>`;
 				}
-				xmlString += `</ugc>`;
+				xmlString += `</theme>`;
 			}
 			if (parseInt(data.v) >= 2010 && parseInt(data.v) < 2013) await getOldChars();
-			else switch (data.v) {
-				case "2013": {
-					if (data.file == "old_full_2013.swf") await getOldChars();
-					break;
-				}
-			}
+			else if (data.file == "old_full_2013.swf") await getOldChars();
 			break;
 		} default: {
-			files = asset.list(data.count || '', data.page || '', data.include_ids_only, data.userId, data.type);
+			files = asset.list(data.count || '', data.page || '', id, data.userId, data.type);
 			break;
 		}
 	}
 	function stuff() {
+		const checkcode = asset.checkcode(data.count || '', data.page || '', data.userId, data.type);
 		switch (data.type) {
-			case "bg": return ' moreBG="0"'
+			case "bg": return ` moreBG="${checkcode}"`
 			default: {
-				const letter = data.type.slice(0, data.type.length - 1);
-				return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="0"`
+				const letter = data.type.substr(0, 1);
+				return ` more${letter.toUpperCase()}${data.type.substr(1)}="${checkcode}"`
 			}
 		}
 	}
-	if (!xmlString) xmlString = `${header}<ugc more="0"${
-		parseInt(data.v) <= 2012 ? stuff() : data.v == "2013" && data.file == "old_full_2013.swf" ? stuff() : ''
-	}>${files.map(asset.meta2Xml).join("")}</ugc>`;
+	function stuff2() {
+		const checkcode = asset.checkcode(data.count || '', data.page || '', data.userId, data.type);
+		switch (data.type) {
+			case "movie": return ` moreMovie="${checkcode}"`
+			case "bg": return ` moreBg="${checkcode}"`
+			default: return ` more="${checkcode}"`
+		}
+	}
+	if (!xmlString) xmlString = `${header}<theme id="ugc"${
+		parseInt(data.v) <= 2015 ? stuff() : stuff2()
+	}>${files.map(asset.meta2Xml).join("")}</theme>`;
+	console.log(stuff());
 	if (makeZip) {
 		const zip = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(xmlString));
 		for (const file of files) {
 			switch (file.type) {
+				case "prop":
 				case "bg": {
 					const buffer = asset.load(file.id);
-					fUtil.addToZip(zip, `bg/${file.id}`, buffer);
+					fUtil.addToZip(zip, `${file.type}/${file.id}`, buffer);
 					break;
 				} case "char": {
 					const buffer = await char.loadThumb(file.id);
 					fUtil.addToZip(zip, `char/${file.id}/${file.id}.png`, buffer);
+					break;
+				} case "movie": {
+					const buffer = fs.readFileSync(fUtil.getFileIndex('starter-', '.png', file.id.substr(2)));
+					fUtil.addToZip(zip, `${file.id}.png`, buffer);
 					break;
 				}
 			}

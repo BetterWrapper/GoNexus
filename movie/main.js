@@ -5,8 +5,48 @@ const parse = require("./parse");
 const fs = require("fs");
 const https = require("https");
 const request = require("request");
-
+const xmldoc = require("xmldoc");
 module.exports = {
+	extractMeta(file, folder, prefix) {
+		return new Promise(async (res, rej) => {
+			try {
+				if (file.endsWith(".zip")) {
+					const zip = nodezip.unzip(fs.readFileSync(`${folder}/${file}`));
+					if (!zip["movie.xml"]) rej("movie.xml does not exist.");
+					else {
+						const json = new xmldoc.XmlDocument(await this.stream2buffer(zip["movie.xml"].toReadStream()));
+						const info = json.attr;
+						info.path = file.slice(0, -3) + "png",
+						info.id = `${prefix}-${file.slice(0, -4)}`;
+						info.numScene = json.children.filter(i => i.name == "scene").length;
+						const meta = json.children.filter(i => i.name == "meta");
+						if (meta.length < 2) {
+							console.log(meta[0].children);
+							const stuff2fill = {
+								title: "title",
+								tags: "tag"
+							};
+							for (const i in stuff2fill) {
+								const s = meta[0].children.filter(d => d.name == stuff2fill[i]);
+								if (s.length > 1) return rej(`There cannot be more than 1 <${stuff2fill[i]}> tag in the movie.xml file.`);
+								info[i] = s[0].val;
+							}
+							console.log(info);
+							res(info)
+						} else rej("There cannot be more than 1 <meta> tag in the movie.xml file.");
+					}
+				}
+			} catch (e) {
+				rej(e);
+			} 
+		})
+	},
+	stream2buffer(r) {
+		return new Promise((res, rej) => {
+			const buffers = [];
+			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+		})
+	},
 	getBuffersOnline(options, data) {
 		return new Promise((res, rej) => {
 			try {
@@ -112,14 +152,14 @@ module.exports = {
 						mId = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
 					}
 					let buffer;
-					if (data.studio == "2010") buffer = movieZip;
+					if (data.v == "2010") buffer = movieZip;
 					else buffer = await parse.unpackMovie(movieZip, data.movieId, data.userId);
 					if (typeof buffer == "object" && buffer.error) return rej(buffer.error);
 					fs.writeFileSync(fUtil.getFileIndex("thumb-", ".png", mId.split("-")[1]), thumb);
 					const writeStream = fs.createWriteStream(fUtil.getFileIndex("movie-", ".xml", mId.split("-")[1]));
 					writeStream.write(buffer, () => {
 						writeStream.close();
-						this[data.studio == "2010" ? 'oldMeta' : 'meta']((oldInfo ? oldInfo.id : "") || mId, false, data.movieId).then(m => {
+						this[data.v == "2010" ? 'oldMeta' : 'meta']((oldInfo ? oldInfo.id : "") || mId, false, data.movieId).then(m => {
 							const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 							const meta = json.users.find(i => i.id == data.userId);
 							const mMeta = meta.movies.find(i => i.id == m.id);
@@ -161,11 +201,11 @@ module.exports = {
 					else path = fUtil.getFileIndex("movie-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
 					let buffer;
-					if (data.studio == "2010") buffer = movieZip;
+					if (data.v == "2010") buffer = movieZip;
 					else buffer = await parse.unpackMovie(movieZip, mId, data.userId)
 					writeStream.write(buffer, () => {
 						writeStream.close();
-						this[data.studio == "2010" ? 'oldMeta' : 'meta'](mId, data.is_triggered_by_autosave == '1').then(m => {
+						this[data.v == "2010" ? 'oldMeta' : 'meta'](mId, data.is_triggered_by_autosave == '1').then(m => {
 							const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 							const meta = json.users.find(i => i.id == data.userId);
 							const mMeta = meta.movies.find(i => i.id == m.id);
@@ -187,11 +227,11 @@ module.exports = {
 					var path = fUtil.getFileIndex("starter-", ".xml", suffix);
 					var writeStream = fs.createWriteStream(path);
 					let buffer;
-					if (data.studio == "2010") buffer = movieZip;
+					if (data.v == "2010") buffer = movieZip;
 					else buffer = await parse.unpackMovie(movieZip, mId, data.userId)
 					writeStream.write(buffer, () => {
 						writeStream.close();
-						this[data.studio == "2010" ? 'oldMeta' : 'meta'](mId).then(m => {
+						this[data.v == "2010" ? 'oldMeta' : 'meta'](mId).then(m => {
 							const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 							const meta = json.users.find(i => i.id == data.userId);
 							meta.assets.unshift(m);
@@ -232,6 +272,10 @@ module.exports = {
 						break;
 					} case "ft": {
 						res(fs.readFileSync(`./ftContent/${suffix}.zip`));
+						break;
+					} case "e": {
+						let data = fs.readFileSync(`${exFolder}/${suffix}.zip`);
+						res(data.subarray(data.indexOf(80)));
 						break;
 					}
 				}

@@ -22,6 +22,7 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.path != "/goapi/saveSound/") return;
 	new formidable.IncomingForm().parse(req, async (e, f, files) => {
         let response;
+        console.log(e, f, files);
         if (f.bytes) {
             await new Promise(resolve => { 
                 try {
@@ -46,13 +47,13 @@ module.exports = function (req, res, url) {
                             downloadtype: "progressive",
                             ext: "mp3"
                         }, f);
-                        response = `<response><asset><id>${id}</id><enc_asset_id>${
+                        response = `<asset><id>${id}</id><enc_asset_id>${
                             id
                         }</enc_asset_id><type>sound</type><subtype>voiceover</subtype><title>${
                             f.title
                         }</title><published>0</published><tags></tags><duration>${
                             dur
-                        }</duration><downloadtype>progressive</downloadtype><file>${id}</file></asset></response>`;
+                        }</duration><downloadtype>progressive</downloadtype><file>${id}</file></asset>`;
                         resolve();
                     })).on("error", (e) => {
                         console.log(e);
@@ -66,11 +67,23 @@ module.exports = function (req, res, url) {
         } else {
             await new Promise(async resolve => {
                 try {
-                    const {filepath, path, name} = files.Filedata;
+                    const {filepath, path} = files.Filedata;
+                    const name = f.Filename || files.Filedata.name || files.Filedata.originalFilename;
                     const ext = name.substr(name.lastIndexOf(".") + 1);
+                    const info = {
+                        type: f.type || "sound",
+                        subtype: f.subtype || "voiceover",
+                        title: f.title || name,
+                        published: 0,
+                        tags: f.keywords || "",
+                        downloadtype: "progressive",
+                        ext: "mp3"
+                    }
                     let buffer;
                     if (ext != "mp3") {
-                        const stream = ffmpeg(fs.createReadStream(filepath || path)).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+                        const stream = ffmpeg(
+                            fs.createReadStream(filepath || path)
+                        ).inputFormat(ext).toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
                             rej(`Encoding Error: ${error.message}`);
                         }).pipe();
                         buffer = await stream2Buffer(stream);
@@ -78,27 +91,18 @@ module.exports = function (req, res, url) {
                         buffer = fs.readFileSync(filepath || path);
                     }
                     mp3Duration(buffer, (e, d) => {
-                        var dur = d * 1e3;
+                        const dur = info.duration = d * 1e3;
                         if (e || !dur) return res.end(1 + `<error><code>ERR_ASSET_404</code><message>${
                             e || "Unable to retrieve MP3 Stream"
                         }</message><text></text></error>`);
-                        const id = asset.save(buffer, {
-                            type: "sound",
-                            subtype: "voiceover",
-                            title: name,
-                            published: 0,
-                            tags: "",
-                            duration: dur,
-                            downloadtype: "progressive",
-                            ext: "mp3"
-                        }, f);
-                        response = `<response><asset><id>${id}</id><enc_asset_id>${
+                        const id = asset.save(buffer, info, f);
+                        response = `<asset><id>${id}</id><enc_asset_id>${
                             id
-                        }</enc_asset_id><type>sound</type><subtype>voiceover</subtype><title>${
-                            name
-                        }</title><published>0</published><tags></tags><duration>${
+                        }</enc_asset_id><type>${info.type}</type><subtype>${info.subtype}</subtype><title>${
+                            info.title}
+                        }</title><published>${info.published}</published><tags>${info.tags}</tags><duration>${
                             dur
-                        }</duration><downloadtype>progressive</downloadtype><file>${id}</file></asset></response>`;
+                        }</duration><downloadtype>${info.downloadtype}</downloadtype><file>${id}</file></asset>`;
                         resolve();
                     });
                 } catch (e) {
@@ -107,7 +111,9 @@ module.exports = function (req, res, url) {
                 }
             });
         }
-        res.end(0 + response);
+        res.end(0 + f.file == "old_full_2013.swf" || parseInt(f.v) <= 2012 ? response : `<response>${
+            response
+        }</response>`);
 	});
 	return true;
 };

@@ -104,7 +104,7 @@ module.exports = function (req, res, url) {
 					}
 				}
 				const id = asset.save(buffer, meta, f);
-				if (type != "sound") info.thumbnail = `/assets/${id}`;
+				if (type != "sound") info.thumbnail = `/goapi/getAsset/${id}`;
 				info.id = id;
 				info.asset_data = meta;
 				res.end(JSON.stringify(info));
@@ -118,7 +118,7 @@ module.exports = function (req, res, url) {
 			console.log(e);
 			res.end(JSON.stringify({
 				suc: false, 
-				msg: "File Upload Failed. If you are a vistor of this site, then please try again later. If you are a developer or staff member for this website, please check the console or shell for any errors, fix them, and try again."
+				msg: e.toString()
 			}));
 		}
 	});
