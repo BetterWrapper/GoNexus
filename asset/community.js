@@ -7,65 +7,86 @@ const http = require("http");
 const fs = require("fs");
 const xmldoc = require("xmldoc");
 async function listAssets(data, isAssetSearch) {
-	const xmls = [], files = [];
+	const xmls = [], files = [], counts = {
+		min: data.page * data.count,
+		max: parseInt((`${data.count * data.page + data.count}`).substring(1))
+	};
+	console.log(counts);
+	var checkcode;
 	switch (data.type) { // if we are going to do chars, then we will need to make sure that custom characters are complatable with the Community Library.
 		case "bg": {
-			fs.readdirSync('./.site').forEach(file => {
-				if (file.endsWith(".jpg")) {
-					files.push(file);
-					xmls.push(`<background id="${file}" enc_asset_id="${file}" name="${file}" published="1">
-						<tags></tags>
-					</background>`);
-				}
-			});
+			const stuff = fs.readdirSync('./.site').filter(i => i.endsWith(".jpg"));
+			checkcode = counts.max >= stuff.length ? 0 : 1;
+			for (; counts.min < counts.max; counts.min++) {
+				const file = stuff[counts.min];
+				if (!file) continue;
+				files.push(file);
+				xmls.push(`<background id="${file}" enc_asset_id="${file}" name="${file}" published="1">
+					<tags></tags>
+				</background>`);
+			}
 			break;
 		} case "prop": {
-			fs.readdirSync('./.site').forEach(file => {
-				if (file.endsWith(".png")) {
-					files.push(file);
-					xmls.push(`<prop id="${file}" enc_asset_id="${file}" name="${
-						file
-					}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="0">
-						<tags></tags>
-					</prop>`);
-				}
-			});
+			const stuff = fs.readdirSync('./.site').filter(i => i.endsWith(".png"));
+			checkcode = counts.max >= stuff.length ? 0 : 1;
+			for (; counts.min < counts.max; counts.min++) {
+				const file = stuff[counts.min];
+				if (!file) continue;
+				files.push(file);
+				xmls.push(`<prop id="${file}" enc_asset_id="${file}" name="${
+					file
+				}" holdable="0" wearable="0" placeable="1" published="1" facing="left" subtype="0">
+					<tags></tags>
+				</prop>`);
+			}
 			break;
 		}
 	}
 	const zip = nodezip.create();
 	const charsXML = fs.readFileSync('./_PREMADE/Comm.xml');
-	const charsXml = charsXML.slice(7, charsXML.indexOf("</chars>")).toString();
+	var charsXml = '';
 	if (!isAssetSearch) {
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="ugc" name="Community Library"${
-			parseInt(data.studio) <= 2012 ? (function() {
-				switch (data.type) {
-					case "bg": return ' moreBG="1"'
-					default: {
-						const letter = data.type.slice(0, data.type.length - 1);
-						return ` more${letter.toUpperCase()}${data.type.split(letter)[1]}="1"`
-					}
-				}
-			})() : ''
-		}>${
-			data.type != "char" ? xmls.join("") : charsXml
-		}</theme>`);
 		if (data.type != "char") files.forEach((file) => {
 			const buffer = fs.readFileSync(`./.site/${file}`);
 			fUtil.addToZip(zip, `${data.type}/${file}`, buffer);
 		});
 		else try {
 			const result = new xmldoc.XmlDocument(charsXML);
-			for (const i of result.children) {
-				if (i.children) for (const d of i.children.filter(i => i.name == "action")) {
-					if (fs.existsSync(`./_PREMADE/comm_chars/${i.attr.id}/${
-						d.attr.id
-					}`)) fUtil.addToZip(zip, `char/${i.attr.id}/${d.attr.id}`, fs.readFileSync(`./_PREMADE/comm_chars/${i.attr.id}/${d.attr.id}`));
+			checkcode = counts.max >= result.children.length ? 0 : 1;
+			for (; counts.min < counts.max; counts.min++) {
+				const i = result.children[counts.min];
+				if (!i) continue;
+				if (i.children) {
+					charsXml += `<char ${Object.keys(i.attr).map(v => `${v}="${i.attr[v]}"`).join(" ")}><tags>${
+						i.children.find(i => i.name == "tags").val
+					}</tags>`;
+					for (const d of i.children.filter(i => i.name == "action")) {
+						charsXml += `<action ${Object.keys(d.attr).map(v => `${v}="${d.attr[v]}"`).join(" ")}/>`;
+						if (fs.existsSync(`./_PREMADE/comm_chars/${i.attr.id}/${
+							d.attr.id
+						}`)) fUtil.addToZip(zip, `char/${i.attr.id}/${
+							d.attr.id
+						}`, fs.readFileSync(`./_PREMADE/comm_chars/${i.attr.id}/${d.attr.id}`));
+					}
+					charsXml += '</char>';
 				}
 			}
 		} catch (e) {
 			console.log(e);
 		}
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="ugc"${
+			parseInt(data.studio) <= 2012 ? (() => {
+				switch (data.type) {
+					case "bg": return ` moreBG="${checkcode}"`
+					default: {
+						const letter = data.type.substr(0, 1);
+						return ` more${letter.toUpperCase()}${data.type.substr(1)}="${checkcode}"`
+					}
+				}
+			})() : ''
+		}>${
+			data.type != "char" ? xmls.join("") : charsXml
+		}</theme>`);
 	} else {
 		let results = 0;
 		files.filter(i => i.includes(data.keywords)).forEach((file) => {
@@ -73,10 +94,21 @@ async function listAssets(data, isAssetSearch) {
 			const buffer = fs.readFileSync(`./.site/${file}`);
 			fUtil.addToZip(zip, `${data.type}/${file}`, buffer);
 		});
-		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="Comm" name="Community Library" all_asset_count="${
+		fUtil.addToZip(zip, "desc.xml", `${header}<theme id="ugc" all_asset_count="${
 			results
-		}">${xmls.join("")}</theme>`);
+		}"${
+			parseInt(data.studio) <= 2012 ? (() => {
+				switch (data.type) {
+					case "bg": return ` moreBG="${checkcode}"`
+					default: {
+						const letter = data.type.substr(0, 1);
+						return ` more${letter.toUpperCase()}${data.type.substr(1)}="${checkcode}"`
+					}
+				}
+			})() : ''
+		}>${xmls.join("")}</theme>`);
 	}
+	console.log(checkcode);
 	return await zip.zip();
 }
 

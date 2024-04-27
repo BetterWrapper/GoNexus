@@ -38,7 +38,7 @@ module.exports = function (req, res, url) {
 				case "/goapi/getActionpacks/": {
 					loadPost(req, res).then(async data => {
 						const buf = await character.load(data.aid);
-						const json = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${character.getTheme(buf)}/cc_theme.xml`))
+						const json = new xmldoc.XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${character.getTheme(buf)}/cc_theme.xml`))
 						var actionpacks = '0<pack sold="0">';
 						for (const i of json.children.filter(i => i.name == "bodyshape")) {
 							if (
@@ -136,7 +136,7 @@ module.exports = function (req, res, url) {
 								if (component) {
 									fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
 										component.attr.component_id
-									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+									}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
 										component.attr.type
 									}/${
 										component.attr.component_id
@@ -151,7 +151,7 @@ module.exports = function (req, res, url) {
 										component.attr.type
 									}.${
 										component.attr.component_id
-									}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+									}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
 										component.attr.type
 									}/${
 										component.attr.component_id
@@ -164,7 +164,7 @@ module.exports = function (req, res, url) {
 									case "bodyshape": {
 										fUtil.addToZip(zip, `${component.attr.theme_id}.${component.attr.type}.${
 											component.attr.component_id
-										}.swf`, fs.readFileSync(`./charStore/${
+										}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
 											component.attr.theme_id
 										}/${component.attr.type}/${
 											component.attr.component_id
@@ -174,7 +174,7 @@ module.exports = function (req, res, url) {
 										if (!componentswithactions[component.attr.type]) fUtil.addToZip(
 											zip, `${component.attr.theme_id}.${component.attr.type}.${
 												component.attr.component_id
-											}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+											}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
 												component.attr.type
 											}/${component.attr.component_id}/default.swf`)
 										);

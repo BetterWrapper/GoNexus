@@ -591,7 +591,7 @@ module.exports = {
 				defaults: ''
 			};
 			let groupEmotionXml = '<category name="emotion">';
-			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${tId}/cc_theme.xml`));
+			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${tId}/cc_theme.xml`));
 			for (const info of xml.children.filter(i => i.name == "bodyshape")) {
 				if (info.attr.id == char.getCharTypeViaBuff(buf)) {
 					charJSON.defaults = `default="${info.attr.action_thumb + ziporxml}" motion="${

@@ -416,8 +416,6 @@
 				},
                 custom_studio_attrs: {
                     type: "application/x-shockwave-flash",
-                    width: `960`,
-                    height: "630",
                     id: "custom_studio"
                 },
                 custom_studio_data: {
@@ -905,6 +903,13 @@
                                         html += '</optgroup>';
                                     }
                                     $("#old_stuffs_selector").html(html + '</select></label>').show();
+                                }
+                                if (parseInt(dat.year) > 2013) {
+                                    getting_started_html_config.custom_studio_attrs.height = "640";
+                                    getting_started_html_config.custom_studio_attrs.width = "960";
+                                } else {
+                                    getting_started_html_config.custom_studio_attrs.height = "630";
+                                    getting_started_html_config.custom_studio_attrs.width = "955";
                                 }
                                 getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${dat.year}/animation/old_full.swf`;
                                 getting_started_html_config.custom_studio_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;

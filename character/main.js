@@ -17,7 +17,7 @@ function getCharActionsJson(v) { // loads char actions from the cc theme xml usi
 			skeleton: v.action == "default" ? "stand" : v.action
 		}
 	}
-	const ccTheme = fs.readFileSync(`./charStore/${v.theme_id}/cc_theme.xml`);
+	const ccTheme = fs.readFileSync(`./static/2010/store/cc_store/${v.theme_id}/cc_theme.xml`);
 	const result = new xmldoc.XmlDocument(ccTheme);
 	const shapes = result.children.filter(i => i.name == "bodyshape");
 	const char = shapes.find(i => i.attr.id == v.bs);
@@ -51,7 +51,7 @@ function getCharEmotionsJson(v) {
 			mouth: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action
 		}
 	}
-	const ccTheme = fs.readFileSync(`./charStore/${v.theme_id}/cc_theme.xml`);
+	const ccTheme = fs.readFileSync(`./static/2010/store/cc_store/${v.theme_id}/cc_theme.xml`);
 	const result = new xmldoc.XmlDocument(ccTheme);
 	for (const facial of result.children.filter(i => i.name == "facial")) {
 		emotions[facial.attr.id] = {};
@@ -193,8 +193,8 @@ module.exports = {
 	},
 	getJyveeEmotions(tId) { // Jyvee we are finally loading your emotions into Nexus :)
 		const emotions = {};
-		fs.readdirSync(`./charStore/${tId}/emotions`).filter(i => i.startsWith("head_")).forEach(feeling => {
-			emotions[feeling.split(".json")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${
+		fs.readdirSync(`./static/2010/store/cc_store/${tId}/emotions`).filter(i => i.startsWith("head_")).forEach(feeling => {
+			emotions[feeling.split(".json")[0]] = JSON.parse(fs.readFileSync(`./static/2010/store/cc_store/${tId}/emotions/${
 				feeling
 			}`));
 		});
@@ -202,8 +202,8 @@ module.exports = {
 	},
 	getJyveeActions(tId) { // Jyvee we are finally loading your actions into Nexus :)
 		const actions = {};
-		fs.readdirSync(`./charStore/${tId}/emotions`).filter(i => !i.startsWith("head_")).forEach(act => {
-			actions[act.split(".json")[0]] = JSON.parse(fs.readFileSync(`./charStore/${tId}/emotions/${act}`));
+		fs.readdirSync(`./static/2010/store/cc_store/${tId}/emotions`).filter(i => !i.startsWith("head_")).forEach(act => {
+			actions[act.split(".json")[0]] = JSON.parse(fs.readFileSync(`./static/2010/store/cc_store/${tId}/emotions/${act}`));
 		});
 		return actions;
 	},
@@ -214,7 +214,7 @@ module.exports = {
 		const action2 = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][
 			v.type
 		] : stuff.head_neutral[v.type];
-		const action = fs.existsSync(`./charStore/${v.theme_id}/${v.type}/${v.component_id}/${
+		const action = fs.existsSync(`./static/2010/store/cc_store/${v.theme_id}/${v.type}/${v.component_id}/${
 			action2
 		}.swf`) ? action2 : "default";
 		if (ty == "eye" || ty == "eyebrow" || ty == "mouth") {
@@ -311,7 +311,7 @@ module.exports = {
 					component.attr.type
 				}.${
 					component.attr.component_id
-				}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+				}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
 					component.attr.type
 				}/${
 					component.attr.component_id
@@ -326,7 +326,7 @@ module.exports = {
 						component.attr.type
 					}.${
 						component.attr.component_id
-					}.swf`, fs.readFileSync(`./charStore/${
+					}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
 						component.attr.theme_id
 					}/${component.attr.type}/${
 						component.attr.component_id
@@ -336,7 +336,7 @@ module.exports = {
 					if (!componentswithactions[component.attr.type]) fUtil.addToZip(
 						actionzip, `${component.attr.theme_id}.${component.attr.type}.${
 							component.attr.component_id
-						}.swf`, fs.readFileSync(`./charStore/${
+						}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
 							component.attr.theme_id
 						}/${
 							component.attr.type
@@ -392,7 +392,7 @@ module.exports = {
 					component.attr.type
 				}.${
 					component.attr.component_id
-				}.swf`, fs.readFileSync(`./charStore/${component.attr.theme_id}/${
+				}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
 					component.attr.type
 				}/${
 					component.attr.component_id
@@ -410,7 +410,7 @@ module.exports = {
 						component.attr.type
 					}.${
 						component.attr.component_id
-					}.swf`, fs.readFileSync(`./charStore/${
+					}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
 						component.attr.theme_id
 					}/${component.attr.type}/${
 						component.attr.component_id
@@ -420,7 +420,7 @@ module.exports = {
 					if (!componentswithactions[component.attr.type]) fUtil.addToZip(
 						facialzip, `${component.attr.theme_id}.${component.attr.type}.${
 							component.attr.component_id
-						}.swf`, fs.readFileSync(`./charStore/${
+						}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
 							component.attr.theme_id
 						}/${
 							component.attr.type

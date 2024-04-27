@@ -18,9 +18,9 @@ function getTid(tId) {
 	}
 }
 function searchStuff(tId, data) {
-	for (const folder2 of fs.readdirSync(`./charStore/${tId}/${data.attr.type}`)) {
-		for (const i of fs.readdirSync(`./charStore/${tId}/${data.attr.type}/${folder2}`)) {
-			return fs.existsSync(`./charStore/${tId}/${data.attr.type}/${folder2}/${data.attr.state_id}.swf`);
+	for (const folder2 of fs.readdirSync(`./static/2010/store/cc_store/${tId}/${data.attr.type}`)) {
+		for (const i of fs.readdirSync(`./static/2010/store/cc_store/${tId}/${data.attr.type}/${folder2}`)) {
+			return fs.existsSync(`./static/2010/store/cc_store/${tId}/${data.attr.type}/${folder2}/${data.attr.state_id}.swf`);
 		}
 	}
 }
@@ -33,8 +33,7 @@ async function listAssets(data, makeZip) {
 			break;
 		} case "char": {
 			const tId = (() => {
-				if (data.cc_theme_id) return data.cc_theme_id;
-				if (data.themeId) return getTid(data.themeId);
+				if (data.themeId || data.cc_theme_id) return getTid(data.themeId || data.cc_theme_id);
 				if (data.v) return data.v == "2010" ? "family" : "";
 			})();
 			const fatials = {};
@@ -53,7 +52,7 @@ async function listAssets(data, makeZip) {
 				console.log(xmlString);
 				for (const file of files) {
 					fatials[file.id] = fatials[file.id] || [];
-					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
+					const data = new xmldoc.XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${
 						file.themeId
 					}/cc_theme.xml`));
 					function get(stuff, param, com, com2) {
@@ -98,7 +97,7 @@ async function listAssets(data, makeZip) {
 					actionPack[file.id] = actionPack[file.id] || {};
 					actions[file.id] = actions[file.id] || [];
 					defaultActions[file.id] = defaultActions[file.id] || {};
-					const data = new xmldoc.XmlDocument(fs.readFileSync(`./charStore/${
+					const data = new xmldoc.XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${
 						file.themeId
 					}/cc_theme.xml`));
 					function get(stuff, param, com, com2) {
@@ -119,7 +118,7 @@ async function listAssets(data, makeZip) {
 						fatials[file.id].unshift(info.attr);
 					}
 					else for (var a = 0; a < 4; a++) {
-						const i = fs.readdirSync(`./charStore/${file.themeId}/emotions`)[a];
+						const i = fs.readdirSync(`./static/2010/store/cc_store/${file.themeId}/emotions`)[a];
 						if (i.startsWith("head_")) fatials[file.id].unshift({
 							id: i.split(".json")[0],
 							name: i.split("head_")[1].split(".json")[0],
@@ -158,7 +157,7 @@ async function listAssets(data, makeZip) {
 							}
 						}
 					}
-					else fs.readdirSync(`./charStore/${file.themeId}/emotions`).forEach(i => {
+					else fs.readdirSync(`./static/2010/store/cc_store/${file.themeId}/emotions`).forEach(i => {
 						defaultActions[file.id].default = "stand"
 						defaultActions[file.id].motion = "walk"
 						if (!i.startsWith("head_")) actions[file.id].unshift({
