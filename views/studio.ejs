@@ -98,9 +98,9 @@ if (self !== top) {
             <h2>Character Creator</h2>
             <div id="chardiv"></div>
             <div class="buttons clearfix">
-                <button class="preview-button edit" onclick="switchBackToStudio();">Back to editing</button>
+                <button class="preview-button edit" onclick="switchBackToStudio(); jQuery('#Studio').get(0).reloadCharacters()">Back to editing</button>
             </div>
-            <a class="close_btn" href="javascript:;" onclick="switchBackToStudio(); return false;">×</a>
+            <a class="close_btn" href="javascript:;" onclick="switchBackToStudio(); jQuery('#Studio').get(0).reloadCharacters(); return false;">×</a>
         </div>
     </div>
     <div class="video-tutorial" id="video-tutorial" style="display: none;">
@@ -305,11 +305,12 @@ if (self !== top) {
     function initCharCreatorWindow(theme, id, encryptId) {
         const pathname = encryptId || id ? '/cc' : '/cc_browser';
         const query = new URLSearchParams({
-            original_asset_id: encryptId || id,
+            original_asset_id: (encryptId || id) || "",
             themeId: theme,
             userId: userData.uid || userData.id,
+            animationPath: '/static/tommy/ad44370a650793d9/animation',
             storePath: ('<%= params.flashvars.storePath %>').split("&lt;").join("<").split("&gt;").join(">"),
-            clientThemePath: ('<%= params.flashvars.clientThemePath %>').split("&lt;").join("<").split("&gt;").join(">"),
+            clientThemePath: '/static/tommy/ad44370a650793d9/<client_theme>',
         }).toString();
         previewSceen();
         jQuery("#charCreatorContainer").show();

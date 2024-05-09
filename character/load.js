@@ -66,7 +66,7 @@ module.exports = function (req, res, url) {
 				} case "/api/getChars": {
 					loadPost(req, res).then(async data => {
 						try {
-							const json = asset.list('', '', '', data.userId, 'char', 0, data.cc_theme_id);
+							const json = asset.list('', '', '', [], data.userId, 'char', 0, data.cc_theme_id);
 							if (!json) return res.end(
 								JSON.stringify(
 									[

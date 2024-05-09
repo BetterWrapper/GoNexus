@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+    <head>
+        <title><%= title %> - GoNexus</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="title" content="<%= title %> - GoNexus">
+        <meta name="video_height" content="354">
+        <meta name="video_width" content="550">
+        <meta name="video_type" content="application/x-shockwave-flash">
+        <meta name="medium" content="video">
+        <meta property="og:type" content="article">
+        <meta property="og:title" content="<%= title %>">
+        <meta property="og:video:height" content="354">
+        <meta property="og:video:width" content="550">
+        <meta property="og:video:type" content="application/x-shockwave-flash">
+        <meta name="twitter:card" content="player">
+        <meta name="twitter:title" content="<%= title %>">
+        <meta name="twitter:player:height" content="349">
+        <meta name="twitter:player:width" content="620">
+        <meta property="og:site_name" content="GoNexus">
+        <meta property="fb:app_id" content="177116303202">
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        <style>
+            @font-face {
+                font-family: 'Droid Sans';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Droid Sans Bold'), local('DroidSans-Bold'), url(/ui/fonts/EFpQQyG9GqCrobXxL-KRMQFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');
+            }
+        </style>
+        <link href="/static/tommy/2012/go/css/buttons.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/school/css/public.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/school/css/comment.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/school/css/movie.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/school/css/public/movie.css" rel="stylesheet" type="text/css"/>        
+        <script type="text/javascript">
+            var srv_tz_os = -4, 
+                view_name = "school", 
+                user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <script src="/static/tommy/2012/go/js/prototype.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery-1.4.4.min.js"></script>
+        <script src="/static/tommy/2012/go/js/go2.js"></script>
+        <script src="/static/tommy/2012/go/js/overlay.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.blockUI.js"></script>
+        <script src="/static/tommy/2012/go/js/cookie.js"></script>
+        <script src="/static/tommy/2012/school/js/global.js"></script>
+        <script src="/static/tommy/2012/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+        <script type="text/javascript">
+            jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="/js/user.js"></script>
+        <script src="/static/tommy/2012/go/js/swfobject.js"></script>
+        <script src="/static/tommy/2012/go/js/movie.js"></script>
+        <script src="/static/tommy/2012/school/js/group.js"></script>
+        <script src="/static/tommy/2012/school/js/paging.js"></script>
+        <script src="/static/tommy/2012/school/js/comment.js"></script>
+    </head>
+    <body onload="jQuery.blockUI()">
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+        </script>
+        <div id="top-bar">
+            <a href="https://flashthemes.net/">&lt; Go to FlashThemes</a>
+            <a class="login" href="/create">Make a Video &gt;</a>
+        </div>
+        <div class="container">
+            <div class="content">
+                <%- include("includes/2012_header.ejs") %>
+                <div id="movie-content"></div>
+                <div class="moviebasic">
+                    <label class="data">Player Year: 
+                        <select id="player_year" onchange="jQuery.blockUI(); playerSwfChange(this)">
+                            <option value="current">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                        </select>
+                    </label>
+                    <h1><%= params.flashvars.movieTitle %></h1>
+                    <div class="player">
+                        <meta name="medium" content="video"/>
+                        <% if (params.movieInfo.pshare == 1) { %>
+                            <div style="position:relative">
+                                <div id="playerStatus" style="position:absolute;z-index:1;right:0px;top:0px;display:none">
+                                    <img src="https://flashthemes.net/static/ft/img/v2/private_overlay.gif"/>
+                                </div>
+                            </div>
+                        <% } %>
+                        <div style="position:relative">
+                            <div id="playerdiv" align="center" style="width:620px;height:349px;">
+                                You need Adobe Flash PLayer in order to view this content. 
+                                <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>
+                            </div>
+                        </div>
+                        <script>
+                            var playerApiReady = false, flashvars, year = $("#player_year")?.val() || "current";
+                            function playerLoaded() {
+                                playerApiReady = true;
+                                jQuery(document).trigger('playerApiReady');
+                            };
+                            setTimeout(() => playerSwfChange({
+                                value: year
+                            }), 5000);
+                            function playerSwfChange(obj) {
+                                const info = {
+                                    id: "Player",
+                                    height: 349,
+                                    allowScriptAccess: "always",
+                                    allowFullScreen: "true",
+                                    flashvars: {
+                                        isLogin: !userData ? "N" : "Y",
+                                        userId: (userData.uid || userData.id) || "",
+                                        username: (userData.displayName || userData.name) || "",
+                                        uemail: userData.email || ""
+                                    }
+                                }
+                                year = info.flashvars.v = obj.value;
+                                if (year == "current") ((d) => {
+                                    flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
+                                    for (const i in flashvars) info.flashvars[i] = flashvars[i];
+                                    info.swf = "<%= params.swf %>";
+                                    info.width = 620;
+                                    jQuery('#playerdiv').flash(info);
+                                })(Object.fromEntries(new URLSearchParams('<%= flashvarsString %>')));
+                                else {
+                                    const staticPath = `/static/tommy/${year}`;
+                                    for (const i in flashvars) info.flashvars[i] = flashvars[i];
+                                    info.flashvars.clientThemePath = staticPath + '/<client_theme>';
+                                    info.flashvars.storePath = '/static/tommy/2010/store/<store>';
+                                    info.flashvars.apiserver = (parseInt(year) <= 2014 ? window.location.origin : "") + "/";
+                                    info.width = parseInt(year) <= 2013 ? 565 : 620;
+                                    if (info.flashvars.movieOwner) delete info.flashvars.movieOwner;
+                                    info.swf = staticPath + '/animation/player.swf';
+                                    jQuery('#playerdiv').flash(info);
+                                }
+                                if (userData) document.getElementById('school-top-menu').style.display = "block";
+                                jQuery.unblockUI();
+                            }
+                        </script>
+                    </div>
+                    <script>
+                        document.write(`<div id="movie_embed" class="clearfix">
+                            <div>
+                                Embed: <input 
+                                    type="text" 
+                                    value="<iframe scrolling='no' allowTransparency='true' frameborder='0' width='400' height='258' src='${
+                                        window.location.origin
+                                    }/player/embed?<%= flashvarsString %>'></iframe>
+                                    <br/>Like it? Create your own at <a href='${
+                                        window.location.origin
+                                    }/public_index' target='_blank'><b>Nexus</b></a>." 
+                                    readonly onclick="this.focus(); this.select()"
+                                />
+                            </div>
+                            <div>URL: <input type="text" value="${
+                                window.location.origin
+                            }/public_movie?movieId=<%= params.flashvars.movieId %>" readonly onclick="this.focus(); this.select()"/></div>
+                        </div>`);
+                    </script>
+                    <div style="padding:10px 0;border-top:1px dashed #818181;">
+                        <div style="float:right;">Created on: <%= params.movieInfo.date %></div>
+                        <div>by <a href="/public_user/<%= params.flashvars.movieOwnerId %>"><%= params.flashvars.movieOwner %></a></div>
+                        <% if (params.flashvars.movieDesc) { %>
+                            <div style="margin-top:10px;">Description: <% params.flashvars.movieDesc %></div>
+                        <% } else { %>
+                            <div style="margin-top:10px;">Description: <span class="hint">None Provided</span></div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include("includes/2012_footer.ejs") %>
+    </body>
+</html>

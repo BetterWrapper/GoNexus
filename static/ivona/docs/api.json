@@ -1,0 +1,174 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Ivona Classic API Documentation",
+        "description": "This is a documentation for a TTS Revival prject known as Ivona Classic created by Jyvee and ported over to Nexus by Joseph. This documentation will showcase what the APIS do and the params needed in order for you to use them in your application.",
+        "version": "1.0.19"
+    },
+    "paths": {
+        "/api/local_voices/ivona-jyvee/say?v={voice}&text={text}": {
+            "get": {
+                "tags": [
+                    "Voice Generation"
+                ],
+                "summary": "Get a voice download link",
+                "description": "Allows a user to share what they put into the text box to generate a voice.",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Voice",
+                            "type": "string"
+                        },
+                        "name": "voice",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Text",
+                            "type": "string"
+                        },
+                        "name": "text",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "502": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/local_voices/ivona-jyvee/sayMP3?v={voice}&text={text}": {
+            "get": {
+                "tags": [
+                    "Voice Generation"
+                ],
+                "summary": "Get an MP3 buffer of the voice",
+                "description": "Allows a user to listen to voice buffer after entering text into a text box.",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Voice",
+                            "type": "string"
+                        },
+                        "name": "voice",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Text",
+                            "type": "string"
+                        },
+                        "name": "text",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "502": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/local_voices/ivona-jyvee/sayEmb?v={voice}&text={text}": {
+            "get": {
+                "tags": [
+                    "Voice Generation"
+                ],
+                "summary": "Gets an HTML embed of the generated voice",
+                "description": "Allows a user to listen to a voice they generated without using the audio player",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Voice",
+                            "type": "string"
+                        },
+                        "name": "voice",
+                        "in": "path"
+                    },
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Text",
+                            "type": "string"
+                        },
+                        "name": "text",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "502": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/local_voices/ivona-jyvee/get": {
+            "get": {
+                "tags": [
+                    "Getting Voices"
+                ],
+                "summary": "Gets a list of Ivona Classic voices",
+                "description": "Allows a user to see what voices are available in Ivona Classic",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "502": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "VoiceShareJSON": {
+                "title": "Voice Share Body",
+                "required": [
+                    "rtr",
+                    "t2r",
+                    "v2r",
+                    "lang"
+                ],
+                "type": "object",
+                "properties": {
+                    "rtr": {
+                        "title": "rtr",
+                        "type": "number",
+                        "example": 2
+                    },
+                    "t2r": {
+                        "title": "text (base64)",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "v2r": {
+                        "title": "voice (base64)",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "lang": {
+                        "title": "Lang",
+                        "type": "string",
+                        "example": "us"
+                    }
+                }
+            }
+        }
+    }
+}

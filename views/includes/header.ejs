@@ -20,7 +20,7 @@
                 <span class="icon-bar"></span>
 			</button>
             <a class="navbar-brand" href="/" title="GoNexus">
-                <img alt="GoNexus" src="/ui/img/logo_better.png">
+                <img alt="GoNexus" src="https://fontmeme.com/permalink/240509/a4ce8047c4acc81704e171a4f44e0695.png">
             </a>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -852,7 +852,7 @@
             email: userData.email,
             password: jQuery("#ftpswlightbox").val()
         }, d => {
-            const code = `${d.split("{")[0]}`;
+            const code = `${d.substr(0, 1)}`;
             switch (code) {
                 case '0': {
                     jQuery.post('/api/linkAccount', {
@@ -878,7 +878,7 @@
                     });
                     break;
                 } case '1': {
-                    const json = JSON.parse(d.split("1")[1]);
+                    const json = JSON.parse(d.substr(1));
                     processing = false;
                     $("#ftacclinkagebuttonlightbox").val(origText);
                     $("#ftacclinkageerrorlightbox").text(json.errmsg);
@@ -1069,7 +1069,7 @@
             converting: $(elem).data("converting"),
             for: $(elem).data("for"),
             body: $(elem).serialize(),
-            loggedIn: userData && hasPermission('flashthemes') ? 'true' : 'false',
+            loggedIn: userData && hasPermission('flashthemes'),
             userParams: new URLSearchParams(userData).toString()
         }, d => {
             apiKeySubmiting = false;
@@ -1121,7 +1121,9 @@
                 const json = JSON.parse(d);
                 if (json.topMediaAIKey == jQuery("#topmediaai-key").val() && json.freeConvertKey ==  jQuery("#freeconvert-key").val()) {
                     apiKeySubmiting = false;
-                    jQuery("#error-message").text("Both of the api keys cannot be the same as the api keys stored in the server. please change one of the api keys.");
+                    jQuery("#error-message").text(
+                        "Both of the api keys cannot be the same as the api keys stored in the server. please change one of the api keys."
+                    );
                     jQuery("#submitbtn").val(origText);
                 } else {
                     jQuery.post("/api/submitAPIKeys", {

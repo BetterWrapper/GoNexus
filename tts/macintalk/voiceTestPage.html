@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Text MacInTalk Voices Online - Nexus</title>
+        <script type="text/javascript" src="/static/MacInTalk/jquery.js"></script>
+    </head>
+    <body style="background-color:aquamarine">
+        <h1>Powered By <span style="color: coral;">Nexus</span></h1>
+        <center>
+            <h2>Welcome to the testing page for MacInTalk Voices!</h2>
+        </center>
+        <ul>
+            <li>
+                <h3>
+                    You may have been broght here after you clicked on a link that allows users to test out all voices before using it in the LVM.
+                </h3>
+            </li>
+            <li>
+                <h4>
+                    Please note that MacInTalk voices are still in development. so please don't expect all of them to work during your testing.
+                </h4>
+            </li>
+        </ul>
+        <h4>Server Status: <span id="server_status"></span></h4>
+        <center>
+            First, Select a voice.
+            <hr>
+            <select id="curvox" style="background-color:aliceblue"></select><br>
+            Second, type in the text that you want used during TTS voice generation
+            <hr>
+            <textarea 
+                style="width: 350px; height: 350px; margin: 50px; background-color:aliceblue" 
+                id="dtu" 
+                placeholder="Enter some text here, and click the speak button to listen!"
+            ></textarea><br>
+            Third, press the <button onclick="speak()" id="speakBtn">Speak</button> button to begin TTS voice generation.
+            <hr>
+            <audio id="pie" controls title="Final Voice Result"></audio><br>
+            <h2 id="status">Anything that happens during testing will appear here.</h2>
+            <h3>Query String Parameters</h3>
+            <ul>
+                <li>
+                    v: The voice you selected that will be used during TTS generation
+                </li>
+                <li>
+                    text: Anything you typed in that will be used during TTS generation
+                </li>
+            </ul>
+        </center>
+    </body>
+    <script>
+        var serverStatus, isGenerating = false;
+        $.getJSON('/api/local_voices/macintalk/get', d => {
+            $("#curvox").html(Object.keys(d).sort().map(v => `<option name="${v}" value="${d[v].vid}">${d[v].name}</option>`))
+        })
+        $.get("/api/local_voices/macintalk/serverStatus").done(d => {
+            const json = JSON.parse(d);
+            serverStatus = json.status;
+            $("#server_status").css("color", json.textColor).html(json.status);
+        })
+        function speak() {
+            if (isGenerating) return;
+            isGenerating = true;
+            var voice = $("#curvox").val();
+            var text = $("#dtu").val();
+            $("#status").css("color", "black").html('<progress></progress>');
+            var params = { 
+                text, 
+                v: voice 
+            };
+            console.log("The voices are >doomed. Please spread the >awareness. >igt is with us. Wild cherry >pie !");
+            console.warn("tip! 💡 || You can still get the cepstral voices through the server. Made this a warn incase people doesnt know it STILL comes from my computer");
+            for (const i in params) {
+                if (!params[i]) return errMsg("Please configure the required fields");
+            }
+            if (
+                serverStatus == "Offline"
+            ) return errMsg("The server is currently offline right now. Please test a voice here another time.");
+            if (
+                serverStatus == "Error"
+            ) return errMsg("There is an error in the server. Please refresh this page to try again");
+            $.get(`/api/local_voices/macintalk/say?${new URLSearchParams(params).toString()}`, function (data) {
+                if (data == "HI") return errMsg("An unknown error has occured during TTS voice generation");
+                var audio = document.getElementById("pie") || new Audio();
+                audio.src = data.toString();
+                audio.play();
+                $("#status").html(`If you want, you may download this voice by cicking on the following link: <a href="${
+                    window.location.origin
+                }/api/local_voices/macintalk/sayMP3.mp3?${
+                    new URLSearchParams(params).toString()
+                }">${
+                    window.location.origin
+                }/api/local_voices/macintalk/sayMP3.mp3?${
+                    new URLSearchParams(params).toString()
+                }</a> Or you can use this link to generate your own voices in your application.`);
+            });
+            function errMsg(msg) {
+                isGenerating = false;
+                $("#status").css("color", "red").html(msg);
+                return;
+            }
+        }
+    </script>
+</html>

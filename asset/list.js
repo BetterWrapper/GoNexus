@@ -29,11 +29,18 @@ async function listAssets(data, makeZip) {
 	const id = data.assetId ? data.assetId == 'null' ? data.include_ids_only : data.assetId : data.include_ids_only;
 	switch (data.type) {
 		case "prop": {
-			files = data.subtype == "video" ? [] : asset.list(data.count || '', data.page || '', id, data.userId, "prop");
+			files = data.subtype == "video" ? [] : asset.list(
+				data.count || '', data.page || '', id, data.exclude_ids ? data.exclude_ids.split(",") : '', data.userId, "prop"
+			);
 			break;
 		} case "char": {
+			if ((data.v == "2011" || data.v == "2012") && !data.cc_theme_id) {
+				files = [];
+				xmlString = `${header}<theme id="ugc" moreChar="0"></theme>`;
+				break;
+			}
 			const tId = (() => {
-				if (data.themeId || data.cc_theme_id) return getTid(data.themeId || data.cc_theme_id);
+				if (data.themeId || data.cc_theme_id) return getTid(data.themeId || data.cc_theme_id, data.v);
 				if (data.v) return data.v == "2010" ? "family" : "";
 			})();
 			const fatials = {};
@@ -41,8 +48,10 @@ async function listAssets(data, makeZip) {
 			const actionPack = {};
 			const action_cat = {};
 			const defaultActions = {};
-			files = asset.list(data.count || '', data.page || '', id, data.userId, "char", 0, tId);
-			if (data.include_ids_only) console.log(files);
+			files = asset.list(
+				data.count || '', data.page || '', id, data.exclude_ids ? data.exclude_ids.split(",") : '', data.userId, "char", 0, tId
+			);
+			if (data.include_ids_only || data.exclude_ids) console.log(files);
 			async function getOldChars2() {
 				const defaults = {
 					family: `<action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y" is_motion="N"/>`,
@@ -206,7 +215,9 @@ async function listAssets(data, makeZip) {
 			else if (data.file == "old_full_2013.swf") await getOldChars();
 			break;
 		} default: {
-			files = asset.list(data.count || '', data.page || '', id, data.userId, data.type);
+			files = asset.list(
+				data.count || '', data.page || '', id, data.exclude_ids ? data.exclude_ids.split(",") : '', data.userId, data.type
+			);
 			break;
 		}
 	}

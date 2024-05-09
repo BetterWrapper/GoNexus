@@ -68,7 +68,7 @@ module.exports = function (req, res, url) {
 			title = "Character Creator";
 			filename = 'app_embed';
 			attrs = {
-				data: process.env.SWF_URL + "/cc.swf", // data: 'cc.swf',
+				data: (query.animationPath || process.env.SWF_URL) + "/cc.swf", // data: 'cc.swf',
 				type: "application/x-shockwave-flash",
 				id: "char_creator",
 				width: "100%",
@@ -94,14 +94,14 @@ module.exports = function (req, res, url) {
 					tlang: "en_US",
 				},
 				allowScriptAccess: "always",
-				movie: process.env.SWF_URL + "/cc.swf", // 'http://localhost/cc.swf'
+				movie: (query.animationPath || process.env.SWF_URL) + "/cc.swf", // 'http://localhost/cc.swf'
 			};
 			break;
 		} case "/cc_browser/embed": {
 			title = "CC Browser";
 			filename = "app_embed"
 			attrs = {
-				data: process.env.SWF_URL + "/cc_browser.swf", // data: 'cc_browser.swf',
+				data: (query.animationPath || process.env.SWF_URL) + "/cc_browser.swf", // data: 'cc_browser.swf',
 				type: "application/x-shockwave-flash",
 				id: "char_creator",
 				width: "100%",
@@ -126,7 +126,7 @@ module.exports = function (req, res, url) {
 					lid: 13,
 				},
 				allowScriptAccess: "always",
-				movie: process.env.SWF_URL + "/cc_browser.swf", // 'http://localhost/cc_browser.swf'
+				movie: (query.animationPath || process.env.SWF_URL) + "/cc_browser.swf", // 'http://localhost/cc_browser.swf'
 			};
 			break;
 		} case "/cc": {
@@ -255,26 +255,27 @@ module.exports = function (req, res, url) {
 			params = {
 				flashvars: {
 					presaveId: presave,
-					v: query.year,
-					apiserver: "/",
+					v: query.year || '',
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
-					ut: 20,
-					isEmbed: 0,
+					tray: query.theme || "custom",
 					nextUrl: "/api/redirect",
-					lid: "11",
-					ctc: "go",
-					tlang: "en_US",
-					siteId: "11",
-					appCode: "go",
-					upl: 1,
-					hb: "1",
-					pts: "1",
 					has_asset_char: 1,
 					initcb: "studioLoaded",
+					upl: 1,
+					hb: 1,
+					pts: 1,
+					appCode: "go",
 					uisa: 1,
-					tray: query.theme || "custom",
-					isWide: 1
+					isLogin: "Y",
+					tlang: "en_US",
+					isEmbed: 1,
+					isWide: 1,
+					siteId: 11,
+					lid: 11,
+					ut: 20,
+					apiserver: "/",
+					newusr: 1
 				},
 				allowScriptAccess: "always",
 			};
@@ -304,38 +305,110 @@ module.exports = function (req, res, url) {
 				wmode: "opaque",
 				hasVersion: "10.3",
 				flashvars: {
-					movieLid: "0",
-					ut: "23",
-					numContact: "",
+					ut: 20,
 					apiserver: "/",
-					playcount: 1,
-					ctc: "go",
+					ctc: "school",
 					tlang: "en_US",
-					autostart: "0",
+					autostart: 1,
 					appCode: "go",
-					is_slideshow: "0",
-					originalId: "0Y7-ebJ36Ip4",
-					is_emessage: "0",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
 					animationPath: process.env.SWF_URL + "/",
-					isEmbed: !url.query.isEmbed ? "0" : "1",
-					refuser: null,
-					utm_source: null,
-					uid: null,
-					isTemplate: "0",
-					showButtons: "1",
-					chain_mids: "",
-					averageRating: 5,
-					ratingCount: "1",
-					fb_app_url: "/",
-					ad: 1,
-					endStyle: 0,
+					isEmbed: 0,
+					endStyle: 2,
 					isWide: "1",
-					pwm: 1,
-					initcb: "flashPlayerLoaded",
-					showshare: false
+					initcb: "flashPlayerLoaded"
 				},
+			};
+			break;
+		} case "/public_movie": {
+			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(
+				url.query.movieId.lastIndexOf("-") + 1
+			)) : url.query.movieId.startsWith(
+				"ft-"
+			) ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "";
+			if ((url.query.movieId.startsWith("m-") || url.query.movieId.startsWith("ft-")) && existsSync(path)) filename = "lvp";
+			else return redir()
+			function redir() {
+				res.statusCode = 302;
+				res.setHeader("Location", "/");
+				return res.end();
+			}
+			params = {
+				id: "Player",
+				swf: process.env.SWF_URL + "/player.swf",
+				height: 349,
+				width: 620,
+				bgcolor: "#000000",
+				scale: "exactfit",
+				allowScriptAccess: "always",
+				allowFullScreen: "true",
+				wmode: "opaque",
+				hasVersion: "10.3",
+				flashvars: {
+					ut: 20,
+					apiserver: "/",
+					ctc: "go",
+					tlang: "en_US",
+					autostart: 1,
+					appCode: "go",
+					storePath: process.env.STORE_URL + "/<store>",
+					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+					animationPath: process.env.SWF_URL + "/",
+					isEmbed: 0,
+					endStyle: 2,
+					movieLid: 11,
+					themeColor: "school",
+					initcb: "flashPlayerLoaded"
+				},
+			};
+			for (const userInfo of JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users) {
+				const movieInfo = userInfo.movies.find(i => i.id == query.movieId);
+				if (!movieInfo) continue;
+				params.movieInfo = movieInfo;
+				title = params.flashvars.movieTitle = params.movieInfo.title;
+				params.flashvars.movieDesc = params.movieInfo.desc;
+				params.flashvars.duration = params.movieInfo.duration;
+				params.flashvars.isPublished = params.movieInfo.published;
+				params.flashvars.is_private_shared = params.movieInfo.pshare;
+				params.flashvars.isWide = params.movieInfo.isWide;
+				params.flashvars.copyable = params.movieInfo.copyable;
+				params.flashvars.movieOwner = userInfo.name;
+				params.flashvars.movieOwnerId = userInfo.id;
+			}
+			if (params.flashvars.isPublished != 1 && params.flashvars.is_private_shared != 1) return redir();
+			break;
+		} case "/player/embed": {
+			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(
+				url.query.movieId.lastIndexOf("-") + 1
+			)) : url.query.movieId.startsWith(
+				"ft-"
+			) ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "";
+			if ((url.query.movieId.startsWith("m-") || url.query.movieId.startsWith("ft-")) && existsSync(path)) filename = "app_embed";
+			else {
+				res.statusCode = 302;
+				res.setHeader("Location", "/");
+				return res.end();
+			}
+			title = "Player";
+			attrs = {
+				data: process.env.SWF_URL + "/player.swf",
+				type: "application/x-shockwave-flash",
+				width: "100%",
+				height: "100%",
+			};
+			params = {
+				flashvars: {
+					apiserver: "/",
+					endStyle: 2,
+					storePath: process.env.STORE_URL + "/<store>",
+					ut: 20,
+					autostart: 1,
+					isWide: 1,
+					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+				},
+				allowScriptAccess: "always",
+				allowFullScreen: "true",
 			};
 			break;
 		} default: return;

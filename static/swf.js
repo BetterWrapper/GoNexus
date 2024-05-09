@@ -13,10 +13,14 @@ module.exports = (req, res, url) => {
         return true;
     }
     function vQuery(u) {
+        if (
+            pathname.endsWith(".js") 
+            || pathname.endsWith(".css")
+        ) res.setHeader("Content-Type", `text/${pathname.substr(pathname.lastIndexOf(".") + 1)}`);
         const v = !pathname.startsWith("/static/tommy") ? ('/' + url.query.v + pathname.split("/static")[1]) : pathname.split(
             `/static/tommy`
         )[1];
-        if (url.query.v) return fs.existsSync(`./static${v}`) ? res.end(fs.readFileSync(`./static${
+        if (url.query.v || pathname.startsWith("/static/tommy")) return fs.existsSync(`./static${v}`) ? res.end(fs.readFileSync(`./static${
             v
         }`)) : get(`https://file.garden/ZP0Nfnn29AiCnZv5/static${v}`);
         return fs.existsSync(`.${pathname}`) ? res.end(fs.readFileSync(`.${pathname}`)) : get(u);
@@ -24,7 +28,7 @@ module.exports = (req, res, url) => {
     if (pathname.startsWith("/static/store")) return vQuery(`https://goanimate-wrapper.github.io/GoAnimate-Assets/store/3a981f5cb2739137${
         pathname.split("/static/store")[1]
     }`);
-    if (pathname.startsWith("/static/tommy")) return vQuery(`https://file.garden/ZP0Nfnn29AiCnZv5/static/${
+    if (pathname.startsWith("/static/tommy")) return vQuery(`https://file.garden/ZP0Nfnn29AiCnZv5/static${
         pathname.split("/static/tommy")[1]
     }`);
     if (pathname.startsWith("/static/animation")) return vQuery(`https://goanimate-wrapper.github.io/GoAnimate-Assets/animation/414827163ad4eb60${

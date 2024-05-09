@@ -50,13 +50,17 @@ function getLangPre(langName) {
 		if (langs[lang] == langName) return lang;
 	}
 }
+const userVoices = {};
 const session = require("../misc/session");
 const fUtil = require("../misc/file");
 const oldvoices = require("./oldvoices.json");
 module.exports = {
-	getVoiceInfo(voiceName) {
+	tempSaveUserVoice(uid, voices) {
+		userVoices[uid] = voices;
+	},
+	getVoiceInfo(voiceName, uid) {
 		try {
-			return JSON.parse(fs.readFileSync('./tts/voices.json'))[voiceName];
+			return userVoices[uid][voiceName];
 		} catch (e) {
 			return e
 		}
@@ -129,7 +133,8 @@ module.exports = {
 					}
 				}
 				else {
-					const voice = this.getVoiceInfo(voiceName);
+					const voice = this.getVoiceInfo(voiceName, data.userId);
+					console.log(voice);
 					if (voice.isLocal && voice.provider) {
 						const tts = require(`./${voice.provider}/main`);
 						const buffer = await tts[tts.mp3BufferFunction](voice.vid, text);

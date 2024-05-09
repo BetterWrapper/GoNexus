@@ -312,6 +312,40 @@
             function retrievePreviewPlayerData() { 
                 return movieDataXmlStr;
             }
+            function customLVPVideoPublish(visibility, id, callback) {
+                const data = getting_started_html_config.custom_player_data.flashvars;
+                data.visibility = visibility;
+                data.id = id;
+                $.post("/api/movieVisibility/change", data, callback);
+            }
+            function updateMoviePublishStatusByPlayer(id) {
+                $(".getting_started_custom_video_player").block();
+                const player = $("#Player")[0];
+                customLVPVideoPublish("public", id, stuff => {
+                    console.log(stuff);
+                    const isSuccess = stuff == "stuff";
+                    player.triggerPublishStatusChange(id, isSuccess);
+                    $(".getting_started_custom_video_player").unblock();
+                });
+            }
+            function getMoviePublishStatusHistory(id) { 
+                // i have no idea of what to do here. (Joseph)
+                console.log(id);
+            }
+            function getMoviePshareStatusHistory(id) { 
+                // i have no idea of what to do here. (Joseph)
+                console.log(id);
+            }
+            function updateMoviePshareStatusByPlayer(id) {
+                $(".getting_started_custom_video_player").block();
+                const player = $("#Player")[0];
+                customLVPVideoPublish("private", id, stuff => {
+                    console.log(stuff);
+                    const isSuccess = stuff == "stuff";
+                    player.triggerPublishStatusChange(id, isSuccess);
+                    $(".getting_started_custom_video_player").unblock();
+                });
+            }
             function toAttrString(table) {
                 return typeof table == "object" ? Object.keys(table).filter((key) => table[key] !== null).map(
                     (key) => `${encodeURIComponent(key)}=${encodeURIComponent(table[key])}`
@@ -344,28 +378,21 @@
                     allowScriptAccess: "always",
                     wmode: "transparent",
                     flashvars: {
+                        endStyle: "1",
+                        movieLid: 13,
+                        isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
+                        isLogin: "Y",
+                        siteId: "go",
                         storePath: "/static/tommy/2010/store/<store>",
                         ut: "10",
                         apiserver: window.location.origin + "/",
-                        copyable: "0",
-                        isPublished: "0",
                         ctc: "go",
                         tlang: "en_US",
-                        is_private_shared: "0",
                         autostart: "0",
                         appCode: "go",
-                        is_slideshow: "0",
                         isEmbed: "0",
-                        refuser: "",
-                        utm_source: "",
-                        uid: "",
-                        isTemplate: "0",
                         showButtons: "1",
-                        showshare: "embed",
-                        averageRating: "0",
-                        ratingCount: "0",
-                        fb_app_url: window.location.origin + "/",
-                        numContact: ""
+                        fb_app_url: window.location.origin + "/"
                     },
                     scale: "exactfit",
                     allowFullScreen: "true",
@@ -435,8 +462,7 @@
 			            ut: "10",
                         isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
                         apiserver: window.location.origin + "/",
-                        newusr: 1,
-                        staticserver: "https://wrapperclassic.netlify.app/"
+                        newusr: 1
                     },
                     allowScriptAccess: "always"
 				}
@@ -452,14 +478,24 @@
                         getting_started_html_config.custom_player_data.flashvars.clientThemePath = `https://file.garden/ZP0Nfnn29AiCnZv5/static/2012/<client_theme>`;
                         getting_started_html_config.custom_player_data.flashvars.v = oldModalData.year;
                         getting_started_html_config.custom_player_data.flashvars.movieOwnerId = userData.id || userData.uid;
+                        getting_started_html_config.custom_player_data.flashvars.userId = userData.id || userData.uid;
                         getting_started_html_config.custom_player_data.flashvars.movieOwner = userData.displayName;
                         getting_started_html_config.custom_player_data.flashvars.thumbnailURL = `movie_thumbs/${mId}.png`
                         getting_started_html_config.custom_player_data.flashvars.movieId = mId;
                         getting_started_html_config.custom_player_attrs.data = `https://file.garden/ZP0Nfnn29AiCnZv5/animation/${
                             data.year
                         }/player.swf`;
-                        jQuery("#getting_started_modal").unblock();
-                        callback(json_info);
+                        $.getJSON(`/meta/${mId}`, d => {
+                            getting_started_html_config.custom_player_data.flashvars.movieTitle = d.title;
+                            getting_started_html_config.custom_player_data.flashvars.movieDesc = d.desc;
+                            getting_started_html_config.custom_player_data.flashvars.isPublished = d.published;
+                            getting_started_html_config.custom_player_data.flashvars.is_private_shared = d.pshare;
+                            getting_started_html_config.custom_player_data.flashvars.copyable = d.copyable;
+                            getting_started_html_config.custom_player_data.flashvars.isWide = d.isWide || 0;
+                            getting_started_html_config.custom_player_data.flashvars.duration = Math.round(d.duration);
+                            jQuery("#getting_started_modal").unblock();
+                            callback(json_info);
+                        })
                     })
                 });
             } 
@@ -472,8 +508,15 @@
                         getting_started_html_config.player_data.flashvars.movieId = mId;
                         getting_started_html_config.player_data.flashvars.movieOwnerId = userData.id || userData.uid;
                         getting_started_html_config.player_attrs.width = "560";
-                        jQuery("#getting_started_modal").unblock();
-                        callback(json_info);
+                        $.getJSON(`/meta/${mId}`, d => {
+                            getting_started_html_config.player_data.flashvars.isPublished = d.published;
+                            getting_started_html_config.player_data.flashvars.is_private_shared = d.pshare;
+                            getting_started_html_config.player_data.flashvars.copyable = d.copyable;
+                            getting_started_html_config.player_data.flashvars.isWide = d.isWide || 0;
+                            getting_started_html_config.player_data.flashvars.duration = Math.round(d.duration);
+                            jQuery("#getting_started_modal").unblock();
+                            callback(json_info);
+                        })
                     })
                 });
             }
@@ -634,15 +677,22 @@
                                 getting_started_html_config.custom_player_data.flashvars.v = data.year;
                                 getting_started_html_config.custom_player_data.flashvars.movieOwnerId = userData.id || userData.uid;
                                 getting_started_html_config.custom_player_data.flashvars.movieOwner = userData.displayName;
-                                getting_started_html_config.custom_player_data.flashvars.thumbnailURL = `/movie_thumbs/${
+                                getting_started_html_config.custom_player_data.flashvars.thumbnailURL = `movie_thumbs/${
                                     getting_started_html_config.player_data.flashvars.movieId
                                 }.png`
                                 getting_started_html_config.custom_player_data.flashvars.movieId = getting_started_html_config.player_data.flashvars.movieId;
                                 getting_started_html_config.custom_player_attrs.data = `/static/animation/player.swf?v=${
                                     data.year
                                 }`;
-                                jQuery("#getting_started_modal").unblock();
-                                callback(json_info);
+                                $.getJSON(`/meta/${getting_started_html_config.player_data.flashvars.movieId}`, d => {
+                                    getting_started_html_config.custom_player_data.flashvars.isPublished = d.published;
+                                    getting_started_html_config.custom_player_data.flashvars.is_private_shared = d.pshare;
+                                    getting_started_html_config.custom_player_data.flashvars.copyable = d.copyable;
+                                    getting_started_html_config.custom_player_data.flashvars.isWide = d.isWide || 0;
+                                    getting_started_html_config.custom_player_data.flashvars.duration = Math.round(d.duration);
+                                    jQuery("#getting_started_modal").unblock();
+                                    callback(json_info);
+                                })
                             })
                         });
                         break;
@@ -754,9 +804,16 @@
                     new URLSearchParams($("#getting_started_modal").serialize())
                 );
                 const elem = $("#yearInput").find(`option[value="${modalData.year}"]`);
-                window.location.href = `/go_full?${$("#getting_started_modal").serialize()}&swfPath=/static/tommy/${
+                const staticPath = `/static/tommy/${
                     modalData.year
-                }/animation/${elem.data("fullscreen-apath") || "go_full.swf"}&storePath=/static/tommy/2010/store/<store>`;
+                }`;
+                window.location.href = `/go_full?${
+                    $("#getting_started_modal").serialize()
+                }&swfPath=${
+                    staticPath
+                }/animation/${
+                    elem.data("fullscreen-apath") || "go_full.swf"
+                }&clientThemePath=${staticPath}/<client_theme>&storePath=/static/tommy/2010/store/<store>`;
             }
             function showGettingStartedModal(json) {
                 jQuery.blockUI();

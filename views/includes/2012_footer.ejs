@@ -1,0 +1,54 @@
+<div id="footer">
+    <div class="footer-inside clearfix">
+        <div id="footernav" class="clearfix">
+            <div class="col" style="border:none">
+                <h4>Getting Help</h4>
+                <ul>
+                    <li><a href="https://discord.gg/BcVeWEhuqJ">Discord Server</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="copyright"><script>document.write(`Nexus &copy; ${new Date().getFullYear()}`)</script></div>
+    </div>
+</div>
+<!-- flex framework -->
+<div id="growlfeedback_block" class="growlUI" style="display:none">
+    <div id="growlnotify">
+        <img src="/static/tommy/2012/school/img/common/feedback/tick.png" width="52" height="52">
+    </div>
+    <div id="growlerror">
+        <img src="/static/tommy/2012/school/img/common/feedback/cross.png" width="52" height="52">
+    </div>
+    <div class="growlcontent">
+        <div class="growltitle">Notification</div>
+        <div id="growlfeedback"></div>
+    </div>
+</div>
+<div id="darkenScreenObject" style="display:none;"></div>
+<div id="overlayGeneral" style="display:none;width:700px;">
+    <div class="overlay_header">
+        <img src="/static/tommy/2012/go/img/overlay/img_popup_top_700.png" height="37" width="700" onload="javascript:iePngFix(this,700,37)">
+    </div>
+    <div style="float:left; margin:0px; padding: 0px; width:700px;">
+        <div style="float:left; margin:0px; padding: 0px; width:700px;">
+            <span id="tracker_id" style="display:none"></span>
+            <div class="overlay_header_title">
+                <span id="OG_title"></span>
+            </div>
+            <div class="overlayClose">
+                <a href="javascript:goVoid();" onclick="javascript:hideOG();"></a>
+            </div>
+            <div style="background-color:#fff; position:relative;float:left;width:700px;">
+                <div id="OG_content"></div>
+            </div>
+            <div class="overlay_footer">
+                <img src="/static/tommy/2012/go/img/overlay/img_popup_bottom_700.png" height="30" width="700" onload="javascript:iePngFix(this,700,30)">
+            </div>
+        </div>
+    </div>
+</div>
+<div 
+    style="display: none; position: absolute; height: 450px; width: 500x; left: 330px; top: 125px; background: none; z-index: 50" 
+    id="overlayObject2"
+></div>

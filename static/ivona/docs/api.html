@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="us">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Ivona Classic Developer Documentation - Nexus</title>
+        <meta http-equiv="Expires" content="0"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="Content-Language" content="us"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+        <meta name="author" content="IVONA Software"/>
+        <meta name="google-site-verification" content="vdCQHRDmoiUH16rA_H96hYWLUW55buuer35mvzZpjG0"/>
+        <meta name="robots" content="index,follow,noodp"/>
+        <meta name="description" content="IVONA Text-to-Speech"/>
+        <link rel="canonical" href="http://web.archive.org/web/20110822143148/http://www.ivona.com/developer.php"/>
+        <link rel="shortcut icon" href="/static/ivona/favicon.ico"/>
+        <link rel="alternate" type="application/rss+xml" title="IVONA Software RSS" href="http://web.archive.org/web/20110822143148/http://feeds.feedburner.com/IVONASoftwareRssEn"/>
+        <link type="text/css" href="/ui/css/ivona_styles2.css" rel="stylesheet" media="screen"/>
+        <link type="text/css" href="/ui/css/ivona_jquery.linkselect.css" rel="stylesheet" media="screen"/>
+        <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+        <!--[if lt IE 7]>
+            <link type="text/css" href="http://static.ivona.com/www/static/css/ivona_ie6.css" rel="stylesheet" media="screen" />
+        <![endif]-->
+        <script type="text/javascript">
+            var STATIC_HOST_COM = 'http://web.archive.org/web/20110822143148/http://static.ivona.com/www/static'; 
+            var BASE_HTTP_HOST_COM = '';
+            var WebreaderAutoCreate = 0;
+        </script>
+        <script type="text/javascript" src="/js/merged2.js"></script>
+        <script type="text/javascript">
+            speaker.config({
+                appHost:"",
+                accPlay:"Listen: ",
+                accStop:"Stop: "
+            });
+            setTimeout("promo()", 1200000);
+        </script>  
+    </head>
+    <body>
+        <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+            try {
+                var pageTracker = _gat._getTracker("UA-1656708-20");
+                pageTracker._setDomainName(".ivona.com");
+            } catch(err) {
+            }
+        </script>
+        <div id="iapi_navTop" style="z-index: 22;">	
+            <div id="mainHeader" class="">
+                <div class="l c mainNavi">
+                    <div class="k">
+                        <header class="l" style="width:187px">
+                            <a class="l nhu on pt10" style="padding-bottom:13px;" href="/api/local_voices/ivona-jyvee/test.html" onclick="track('Link', 'Click', 'ivona.all.header_logo_us');" title="IVONA Text-to-Speech">
+                                <span class="l spriteClass ml20 " style="padding-right:4px; background:url(/static/ivona/mainsprite2.png) no-repeat 0px -56px;width:170px;height:45px">IVONA Text-to-Speech</span>
+                            </a>
+                        </header>
+                        <div class="r w80">
+                            <div id="langmenu" class="w100 r userPanel">
+                                <span class="r w50  pl10 fs10" style=" position: relative; z-index:1000000;">
+                                    <ul id="" class="sf-menu r">
+                                        <li class="r rtl rtr">
+                                            <h2>
+                                                <span class="r fs11 ar gray pr10 pl10 cp b" style="height:24px;padding-top:3px">
+                                                    Powered By Nexus
+                                                </span>
+                                            </h2>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <div class="w100 r" style="position: relative; z-index:100000;">
+                                <ul id="topMenu" class="sf-menu">
+                                    <li class="item rtl rtr">
+                                        <h2>
+                                            <a id="newsTab" href="/">Back To Nexus</a>
+                                        </h2>
+                                    </li>
+                                    <li class="item rtl rtr">
+                                        <h2>
+                                            <a id="developerTab" href="api.html">Ivona Classic For Developers</a>
+                                        </h2>
+                                    </li>
+                                    <li class="item rtl rtr">
+                                        <h2>
+                                            <a id="companyTab" href="https://discord.gg/BcVeWEhuqJ">Nexus Discord Server</a>
+                                        </h2>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a class="accessHelp2 abs" id="navEnd" style="top:-60px !important" href="javascript:void null;">Content</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div class="k">
+			<div style="width:997px; margin:0 auto; ">
+				<div class="bg k pl10 pr10" id="pageTop" style="padding-top:15px">
+					<div class="cw w100 l pb10">
+						<div class="l pl15">
+							<h1 class="k">IVONA For Developers</h1>
+							<span class="k description">Develop with IVONA Text-to-Speech.</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">$("#developerTab").addClass("activeNavTab rtl rtr");</script>
+        <div class="k">
+            <div class="k" id="iframeContainer"></div>
+            <script src="/static/ivona/swagger-ui-bundle.js" crossorigin></script>
+            <script>
+                window.onload = function() {
+                    window.ui = SwaggerUIBundle({
+                        url: '/static/ivona/docs/api.json',
+                        dom_id: "#iframeContainer"
+                    });
+                };
+            </script>
+        </div>
+        <div id="Footer" class="k">
+            <div class="cw pt5">
+                <div class="k" style="padding-bottom: 50px;">
+                    <div class="r w25"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">		
+            try {
+                pageTracker._trackPageview();
+            } catch(err) {
+            }
+        </script>
+    </body>
+</html>

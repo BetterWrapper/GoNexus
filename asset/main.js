@@ -104,7 +104,8 @@ module.exports = {
 			return meta.id;
 		}
 	},
-	list(count, page, id2load, uId, type, subtype, themeId) {
+	list(count, page, id2load, ids2exclude, uId, type, subtype, themeId) {
+		const assetIds = {};
 		const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`)).users.find(i => i.id == uId);
 		let aList = json.assets.filter(i => i.type == type);
 		if (subtype) aList = aList.filter(i => i.subtype == subtype);
@@ -114,9 +115,21 @@ module.exports = {
 		console.log(count * page, parseInt(e.substr(1)), id2load)
 		if (id2load) return aList.filter(i => i.id == id2load);
 		else if (page && count) for (var i = count * page; i < parseInt(e.substr(1)); i++) {
-			if (aList[i]) table.unshift(aList[i]);
+			if (aList[i]) {
+				assetIds[aList[i].id] = true;
+				table.unshift(aList[i]);
+			}
 		}
-		else for (const i of aList) table.unshift(i);
+		else for (const i of aList) {
+			assetIds[i.id] = true;
+			table.unshift(i);
+		}
+		for (const id of ids2exclude) {
+			if (assetIds[id]) {
+				const index = table.findIndex(i => i.id == id);
+				table.splice(index, 1);
+			}
+		}
 		return table;
 	},
 	checkcode(count, page, uId, type, subtype, themeId) {

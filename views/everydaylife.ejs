@@ -61,17 +61,17 @@
 <body id="school">
     <script type="text/javascript">
         GoLite.settings.player = {
-            swf: "/static/animation/player.swf",
+            swf: "/static/0b2b56fdb66bdbfd/animation/player.swf",
             height: 384,
             width: 550
         }
         GoLite.settings.thumbnailChooser = {
-            swf: "/static/thumbnailChooser.swf",
+            swf: "/static/qvm/thumbnailChooser.swf",
             height: 170,
             width: 295
         }
 
-        VoiceRecorder.defaultSettings.swf = "/static/MyMicRecorder.swf";
+        VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
         jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
             apiserver: "/",
             clientThemePath: "/static/<client_theme>",
@@ -99,7 +99,9 @@
         <div id="nav_links" style="display: block;">
             <div class="inside">
                 <ul>
-                    <li class="home" title="Back to Home"><a href="/create" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');">Home</a></li>
+                    <li class="home" title="Back to Home">
+                        <a href="/create" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');">Home</a>
+                    </li>
                     <li class="seperate">&nbsp;</li>
                     <li class="intro"><a onclick="stepTo('#intro')">0</a></li>
                     <li class="step1"><a onclick="stepTo('#step1');">1</a></li>
@@ -115,7 +117,8 @@
         </div>
 
         <div id="login_bar" style="display: none">
-            <div class="inside">You'll need to signup to use your own characters and save changes to your video.		<div class="options">
+            <div class="inside">You'll need to signup to use your own characters and save changes to your video.		
+                <div class="options">
                     <a id="login_link" href="/login">Login</a> -
                     <a id="signup_link" href="/signup">Sign up</a>
                 </div>
@@ -142,27 +145,41 @@
             <a class="previous_step" href="#intro" onclick="stepTo('#intro'); return false;">Back</a>
 
             <div class="inside">
-                <div id="template_name">Chilling Out in the Office</div>
-                <div id="template_desc">Your characters are taking a break from a stressful day in the pantry. Now what
-                    could they be talking about?!</div>
+                <div id="template_name"></div>
+                <div id="template_desc"></div>
                 <div id="templates" class="item_selector">
                     <a class="select_button prev" href="#">&lt;</a>
                     <div class="items">
-                        <div class="item" data-tid="0l87L_vwbfMM" data-thumb="/qvm_files/living_room.jpg" title="A Conversation In The Living Room"
+                        <div 
+                            class="item" 
+                            data-tid="0l87L_vwbfMM" 
+                            data-thumb="/qvm_files/living_room.jpg" 
+                            title="A Conversation In The Living Room"
                             data-desc="Your characters want to watch TV in the living room, so they are having a conversation of what they 
                             want to watch on TV."
-                            data-char-thumb-a="/qvm_files/living_room_a.jpg" data-char-thumb-b="/qvm_files/living_room_b.jpg">
+                            data-char-thumb-a="/qvm_files/living_room_a.jpg" data-char-thumb-b="/qvm_files/living_room_b.jpg"
+                        >
                             <img src="/qvm_files/living_room.jpg">
                         </div>
-                        <div class="item selected" data-tid="0nZrWjgxqytA" data-thumb="/qvm_files/bg03.jpg" title="Chilling Out in the Office"
-                            data-desc="Your characters are taking a break from a stressful day in the pantry. Now what could they be talking about?!"
+                        <div 
+                            class="item selected" 
+                            data-tid="0nZrWjgxqytA" 
+                            data-thumb="/qvm_files/bg03.jpg" 
+                            title="Chilling Out in the Office"
+                            data-desc="Your characters are taking a break from a stressful day in the pantry. 
+                            Now what could they be talking about?!"
                             data-char-thumb-a="/qvm_files/bg03_a.jpg"
-                            data-char-thumb-b="/qvm_files/bg03_b.jpg">
-                            <img
-                                src="/qvm_files/bg03.jpg">
+                            data-char-thumb-b="/qvm_files/bg03_b.jpg"
+                        >
+                            <img src="/qvm_files/bg03.jpg">
                         </div>
-                        <div class="item" data-tid="00h7jbv7l2M0" data-thumb="/qvm_files/beach.jpg" title="A Trip To The Beach"
-                            data-desc="Your characters want to take a vacation trip to the beach. how will things go? finish the story to find out!"
+                        <div 
+                            class="item" 
+                            data-tid="00h7jbv7l2M0" 
+                            data-thumb="/qvm_files/beach.jpg" 
+                            title="A Trip To The Beach"
+                            data-desc="Your characters want to take a vacation trip to the beach. how will things go? 
+                            finish the story to find out!"
                             data-char-thumb-a="/qvm_files/beach_a.jpg" data-char-thumb-b="/qvm_files/beach_b.jpg">
                             <img src="/qvm_files/beach.jpg">
                         </div>
@@ -189,21 +206,42 @@
         
             <div class="inside">
                 <div class="character">
-                    <div id="character1_title" class="title"><img src="/qvm_files/bg03_a.jpg" alt=""></div>
+                    <div id="character1_title" class="title"></div>
                     <div id="character1" class="item_selector character_selector">
                         <a class="select_button prev" href="#">&lt;</a>
                         <div class="items">
-                            <div class="item selected" data-cid="53774620" data-name="" data-gender="M" data-thumb="/char_heads/53774620.png" style="display: block;">
+                            <div 
+                                class="item selected" 
+                                data-cid="53774620" 
+                                data-name="" 
+                                data-gender="M" 
+                                data-thumb="/char_heads/53774620.png" 
+                                style="display: block;"
+                            >
                                 <span>
                                     <img src="/char_thumbs/53774620.png" alt="">
                                 </span>
                             </div>
-                            <div class="item" data-cid="51900632" data-name="" data-gender="F" data-thumb="/char_heads/51900632.png" style="display: none;">
+                            <div 
+                                class="item" 
+                                data-cid="51900632" 
+                                data-name="" 
+                                data-gender="F" 
+                                data-thumb="/char_heads/51900632.png" 
+                                style="display: none;"
+                            >
                                 <span>
                                     <img src="/char_thumbs/51900632.png" alt="">
                                 </span>
                             </div>
-                            <div class="item" data-cid="51288759" data-name="" data-gender="M" data-thumb="/char_heads/51288759.png" style="display: none;">
+                            <div 
+                                class="item" 
+                                data-cid="51288759" 
+                                data-name="" 
+                                data-gender="M" 
+                                data-thumb="/char_heads/51288759.png" 
+                                style="display: none;"
+                            >
                                 <span>
                                     <img src="/char_thumbs/51288759.png" alt="">
                                 </span>
@@ -218,21 +256,42 @@
                 </div>
         
                 <div class="character">
-                    <div id="character2_title" class="title"><img src="/qvm_files/bg03_b.jpg" alt=""></div>
+                    <div id="character2_title" class="title"></div>
                     <div id="character2" class="item_selector character_selector">
                         <a class="select_button prev" href="#">&lt;</a>
                         <div class="items">
-                            <div class="item" data-cid="53774620" data-name="" data-gender="M" data-thumb="/char_heads/53774620.png" style="display: none;">
+                            <div 
+                                class="item selected" 
+                                data-cid="53774620" 
+                                data-name="" 
+                                data-gender="M" 
+                                data-thumb="/char_heads/53774620.png" 
+                                style="display: block;"
+                            >
                                 <span>
                                     <img src="/char_thumbs/53774620.png" alt="">
                                 </span>
                             </div>
-                            <div class="item selected" data-cid="51900632" data-name="" data-gender="F" data-thumb="/char_heads/51900632.png" style="display: block;">
+                            <div 
+                                class="item" 
+                                data-cid="51900632" 
+                                data-name="" 
+                                data-gender="F" 
+                                data-thumb="/char_heads/51900632.png" 
+                                style="display: none;"
+                            >
                                 <span>
                                     <img src="/char_thumbs/51900632.png" alt="">
                                 </span>
                             </div>
-                            <div class="item" data-cid="51288759" data-name="" data-gender="M" data-thumb="/char_heads/51288759.png" style="display: none;">
+                            <div 
+                                class="item" 
+                                data-cid="51288759" 
+                                data-name="" 
+                                data-gender="M" 
+                                data-thumb="/char_heads/51288759.png" 
+                                style="display: none;"
+                            >
                                 <span>
                                     <img src="/char_thumbs/51288759.png" alt="">
                                 </span>
@@ -429,13 +488,25 @@
                             <div class="jplayer"></div>
                         </div>
                         <div style="overflow: auto; padding-left: 135px;">
-                            <a href="javascript:;" class="buttonbase buttonorange" id="voiceselect_confirm" style="margin:15px auto;float:left;display:block;">
+                            <a 
+                                href="javascript:;" 
+                                class="buttonbase buttonorange" 
+                                id="voiceselect_confirm" 
+                                style="margin:15px auto;float:left;display:block;"
+                            >
                                 <div class="buttontitle">Confirm</div>
                             </a>
-                            <a href="javascript:;" class="buttonbase buttonblue dark" id="voiceselect_plusupgrade" style="margin:15px auto;float:left;display:none;">
+                            <a 
+                                href="javascript:;" 
+                                class="buttonbase buttonblue dark" 
+                                id="voiceselect_plusupgrade" 
+                                style="margin:15px auto;float:left;display:none;"
+                            >
                                 <div class="buttontitle">Upgrade Now</div>
                             </a>
-                            <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel"><div style="width: 180px">Cancel</div></a>
+                            <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel">
+                                <div style="width: 180px">Cancel</div>
+                            </a>
                         </div>
                         <a onclick="jQuery.unblockUI()" class="close_btn">×</a>
                     </div>
@@ -717,8 +788,8 @@
                 <div class="loading"></div>
                 <div class="preview" style="display:none">
                     <div id="player_container">
-                        You can't use GoAnimate because Flash might be disabled. <a
-                            href="https://web.archive.org/web/20191027000220/https://get.adobe.com/flashplayer/">Enable
+                        You can't use Nexus because Flash might be disabled. <a
+                            href="https://get.adobe.com/flashplayer/">Enable
                             Flash</a>.
                     </div>
                     <a id="btn_save" href="#"
@@ -749,7 +820,9 @@
                     </div>
                     <div class="clear"></div>
         
-                    <a id="back_preview" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']); return false;">&lt; Back to Preview</a>
+                    <a id="back_preview" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']); return false;">
+                        &lt; Back to Preview
+                    </a>
                 </div>
             </div>
         </div>

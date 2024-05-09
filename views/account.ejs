@@ -261,10 +261,13 @@
                                     <div class="form-group" id="formGroupDisplayName">
                                         <label for="displayName">Display Name</label>
                                         <input type="text" class="form-control" id="displayName" aria-describedby="displayNameHelp" placeholder="Enter your Display Name">
-                                        <small id="displayNameHelp" class="form-text text-muted">Your name may appear around here where you are mentioned. You can change or remove it at any time.</small>
+                                        <small id="displayNameHelp" class="form-text text-muted">
+                                            Your name may appear around here where you are mentioned. You can change or remove it at any time.
+                                        </small>
                                     </div>
                                     <div class="form-group small text-muted">
-                                        All of the fields on this page are optional and can be deleted at any time, and by filling them out, you're giving us consent to share this data wherever your user profile appears.
+                                        All of the fields on this page are optional and can be deleted at any time, and by filling them out, 
+                                        you're giving us consent to share this data wherever your user profile appears.
                                     </div>
                                     <input type="submit" class="btn btn-primary" value="Update Profile" id="profileUpdateBtn"/>
                                 </form>
@@ -275,14 +278,20 @@
                                 <form>
                                     <div class="form-group">
                                         <label class="d-block text-danger">Delete Account</label>
-                                        <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
+                                        <p class="text-muted font-size-sm">
+                                            Once you delete your account, there is no going back. Please be certain.
+                                        </p>
                                     </div>
                                     <a class="btn btn-danger" data-toggle="modal" data-target="#deleteAccount">Delete Account</a>
                                     <div class="divider"></div>
                                     <div id="linkFTAcc">
                                         <div class="form-group">
                                             <label class="d-block">Link FlashThemes Account</label>
-                                            <p class="text-muted font-size-sm">By linking your flashthemes account, you will have two ways to sign in to your account. this method is recomeneded for anyone who wants to sign in using their flashthemes account because sometimes signing in with a flashthemes account without it linked can take a while.</p>
+                                            <p class="text-muted font-size-sm">
+                                                By linking your flashthemes account, you will have two ways to sign in to your account. 
+                                                this method is recomeneded for anyone who wants to sign in using their flashthemes account
+                                                because sometimes signing in with a flashthemes account without it linked can take a while.
+                                            </p>
                                         </div>
                                         <a class="btn btn-green" id="linkFTAccBtn">Link FlashThemes Account</a>
                                     </div>
@@ -295,9 +304,19 @@
                                     <div class="form-group" id="formGroupTTSApiUpdate">
                                         <p class="d-block">API Type For TTS (LVM Only)</p>
                                         <select id="ttsapitype" name="ttsapi">
-                                            <option data-apiserver="https://macintalk-online.replit.app/" value="local_macintalk">MacInTalk (https://macintalk-online.replit.app/)</option>
+                                            <option 
+                                                data-apiserver="https://macintalk-online.replit.app/" 
+                                                data-has-test-page="true" 
+                                                value="local_macintalk"
+                                            >MacInTalk (https://macintalk-online.replit.app/)</option>
+                                            <option 
+                                                data-apiserver="https://ivona-classic.replit.app/" 
+                                                data-has-test-page="true" 
+                                                value="local_ivona-jyvee"
+                                            >Ivona Classic (https://ivona-classic.replit.app/)</option>
                                         </select>
                                     </div>
+                                    <small id="voice-test-url"></small><br>
                                     <input type="submit" class="btn btn-primary" value="Update TTS Api (LVM Only)" id="ttsApiUpdateBtn"/>
                                 </form>
                                 <hr>
@@ -305,9 +324,30 @@
                                     <div class="form-group">
                                         <p class="d-block">Custom CSS</p>
                                         <textarea style="height: 360px; width: 640px;" id="customcsstext"></textarea>
-                                        <div id="customCssDisabled" class="alert" style="display: none;">Custom CSS has been disabled by your admin.</div>
+                                        <div id="customCssDisabled" class="alert" style="display: none;">
+                                            Custom CSS has been disabled by your admin.
+                                        </div>
                                     </div>
                                     <input type="submit" class="btn btn-primary" value="Update Custom CSS" id="updateCustomCSS"/>
+                                </form>
+                                <form action="javascript:;" id="pagelayout">
+                                    <div class="form-group">
+                                        <p class="d-block">Page Layout Year</p>
+                                        <small>
+                                            This feature will change the layout of most pages to the year you have choosen. 
+                                            NOTE: Custom CSS will not be used on the layouts (accept 2016) as we don't want to break them
+                                            after a setting change.
+                                        </small>
+                                        <select name="year">
+                                            <option value="current">2016</option>
+                                            <option value="2012">2012</option>
+                                            <option value="current">2010</option>
+                                        </select>
+                                        <div id="pageLayoutDisabled" class="alert" style="display: none;">
+                                            This feature has been disabled by your admin.
+                                        </div>
+                                    </div>
+                                    <input type="submit" class="btn btn-primary" value="Update Page Layout Year" id="updatePageLayout"/>
                                 </form>
                             </div>
                         </div>
@@ -317,7 +357,9 @@
         </div>
         <script>
             function deleteAccount() {
-                const yesorno = confirm("Are you really sure that you want to delete your account? there is no turning back if you press that ok button!");
+                const yesorno = confirm(
+                    "Are you really sure that you want to delete your account? there is no turning back if you press that ok button!"
+                );
                 if (yesorno) {
                     $("#deleteAccount").modal('hide');
                     $("#accountDeletion").modal({
@@ -347,7 +389,7 @@
                     lc: "en_US",
                     returnto: "/",
                     email: userData.email,
-                    password: btoa(jQuery("#ftpsw").val())
+                    password: jQuery("#ftpsw").val()
                 }, d => {
                     const code = `${d.split("{")[0]}`;
                     switch (code) {
@@ -356,7 +398,7 @@
                                 code: '0',
                                 type: "FlashThemes",
                                 uid: userData.uid,
-                                password: btoa(jQuery("#ftpsw").val())
+                                password: jQuery("#ftpsw").val()
                             }, d => {
                                 if (d.success) {
                                     $("#FTAccLinkage").modal('hide');
@@ -393,9 +435,9 @@
             function loadSettings(user) {
                 if (!user.role) $("#account_tab").show();
                 jQuery.post('/api/fetchTTSApis', d => {
-                    for (const i of d) {
-                        jQuery("#ttsapitype").append(`<option data-apiserver="https://www.lazypy.ro/" value="${i}">${i} (https://www.lazypy.ro/)</option>`);
-                    }
+                    jQuery("#ttsapitype").append(d.map(i => `<option data-apiserver="https://www.lazypy.ro/" value="${i}">${
+                        i
+                    } (https://www.lazypy.ro/)</option>`).join(""));
                     jQuery.post('/api/getAllUsers', d => {
                         function displayName() {
                             if (!user.role) return user.displayName || user.name;
@@ -443,7 +485,11 @@
                             keyboard: false,
                             backdrop: "static"
                         }));
-                        $("#ttsapitype").find(`option[value='${userInfo.settings.api.ttstype.value}']`).prop("selected", true);
+                        const ttstypelem = $("#ttsapitype").find(`option[value='${userInfo.settings.api.ttstype.value}']`);
+                        ttstypelem.prop("selected", true);
+                        if (ttstypelem.data("has-test-page")) $("#voice-test-url").html(`Test Voices <a href="/api/local_voices/${
+                            userInfo.settings.api.ttstype.value.split("local_")[1]
+                        }/test.html">Here</a>!`)
                         $("#customcsstext").val(userInfo.settings.api.customcss);
                         jQuery("#displayName").val(displayName);
                         $("#settingsLoading").modal('hide');

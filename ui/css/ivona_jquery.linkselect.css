@@ -1,0 +1,313 @@
+/*
+ * define styles for linkselect plug-in
+ */
+
+span.linkselectValue{
+  padding-top: 6px;
+}
+
+li.langPos_us {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_usa.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;	
+	height:17px;	
+}
+
+li.langPos_pl {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_pol.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;	
+	height:17px;	
+}
+
+li.langPos_ro {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_rom.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;	
+	height:17px;	
+}
+
+li.langPos_en {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_gbr.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;	
+	height:17px;	
+}
+
+li.langPos_de {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_de.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;
+	height:17px;
+}
+
+li.langPos_es {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_es.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;
+	height:17px;
+}
+
+li.langPos_es_us {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_flag_es_us.gif);
+        background-repeat:no-repeat;
+	background-position:left center;
+        padding-left:40px;
+	height:17px;
+}
+
+.voicesen a.linkselectLink {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_gbr.gif);
+}
+
+a.linkselectLink {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_pol.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled; 
+}
+
+a.linkselectLink_pl {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_pol.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled; 
+}
+
+a.linkselectLink_ro {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_rom.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled; 
+}
+
+a.linkselectLink_us {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_usa.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled; 
+}
+
+a.linkselectLink_en {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_gbr.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled; 
+}
+
+a.linkselectLink_de {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_de.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore;
+	-moz-user-input: disabled;
+}
+
+a.linkselectLink_es {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_es.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore;
+	-moz-user-input: disabled;
+}
+
+a.linkselectLink_es_us {
+        background-image:url(/web/20110827231603im_/http://static.ivona.com/www/static/images/improve/main_voices_select_es_us.gif);
+	background-repeat:no-repeat;
+	background-position:left top;
+        padding-left:40px;
+	float:left;
+	height:24px;
+	padding-top:6px;
+        width: 205px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore;
+	-moz-user-input: disabled;
+}
+
+
+a.linkselectLink:hover, 
+a.linkselectLink_pl:hover,
+a.linkselectLink_ro:hover,
+a.linkselectLink_us:hover,
+a.linkselectLink_en:hover,
+a.linkselectLink_de:hover,
+a.linkselectLink_es:hover,
+a.linkselectLink_es_us:hover,
+a.linkselectLinkFocus {
+	/*color: #fff !important;
+	background-color: #565770 !important;
+	outline: 1px solid #565770; /* prevent the link from being outlined */
+}
+
+a.linkselectLinkOpen {
+	outline: 0; /* prevent the link from being outlined */
+}
+
+span.linkselectDisabled {
+	filter: alpha(opacity=75);
+	-moz-opacity: 0.75;
+	opacity: 0.75;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled; 
+}
+
+.linkselectContainer {
+	position: absolute;
+	/* this is required to correctly calculate the width of the container */
+	left: 0; top: 0;
+	display: none;
+	/* 
+	 * move the box up 3 pixels so that the title bar aligns with original anchor text, this 
+	 * should be adjusted according to the padding/margin differences between the two links 
+	 */
+	margin-top: -3px;
+	max-width: 245px;
+	z-index: 50000;
+}
+
+.linkselectContainer .title {
+	background: #565770 url(/web/20110827231603im_/http://static.ivona.com/www/static/images/linkselect_bkgrd.png) no-repeat 100% 50% !important;
+	color: #fff !important;
+	padding-right: 20px !important;
+	white-space: nowrap;
+	font-size: 11px !important;
+	font-weight: bold !important;
+	line-height: 11px !important;
+}
+
+.linkselectContainer .title span {
+	display: block;
+	padding: 3px 4px;
+}
+
+.linkselectContainer .scrollable {
+	width: auto;
+	background-color: white;
+	border: 1px solid #D1D1D1;
+        border-top: 0px solid #D1D1D1;
+	margin: 0;
+	padding: 0px;
+	font-size: 11px;
+	text-align: left;
+	overflow: auto;
+	/*max-height: 216px;*/
+	clear: both;
+}
+
+.linkselectContainer ul {
+	list-style-type: decimal !important;
+	margin: 0px;
+	padding: 0px;
+}
+
+.linkselectContainer ul li.selected { 
+	/*background-color: #cfcfea;*/
+        background-color: #EEEEF0;
+}
+
+.linkselectContainer ul li.current { 
+	/*background-color: #a3a4bd;*/
+        background-color: #D3D3D3;
+	/*color: #fff;*/
+}
+
+.linkselectContainer ul li {
+	display: block;
+	margin: 0;
+	padding: 2px;
+	font-size: 12px;
+        font-weight: bold;
+        vertical-align: middle;
+	cursor: pointer;
+        padding-left: 45px;
+        padding-top: 6px;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-moz-user-focus: ignore; 
+	-moz-user-input: disabled;
+}
+
+/*
+     FILE ARCHIVED ON 23:16:03 Aug 27, 2011 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 13:25:14 Apr 28, 2024.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 0.604
+  exclusion.robots: 0.068
+  exclusion.robots.policy: 0.06
+  cdx.remote: 0.054
+  esindex: 0.01
+  LoadShardBlock: 83.926 (3)
+  PetaboxLoader3.datanode: 102.823 (4)
+  load_resource: 78.141
+  PetaboxLoader3.resolve: 37.802
+*/

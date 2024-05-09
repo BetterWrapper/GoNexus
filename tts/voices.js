@@ -40,6 +40,7 @@ function getLangPre(langName) {
 		if (langs[lang] == langName) return lang;
 	}
 }
+const tts = require("./main");
 const voices = {};
 const https = require("https");
 const loadPost = require("../misc/post_body");
@@ -162,7 +163,7 @@ module.exports = function (req, res, url) {
 			loadPost(req, res).then(data => {
 				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid);
 				getVoicesJson(json.settings.api.ttstype.value.split("+").join(" ")).then(i => {
-					fs.writeFileSync('./tts/voices.json', JSON.stringify(voices, null, "\t"));
+					tts.tempSaveUserVoice(data.uid, voices);
 					res.setHeader("Content-Type", "application/json");
 					res.end(JSON.stringify(i));
 				});
@@ -172,7 +173,7 @@ module.exports = function (req, res, url) {
 			loadPost(req, res).then(data => {
 				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
 				getVoicesXml(json.settings.api.ttstype.value.split("+").join(" ")).then(xml => {
-					fs.writeFileSync('./tts/voices.json', JSON.stringify(voices, null, "\t"));
+					tts.tempSaveUserVoice(data.userId, voices);
 					res.setHeader("Content-Type", "application/xml");
 					res.end(xml);
 				});

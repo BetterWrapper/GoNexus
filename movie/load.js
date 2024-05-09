@@ -33,6 +33,7 @@ const frameToSec = (f) => f / framerate;
 const nodemailer = require('nodemailer');
 const xmldoc = require("xmldoc");
 const { URLSearchParams } = require("url");
+const { resolve4 } = require("dns/promises");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -84,6 +85,75 @@ module.exports = function (req, res, url) {
 					loadPost(req, res).then(data => {
 						
 					})
+					break;
+				} case "/api/movieVisibility/change": {
+					loadPost(req, res).then(data => {
+						let xml = (fs.readFileSync(fUtil.getFileIndex("movie-", ".xml", data.id.substr(2)))).toString('utf8');
+						if (!xml) return res.end('error');
+						const users = JSON.parse(fs.readFileSync(asset.folder + '/users.json'));
+						const userInfo = users.users.find(i => i.id == data.movieOwnerId || data.userId);
+						if (!userInfo) return res.end('error');
+						const movieInfo = userInfo.movies.find(i => i.id == data.id);
+						if (!movieInfo) return res.end('error');
+						function movieVisibilityChangeInXML(type) {	
+							return new Promise(async resolve4 => {
+								xml = xml.replace(`published="1"`, `published="0"`);
+								xml = xml.replace(`pshare="1"`, `pshare="0"`);
+								if (type && type != "draft") xml = xml.replace(`${type}="0"`, `${type}="1"`);
+								fs.writeFileSync(fUtil.getFileIndex("movie-", ".xml", data.id.substr(2)), xml);
+								const title = xml.slice(
+									xml.indexOf("<title>") + 7,
+									xml.indexOf("</title>")
+								).toString();
+								console.log(title);
+								const meta = await movie[
+									!title.startsWith('<![CDATA[') 
+									&& !title.endsWith(']]>') 
+									? 'oldMeta' 
+									: 'meta'
+								](data.id);
+								if (!meta) return resolve4('error');
+								for (const stuff in meta) {
+									if (meta[stuff] != movieInfo[stuff]) {
+										movieInfo[stuff] = meta[stuff];
+									}
+								}
+								fs.writeFileSync(asset.folder + '/users.json', JSON.stringify(users, null, "\t"));
+								resolve4('stuff');
+							})
+						}
+						switch (data.visibility) {
+							case "public": {
+								movieVisibilityChangeInXML('published').then(i => {
+									console.log(i);
+									res.end(i);
+								}).catch(e => {
+									console.log(e);
+									res.end('error');
+								});
+								break;
+							} case "private": {
+								movieVisibilityChangeInXML('pshare').then(i => {
+									console.log(i);
+									res.end(i);
+								}).catch(e => {
+									console.log(e);
+									res.end('error');
+								});
+								break;
+							} default: {
+								movieVisibilityChangeInXML('draft').then(i => {
+									console.log(i);
+									res.end(i);
+								}).catch(e => {
+									console.log(e);
+									res.end('error');
+								});
+								break;
+							} 
+						}
+					})
+					break;
 				}
 				case "/goapi/startPhoneRecord/": {
 					loadPost(req, res).then(data => {
@@ -184,27 +254,32 @@ module.exports = function (req, res, url) {
 				case "/goapi/getPointStatus/":
 				case "/goapi/buyPremiumAsset/": {
 					loadPost(req, res).then(data => {
-						const users = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-						const userInfo = users.users.find(i => i.id == data.userId);
-						res.setHeader("Content-Type", "application/xml");
-						if (data.theme_id) https.get(data.storePath.split("<store>").join(`${data.theme_id}/theme.xml`), r => {
-							const buffers = [];
-							r.on("data", b => buffers.push(b)).on("end", () => {
-								const json = new xmldoc.XmlDocument(Buffer.concat(buffers));
-								const json2 = json.children.filter(i => i.name == "char").find(i => i.attr.aid == data.aid);
-								if (
-									userInfo.gopoints < json2.attr.sharing
-								) return res.end(`1You need at least ${
-									json2.attr.sharing - userInfo.gopoints
-								} GoPoints in order to get ${json2.attr.name}.`);
-								userInfo.gopoints -= json2.attr.sharing;
-								if (!userInfo.purchased) userInfo.purchased = [];
-								userInfo.purchased.unshift(json2.attr);
-								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(users, null, "\t"));
-								res.end(`0<?xml version="1.0" encoding="UTF-8"?><points money="0" sharing="${userInfo.gopoints}" />`);
+						try {
+							const users = JSON.parse(fs.readFileSync(asset.folder + '/users.json'));
+							const userInfo = users.users.find(i => i.id == data.userId);
+							res.setHeader("Content-Type", "application/xml");
+							if (data.theme_id) https.get(data.storePath.split("<store>").join(`${data.theme_id}/theme.xml`), r => {
+								const buffers = [];
+								r.on("data", b => buffers.push(b)).on("end", () => {
+									const json = new xmldoc.XmlDocument(Buffer.concat(buffers));
+									const json2 = json.children.filter(i => i.name == "char").find(i => i.attr.aid == data.aid);
+									if (
+										userInfo.gopoints < json2.attr.sharing
+									) return res.end(`1You need at least ${
+										json2.attr.sharing - userInfo.gopoints
+									} GoPoints in order to get ${json2.attr.name}.`);
+									userInfo.gopoints -= json2.attr.sharing;
+									if (!userInfo.purchased) userInfo.purchased = [];
+									userInfo.purchased.unshift(json2.attr);
+									fs.writeFileSync(asset.folder + '/users.json', JSON.stringify(users, null, "\t"));
+									res.end(`0<?xml version="1.0" encoding="UTF-8"?><points money="0" sharing="${userInfo.gopoints}" />`);
+								})
 							})
-						})
-						else res.end(`0<?xml version="1.0" encoding="UTF-8"?><points money="0" sharing="${userInfo.gopoints}" />`);
+							else res.end(`0<?xml version="1.0" encoding="UTF-8"?><points money="0" sharing="${userInfo.gopoints}" />`);
+						} catch (e) {
+							console.log(e);
+							res.end(`1${e.toString()}`);
+						}
 					})
 					break;
 				} case "/goapi/jpg_download/": {
@@ -215,27 +290,27 @@ module.exports = function (req, res, url) {
 				}
 				case "/goapi/tutaction/": {
 					loadPost(req, res).then(data => {
-						const users = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
+						const users = JSON.parse(fs.readFileSync(asset.folder + '/users.json'));
 						const userInfo = users.users.find(i => i.id == data.userId);
 						userInfo.gopoints += 5;
-						fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(users, null, "\t"));
+						fs.writeFileSync(asset.folder + '/users.json', JSON.stringify(users, null, "\t"));
 						res.end(`<points sharing="${userInfo.gopoints}" money="0"/>`);
 					})
 					break;
 				} case "/goapi/getInitParams/": {
 					loadPost(req, res).then(data => {
 						// scrapped because a user cannot see the error message. we will just make the features work in ut 10 instead.
-						/*const users = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
+						/*const users = JSON.parse(fs.readFileSync(asset.folder + '/users.json'));
 						const userInfo = users.users.find(i => i.id == data.userId);
 						if (userInfo.gopoints < 5) return res.end(JSON.stringify({
 							result: false,
 							message: "You do not have enough GoPoints to peform this action."
 						}));
 						userInfo.gopoints -= 5;
-						fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(users, null, "\t"));*/
+						fs.writeFileSync(asset.folder + '/users.json', JSON.stringify(users, null, "\t"));*/
 						res.end(JSON.stringify({
 							result: true,
-							ut: parseInt(data.ut) + 10
+							ut: 30						
 						}));
 					})
 					break;
@@ -305,12 +380,16 @@ module.exports = function (req, res, url) {
 							const filepaththumb = fUtil.getFileIndex("thumb-", ".png", f.movieId.substr(f.movieId.lastIndexOf("-") + 1));
 							if (!fs.existsSync(filepathxml) || !fs.existsSync(filepaththumb)) res.end(JSON.stringify({
 								success: false,
-								error: "Your movie could not be uploaded to FlashThemes because one of your movie files are missing from the _SAVED folder in GoNexus. Please try uploading a different movie to GoNexus."
+								error: "Your movie could not be uploaded to FlashThemes because one of your movie files are missing from the _SAVED folder in Neuxs. Please try uploading a different movie to Neuxs."
 							}))
 							else movie.loadZip({
-								movieId: f.movieId,
+								movieId: f.movieId
+							}, {
 								userId: userInfo.data.current_uid
-							}, {}).then(async buff => res.end(JSON.stringify(await uploadMovie2FlashThemes(buff.toString("base64"), fs.readFileSync(filepaththumb).toString("base64")))))
+							}).then(async buff => res.end(JSON.stringify(await uploadMovie2FlashThemes(
+								buff.toString("base64"), 
+								fs.readFileSync(filepaththumb).toString("base64")
+							))))
 						} else if (f.movieURL) {
 							if (f.movieURL.endsWith(".zip")) https.get(f.movieURL, r => {
 								const buffers = [];
@@ -398,8 +477,13 @@ module.exports = function (req, res, url) {
 									}));
 								} case "m": {
 									filepaths.push(fUtil.getFileIndex("movie-", ".xml", suffix));
+									if (
+										fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix))
+									) filepaths.push(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix));
 									filepaths.push(fUtil.getFileIndex("thumb-", ".png", suffix));
-									if (fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", suffix))) filepaths.push(fUtil.getFileIndex("movie-", ".mp4", suffix));
+									if (
+										fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", suffix))
+									) filepaths.push(fUtil.getFileIndex("movie-", ".mp4", suffix));
 									break;
 								} default: {
 									return res.end(JSON.stringify({
@@ -409,7 +493,11 @@ module.exports = function (req, res, url) {
 								}
 							}
 						}
-						parse.deleteTTSFiles(fs.readFileSync(filepaths[0]), data.uId).then(json => {
+						parse.deleteTTSFiles(
+							fs.readFileSync(filepaths[0]), data.uId, fs.existsSync(
+								fUtil.getFileIndex("movie-autosaved-", ".xml", suffix)
+							) ? fs.readFileSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix)) : '1'
+						).then(json => {
 							console.log(json);
 							if (!json) try {
 								for (const filepath of filepaths) fs.unlinkSync(filepath);
@@ -491,101 +579,198 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/ajax/previewText2Video": { // loads qvm preview
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
-						console.log(e, f, files);
-						let scriptsCount = 0;
-						for (const data in f) if (data == `script[${scriptsCount}][char_num]`) scriptsCount++
-						console.log(scriptsCount);
-						for (let i = 0; i < scriptsCount; i++) {
-							if (f[`script[${i}][type]`] == "talk" && f[`script[${i}][text]`]) {
-								const buffer = await tts.genVoice(f[`script[${i}][voice]`], f[`script[${i}][text]`], f.userId);
-								const duration = await getMp3Duration(buffer);
-								const id = asset.generateId() + ".mp3";
-								templateAssets.unshift({
-									orderNum: i,
-									id,
-									enc_asset_id: id,
-									file: id,
-									type: "sound",
-									subtype: "tts",
-									title: `[${tts.getVoiceInfo(f[`script[${i}][voice]`]).name}] ${f[`script[${i}][text]`]}`,
-									published: 0,
-									tags: "",
-									duration,
-									downloadtype: "progressive",
-									ext: "mp3"
-								});
-								fs.writeFileSync(`./_ASSETS/${id}`, buffer);
+						//HOLY SHIT REWRITING THIS WITH THE RIGHT RESPONSE
+						let qvm_theme = f.golite_theme;
+						let expressions = [];
+						let cam = [];
+						let charorder = [];
+						let charids = []
+						let texts = [];
+						let mcids = [];
+						let template = "";
+						let voicez = [];
+						console.log("test:", f);
+						let focuschar = "";
+						for (const data in f) { // characters & script timings
+							if (data.includes(`enc_tid`)) template = f[data];
+							if (data.includes(`characters[`)) {
+								console.log(data.indexOf("]"));
+								let start = data.indexOf("]");
+								console.log(data.slice(start + 2, -1));
+								charids.push(data.slice(start + 2, -1));
+							}
+							if (data.includes(`script[`)) {
+								if (data.includes(`text`)) {
+									console.log(f[data]);
+									if (f[data].toString().includes("#1 -")) {
+										console.log("INCLUDED THE CAMERA!!!!")
+										console.log(f[data].toString().substring(4));
+										texts.push(f[data].toString().substring(4));
+										// These only matter for certain qvms (Talking picz)
+										cam.push("out");
+									} else {
+										texts.push(f[data]);
+										// These only matter for certain qvms (Talking picz)
+										cam.push("normal");
+									}
+								}
+								if (data.includes(`aid`)) {
+									console.log(f[data]);
+									mcids.push(f[data]);
+								}
+								if (data.includes(`char_num`)) {
+									console.log(f[data]);
+									focuschar = f[data];
+									charorder.push(f[data]);
+								}
+								if (data.includes(`facial`) && data.includes("l][" + focuschar)) {
+									console.log(f[data]);
+									expressions.push(f[data]);
+								}
+								if (data.includes(`voice`)) {
+									console.log(f[data]);
+									voicez.push(f[data]);
+								}
 							}
 						}
-						console.log(templateAssets);
-						https.request({
-							method: "POST",
-							hostname: "wrapperclassic.netlify.app",
-							path: "/.netlify/functions/api/genQVMXml",
-							headers: {
-								"Content-Type": "application/x-www-form-urlencoded"
-							}
-						}, r => {
-							const buffers = [];
-							r.on("data", b => buffers.push(b)).on("end", async () => {
-								if (Buffer.concat(buffers).toString().startsWith("<!DOCTYPE html>")) return res.end(JSON.stringify({
-									htmlError: Buffer.concat(buffers).toString()
-								})); 
-								const json = JSON.parse(Buffer.concat(buffers));
-								console.log(json);
-								if (json.success) {
-									console.log(json.logs);
-									fs.writeFileSync(`./previews/template.xml`, json.xml);
-									res.end({
-										script: f,
-										flashvars: {
-											apiserver: "/",
-											isEmbed: 1,
-											tlang: "en_US",
-											is_golite_preview: 1,
-											autostart: 1,
-											storePath: "https://wrapperclassic.netlify.app/static/store/<store>",
-											clientThemePath: "https://wrapperclassic.netlify.app/static/tommy/2016/<client_theme>",
+						console.log(mcids);
+						const flashvars = {
+							movieLid: 11,
+							movieId: "templatePreview",
+							autostart: 1,
+							is_golite_preview: 1,
+							ut: "23",
+							apiserver: "/",
+							storePath: process.env.STORE_URL + "/<store>",
+							clientThemePath: process.env.CLIENT_URL + "/<client_theme>"
+						};
+						//Important!!!
+						let char1id = charids[1];
+						let char2id = charids[0];
+						if (qvm_theme == "pt") char2id = charids[1];
+						let scenetimes = [];
+						const ttsid = [];
+						let di;
+						let ouri = 0;
+						gentts();
+						//Had to rewrite this because it kept cutting out clips
+						async function gentts() {
+							let i = ouri;
+							if (mcids[i] == "") {
+								var formData = new FormData();
+								console.log("page:", i);
+								formData.append('voice', voicez[i]);
+								formData.append('text', texts[i]);
+								formData.append('subtype', "tts");
+								console.log(req.headers);
+								var options = {
+									path: '/api/saveQVMSoundAsset',
+									method: 'POST',
+									headers: formData.getHeaders()
+								};
+								var rea = http.request(options, (response) => {
+									console.log("DID THE API");
+									let body = "";
+									response.on("data", (b) => body += b);
+									response.on("end", async () => {
+										console.log("Body: " + body);
+										di = JSON.parse(body).id;
+										setTimeout(addDuration, 200)
+										async function addDuration() {
+											const buffer = asset.load(di);
+											const duration = await getMp3Duration(buffer);
+											if (duration.toString().includes(".")) {
+												const round = Math.round(duration);
+												let seconds = round / 1000;
+												console.log("This is rounding:" + seconds);
+												scenetimes.push(seconds + 1);
+											} else {
+												let seconds = duration / 1000;
+												console.log(seconds);
+												scenetimes.push(seconds + 1);
+											}
+											console.log("Id:" + di);
+											ttsid.push(di);
+											let helper = ttsid.toString();
+											while (!ttsid.toString().includes(di)) {
+												if (!helper.includes(di)) {
+													ttsid.push(di);
+													console.log("Keep pushing till its there");
+												}
+											}
+											ouri++;
+											if (i == texts.length - 1) {
+												movie.genxml(
+													qvm_theme, 
+													char1id, 
+													char2id, 
+													expressions, 
+													charorder, 
+													cam, 
+													ttsid, 
+													scenetimes, 
+													template
+												).then(guy => {
+													console.log(guy.success);
+													if (guy.success) res.end(JSON.stringify({
+														script: f,
+														player_object: flashvars
+													}));
+													else res.end(JSON.stringify({
+														error:"A Unknown Error Occured"
+													}))
+												});
+											} else gentts();
 										}
-									})
-								} else if (json.error) res.end(JSON.stringify({
-									error: json.error
-								}));
-								else if (json.errorType && json.errorMessage && json.trace) {
-									let html = '<pre>';
-									let count = 0;
-									let width;
-									for (let i of json.trace) {
-										html += i + '<br>';
-										if (count < 1) width = `${i.length + 700}px`;
-										count++
+									});
+								});
+								formData.pipe(rea);
+							} else {
+								ttsid.push(mcids[i] + ".mp3");
+								let helper = ttsid.toString();
+								while (!ttsid.toString().includes(mcids[i])) {
+									if (!helper.includes(mcids[i])) {
+										ttsid.push(mcids[i] + ".mp3");
+										console.log("Keep pushing till its there");
 									}
-									res.end(JSON.stringify({
-										htmlError: html + '</pre>',
-										htmlCSS: {
-											width
-										}
-									}));
 								}
-							}).on("error", e => {
-								console.log(e);
-								res.end(JSON.stringify({
-									error: e.toString()
-								}))
-							})
-						}).end(new URLSearchParams({
-							e,
-							f,
-							files,
-							templateAssets,
-							xml: fs.readFileSync(`./previews/${f.enc_tid}.xml`).toString().split("\n").join(""),
-							settings: JSON.stringify(JSON.parse(fs.readFileSync(`./previews/${f.enc_tid}.json`)))
-						}).toString()).on("error", e => {
-							console.log(e);
-							res.end(JSON.stringify({
-								error: e.toString()
-							}))
-						})
+								const micbuffer = asset.load(mcids[i] + ".mp3");
+								const duration = await getMp3Duration(micbuffer);
+								if (duration.toString().includes(".")) {
+									const round = Math.round(duration);
+									let seconds = round / 1000;
+									console.log("This is rounding:" + seconds);
+									scenetimes.push(seconds + 1);
+								} else {
+									let seconds = duration / 1000;
+									console.log(seconds);
+									scenetimes.push(seconds + 1);
+								}
+								ouri++;
+								if (i == texts.length - 1) {
+									movie.genxml(
+										qvm_theme, 
+										char1id, 
+										char2id, 
+										expressions, 
+										charorder, 
+										cam, 
+										ttsid, 
+										scenetimes, 
+										template
+									).then(guy => {
+										console.log(guy.success);
+										if (guy.success) res.end(JSON.stringify({
+											script: f,
+											player_object: flashvars
+										}));
+										else res.end(JSON.stringify({
+											error:"A Unknown Error Occured"
+										}))
+									});
+								} else gentts();
+							}
+						}
 					});
 					break;
 				} case "/api/sendUserInfo": { // sends the user info firebase provides to the server
@@ -676,7 +861,7 @@ module.exports = function (req, res, url) {
 						const userData = Object.fromEntries(new URLSearchParams(data.userData));
 						console.log(userData);
 						try {
-							const videoInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == userData.id || userData.uid).movies.find(i => i.id == data.id);
+							const videoInfo = JSON.parse(fs.readFileSync(asset.folder + '/users.json')).users.find(i => i.id == userData.id || userData.uid).movies.find(i => i.id == data.id);
 							console.log(videoInfo);
 							switch (data.platform) {
 								case "dafunk": {

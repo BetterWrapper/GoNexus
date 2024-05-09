@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="us">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Test Ivona Classic Voices - Nexus</title>
+        <meta http-equiv="Expires" content="0"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Cache-Control" content="no-cache"/>
+        <meta http-equiv="Content-Language" content="us"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+        <meta name="author" content="Nexus Developer Team"/>
+        <meta name="google-site-verification" content="vdCQHRDmoiUH16rA_H96hYWLUW55buuer35mvzZpjG0"/>
+        <meta name="robots" content="index,follow,noodp"/>
+        <meta name="keywords" content="text to speech, tts, text to voice, speech synthesis"/>
+        <meta name="description" content="Test any ivona classic voices you please in Nexus."/>
+        <link rel="canonical" href="http://www.ivona.com/"/>
+        <link rel="shortcut icon" href="/static/ivona/favicon.ico"/>
+        <link rel="alternate" type="application/rss+xml" title="IVONA Software RSS" href="http://feeds.feedburner.com/IVONASoftwareRssEn"/>
+        <link type="text/css" href="/ui/css/ivona_styles2.css" rel="stylesheet" media="screen"/>
+        <link type="text/css" href="/ui/css/ivona_jquery.linkselect.css" rel="stylesheet" media="screen"/>
+        <!--[if lt IE 7]>
+            <link type="text/css" href="/static/ivona/ivona_ie6.css" rel="stylesheet" media="screen" />
+        <![endif]-->
+        <script type="text/javascript">
+            var STATIC_HOST_COM = 'http://static.ivona.com/www/static'; 
+            var BASE_HTTP_HOST_COM = '';
+            var WebreaderAutoCreate = 0;
+        </script>
+        <script type="text/javascript" src="/js/merged2.js"></script>
+	</head>
+    <body>
+        <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+            try {
+                var pageTracker = _gat._getTracker("UA-1656708-20");
+                pageTracker._setDomainName(".ivona.com");   
+            } catch(err) {
+            }
+        </script>
+        <div id="iapi_navTop" style="z-index:22;">	
+            <div id="mainHeader" class="">
+                <div class="l c mainNavi">
+                    <div class="k">
+                        <header class="l" style="width:187px">
+                            <a class="l nhu on pt10" style="padding-bottom:13px;" href="test.html" onclick="track('Link', 'Click', 'ivona.all.header_logo_us');" title="IVONA Text-to-Speech">
+                                <span class="l spriteClass ml20 " style="padding-right:4px; background:url(/static/ivona/mainsprite2.png) no-repeat 0px -56px;width:170px;height:45px">IVONA Text-to-Speech</span>
+                            </a>
+                        </header>
+                        <div class="r w80">
+                            <div id="langmenu" class="w100 r userPanel">
+                                <span class="r w50  pl10 fs10" style=" position: relative; z-index:1000000;">
+                                    <ul id="" class="sf-menu r">
+                                        <li class="r rtl rtr">
+                                            <h2>
+                                                <span class="r fs11 ar gray pr10 pl10 cp b" style="height:24px;padding-top:3px">
+                                                    Powered By Nexus
+                                                </span>
+                                            </h2>
+                                        </li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <div class="w100 r" style="position: relative; z-index:100000;">
+                                <ul id="topMenu" class="sf-menu">
+                                    <li class="item rtl rtr">
+                                        <h2>
+                                            <a id="newsTab" href="/">Back To Nexus</a>
+                                        </h2>
+                                    </li>
+                                    <li class="item rtl rtr">
+                                        <h2>
+                                            <a id="developerTab" href="/static/ivona/docs/api.html">Ivona Classic For Developers</a>
+                                        </h2>
+                                    </li>
+                                    <li class="item rtl rtr">
+                                        <h2>
+                                            <a id="companyTab" href="https://discord.gg/BcVeWEhuqJ">Nexus Discord Server</a>
+                                        </h2>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a class="accessHelp2 abs" id="navEnd" style="top:-60px !important" href="javascript:void null;">Content</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="k">
+            <div id="improveVoice">
+                <script type="text/javascript">
+                    function submitImprove() {
+                        var options = { 
+                            beforeSubmit: function(myData) {
+                            }
+                        }
+                        jQuery("#imForm").ajaxSubmit(options);
+                    }
+                    function showImOk() {
+                        jQuery("#imsend").hide();
+                        jQuery("#imerror").hide();
+                        jQuery("#imok").show();
+                        setTimeout("jQuery.modal.close();", 5000);
+                    }
+                    function showImError() {
+                        jQuery("#imsend").hide();
+                        jQuery("#imok").hide();
+                        jQuery("#imerror").show();
+                    }
+                    function showImPopup(voiceId, textId, topval) {
+                        jQuery("#imtext").val(
+                            htmlspecialchars(
+                                jQuery(`#${textId}`).val()
+                            )
+                        );
+                        jQuery("#imtextview").html("\"<em>" + htmlspecialchars(jQuery(`#${textId}`).val()) + "\"</em>");
+                        jQuery("#imvo ice").val(jQuery(`#${voiceId}`).val());
+                        jQuery("#imsend").show();
+                        jQuery("#imok").hide();
+                        jQuery("#imerror").hide();
+                        if ( topval == undefined) topval = "15%";
+                        jQuery("#modImprove").modal({
+                            containerCss: {
+                                height: "155px", 
+                                width:"385px", 
+                                border:"0px", 
+                                top: topval
+                            },
+                            overlay: (20),
+                            onOpen: function (dialog) {
+                                dialog.overlay.fadeIn(MODAL_SPEED, function () {
+                                    dialog.container.slideDown(MODAL_SPEED, function () {
+                                        dialog.data.fadeIn(MODAL_SPEED);
+                                        dialog.container.css("position", "absolute");
+                                    });
+                                });
+                            },
+                            onShow: function (dialog) {
+                                //dialog.data.find(".message").append(message);
+                            },
+                            onClose: function (dialog) {
+                                dialog.data.fadeOut(MODAL_SPEED, function () {
+                                    dialog.container.slideUp(MODAL_SPEED, function () {
+                                        dialog.overlay.fadeOut(MODAL_SPEED, function () {
+                                            jQuery.modal.close(); // must call this to have SimpleModal
+									    });
+								    });
+							    });
+						    }
+					    });
+					    setTimeout('$("#imcomment").focus();', 800);
+				    }
+			    </script>
+			
+			    <div id="modImprove" style="display:none;" class="popimprove ppup">
+				    <div class="absppfix"> 
+                        <a class="modalClose close_btn"></a>
+                    </div>
+				    <h1 style="background: none; padding-left: 20px;">I suggest checking the pronuniciation of the text below:</h1>
+				    <form action="" id="imForm" method="post">
+					    <input type="hidden" id="imtext" name="imdata[text]"/>
+					    <input type="hidden" id="imvoice" name="imdata[voice]"/>
+					    <input type="hidden" id="imvoiceadd" name="imvoiceadd" value="1"/><br/>
+					    <div class="l c  fs12 ver forgtxt2">
+                            <div class="text message">
+                                <div class="l w40 pb15 gray fs12" style="height: 65px;" id="imtextview"></div>
+                                <div class="l c w40 pb5 fs12">Comment:</div>
+                                <textarea rows="4" cols="1" id="imcomment" name="imdata[comment]" class="ar fs12 lh20 l" style=" max-height: 80px; max-width: 400px; height: 80px; width: 400px;"></textarea>
+                                <div class="l w40 pt15">
+                                    <div class="l w40">Indicate severity:</div>
+                                    <div class="l w40 pt10">
+                                        <div class="l pr10">
+                                            <input type="radio" style="padding-left: 0px; margin-left: 0px;" name="imdata[important]" id="imp_high" value="high"/>
+                                            <div class="l pt3">
+                                                <label for="imp_high">major</label>
+                                            </div>
+                                        </div>
+                                        <div class="l pr10">
+                                            <input type="radio" name="imdata[important]" id="imp_mid" value="mid" checked="checked"/>
+                                            <div class="l pt3">
+                                                <label for="imp_mid">medium</label>
+                                            </div>
+                                        </div>
+                                        <div class="l">
+                                            <input type="radio" name="imdata[important]" id="imp_low" value="low"/>
+                                            <div class="l pt3">
+                                                <label for="imp_low">minor</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l w42 pt10 none" id="imsend">
+                            <div class="r  button b_red pl10 pr10  w8 mb10  pt2  pb2 lh20 r5" onclick="submitImprove();">Send</div>
+                        </div>
+					    <div class="l w42 pt20" id="imok">
+						    <img class="l pl20 pr10" src="/static/ivona/green16.png">
+                            <div class="l b pt2">This message has been sent. Thanks for your feedback.</div>
+					    </div>
+					    <div class="l w42 pt20" id="imerror">
+						    <img class="l pl20 pr10" src="/static/ivona/red16.png">
+                            <div class="l b pt2">
+                                An error occurred. Contact <a href="mailto:support@ivona.com">support@ivona.com</a>
+                            </div>
+					    </div>
+				    </form>
+			    </div>
+		    </div>
+            <script type="text/javascript" src="/js/home3.js"></script>
+            <div id="contentWrapper" style="overflow: visible;">
+                <div class="k pb0 " style="padding-right:0; height:290px;">
+                    <div id="voicelist" class="pl20 bg w36 l pr20" style="height: 290px; margin-left: 2px;">
+                        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+                        <div class="l pt5 pb5 w100">
+                            <h2 class="l w16 pl5 fs14">Quality You Can Hear</h2>
+                            <span class="r pt7 w6" style="width: 30px;">
+                                <g:plusone size="small" callback="et('gplus')" count="false" href="http://www.ivona.com"></g:plusone>
+                            </span>
+                            <span class="r pt3" style="width:80px" id="fbIframe">
+                                <script type="text/javascript">
+                                    //<![CDATA[
+                                </script>
+                                <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fivonatts&amp;layout=button_count&amp;show_faces=false&amp;width=120&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21&amp;locale=en_GB" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:80px; height:21px;" allowtransparency="true"></iframe>
+                                <script type="text/javascript">
+                                    //]]>
+                                </script>
+                            </span>
+                        </div>
+                        <div class="pb10 l" id="hidevl">
+                            <ul id="voicemenu" class="vf-menu bor rtl rtr rbl rbr c l">
+                                <li class="rtl rtr rbl rbr" style="background: #FFF; z-index:1000">
+                                    <h2 class="lh20 pl7 rtl rtr">
+                                        <a href="javascript:toggleVMenu(); void null;" alt="voices list" class="rtl rtr" style="width:330px;">
+                                            <span class="l" id="voiceLabel">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span class="l">
+                                                    American English, Kendra
+                                                </span>
+                                                <span class="l pl5 pr5"></span>
+                                            </span>
+                                            <span class="r fs11">▼</span>
+                                        </a>
+                                    </h2>
+                                    <ul id="vlsf" class="l none bor rbr rbl" style="width: 336px; top:28px; left: -2px; z-index: 300000;">
+                                        <li class="k">
+                                            <a href="javascript:changeTat(27); void null;" id="voiceid_27" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Salli
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(28); void null;" id="voiceid_28" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Ivy
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(14); void null;" id="voiceid_14" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Kimberly
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(10); void null;" id="voiceid_10" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Kendra
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(3); void null;" id="voiceid_3" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Jennifer
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(11); void null;" id="voiceid_11" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Joey
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(4); void null;" id="voiceid_4" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Eric
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(17); void null;" id="voiceid_17" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -42px -103px;width:20px;height:15px" title="American English">
+                                                        American English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American English, Chipmunk
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(18); void null;" id="voiceid_18" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -232px -103px;width:20px;height:15px" title="American Spanish">
+                                                        American Spanish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American Spanish, Penélope
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(16); void null;" id="voiceid_16" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -232px -103px;width:20px;height:15px" title="American Spanish">
+                                                        American Spanish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    American Spanish, Miguel
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(13); void null;" id="voiceid_13" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -21px -103px;width:20px;height:15px" title="British English">
+                                                        British English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    British English, Emma
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(8); void null;" id="voiceid_8" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -21px -103px;width:20px;height:15px" title="British English">
+                                                        British English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    British English, Amy
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(9); void null;" id="voiceid_9" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -21px -103px;width:20px;height:15px" title="British English">
+                                                        British English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    British English, Brian
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(25); void null;" id="voiceid_25" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -253px -103px;width:20px;height:15px" title="Welsh English">
+                                                        Welsh English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Welsh English, Geraint
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">beta</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(26); void null;" id="voiceid_26" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -253px -103px;width:20px;height:15px" title="Welsh English">
+                                                        Welsh English
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Welsh English, Gwyneth
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">beta</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(12); void null;" id="voiceid_12" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -105px -103px;width:20px;height:15px" title="Welsh">
+                                                        Welsh
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Welsh, Geraint
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">beta</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(24); void null;" id="voiceid_24" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -105px -103px;width:20px;height:15px" title="Welsh">
+                                                        Welsh
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Welsh, Gwyneth
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">beta</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(21); void null;" id="voiceid_21" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -126px -103px;width:20px;height:15px" title="German">
+                                                        German
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    German, Marlene
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(20); void null;" id="voiceid_20" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -126px -103px;width:20px;height:15px" title="German">
+                                                        German
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    German, Hans
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(22); void null;" id="voiceid_22" class="lh20 k voice_item">
+                                                 <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -147px -103px;width:20px;height:15px" title="French">
+                                                        French
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    French, Céline
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(23); void null;" id="voiceid_23" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -147px -103px;width:20px;height:15px" title="French">
+                                                        French
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    French, Mathieu
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(15); void null;" id="voiceid_15" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -168px -103px;width:20px;height:15px" title="Castilian Spanish">
+                                                        Castilian Spanish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Castilian Spanish, Conchita
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(19); void null;" id="voiceid_19" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -168px -103px;width:20px;height:15px" title="Castilian Spanish">
+                                                        Castilian Spanish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Castilian Spanish, Enrique
+                                                    <span class="pr5">
+                                                        <sup class="red pl5">new</sup>
+                                                    </span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(7); void null;" id="voiceid_7" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat 0px -103px;width:20px;height:15px" title="Polish">
+                                                        Polish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Polish, Maja
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(2); void null;" id="voiceid_2" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat 0px -103px;width:20px;height:15px" title="Polish">
+                                                        Polish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Polish, Ewa
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(1); void null;" id="voiceid_1" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat 0px -103px;width:20px;height:15px" title="Polish">
+                                                        Polish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Polish, Jacek
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(6); void null;" id="voiceid_6" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat 0px -103px;width:20px;height:15px" title="Polish">
+                                                        Polish
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Polish, Jan
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="javascript:changeTat(5); void null;" id="voiceid_5" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -63px -103px;width:20px;height:15px" title="Romanian">
+                                                        Romanian
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    Romanian, Carmen
+                                                    <span class="pr5"></span>
+                                                </span>
+                                            </a>
+                                            <a href="voice_presentation.php" class="lh20 k voice_item">
+                                                <span class="pt2 pr10 l">
+                                                    <span class="l spriteClass" style="background:url(/static/ivona/mainsprite2.png) no-repeat -210px -103px;width:20px;height:15px" title="New voices available soon!">
+                                                        New voices available soon!
+                                                    </span>
+                                                </span>
+                                                <span class="b">New voices available soon!</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="l w35 rel">
+                            <div class="abs" style="top: 0px; left:0px; z-index:999">
+                                <textarea id="voice_ta" class="w34 rtl rtr rbl rbr rotl rotr robl robr bor c l ar fs16 lh20" style="height: 100px; padding: 5px; outline-radius:5px;" onclick="hideToken();" onkeyup="hideToken();checkSize();" onchange="hideToken();"></textarea>
+                                <input id="voice_id" type="hidden" value=""/>
+                                <div class="k pb10" style="height: 16px;">
+                                    <div class="l gray fs11 pt5 pl10 tac pr10 w33 lh16 i none" id="charCont">
+                                        characters used: <span id="charCounter"></span> / 250
+                                    </div>
+                                    <div id="afterPlay" class="none">
+                                        <div id="shareIt" class=" w18 l utxta pt3 pr2 tarnone1">
+                                            <div class="l pr5">
+                                                <a class="l pl4" rel="nofollow" onclick="et('share.facebook_en')" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.ivona.com%2Fhttp%3A%2F%2Fwww.ivona.com%2F%3Ftk%3D">
+                                                    <img src="/static/ivona/facebook_16x16.png" class="l" alt=""/>
+                                                </a>
+                                                <a class="l pl4" rel="nofollow" onclick="et('share.twitter_en')" href="http://twitter.com/home?status=http%3A%2F%2Fwww.ivona.com%2Fhttp%3A%2F%2Fwww.ivona.com%2F%3Ftk%3D">
+                                                    <img src="/static/ivona/twitter_16x16.png" class="l" alt=""/>
+                                                </a>
+                                                <a class="l pl4" rel="nofollow" onclick="et('share.email_en')" href="mailto:/?subject=Try IVONA TTS!&amp;body=Hello! I'm sending you a sample of speech generated on IVONA TTS website. Use this link: http://www.ivona.com/http://www.ivona.com/?tk=">
+                                                    <img src="/static/ivona/mail_16x16.png" class="l" alt=""/>
+                                                </a>
+                                            </div>
+                                            <div class="l">
+                                                <a class="l n fs11 pr5 pt3" href="http://www.ivona.com/http://www.ivona.com/?tk=" onclick="et('share.link_en')">Link to speech</a>
+                                            </div>
+                                        </div>
+                                        <div id="improveIt" class="r w17 utxta none1">
+                                            <a class="r fs11 n pr5 pt5" href="javascript:et('share.zasugeruj_wymowe_us');showImPopup('voice_id','voice_ta'); void null;">
+                                                Help improve pronunciation
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="k tac pb4" style="">
+                                    <div class="" style="width: 155px; margin: 0px auto;">
+                                        <script type="text/javascript">
+                                            var speakerInterval = 0;
+                                            function swapImages() {
+                                                var $active = $('#player_speaker_anim .active');
+                                                var $next = (
+                                                    $('#player_speaker_anim .active').next().length > 0
+                                                ) ? $('#player_speaker_anim .active').next() : $('#player_speaker_anim img:first');
+                                                $active.removeClass('active');
+                                                $next.addClass('active');
+                                            }
+                                            $('#voice_ta').attr("spellcheck",false);
+                                            window.mpl = speaker.create('', {
+                                                playHTML: `<span class="button b_play l" style="width:80px">
+                                                    <span class="l fs18 b pt10">PLAY</span> 
+                                                    <span class="l pt12 pl5">
+                                                        <img src="/static/ivona/play.png"/>
+                                                    </span>
+                                                </span>`,
+                                                stopHTML: `<span class="button b_play l" style="width:80px">
+                                                    <span class="l fs18 b pt10">STOP</span> 
+                                                    <span class="l" style="margin-top:12px; margin-left:5px;" id="player_speaker_anim">
+                                                        <img src="/static/ivona/speaker1.png" class="active"/>
+                                                        <img src="/static/ivona/speaker2.png"/>
+                                                        <img src="/static/ivona/speaker3.png"/>
+                                                    </span>
+                                                </span>`,
+                                                soundEnded() {
+                                                    clearInterval(speakerInterval);
+                                                    isPlaying=false;
+                                                    track('Buttons', 'Click', 'ivona.home.stopus');
+                                                },
+                                                playCallback() {
+                                                    var validateResult = validate();
+                                                    if (!validateResult) $('#voice_ta').val($('#voice_ta').val().substring(0,250));
+                                                    var buildl = function() {
+                                                        a = Base64.encode($('#voice_ta').val());
+                                                        b =  Base64.encode($('#voice_id').val());
+                                                        c = "us";
+                                                        return `/api/local_voices/ivona-jyvee/sayMP3?v=${
+                                                            Base64.decode(a)
+                                                        }&text=${Base64.decode(b)}`;
+                                                    }
+                                                    speaker.update(window.mpl, buildl(), {
+                                                        shouldPlay: true
+                                                    });
+                                                    clearInterval(speakerInterval);
+                                                    speakerInterval = setInterval('swapImages()', 300);	
+                                                    setTimeout("getShare()", 3000);
+                                                    track('Buttons', 'Click', 'ivona.home.playus');
+                                                }
+                                            } ,'test');
+                                            function getShare () {
+                                                $.get(`/api/local_voices/ivona-jyvee/say?v=${
+                                                    $('#voice_id').val()
+                                                }&text=${$('#voice_ta').val()}`, function(data) {
+                                                    var dataArray = data.split("\n");
+                                                    url = dataArray[0];
+                                                    if ('soap' == url.substr(0,4).toLowerCase()) return false;
+                                                    var shareHTML = dataArray[1];
+                                                    $('#charCont').hide();
+                                                    $('#shareIt').html(shareHTML);
+                                                    $('#afterPlay').show();
+                                                    $('#shareIt').show();
+                                                    $('#improveIt').show();
+                                                    isTokenVisible = true;
+                                                });
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="k tac ">
+                                    <div style="width: 130px; margin: 0px auto;">
+                                        <a id="btn_home_pobierztrial" class="fs10 lh16 pt0 mt0" style="text-decoration: underline" href="#">
+                                            GET VOICE
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- EndRel -->
+                        <script type="text/javascript">
+                            var voicesTexts = new Array();
+                            var voicesId = new Array();
+                            voicesTexts[27] = 'Hi, I\'m Salli. I am the first IVONA Text-to-Speech teenage voice. I will read for you everything you want. Enter here any text and click Play.';
+                            voicesId[27] = 'salli';
+                            voicesTexts[28] = 'Hi, I\'m Ivy. I am the first IVONA Text-to-Speech child voice. I will read for you everything you want. Enter here any text and click Play.';
+                            voicesId[28] = 'ivy';
+                            voicesTexts[14] = 'Hi there, my name is Kimberly. I\'m an IVONA Text-to-Speech voice created using BrightVoice technology. Enter any text and click Play.';
+                            voicesId[14] = 'kimberly';
+                            voicesTexts[10] = 'Hello there, I\'m Kendra, an IVONA Text-to-Speech voice created using BrightVoice technology. Enter any text and click Play.';
+                            voicesId[10] = 'kendra';
+                            voicesTexts[3] = 'Hello, my name is Jennifer. Would you believe if I told you my voice is not human? It\'s true. Enter any text and press Play.';
+                            voicesId[3] = 'jennifer';
+                            voicesTexts[11] = 'Hi, my name is Joey. I\'m an IVONA Text-to-Speech voice created using BrightVoice technology. Enter any text here and click Play.';
+                            voicesId[11] = 'joey';
+                            voicesTexts[4] = 'Hi, my name is Eric and I\'m an American voice of IVONA Text-to-Speech. You wouldn\'t be able to tell that I\'m not human, right? Try me online by typing a text and then clicking Play.';
+                            voicesId[4] = 'eric';
+                            voicesTexts[17] = 'Hello there! I\'m Skippy the Chipmunk, and I\'m one of the IVONA Text-to-Speech voices created for fun using the BrightVoice technology. Enter any text here and click Play.';
+                            voicesId[17] = 'chipmunk';
+                            voicesTexts[18] = 'Soy Penélope, una voz de IVONA Text-to-Speech, creada gracias a la tecnología BrightVoice. Leo perfectamente palabras, expresiones, incluso libros enteros. Introduce un texto, haz clic en Play y escúchame hablar.';
+                            voicesId[18] = 'penelope';
+                            voicesTexts[16] = 'Soy Miguel, una voz de IVONA, creada gracias a la tecnología BrightVoice. Leo perfectamente palabras, expresiones, incluso libros enteros. Introduce un texto, haz clic en Play y escúchame hablar.';
+                            voicesId[16] = 'miguel';
+                            voicesTexts[13] = 'Hello, I\'m Emma, an IVONA Text-to-Speech voice developed with BrightVoice technology. You won\'t believe my voice isn\'t human! Listen to me now by typing some text and clicking Play.';
+                            voicesId[13] = 'emma';
+                            voicesTexts[8] = 'Hi, I\'m Amy, one of the IVONA Text-to-Speech voices created using BrightVoice technology. Enter here any text and click Play.';
+                            voicesId[8] = 'amy';
+                            voicesTexts[9] = 'Hi, my name is Brian and I\'m one of the IVONA Text to Speech voices created using BrightVoice technology. Enter any text here, click Play and listen.';
+                            voicesId[9] = 'brian';
+                            voicesTexts[25] = 'Hi, I\'m Geraint. I\'m the IVONA Text to Speech voice. I speak Welsh English. Enter any text and click Play.';
+                            voicesId[25] = 'en_wls_geraint';
+                            voicesTexts[26] = ' Hi, my name is Gwyneth. I\'m one of the IVONA Text to Speech voices. I speak Welsh English. Enter any text and click Play.';
+                            voicesId[26] = 'en_wls_gwyneth';
+                            voicesTexts[12] = 'Helo \'na, fy enw i yw Geraint. Rwy\'n llais IVONA TTS Cymraeg. Rhowch unrhyw destun a chliciwch Play.';
+                            voicesId[12] = 'geraint';
+                            voicesTexts[24] = 'Helo \'na, fy enw i yw Gwyneth. Rwy\'n llais IVONA TTS Cymraeg. Rhowch unrhyw destun a chliciwch Play.';
+                            voicesId[24] = 'gwyneth';
+                            voicesTexts[21] = 'Ich bin Marlene, eine Stimme von IVONA Text-to-Speech. Ich lese hervorragend Wörter und sogar ganze Bücher vor. Tragen Sie hier einen Text ein, drücken Sie Play und hören Sie, wie ich spreche.';
+                            voicesId[21] = 'marlene';
+                            voicesTexts[20] = 'Ich bin Hans, eine Stimme von IVONA Text-to-Speech. Ich lese hervorragend Wörter und sogar ganze Bücher vor. Tragen Sie hier einen Text ein, drücken Sie Play und hören Sie, wie ich spreche.';
+                            voicesId[20] = 'hans';
+                            voicesTexts[22] = 'Je suis Céline, une voix d\'IVONA.  Je lis parfaitement des mots, des expressions, et même des livres entiers. Tapez un texte, cliquez sur Play et écoutez-moi parler. ';
+                            voicesId[22] = 'celine';
+                            voicesTexts[23] = 'Je suis Mathieu, une voix d\'IVONA.  Je lis parfaitement des expressions, des mots, et même des livres entiers. Tapez un texte, cliquez sur Play et écoutez-moi parler. ';
+                            voicesId[23] = 'mathieu';
+                            voicesTexts[15] = 'Soy Conchita, una voz de IVONA Text-to-Speech, creada gracias a la tecnología BrightVoice. Leo perfectamente palabras, expresiones, incluso libros enteros. Introduce un texto, haz clic en Play y escúchame hablar.';
+                            voicesId[15] = 'conchita';
+                            voicesTexts[19] = 'Soy Enrique, una voz de IVONA Text-to-Speech, creada gracias a la tecnología BrightVoice.  Leo perfectamente palabras, expresiones, incluso libros enteros. Introduce un texto, haz clic en Play y escúchame hablar.';
+                            voicesId[19] = 'enrique';
+                            voicesTexts[7] = 'Witaj! Mam na imię Maja. Nie jestem człowiekiem. Jestem po prostu głosem syntezatora mowy IVONA. Uwierzyłbyś? Wpisz tekst i kliknij "Play".';
+                            voicesId[7] = 'maja';
+                            voicesTexts[2] = 'Witaj, jestem Ewa. Jestem głosem syntezatora mowy IVONA. Przeczytam dla Ciebie cokolwiek, wpisz tylko tekst i kliknij "Play".';
+                            voicesId[2] = 'ewa';
+                            voicesTexts[1] = 'Cześć, jestem Jacek, jestem głosem syntezatora mowy IVONA. Sprawdź mój głos wpisując dowolny tekst i klikając "Play".';
+                            voicesId[1] = 'jacek';
+                            voicesTexts[6] = 'Cześć! Mam na imię Jan. Jestem głosem syntezatora mowy IVONA. Mój głos brzmi całkiem naturalnie, prawda? Wpisz dowolny tekst, kliknij "Play" i sprawdź mnie.';
+                            voicesId[6] = 'jan';
+                            voicesTexts[5] = 'Salut! Mă numesc Carmen. Sunt cea mai bună voce a unui sintetizator pentru limba română din lume. Scrie orice text folosind corect diacriticele şi apasă pe butonul "Play".';
+                            voicesId[5] = 'carmen';
+                            var voicesData = new Array();
+                            voicesData[7] = 'Maja'; 
+                            voicesData[2] = 'Ewa'; 
+                            voicesData[1] = 'Jacek'; 
+                            voicesData[6] = 'Jan'; 
+                            voicesData[27] = 'Salli'; 
+                            voicesData[28] = 'Ivy'; 
+                            voicesData[14] = 'Kimberly'; 
+                            voicesData[10] = 'Kendra'; 
+                            voicesData[3] = 'Jennifer';
+                            voicesData[11] = 'Joey'; 
+                            voicesData[4] = 'Eric'; 
+                            voicesData[17] = 'Chipmunk Skippy'; 
+                            voicesData[5] = 'Carmen'; 
+                            voicesData[13] = 'Emma'; 
+                            voicesData[8] = 'Amy'; 
+                            voicesData[9] = 'Brian'; 
+                            voicesData[12] = 'Geraint'; 
+                            voicesData[18] = 'Penélope'; 
+                            voicesData[16] = 'Miguel'; 
+                            voicesData[15] = 'Conchita'; 
+                            voicesData[19] = 'Enrique'; 
+                            voicesData[22] = 'Céline'; 
+                            voicesData[23] = 'Mathieu'; 
+                            voicesData[21] = 'Marlene'; 
+                            voicesData[20] = 'Hans'; 
+                            voicesData[24] = 'Gwyneth'; 
+                            voicesData[25] = 'Geraint'; 
+                            voicesData[26] = 'Gwyneth';
+                            function changeTat(id) {
+                                $('#vlsf').hide();
+                                $('#voiceLabel').html($('#voiceid_'+id).html());
+                                if (!checkIfTextWasModyfied()) $('#voice_ta').val(voicesTexts[id]);
+                                $('#voice_id').val(voicesId[id]);
+                                $('#pop_voice').html(voicesData[id]);
+                                $("#voice_ta").focus();
+                            }
+                            function changeVoice(id) {
+                                $('#vlsf').hide();
+                                $('#voiceLabel').html($('#voiceid_'+id).html());
+                                $('#voice_id').val(voicesId[id]);
+                                $('#pop_voice').html(voicesData[id]);
+                                setTimeout(function() {
+                                    soundUrl = "/online/fileSaas.php?fi=&ssi=83";
+                                    speaker.update(window.mpl, soundUrl, {
+                                        shouldPlay: true
+                                    });
+                                    speaker.play(window.mpl);
+                                    speakerInterval = setInterval('swapImages()', 300);
+                                }, 1000);
+                                $('#shareIt').html('');
+                                $('#afterPlay').show();
+                                $('#shareIt').show();
+                                $('#improveIt').show();
+                                setTimeout("isTokenVisible = true;", 2000);
+                            }
+                            function validate() {
+                                a = jQuery("#voice_ta").attr("value").length;
+                                b = 250;
+                                c = b - a;
+                                return a <= 250 || isStandardText();
+                            }
+                            function toggleVMenu() {
+                                $('#vlsf').toggle();
+                            }
+                            $(document).ready(function() {
+                                $("#voice_ta").focus();
+                                $('#voicemenu').mouseleave(function() {
+                                    $('#vlsf').hide();
+                                });
+                                //$('#voicemenu').focusout(function(){});
+                                //$('#vlsf').mouseleave(function(){$('#vlsf').hide();});
+                                changeTat(10);
+                            });
+                        </script>
+                    </div>
+                    <script type="text/javascript">
+                        jQuery(document).ready(function() {
+                            //calculate modalPos relative to subscribe button
+                            var oElement = document.getElementById('btn_home_pobierztrial'); 
+                            var topval = 0;
+                            var leftval = 0;
+                            topval += oElement.offsetTop;
+                            leftval += oElement.offsetLeft;
+                            oElement = oElement.offsetParent;
+                            topval = topval + 150;
+                            leftval = leftval + 650;
+                            jQuery('#btn_home_pobierztrial').click(function() {
+                                track('Buttons', 'Click', 'ivona.home.get_voice');
+                                var oElement = jQuery('#btn_home_pobierztrial')[0];
+                                var topval = 0;
+                                var leftval = 0; 
+                                while (oElement != null) {
+                                    topval += oElement.offsetTop;
+                                    leftval += oElement.offsetLeft;
+                                    oElement = oElement.offsetParent;
+                                }
+                                topval =  topval - 126;
+                                leftval = leftval + 405;
+                                jQuery('#get_trial').modal({
+                                    containerCss: {
+                                        height: '185px', 
+                                        width:'270px', 
+                                        left: leftval, 
+                                        border:'0px', 
+                                        top: topval
+                                    },
+                                    overlay: (20),
+                                    onOpen: function (dialog) {
+                                        dialog.overlay.fadeIn(MODAL_SPEED, function () {
+                                            dialog.container.slideDown(MODAL_SPEED, function () {
+                                                dialog.data.fadeIn(MODAL_SPEED);
+                                                dialog.container.css('position', 'absolute');
+                                            });
+                                        });
+                                    },
+                                    onShow: function (dialog) {
+                                        //dialog.data.find('.message').append(message);
+                                    },
+                                    onClose: function (dialog) {
+                                        dialog.data.fadeOut(MODAL_SPEED, function () {
+                                            dialog.container.slideUp(MODAL_SPEED, function () {
+                                                dialog.overlay.fadeOut(MODAL_SPEED, function () {
+                                                    jQuery.modal.close(); // must call this to have SimpleModal
+                                                });
+                                            });
+                                        }); 
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                    <div class="none abs" id="get_trial">
+                        <div class="l popup_bg popup_shadow w34 r5 fs13" style="padding:10px">
+                            <div class="absppfix"> 
+                                <a class="modalClose close_btn"></a>
+                            </div>
+                            <div class="l c w32 pb10">
+                                <div class="l c w100 fs18 pl10 b lh24 pb20">
+                                    Get IVONA 
+                                    <span id="pop_voice" class="pr5"></span>
+                                    voice:
+                                </div>
+                                <div class="l c w100 pb10 pl15">
+                                    <a onclick="track('Link', 'Click', 'ivona.home.voicus');" href="http://www.ivona.com/voices.php">
+                                        <img src="/static/ivona/windows_16x16.png" width="16" class="l"/>
+                                        <span class="l hu pl5 pt1" style="text-decoration: underline">For Windows</span>
+                                    </a>
+                                </div>
+                                <div class="l c w100 pb20 pl15">
+                                    <a onclick="track('Link', 'Click', 'ivona.home.android_us');" href="https://market.android.com/details?id=com.ivona.tts">
+                                        <img src="/static/ivona/android_16x16.png" width="16" class="l"/>
+                                        <span class="l hu pl5 pt1 cp" style="text-decoration: underline">For Android</span>
+                                    </a>
+                                </div>
+                                <div class="l c w100 pb10 pl15">
+                                    <a onclick="track('Link', 'Click', 'ivona.home.business_us');" href="http://www.ivona.com/business.php" style="text-decoration: none;">
+                                        <img src="/static/ivona/business_16x16.png" width="16" class="l"/>
+                                        <span class="l pl5 pt1 cp">
+                                            <span style="text-decoration: underline;">See business solutions</span>
+                                            <br/>
+                                            <span class="fs10 nhu" style="color: #666666; font-weight:normal; text-decoration: none;">
+                                                Linux, Unix, Windows, Android, iOS, MeeGo and more
+                                            </span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript" src="/js/banners.js"></script>
+                    <div id="movie_cont" style="display: none;">
+                        <div class="popup_bg r5 popup_shadow l" style="margin:0 auto;padding:10px 10px 20px 35px;width:790px;height:400px;">
+                            <div id="movie_heading" class="l w72 fs18 ah1 b" style="margin:10px 0px 10px 0px;background-position:0 7px;"></div>
+                            <div class="close_btn modalClose"></div>
+                            <div id="movie_inner" class="l"></div>
+                            <div class="l w19 pb10 fs16 b pl10" style="margin-left:15px;height:20px;">Watch more movies</div>
+                            <div class="l w20 popup_bg pt10 pb10 pl10" style="margin-left:15px;height:258px;border:1px solid #DDD">
+                                <ul class="k">
+                                    <li class="k pb10">
+                                        <a class="l w20 fs12 n tdn " href="#" onclick="openYT('http:\/\/www.youtube.com/v/u0YybpK5EaQ&amp;hl=pl&amp;fs=1&amp;rel=0&amp;hd=0&amp;autoplay=1','Listen to IVONA voice!')">
+                                            <img width="60" class="l pr5" alt="Listen to IVONA voice!" src="/static/ivona/girl.jpg"/>
+                                            <span class="l w13">Listen to IVONA voice!</span>
+                                        </a>
+                                    </li>
+                                    <li class="k pb10">
+                                        <a class="l w20 fs12 n tdn " href="#" onclick="openYT('http:\/\/www.youtube.com/v/bN8050l0T88&amp;hl=pl&amp;fs=1&amp;rel=0&amp;hd=0&amp;autoplay=1','Meet Eric, American IVONA voice')">
+                                            <img width="60" class="l pr5" alt="Meet Eric, American IVONA voice" src="/static/ivona/eric2.jpg"/>
+                                            <span class="l w13">Meet Eric, American IVONA voice</span>
+                                        </a>
+                                    </li>
+                                    <li class="k pb10">
+                                        <a class="l w20 fs12 n tdn " href="#" onclick="openYT('http:\/\/www.youtube.com/v/SFKLfcN485g&amp;hl=pl&amp;fs=1&amp;rel=0&amp;hd=0&amp;autoplay=1','IVONA Reader, an easy to use text reader')">
+                                            <img width="60" class="l pr5" alt="IVONA Reader, an easy to use text reader" src="/static/ivona/reader.jpg"/>
+                                            <span class="l w13">IVONA Reader, an easy to use text reader</span>
+                                        </a>
+                                    </li>
+                                    <li class="k pb10">
+                                        <a class="l w20 fs12 n tdn " href="#" onclick="openYT('http:\/\/www.youtube.com/v/KM-HN2QByWQ&amp;hl=en_GB&amp;fs=1&amp;rel=0&amp;hd=0&amp;autoplay=1','WebReader - The easiest way to voice your website')">
+                                            <img width="60" class="l pr5" alt="WebReader - The easiest way to voice your website" src="/static/ivona//wr_web_en.jpg"/>
+                                            <span class="l w13">WebReader - The easiest way to voice your website</span>
+                                        </a>
+                                    </li>
+                                    <li class="k pb10">
+                                        <a class="l w20 fs12 n tdn " href="#" onclick="openYT('http:\/\/www.youtube.com/v/QhYyzl465Ao&amp;hl=pl&amp;fs=1&amp;rel=0&amp;hd=0&amp;autoplay=1','IVONA Studio. Reduce costs and increase productivity!')">
+                                            <img width="60" class="l pr5" alt="IVONA Studio. Reduce costs and increase productivity!" src="/static/ivona/piotr.jpg"/>
+                                            <span class="l w13">IVONA Studio. Reduce costs and increase productivity!</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="http://www.youtube.com/user/ivonaTTS/" rel="nofollow" class="button b_blue w18 pt3 pl10 pr10 pb5 r5 fs12" style="margin-left:17px;margin-top:10px">Visit our Youtube Channel</a>
+                        </div>
+                    </div>
+                    <div class="r" style="height: 290px;margin-left:0px;overflow: hidden;position: relative;width: 595px;">
+                        <script type="text/javascript" src="/js/animationManager.js"></script>
+                        <script type="text/javascript" src="/js/featureManager.js"></script>
+                        <div class="feature-holder" id="JS_Feature_Holder">
+						    <div class="feature-content feature-content-showed">
+							    <div style="padding-top: 0px;">
+                                    <div class="l" style="background:url(/static/ivona/ivona_tts_main.png) 0px 0px no-repeat; height:290px;width:593px">
+                                        <span class="k l pl38  pt30 b" style="font-size:28px; font-family: 'verdana'">Text-to-Speech</span>
+                                        <span class="k l pl40  pt15" style="font-size:24px; line-height: 35px;">For everybody!</span>
+                                        <span class="k l pl40  pt15" style="font-size:14px; line-height: 35px;">
+                                            If you want, check out <a href="/api/local_voices/voicehub/test.html">VoiceHub!</a>
+                                        </span>
+                                        <span class="k l pl40  pt15" style="font-size:14px; line-height: 35px;">
+                                            Or you can see <a href="/api/local_voices/macintalk/test.html">MacInTalk Online</a>
+                                        </span>
+                                    </div>
+                                </div>
+						    </div>										
+				        </div>
+				        <div class="feature-buttons" style="display: none;">
+					        <div class="feature-buttons-set feature-buttons-set-selected" id="JS_Feature_ButtonSet_1"></div>
+					        <div class="r">
+						        <span class="button" style="-moz-box-shadow:none; box-shadow:none;-webkit-box-shadow:none;" id="JS_Feature_Button_1"></span>		
+					        </div>	
+	        	        </div>
+                        <script type="text/javascript">
+                            //<![CDATA[
+                                var IE6 = false; var IE7 = false;
+	    		                var aMgr = new AnimationManager();
+	        	                var myFeatureManager = new FeatureManager();
+	        	                myFeatureManager.initialize('JS_Feature');
+	    	                //]]>
+	    	            </script>
+                        <!--[if lte IE 6]>
+                            <script type="text/javascript">IE6 = true;</script>
+                        <![endif]-->
+                        <!--[if lte IE 7]>
+                            <script type="text/javascript">IE7 = true;</script>
+                        <![endif]-->
+                    </div>      
+                </div> <!--EofUpContent -->
+                <div class="k" style="height:1px; width: 967px;"><img src="/static/ivona/shadow_tester.png"/></div>
+                <div class="l pl15 homeBox  pt8 pb10" style="width:980px;">
+                    <div style="float: left; width:470px">
+                        <div class="homeNewsTitle b" style="margin-top:15px; margin-bottom:5px; font-size:18px; color:#666; margin-left:15px;margin-right:15px">
+                            <p style="font-size:18px; color:#666; text-decoration: none;">
+                                The testing page for the Ivona Classic voices is finally out!
+                            </p>
+                        </div>
+                        <div class="k"><em style="color:#aaa;margin-left:15px;font-size:11px;">April  30th, 2024</em></div>
+                        <div style="width:90px; margin-left:15px" class="l pt10">    
+                            <div class="the_image">
+                                <p>
+                                    <img alt="" width="85" src="/static/ivona/test_available.png">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="homeNewsLead l pt10" style="width:340px; color:#666; margin-left:9px; "> 
+                            As some of us know, not all of the ivona classic voices work on the LVM for some reason 
+                            yet it plays fine outside the LVM. In order for you to understand what is going on, 
+                            we highly suggest that you use this page to test out the voices so that you can see what we mean by all of that.
+                        </div>
+                    </div>
+                    <div id="homeNewsVR" style="float: left; width:1px; margin-top:50px; margin-bottom:10px; height:155px; background-image: url('/static/ivona/greydot.png'); background-repeat:repeat-y;"></div>
+                    <div class="homeNews" style="float: left; width:480px; padding-left:25px">
+                        <div class="homeNewsTitle b" style="margin-top:15px; margin-bottom:5px; font-size:18px;color:#666; margin-right:15px">
+                            <p style="font-size:18px; color:#666; text-decoration: none;">
+                                Welcome to Ivona Classic!
+                            </p>
+                        </div>
+                        <div class="k"><em style="color:#aaa;maragin-left:15px;font-size:11px;">April 28, 2024</em></div>
+                        <div style="width:90px; " class="l pt10">
+                            <div class="the_image">
+                                <p>
+								    <img alt="" width="85" src="/static/ivona/ivonaclassic.png">
+                                </p>
+                            </div>
+                        </div>
+                        <div class="homeNewsLead l pt10" style="width:360px; color:#666; margin-left:9px; ">
+                            The IVONA Text-to-Speech experience is now better with all the old voices! 
+                            NOT ALL THE VOICES ARE HERE YET!
+                            But they will be here sometime soon. 
+                            Enjoy the website!  
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        window.homeNewsTitleMax = 0;
+                        window.homeNewsLeadMax = 0;
+                        isTokenVisible = false;
+                        isPlaying = false;
+                        $(document).ready(function(){
+                            $.each($(".homeNewsTitle"), function(index, obj) {
+                                var tmp = $(obj).outerHeight();
+                                if (tmp > window.homeNewsTitleMax) window.homeNewsTitleMax = tmp;
+                            });
+                            $(".homeNewsTitle").height(window.homeNewsTitleMax);
+                            $.each($(".homeNewsLead"), function(index, obj) {
+                                var tmp = $(obj).outerHeight();
+                                if (tmp > window.homeNewsLeadMax) window.homeNewsLeadMax = tmp;
+                            });
+                            $(".homeNewsLead").height(window.homeNewsLeadMax);
+                            $("#homeNewsVR").height(window.homeNewsLeadMax + window.homeNewsTitleMax);
+                        });
+                    </script>
+                </div> <!-- EofNewsContent -->
+                <div class="pb5" style="clear:both; margin-right:40px; height:1px; margin-left:40px; background: none repeat scroll 0 0 #FFFFFF; background-image: url('/static/ivona/greydot.png'); background-repeat:repeat-x;"></div>
+                <div class="l pl30 homeBox  pt8 pb10" style="background: none repeat scroll 0 0 #FFFFFF; width:967px">
+                    <div class="homeBoxLayer" style="width:220px">
+                        <div class="box310">
+                            <h3>
+                                Getting Help
+                            </h3>
+                            <a class="l n k" id="box1_" href="https://discord.gg/BcVeWEhuqJ">
+                                <span class="fs11">Discord Server</span>
+                            </a>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+            </div><!--EofLowContent -->
+        </div>
+        <div class="none abs" id="voicePopup" style="top:200px">
+            <div class="l popup_bg popup_shadow w46 r5 fs13" style="padding:10px">
+			    <div class="close_btn modalClose"></div>
+                <div class="l c w43 pl10">
+					<img src="/static/ivona/blue.png" class="l " alt="Info"/>
+					<h2 class="l pl10 pt5 w35 fs16 pb10">Voice Carmen will be available soon.</h2>
+				</div>
+			    <p class="l w43 pl10 lh16">
+                    We'll let you know first when the full version will be available for purchase in an upcoming newsletter. 
+                    If you are not a subscriber yet, 
+                    <a href="https://secure.ivona.com/account/register.php">sign up</a> on our website and order your subscription now!
+                </p>	
+			    <p class="r c tar pb10 pt10 i pr10">IVONA Team</p>
+			</div>
+        </div>
+        <div id="Footer" class="k">
+            <div class="cw pt5">
+                <div class="k" style="padding-bottom: 50px;">
+                    <div class="r w25"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">	
+            try {	
+                pageTracker._trackPageview();
+            } catch(err) {
+            }
+        </script>
+    </body>
+</html>

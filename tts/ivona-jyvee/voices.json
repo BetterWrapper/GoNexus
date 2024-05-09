@@ -1,0 +1,254 @@
+{
+    "salli": {
+        "vid": "salli",
+        "name": "Salli",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "ivy": {
+        "vid": "ivy",
+        "name": "Ivy",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "kimberly": {
+        "vid": "kimberly",
+        "name": "Kimberly",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "kendra": {
+        "vid": "kendra",
+        "name": "Kendra",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "jennifer": {
+        "vid": "jennifer",
+        "name": "Jennifer",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "US"
+    },
+    "joey": {
+        "vid": "joey",
+        "name": "Joey",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "eric": {
+        "vid": "eric",
+        "name": "Eric",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "chipmunk": {
+        "vid": "chipmunk",
+        "name": "Chipmunk",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "English",
+        "flag": "US"
+    },
+    "penélope": {
+        "vid": "penélope",
+        "name": "Penélope",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "Spanish",
+        "flag": "US"
+    },
+    "miguel": {
+        "vid": "miguel",
+        "name": "Miguel",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Spanish",
+        "flag": "US"
+    },
+    "emma": {
+        "vid": "emma",
+        "name": "Emma",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "UK"
+    },
+    "amy": {
+        "vid": "amy",
+        "name": "Amy",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "F",
+        "lang": "English",
+        "flag": "UK"
+    },
+    "brian": {
+        "vid": "brian",
+        "name": "Brian",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "English",
+        "flag": "UK"
+    },
+    "geraint": {
+        "vid": "en_wls_geraint",
+        "name": "Geraint",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "English",
+        "flag": "UK"
+    },
+    "gwyneth": {
+        "vid": "en_wls_gwyneth",
+        "name": "Gwyneth",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "English",
+        "flag": "UK"
+    },
+    "geraint1": {
+        "vid": "geraint",
+        "name": "Geraint (Welsh)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Welsh",
+        "flag": "UK"
+    },
+    "gwyneth1": {
+        "vid": "gwyneth",
+        "name": "Gwyneth (Welsh)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Welsh",
+        "flag": "UK"
+    },
+    "marlene": {
+        "vid": "marlene",
+        "name": "Marlene (German)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "German",
+        "flag": "EU"
+    },
+    "hans": {
+        "vid": "hans",
+        "name": "Hans (German)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "German",
+        "flag": "EU"
+    },
+    "céline": {
+        "vid": "Céline",
+        "name": "Céline (French)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "French",
+        "flag": "EU"
+    },
+    "mathieu": {
+        "vid": "mathieu",
+        "name": "Mathieu (French)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "French",
+        "flag": "EU"
+    },
+    "Conchita": {
+        "vid": "conchita",
+        "name": "Conchita",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Spanish",
+        "flag": "ES"
+    },
+    "enrique": {
+        "vid": "enrique",
+        "name": "Enrique",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Spanish",
+        "flag": "ES"
+    },
+    "maja": {
+        "vid": "maja",
+        "name": "Maja",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Polish",
+        "flag": "RP"
+    },
+    "ewa": {
+        "vid": "ewa",
+        "name": "Ewa",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Polish",
+        "flag": "RP"
+    },
+    "jacek": {
+        "vid": "jacek",
+        "name": "Jacek",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Polish",
+        "flag": "RP"
+    },
+    "jan": {
+        "vid": "jan",
+        "name": "Jan",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Polish",
+        "flag": "RP"
+    },
+    "carmen": {
+        "vid": "carmen",
+        "name": "Carmen (Romanian)",
+        "isLocal": true,
+        "provider": "ivona-jyvee",
+        "gender": "M",
+        "lang": "Polish",
+        "flag": "EU"
+    }
+}

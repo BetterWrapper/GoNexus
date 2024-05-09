@@ -1,8 +1,27 @@
 const https = require("https");
-
+const fs = require("fs");
+const mp3Duration = require("mp3-duration");
 module.exports = {
     mp3BufferFunction: "sayMP3",
     baseUrl: 'https://b4af-2600-6c5e-b7f-ae30-b44c-1887-201a-6d4d.ngrok-free.app',
+    async test() {
+        return fs.readFileSync('./tts/macintalk/voiceTestPage.html');
+    },
+    async get() {
+        return fs.readFileSync('./tts/macintalk/voices.json')
+    },
+    serverStatus() {
+        return new Promise(async res => {
+            const buffer = await this.sayMP3('Siri', 'test');
+            mp3Duration(buffer, (e, d) => {
+                const dur = d * 1e3;
+                res(JSON.stringify({
+                    textColor: e || !dur ? 'red' : 'green',
+                    status: e ? 'Error' : !dur ? 'Offline' : 'Online'
+                }));
+            })
+        })
+    },
     say(v, text) {
         return new Promise(res => {
             https.get(`${this.baseUrl}/say?v=${v}&text=${text}`, (r) => {
@@ -21,11 +40,8 @@ module.exports = {
             });
         })
     },
-    sayEmb(v, text) { 
-        return new Promise(res => {
-            https.get(`${this.baseUrl}/say?v=${v}&text=${text}`, (r) => {
-                let buffers = [];
-                r.on("data", (b) => buffers.push(b)).on("end", () => res(Buffer.from(`<html>
+    async sayEmb(v, text) { 
+        return `<html>
                     <head>
                         <title>MacInTalk | Embed</title>
                         <meta property="og:title" content="Listen to it" />
@@ -35,8 +51,6 @@ module.exports = {
                         <meta property="og:video:width" content="640">
                         <meta property="og:audio" content="/api/local_voices/macinialk/sayMP3?v=${v}&text=${text}"/>
                     </head>
-                </html>`))).on("error", () => res("HI"));
-            });
-        })
+                </html>`;
     }
 }
