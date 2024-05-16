@@ -10,11 +10,10 @@ const tts = require("../tts/main");
 const asset = require("../asset/main");
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
-const { exec } = require('child_process');
 const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
-const templateAssets = [];
+var templateAssets = [];
 const ncs = require("../ncs/modules/search");
 function getMp3Duration(buffer) {
 	return new Promise((res, rej) => {
@@ -32,8 +31,6 @@ const framerate = 24;
 const frameToSec = (f) => f / framerate;
 const nodemailer = require('nodemailer');
 const xmldoc = require("xmldoc");
-const { URLSearchParams } = require("url");
-const { resolve4 } = require("dns/promises");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -81,7 +78,52 @@ module.exports = function (req, res, url) {
 			break;
 		} case "POST": {
 			switch (url.pathname) {
-				case "/goapi/getSysTemplateAttributes/": {
+				case "/qvm_micRecord_goapi/saveSound/": {
+					loadPost(req, res).then(async f => {
+						res.end(await new Promise(resolve => {
+							function errXml(e) {
+								resolve(1 + `<error><code>ERR_ASSET_404</code><message>${e}</message><text></text></error>`);
+							} 
+							try {
+								fs.writeFileSync('./_CACHÉ/recording.ogg', Buffer.from(f.bytes, "base64"));
+								const stream = fs.createReadStream('./_CACHÉ/recording.ogg');
+								const buffer = ffmpeg(stream).inputFormat('ogg').toFormat("mp3").audioBitrate(4.4e4).on('error', (error) => {
+									errXml(`Encoding Error: ${error.message}`);
+								}).pipe();
+								const buffers = [];
+								buffer.on("data", (b) => buffers.push(b)).on("end", async () => {
+									var dur = await getMp3Duration(Buffer.concat(buffers));
+									if (!dur) return errXml("Unable to retrieve MP3 Stream");
+									const meta = asset.save(Buffer.concat(buffers), {
+										type: f.type,
+										subtype: f.subtype,
+										title: f.title,
+										published: f.is_published,
+										tags: "",
+										duration: dur,
+										downloadtype: "progressive",
+										ext: "mp3"
+									}, f);
+									templateAssets.unshift(meta);
+									resolve(`0<asset><id>${meta.id.split(".")[0]}</id><enc_asset_id>${
+										f.recorderId
+									}</enc_asset_id><type>${meta.type}</type><subtype>${meta.subtype}</subtype><title>${
+										meta.title
+									}</title><published>${meta.published}</published><tags></tags><duration>${
+										meta.duration
+									}</duration><downloadtype>progressive</downloadtype><file>${meta.file.split(".")[0]}</file></asset>`);
+								}).on("error", (e) => {
+									console.log(e);
+									errXml(e);
+								});
+							} catch(e) {
+								console.log(e);
+								errXml(e);
+							}
+						}));
+					})
+					break;
+				} case "/goapi/getSysTemplateAttributes/": {
 					loadPost(req, res).then(data => {
 						
 					})
@@ -199,7 +241,7 @@ module.exports = function (req, res, url) {
 				} case "/goapi/searchSoundSnap/": {
 					loadPost(req, res).then(async data => {
 						const musicals = 'regular-instrumental';
-						let xml = '0<sound>';
+						let xml = '0<sounds>';
 						for (const version of musicals.split("-")) {
 							const results = await ncs.search(
 								{
@@ -212,18 +254,18 @@ module.exports = function (req, res, url) {
 								for (const tag of info.tags) {
 									tags += `${tag.name},`;
 								}
-								xml += `<sounds><title>${info.name} [${
+								xml += `<sound><title>${info.name} [${
 									version
-								}]</title><tags>${tags.slice(0, -1)}</tags><link>${info.download[version]}</link></sounds>`;
+								}]</title><tags>${tags.slice(0, -1)}</tags><link>${info.download[version]}</link></sound>`;
 							}
 						};
-						res.end(xml + '</sound>');
+						res.end(xml + '</sounds>');
 					});
 					break;
 				} case "/goapi/getSysTemplates/": {
 					loadPost(req, res).then(async data => {
 						if (data.type == "movie") try {
-							var xml = '<ugc moreMovie="0">';
+							var xml = '<theme id="ugc" moreMovie="0">';
 							const zip = nodezip.create();
 							const counts = {
 								min: data.count * data.page,
@@ -235,12 +277,14 @@ module.exports = function (req, res, url) {
 								const file = files[counts.min];
 								if (!file) continue;
 								const meta = await movie.extractMeta(file, `./_EXAMPLES`, 'e');
-								xml += `<movie${Object.keys(meta).filter(i => i != "tags").map(v => ` ${v}="${meta[v]}"`).join("")}><tags>${
+								xml += `<movie${
+									Object.keys(meta).filter(i => i != "tags").map(v => ` ${v}="${meta[v]}"`).join("")
+								}><tags>${
 									meta.tags
 								}</tags></movie>`;
 								fUtil.addToZip(zip, file.slice(0, -3) + "png", fs.readFileSync(`./premadeChars/head/123.png`));
 							}
-							xml += '</ugc>';
+							xml += '</theme>';
 							console.log(xml);
 							fUtil.addToZip(zip, 'desc.xml', xml);
 							res.end(Buffer.concat([base, await zip.zip()]));
@@ -523,9 +567,9 @@ module.exports = function (req, res, url) {
 						});
 					});
 					break;
-				} case "/ajax/saveText2Video": { // save a qvm video (requires a user to be logged in)
+				} case "/api/saveText2Video": { // save a qvm video (requires a user to be logged in)
 					loadPost(req, res).then(data => {
-						console.log(data, templateAssets);
+						console.log(templateAssets);
 						if (!data.userId) return res.end(JSON.stringify({
 							error: "You need to be logged in to your account in order to save your video."
 						}));
@@ -540,7 +584,7 @@ module.exports = function (req, res, url) {
 						};
 						let thumb;
 						if (data.thumbnail) { // if there was a thumbnail in the video
-
+							thumb = Buffer.from(data.thumbnail, "base64")
 						} else switch (data.enc_tid){ // generate a thumbnail from the enc_tid param.
 							case "0GWxgtNKvSes": {
 								thumb = fs.readFileSync(`./qvm_files/basketball/bg01.jpg`);
@@ -572,12 +616,12 @@ module.exports = function (req, res, url) {
 						}).catch(e => {
 							console.log(e);
 							res.end(JSON.stringify({
-								error: e
+								error: e.toString()
 							}));
 						})
 					});
 					break;
-				} case "/ajax/previewText2Video": { // loads qvm preview
+				} case "/api/setupText2VideoPreview": {
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						//HOLY SHIT REWRITING THIS WITH THE RIGHT RESPONSE
 						let qvm_theme = f.golite_theme;
@@ -586,21 +630,19 @@ module.exports = function (req, res, url) {
 						let charorder = [];
 						let charids = []
 						let texts = [];
-						let mcids = [];
-						let template = "";
+						const template = f.enc_tid;
 						let voicez = [];
+						const counts = {
+							script: 0,
+							complete: 0
+						};
 						console.log("test:", f);
-						let focuschar = "";
 						for (const data in f) { // characters & script timings
-							if (data.includes(`enc_tid`)) template = f[data];
-							if (data.includes(`characters[`)) {
-								console.log(data.indexOf("]"));
-								let start = data.indexOf("]");
-								console.log(data.slice(start + 2, -1));
-								charids.push(data.slice(start + 2, -1));
+							if (data.startsWith(`characters[`)) {
+								charids.push(data.substr(14).slice(0, -1));
 							}
-							if (data.includes(`script[`)) {
-								if (data.includes(`text`)) {
+							if (data.startsWith(`script[${counts.script}]`)) {
+								if (data == `script[${counts.script}][text]`) {
 									console.log(f[data]);
 									if (f[data].toString().includes("#1 -")) {
 										console.log("INCLUDED THE CAMERA!!!!")
@@ -614,26 +656,25 @@ module.exports = function (req, res, url) {
 										cam.push("normal");
 									}
 								}
-								if (data.includes(`aid`)) {
+								if (data == `script[${counts.script}][char_num]`) {
 									console.log(f[data]);
-									mcids.push(f[data]);
-								}
-								if (data.includes(`char_num`)) {
-									console.log(f[data]);
-									focuschar = f[data];
 									charorder.push(f[data]);
 								}
-								if (data.includes(`facial`) && data.includes("l][" + focuschar)) {
+								if (data == `script[${counts.script}][facial]`) {
 									console.log(f[data]);
 									expressions.push(f[data]);
 								}
-								if (data.includes(`voice`)) {
+								if (data == `script[${counts.script}][voice]`) {
 									console.log(f[data]);
 									voicez.push(f[data]);
 								}
+								counts.complete++;
+								if (counts.complete > 3) {
+									counts.complete = 0;
+									counts.script++;
+								}
 							}
 						}
-						console.log(mcids);
 						const flashvars = {
 							movieLid: 11,
 							movieId: "templatePreview",
@@ -654,31 +695,20 @@ module.exports = function (req, res, url) {
 						let ouri = 0;
 						gentts();
 						//Had to rewrite this because it kept cutting out clips
-						async function gentts() {
+						function gentts() {
 							let i = ouri;
-							if (mcids[i] == "") {
-								var formData = new FormData();
+							const micid = f[`script[${i}][aid]`] ? f[`script[${i}][aid]`] + ".mp3" : "";
+							console.log(micid)
+							if (!micid) {
 								console.log("page:", i);
-								formData.append('voice', voicez[i]);
-								formData.append('text', texts[i]);
-								formData.append('subtype', "tts");
-								console.log(req.headers);
-								var options = {
-									path: '/api/saveQVMSoundAsset',
-									method: 'POST',
-									headers: formData.getHeaders()
-								};
-								var rea = http.request(options, (response) => {
-									console.log("DID THE API");
-									let body = "";
-									response.on("data", (b) => body += b);
-									response.on("end", async () => {
-										console.log("Body: " + body);
-										di = JSON.parse(body).id;
-										setTimeout(addDuration, 200)
-										async function addDuration() {
+								(async () => {
+									try {
+										const body = await tts.genVoice4Qvm(voicez[i], texts[i]);
+										console.log("Body: " + JSON.stringify(body));
+										di = body.id;
+										try {
 											const buffer = asset.load(di);
-											const duration = await getMp3Duration(buffer);
+											const duration = body.duration = await getMp3Duration(buffer);
 											if (duration.toString().includes(".")) {
 												const round = Math.round(duration);
 												let seconds = round / 1000;
@@ -698,6 +728,8 @@ module.exports = function (req, res, url) {
 													console.log("Keep pushing till its there");
 												}
 											}
+											body.enc_asset_id = ttsid.toString();
+											templateAssets.unshift(body);
 											ouri++;
 											if (i == texts.length - 1) {
 												movie.genxml(
@@ -712,30 +744,44 @@ module.exports = function (req, res, url) {
 													template
 												).then(guy => {
 													console.log(guy.success);
-													if (guy.success) res.end(JSON.stringify({
+													if (guy.success) return res.end(JSON.stringify({
 														script: f,
 														player_object: flashvars
 													}));
-													else res.end(JSON.stringify({
+													res.end(JSON.stringify({
 														error:"A Unknown Error Occured"
+													}))
+												}).catch(e => {
+													console.log(e);
+													res.end(JSON.stringify({
+														error: e.toString()
 													}))
 												});
 											} else gentts();
+										} catch (e) {
+											console.log(e);
+											res.end(JSON.stringify({
+												error: e.toString()
+											}))
 										}
-									});
-								});
-								formData.pipe(rea);
+									} catch (e) {
+										console.log(e);
+										res.end(JSON.stringify({
+											error: e.toString()
+										}))
+									}
+								})();
 							} else {
-								ttsid.push(mcids[i] + ".mp3");
+								ttsid.push(micid);
 								let helper = ttsid.toString();
-								while (!ttsid.toString().includes(mcids[i])) {
-									if (!helper.includes(mcids[i])) {
-										ttsid.push(mcids[i] + ".mp3");
+								while (!ttsid.toString().includes(micid)) {
+									if (!helper.includes(micid)) {
+										ttsid.push(micid);
 										console.log("Keep pushing till its there");
 									}
 								}
-								const micbuffer = asset.load(mcids[i] + ".mp3");
-								const duration = await getMp3Duration(micbuffer);
+								const micRecorderInfo = templateAssets.find(i => i.id == micid);
+								const duration = micRecorderInfo.duration;
 								if (duration.toString().includes(".")) {
 									const round = Math.round(duration);
 									let seconds = round / 1000;
@@ -760,12 +806,17 @@ module.exports = function (req, res, url) {
 										template
 									).then(guy => {
 										console.log(guy.success);
-										if (guy.success) res.end(JSON.stringify({
+										if (guy.success) return res.end(JSON.stringify({
 											script: f,
 											player_object: flashvars
 										}));
-										else res.end(JSON.stringify({
+										res.end(JSON.stringify({
 											error:"A Unknown Error Occured"
+										}))
+									}).catch(e => {
+										console.log(e);
+										res.end(JSON.stringify({
+											error: e.toString()
 										}))
 									});
 								} else gentts();
@@ -791,20 +842,19 @@ module.exports = function (req, res, url) {
 								const b = await movie.loadZip(url.query, data);
 								if (!url.query.movieId.startsWith("ft-")) res.end(Buffer.concat([base, b]));
 								else res.end(b);
-							} else res.end(
-								Buffer.concat(
-									[
-										base, 
-										parse.packMovie(
-											fs.readFileSync("./previews/template.xml"), 
-											false, 
-											false, 
-											false, 
-											templateAssets
-										)
-									]
-								)
-							);
+							} else {
+								const buffers = [
+									base, 
+									await parse.packMovie(
+										fs.readFileSync("./previews/template.xml"), 
+										false, 
+										false, 
+										false, 
+										templateAssets
+									)
+								];
+								res.end(Buffer.concat(buffers));
+							}
 						} catch (e) {
 							console.log(e);
 							res.end(1 + e);

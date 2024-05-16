@@ -55,48 +55,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE142" index="6">
-      <x>-109.225</x>
-      <y>-26.5</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="34" align="center" bold="false" italic="false" embed="true"><![CDATA[DEA did you load this]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
-    <bubbleAsset id="BUBBLE144" index="7">
-      <x>-149.85</x>
-      <y>450.25</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="30" align="center" bold="false" italic="false" embed="true"><![CDATA[Look its deah's cousin]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
-    <bubbleAsset id="BUBBLE145" index="8">
-      <x>752.95</x>
-      <y>434.9489648</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="42" align="center" bold="false" italic="false" embed="true"><![CDATA[Also deah]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
     <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
       <file>custom.office_pentry_coffee.swf</file>
       <x>120</x>
@@ -112,24 +70,6 @@
       <y>245</y>
       <xscale>1</xscale>
       <yscale>1</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
-    <prop id="PROP7" index="5">
-      <file>ugc.08a96c8.png</file>
-      <x>-155.2</x>
-      <y>210.25</y>
-      <xscale>0.5409015</xscale>
-      <yscale>0.5409015</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
-    <prop id="PROP8" index="9">
-      <file>ugc.2d24dec.png</file>
-      <x>777.7</x>
-      <y>215.975</y>
-      <xscale>0.6113208</xscale>
-      <yscale>0.6113208</yscale>
       <face>1</face>
       <rotation>0</rotation>
     </prop>
@@ -168,20 +108,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="6">
-      <x>-134.8</x>
-      <y>6.75</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[jyvee x peppino]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
     <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
       <file>custom.office_pentry_coffee.swf</file>
       <x>120</x>
@@ -197,15 +123,6 @@
       <y>245</y>
       <xscale>1</xscale>
       <yscale>1</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
-    <prop id="PROP13" index="5">
-      <file>ugc.f005883.png</file>
-      <x>-129.55</x>
-      <y>210.3989648</y>
-      <xscale>0.3624161</xscale>
-      <yscale>0.3624161</yscale>
       <face>1</face>
       <rotation>0</rotation>
     </prop>
@@ -241,20 +158,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="5">
-      <x>263.55</x>
-      <y>316.7</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[peppino spaghetti]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
     <prop id="cbg_office_pentry_PROP72" index="1" attached="Y">
       <file>custom.office_pentry_water_dispenser.swf</file>
       <x>445</x>
@@ -262,15 +165,6 @@
       <xscale>1</xscale>
       <yscale>1</yscale>
       <face>1</face>
-      <rotation>0</rotation>
-    </prop>
-    <prop id="PROP13" index="4">
-      <file>ugc.f005883.png</file>
-      <x>444.95</x>
-      <y>225.225</y>
-      <xscale>0.3624161</xscale>
-      <yscale>0.3624161</yscale>
-      <face>-1</face>
       <rotation>0</rotation>
     </prop>
     <effectAsset id="EFFECT1" themecode="common" index="6">
@@ -302,20 +196,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="3">
-      <x>263.55</x>
-      <y>316.7</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[peppino spaghetti]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
     <effectAsset id="EFFECT1" themecode="common" index="4">
       <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
       <x>276.2175141</x>
@@ -345,29 +225,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="4">
-      <x>-134.8</x>
-      <y>6.75</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[jyvee x peppino]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
-    <prop id="PROP13" index="3">
-      <file>ugc.f005883.png</file>
-      <x>-129.55</x>
-      <y>210.3989648</y>
-      <xscale>0.3624161</xscale>
-      <yscale>0.3624161</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
     <effectAsset id="EFFECT1" themecode="common" index="5">
       <effect x="0" y="0" w="368.0649718" h="236.9" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
       <x>128.4175141</x>
@@ -397,29 +254,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="4">
-      <x>-134.8</x>
-      <y>6.75</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[jyvee x peppino]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
-    <prop id="PROP13" index="3">
-      <file>ugc.f005883.png</file>
-      <x>-129.55</x>
-      <y>210.3989648</y>
-      <xscale>0.3624161</xscale>
-      <yscale>0.3624161</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
     <effectAsset id="EFFECT1" themecode="common" index="5">
       <effect x="0" y="0" w="368.0649718" h="236.9" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
       <x>128.4175141</x>
@@ -449,20 +283,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="6">
-      <x>-134.8</x>
-      <y>6.75</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[jyvee x peppino]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
     <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
       <file>custom.office_pentry_coffee.swf</file>
       <x>120</x>
@@ -478,15 +298,6 @@
       <y>245</y>
       <xscale>1</xscale>
       <yscale>1</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
-    <prop id="PROP13" index="5">
-      <file>ugc.f005883.png</file>
-      <x>-129.55</x>
-      <y>210.3989648</y>
-      <xscale>0.3624161</xscale>
-      <yscale>0.3624161</yscale>
       <face>1</face>
       <rotation>0</rotation>
     </prop>
@@ -520,20 +331,6 @@
       <yscale>1</yscale>
       <rotation>0</rotation>
     </char>
-    <bubbleAsset id="BUBBLE173" index="6">
-      <x>-134.8</x>
-      <y>6.75</y>
-      <xscale>1</xscale>
-      <yscale>1</yscale>
-      <rotation>0</rotation>
-      <fx>easeNone</fx>
-      <fxdur>0</fxdur>
-      <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
-        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
-        <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true"><![CDATA[jyvee x peppino]]></text>
-        <url target="top"><![CDATA[]]></url>
-      </bubble>
-    </bubbleAsset>
     <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
       <file>custom.office_pentry_coffee.swf</file>
       <x>120</x>
@@ -549,15 +346,6 @@
       <y>245</y>
       <xscale>1</xscale>
       <yscale>1</yscale>
-      <face>1</face>
-      <rotation>0</rotation>
-    </prop>
-    <prop id="PROP13" index="5">
-      <file>ugc.f005883.png</file>
-      <x>-129.55</x>
-      <y>210.3</y>
-      <xscale>0.3624161</xscale>
-      <yscale>0.3624161</yscale>
       <face>1</face>
       <rotation>0</rotation>
     </prop>

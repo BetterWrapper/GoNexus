@@ -20,10 +20,10 @@ module.exports = function (req, res, url) {
 		case "GET": {
 			switch (url.pathname) {
 				default: {
-					const match = req.url.match(/\/goapi\/getAsset\/([^/]+)$/);
+					const match = url.path.match(/\/(assets|(goapi|qvm_micRecord_goapi)\/getAsset)\/([^/]+)$/);
 					if (!match) return;
-
-					const aId = match[1];
+					console.log(match);
+					const aId = match[3];
 					try {
 						const b = asset.load(aId);
 						res.statusCode = 200;

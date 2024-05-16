@@ -39,6 +39,7 @@ function getLangPre(langName) {
 	for (const lang in langs) {
 		if (langs[lang] == langName) return lang;
 	}
+	return langName;
 }
 const tts = require("./main");
 const voices = {};
@@ -84,53 +85,65 @@ function getVoicesXml(apiName) {
 		}).on("error", rej);
 	});
 }
-function getVoicesJson(apiName) {
+function getVoicesJson(apiName, isQvm = false, filename) {
 	return new Promise((res, rej) => {
 		function genJson(json) {
 			const table = {};
 			for (const voiceInfo of json.voices) {
-				voices[voiceInfo.vid] = voiceInfo;
-				table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${
-					(getLangPre(voiceInfo.lang)).toUpperCase()
-				}.png`) || fs.existsSync(`./ui/img/voiceflag_${
-					getLangPre(voiceInfo.lang)
-				}.png`) ? voiceInfo.lang : "More"] = table[voiceInfo.flag.length <= 2 && getLangPre(
-					voiceInfo.lang
-				) && fs.existsSync(`./ui/img/${(getLangPre(voiceInfo.lang)).toUpperCase()}.png`) || fs.existsSync(`./ui/img/voiceflag_${
-					getLangPre(voiceInfo.lang)
-				}.png`) ? voiceInfo.lang : "More"] || [];
-				table[voiceInfo.flag.length <= 2 && getLangPre(voiceInfo.lang) && fs.existsSync(`./ui/img/${
-					(getLangPre(voiceInfo.lang)).toUpperCase()
-				}.png`) || fs.existsSync(`./ui/img/voiceflag_${getLangPre(voiceInfo.lang)}.png`) ? voiceInfo.lang : "More"].unshift({
-					id: voiceInfo.vid,
-					desc: voiceInfo.name,
-					sex: voiceInfo.gender,
-					vendor: json.apiName || apiName,
-					demo: "",
-					country: voiceInfo.flag.length <= 2 ? voiceInfo.flag : false,
-					lang: getLangPre(voiceInfo.lang) || false,
-					plus: false
-				})
+				const vid = voiceInfo.id || voiceInfo.vid;
+				const flag = voiceInfo.flag || voiceInfo.country;
+				const langPre =  getLangPre(voiceInfo.lang || voiceInfo.language);
+				const lang = json.languages && json.languages[langPre] ? json.languages[langPre] : voiceInfo.lang || voiceInfo.language;
+				voices[vid] = voiceInfo;
+				const stuffExists = [
+					fs.existsSync(`./ui/img/${flag}.png`) && langPre,
+					fs.existsSync(`./ui/img/voiceflag_${langPre}.png`)
+				]
+				const stuff = stuffExists[1] ? `${langPre}.${lang}` : "More";
+				if (stuffExists[0]) {
+					table[stuff] = table[stuff] || [];
+					table[stuff].unshift({
+						id: vid,
+						desc: voiceInfo.desc || voiceInfo.name,
+						sex: voiceInfo.gender,
+						demo: "",
+						vendor: voiceInfo.source || json.apiName || apiName,
+						lang: langPre,
+						country: flag,
+						plus: false
+					})
+				}
 			}
 			const json2 = {};
 			Object.keys(table).sort().map((i) => {
-				json2[i == "More" ? "default" : getLangPre(i)] = {
-					desc: i,
+				json2[i == "More" ? "default" : i.split(".")[0]] = {
+					desc: json.languages && json.languages[i.split(".")[0]] ? json.languages[i.split(".")[0]] : i.split(".")[1] || i,
 					options: table[i]
 				}
 			});
 			res(json2);
 		}
-		if (apiName.startsWith("local_")) {
+		function loadLocalVoices(filepath, param, array) {
+			const json2 = JSON.parse(fs.readFileSync(filepath));
+			const voices = !param ? json2 : json2[param];
 			const json = {
-				voices: []
+				voices: [],
+				vids: {}
 			};
-			const voices = JSON.parse(fs.readFileSync(`./tts/${apiName.split("_")[1]}/voices.json`));
+			for (const i of array) {
+				json[i] = json2[i];
+			}
 			for (const i in voices) {
-				json.voices.unshift(voices[i]);
+				const info = voices[i];
+				info.id = i;
+				json.voices.unshift(info);
 			}
 			genJson(json);
 		}
+		if (isQvm) loadLocalVoices(`./tts/${filename}.json`, 'voices', [ 
+			'languages'
+		]);
+		else if (apiName.startsWith("local_")) loadLocalVoices(`./tts/${apiName.split("_")[1]}/voices.json`);
 		else https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
 			const buffers = [];
 			r.on("data", b => buffers.push(b)).on("end", () => {
@@ -159,14 +172,10 @@ module.exports = function (req, res, url) {
 				}).on("error", console.error);
 			}).on("error", console.error);
 			break;
-		} case "/api/getTextToSpeechVoices": {
-			loadPost(req, res).then(data => {
-				const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid);
-				getVoicesJson(json.settings.api.ttstype.value.split("+").join(" ")).then(i => {
-					tts.tempSaveUserVoice(data.uid, voices);
-					res.setHeader("Content-Type", "application/json");
-					res.end(JSON.stringify(i));
-				});
+		} case "/api/getTTSVoices4QVM": {
+			getVoicesJson("", true, "qvmvoices").then(i => {
+				res.setHeader("Content-Type", "application/json");
+				res.end(JSON.stringify(i));
 			});
 			break;
 		} case "/goapi/getTextToSpeechVoices/": {

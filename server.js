@@ -720,9 +720,9 @@ http
 						} case "/api/checkEmail": {
 							loadPost(req, res).then(data => {
 								res.setHeader("Content-Type", "application/json");
-								const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.email == data.email);
+								const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.filter(i => i.email == data.email);
 								res.end(JSON.stringify({
-									success: !userInfo,
+									success: userInfo.length == 1,
 									error: `This email address already exists inside of Nexus's database. 
 									Please use a different email address`
 								}));
@@ -1254,7 +1254,7 @@ http
 			res.end(x.toString());
 		}
 		console.log(req.method, req.url, '-', res.statusCode);
-	}).listen(process.env.PORT || env.SERVER_PORT, '127.0.0.1', () => {
+	}).listen(process.env.PORT || env.SERVER_PORT, '127.0.0.1', async () => {
 		if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 		fs.readdirSync(env.CACHÉ_FOLDER).forEach(file => fs.unlinkSync(`${env.CACHÉ_FOLDER}/${file}`));
 		console.log("GoNexus Has Started.");

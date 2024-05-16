@@ -95,6 +95,7 @@ module.exports = {
 	save(buffer, meta, data) {
 		meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
+		if (data.isTemplate && data.recorderId) meta.enc_asset_id = data.recorderId;
 		fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
 		if (data.isTemplate) return meta;
 		else {

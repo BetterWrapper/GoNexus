@@ -1,21 +1,34 @@
-while (userData) reloadCCList(userData);
+var VoiceCatalog = {
+    fallback_langModel: {"en":{"desc":"English","options":[{"id":"joey","desc":"Joey","sex":"M","demo":"","lang":"en","country":"US","plus":false},{"id":"kendra","desc":"Kendra","sex":"F","demo":"","lang":"en","country":"US","plus":false},{"id":"kimberly","desc":"Kimberly","sex":"F","demo":"","lang":"en","country":"US","plus":false},{"id":"salli","desc":"Salli","sex":"F","demo":"","lang":"en","country":"US","plus":false},{"id":"ivy","desc":"Ivy","sex":"F","demo":"","lang":"en","country":"US","plus":false},{"id":"amy","desc":"Amy","sex":"F","demo":"","lang":"en","country":"GB","plus":false},{"id":"brian","desc":"Brian","sex":"M","demo":"","lang":"en","country":"GB","plus":false},{"id":"emma","desc":"Emma","sex":"F","demo":"","lang":"en","country":"GB","plus":false},{"id":"joanna","desc":"Joanna","sex":"F","demo":"","lang":"en","country":"US","plus":false},{"id":"justin","desc":"Justin","sex":"M","demo":"","lang":"en","country":"US","plus":false},{"id":"russell","desc":"Russell","sex":"M","demo":"","lang":"en","country":"AU","plus":false},{"id":"nicole","desc":"Nicole","sex":"F","demo":"","lang":"en","country":"AU","plus":false},{"id":"geraint","desc":"Geraint","sex":"M","demo":"","lang":"en","country":"GB","plus":false},{"id":"raveena","desc":"Raveena","sex":"F","demo":"","lang":"en","country":"IN","plus":false}]},"es":{"desc":"Spanish","options":[{"id":"miguel","desc":"Miguel","sex":"M","demo":"","lang":"es","country":"US","plus":false},{"id":"penelope","desc":"Pen\u00e9lope","sex":"F","demo":"","lang":"es","country":"US","plus":false},{"id":"enrique","desc":"Enrique","sex":"M","demo":"","lang":"es","country":"ES","plus":false},{"id":"conchita","desc":"Conchita","sex":"F","demo":"","lang":"es","country":"ES","plus":false}]},"pt":{"desc":"Portuguese","options":[{"id":"ines","desc":"In\u00eas","sex":"F","demo":"","lang":"pt","country":"PT","plus":false},{"id":"cristiano","desc":"Cristiano","sex":"M","demo":"","lang":"pt","country":"PT","plus":false},{"id":"vitoria","desc":"Vit\u00f3ria","sex":"F","demo":"","lang":"pt","country":"BR","plus":false},{"id":"ricardo","desc":"Ricardo","sex":"M","demo":"","lang":"pt","country":"BR","plus":false}]},"default":{"desc":"More","options":[{"id":"mads","desc":"Mads","sex":"M","demo":"","lang":"da","country":"DK","plus":false},{"id":"naja","desc":"Naja","sex":"F","demo":"","lang":"da","country":"DK","plus":false},{"id":"mizuki","desc":"Mizuki","sex":"F","demo":"","lang":"ja","country":"JP","plus":false},{"id":"filiz","desc":"Filiz","sex":"F","demo":"","lang":"tr","country":"TR","plus":false},{"id":"astrid","desc":"Astrid","sex":"F","demo":"","lang":"sv","country":"SE","plus":false},{"id":"maxim","desc":"Maxim","sex":"M","demo":"","lang":"ru","country":"RU","plus":false},{"id":"tatyana","desc":"Tatyana","sex":"F","demo":"","lang":"ru","country":"RU","plus":false},{"id":"carmen","desc":"Carmen","sex":"F","demo":"","lang":"ro","country":"RO","plus":false},{"id":"maja","desc":"Maja","sex":"F","demo":"","lang":"pl","country":"PL","plus":false},{"id":"jan","desc":"Jan","sex":"M","demo":"","lang":"pl","country":"PL","plus":false},{"id":"ewa","desc":"Ewa","sex":"F","demo":"","lang":"pl","country":"PL","plus":false},{"id":"jacek","desc":"Jacek","sex":"M","demo":"","lang":"pl","country":"PL","plus":false},{"id":"ruben","desc":"Ruben","sex":"M","demo":"","lang":"nl","country":"NL","plus":false},{"id":"lotte","desc":"Lotte","sex":"F","demo":"","lang":"nl","country":"NL","plus":false},{"id":"liv","desc":"Liv","sex":"F","demo":"","lang":"no","country":false,"plus":false},{"id":"giorgio","desc":"Giorgio","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"carla","desc":"Carla","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"mathieu","desc":"Mathieu","sex":"M","demo":"","lang":"fr","country":"FR","plus":false},{"id":"celine","desc":"C\u00e9line","sex":"F","demo":"","lang":"fr","country":"FR","plus":false},{"id":"chantal","desc":"Chantal","sex":"F","demo":"","lang":"fr","country":"CA","plus":false},{"id":"hans","desc":"Hans","sex":"M","demo":"","lang":"de","country":"DE","plus":false},{"id":"marlene","desc":"Marlene","sex":"F","demo":"","lang":"de","country":"DE","plus":false}]}},
+    apiPath: "/api/getTTSVoices4QVM",
+    getModel() {
+        return this.lang_model || this.fallback_langModel
+    }
+};
 function detectLogin(action, actionNum) {
     if (!action || !actionNum) alert("Missing one or more actions.");
-    if (!userData) switch (action) {
+    switch (action) {
         case "customchars": {
-            alert("Please login to gonexus in order to use custom characters");
-            break;
-        }
-    } else switch (action) {
-        case "customchars": {
-            GoLite.showSelectCCOverlay(actionNum);
+            console.log(userData)
+            if (!userData) alert("Please login to nexus in order to use custom characters");
+            else {
+                jQuery.blockUI();
+                GoLite.showSelectCCOverlay(actionNum);
+            }
             break;
         }
     }
-}
+} 
+jQuery.ajax({
+    url: VoiceCatalog.apiPath,
+    type: 'POST',
+    success(data) {
+        VoiceCatalog.lang_model = data;
+    }
+});
 function ItemSelector(c) {
-    var b = 0,
-        d = 0;
+    var b = 0
+      , d = 0;
     var a;
     (function() {
         var e = null;
@@ -29,7 +42,8 @@ function ItemSelector(c) {
                 return (e ? e : (e = c.find(".item")))
             }
         }
-    })();
+    }
+    )();
     c.find(".item").each(function(e) {
         if (jQuery(this).hasClass("selected")) {
             b = e
@@ -93,7 +107,7 @@ VoiceRecorder.prototype.init = function(a) {
         }, VoiceRecorder.defaultSettings, a);
         this.recorderId = "voice_recorder_" + VoiceRecorder.counter++;
         VoiceRecorder.instances[this.recorderId] = this;
-        if (typeof(a.initAssetId) === "undefined") {
+        if (typeof (a.initAssetId) === "undefined") {
             this.load({})
         } else {
             this.load({
@@ -104,7 +118,8 @@ VoiceRecorder.prototype.init = function(a) {
         delete VoiceRecorder.instances[this.recorderId];
         throw b
     }
-};
+}
+;
 VoiceRecorder.prototype.destory = function() {
     try {
         var a = document.getElementById(this.recorderId);
@@ -125,7 +140,8 @@ VoiceRecorder.prototype.destory = function() {
     } catch (b) {
         return false
     }
-};
+}
+;
 VoiceRecorder.prototype.load = function(a) {
     if (typeof this.settings.loadHandler == "function") {
         a = jQuery.extend({}, a, {
@@ -134,39 +150,47 @@ VoiceRecorder.prototype.load = function(a) {
         });
         this.settings.loadHandler.apply(this, [a])
     }
-};
+}
+;
 VoiceRecorder.prototype.processComplete = function(a) {
     VoiceRecorder.recording = false;
     if (typeof this.settings.processCompleteHandler == "function") {
         this.settings.processCompleteHandler.apply(this, [a])
     }
-};
+}
+;
 VoiceRecorder.prototype.processError = function() {
     VoiceRecorder.recording = false
-};
+}
+;
 VoiceRecorder.prototype.reRecord = function() {
     if (typeof this.settings.reRecordHandler == "function") {
         this.settings.reRecordHandler.apply(this)
     }
-};
+}
+;
 VoiceRecorder.prototype.focus = function() {
     if (typeof this.settings.focusHandler == "function") {
         this.settings.focusHandler.apply(this)
     }
-};
+}
+;
 VoiceRecorder.prototype.showSettings = function() {
     this.setHeight(205)
-};
+}
+;
 VoiceRecorder.prototype.doneSettings = function() {
     this.setHeight(48)
-};
+}
+;
 VoiceRecorder.prototype.startRecord = function() {
     if (VoiceRecorder.recording) {
         return false
     }
     VoiceRecorder.recording = this.recorderId;
     return true
-};
+}
+;
 VoiceRecorder.prototype.setHeight = function(a) {
     if (jQuery.browser.mozilla) {
         jQuery(document.getElementById(this.recorderId).parentNode).height(a)
@@ -175,14 +199,15 @@ VoiceRecorder.prototype.setHeight = function(a) {
             height: a + "px"
         }, 300)
     }
-};
+}
+;
 VoiceRecorder.counter = 0;
 VoiceRecorder.instances = {};
 VoiceRecorder.recording = false;
 VoiceRecorder.defaultSettings = {
     swf: "",
     flashvars: {
-        apiserver: "/",
+        apiserver: "/qvm_",
         appCode: "go",
         u_info: ""
     }
@@ -202,7 +227,6 @@ VoiceRecorder.defaultSettings = {
             l.bind("initInput", function(r, q) {
                 m(q)
             });
-
             function j(s) {
                 s.preventDefault();
                 var q = GoLite.getCharacters();
@@ -238,7 +262,6 @@ VoiceRecorder.defaultSettings = {
                 l.bind("switchCharacter", j);
                 return
             }
-
             function h() {
                 o = null;
                 c = null;
@@ -336,23 +359,19 @@ VoiceRecorder.defaultSettings = {
             l.find(".dialog_input_control a").click(function(t) {
                 t.preventDefault();
                 var s = a(this);
-                if (s.data("method") == "mic" && GoLite.getUserState() == 0) {
-                    showNotice(GT.gettext("Please login to enable Voice Recording"));
-                    return
-                }
                 if (s.data("method") != l.data("method")) {
                     var q = true;
                     switch (l.data("method")) {
-                        case "tts":
-                            if (o.val().length == 0) {
-                                q = false
-                            }
-                            break;
-                        case "mic":
-                            if (!l.data("aid")) {
-                                q = false
-                            }
-                            break
+                    case "tts":
+                        if (o.val().length == 0) {
+                            q = false
+                        }
+                        break;
+                    case "mic":
+                        if (!l.data("aid")) {
+                            q = false
+                        }
+                        break
                     }
                     if (q) {
                         var r = a("#dialog_input_change_confirm").clone().find(".alert").click(function(u) {
@@ -368,7 +387,6 @@ VoiceRecorder.defaultSettings = {
                 s.siblings().removeClass("on").end().addClass("on");
                 k()
             });
-
             function k() {
                 var q = o.parents(".dialog_input_wrapper");
                 q.hide();
@@ -384,27 +402,26 @@ VoiceRecorder.defaultSettings = {
                 }
                 l.removeData("aid");
                 switch (l.data("method")) {
-                    case "tts":
-                        q.show();
-                        if (q.size() <= 0) {
-                            o.show()
-                        }
-                        o.val("").focus();
-                        break;
-                    case "mic":
-                        e = new VoiceRecorder({
-                            loadHandler: f,
-                            processCompleteHandler: g,
-                            reRecordHandler: p,
-                            focusHandler: i
-                        });
-                        break;
-                    default:
-                        break
+                case "tts":
+                    q.show();
+                    if (q.size() <= 0) {
+                        o.show()
+                    }
+                    o.val("").focus();
+                    break;
+                case "mic":
+                    e = new VoiceRecorder({
+                        loadHandler: f,
+                        processCompleteHandler: g,
+                        reRecordHandler: p,
+                        focusHandler: i
+                    });
+                    break;
+                default:
+                    break
                 }
                 GoLite.noticifyChange()
             }
-
             function m(q) {
                 var r = o.parents(".dialog_input_wrapper");
                 r.hide();
@@ -419,28 +436,27 @@ VoiceRecorder.defaultSettings = {
                     l.find(".voice_recorder").hide()
                 }
                 switch (l.data("method")) {
-                    case "tts":
-                        r.show();
-                        if (r.size() <= 0) {
-                            o.show()
-                        }
-                        o.val("");
-                        break;
-                    case "mic":
-                        e = new VoiceRecorder({
-                            loadHandler: f,
-                            processCompleteHandler: g,
-                            reRecordHandler: p,
-                            focusHandler: i,
-                            initAssetId: q
-                        });
-                        break;
-                    default:
-                        break
+                case "tts":
+                    r.show();
+                    if (r.size() <= 0) {
+                        o.show()
+                    }
+                    o.val("");
+                    break;
+                case "mic":
+                    e = new VoiceRecorder({
+                        loadHandler: f,
+                        processCompleteHandler: g,
+                        reRecordHandler: p,
+                        focusHandler: i,
+                        initAssetId: q
+                    });
+                    break;
+                default:
+                    break
                 }
                 GoLite.noticifyChange()
             }
-
             function f(q) {
                 q = a.extend({}, this.settings.flashvars, q);
                 l.find(".voice_recorder").show().height(48).flash({
@@ -457,27 +473,24 @@ VoiceRecorder.defaultSettings = {
                     flashvars: q
                 })
             }
-
             function g(q) {
                 l.data("aid", q);
                 GoLite.noticifyChange()
             }
-
             function p() {
                 l.removeData("aid");
                 GoLite.noticifyChange()
             }
-
             function i() {
                 l.siblings().removeClass("focus");
                 l.addClass("focus")
             }
         })
     }
-})(jQuery);
+}
+)(jQuery);
 var facialExpression = (function(d) {
-    var b = false,
-        e, c = {};
+    var b = false, e, c = {};
     var a = {
         init: function(f) {
             if (b) {
@@ -519,9 +532,9 @@ var facialExpression = (function(d) {
         }
     };
     return a
-})(jQuery);
+}
+)(jQuery);
 var photoArray = [];
-
 function updatePhotoArray() {
     try {
         photoArray = [];
@@ -530,28 +543,15 @@ function updatePhotoArray() {
             photoArray = a.getPhotoArray()
         }
     } catch (b) {
-        showNotice(b, true);
+        console.log(b);
     }
 }
-
 function sendPhotoArray() {
     return photoArray
 }
 var GoLite = (function(e) {
-    var r = 30,
-        p = 10,
-        b, t, a = [],
-        u = null,
-        o = false,
-        s = false,
-        v = "",
-        d = false,
-        c = 0,
-        j = 1,
-        q = false,
-        i = false;
+    var r = 30, p = 10, b, t, a = [], u = null, o = false, s = false, v = "", d = false, c = 0, j = 1, q = false, i = false;
     initModeForEdit = false;
-
     function f() {
         var w = {};
         w.golite_theme = golite_theme;
@@ -559,7 +559,6 @@ var GoLite = (function(e) {
             w.enc_mid = b
         }
         w.enc_tid = t.data("tid");
-
         if (u) {
             w.opening_closing = u
         } else {
@@ -592,11 +591,10 @@ var GoLite = (function(e) {
         }
         return w
     }
-
     function h(y, w) {
-        var z = 354;
+        var z = 384;
         if (w.isWide) {
-            z = 310
+            z = 339
         }
         e("#" + y).flash({
             id: "Player",
@@ -613,7 +611,6 @@ var GoLite = (function(e) {
             flashvars: w
         })
     }
-
     function k(y, w) {
         w = w || {};
         e("#" + y).flash({
@@ -630,11 +627,11 @@ var GoLite = (function(e) {
             flashvars: w
         })
     }
-
     function g() {
-        var z = false,
-            w = false,
-            y = q;
+        var A = false
+          , z = false
+          , w = false
+          , y = q;
         if (c == 1 && t.data("plus")) {
             z = true;
             psHook = "golite_template.site"
@@ -643,7 +640,11 @@ var GoLite = (function(e) {
             w = true;
             psHook = "golite_character.site"
         }
-        q = z || w;
+        if (c == 1 && j > p) {
+            A = true;
+            psHook = "golite_dialog.site"
+        }
+        q = z || w || A;
         e("#step1 .btn_next, #step2 .btn_next, #step3 .btn_next").toggle(!q);
         e("#step1 .upgrade, #step2 .upgrade, #step3 .upgrade").toggle(q);
         if (q != y) {
@@ -652,7 +653,6 @@ var GoLite = (function(e) {
             }, 10)
         }
     }
-
     function m(y, w) {
         s = true;
         v = w;
@@ -665,7 +665,7 @@ var GoLite = (function(e) {
         } else {
             if ("preview" == w) {
                 e("#step4 .preview").css("display", "block");
-                e("#step4 .previous_step").css("display", "block");
+                e("#step4 .previous_step").css("display", "block")
             } else {
                 if ("save" == w) {
                     e("#step4 .save").fadeIn();
@@ -673,7 +673,7 @@ var GoLite = (function(e) {
                     e("#movie_title").focus();
                     k("thumb_chooser_container", {
                         templateThumbnail: t.data("thumb")
-                    });
+                    })
                 } else {
                     if ("upgrade" == w) {
                         e("#step4 .upgrade").show()
@@ -693,11 +693,10 @@ var GoLite = (function(e) {
             }
         }
     }
-
     function n() {
         var A = {
             en_US: {
-                M: ["eric", "oc_simon"],
+                M: ["joey", "oc_simon"],
                 F: ["oc_kate", "oc_julie"]
             },
             es_ES: {
@@ -801,7 +800,8 @@ var GoLite = (function(e) {
                             if (!initModeForEdit) {
                                 J.removeData("aid")
                             }
-                        }(golite_theme == "wildlife") && J.removeData("sorder")
+                        }
+                        (golite_theme == "wildlife") && J.removeData("sorder")
                     });
                     GoLite.noticifyChange()
                 })
@@ -811,10 +811,10 @@ var GoLite = (function(e) {
             }
             e(document).ready(function() {
                 if (c < 2) {
-                    e("#templates .plus-label").before(e(".snippets .plus-cover").clone())
+                    e(".plus_template").before('<div class="plus-cover"><div><strong>Premium Template</strong> Upgrade to access this template</div></div>')
                 }
-                if (c >= 2) {
-                    e(".plus-character").html(e(".snippets .plus-char-txt").clone())
+                if (c == 2) {
+                    e(".plus-character").html("<strong>Premium Character</strong>")
                 }
                 var F = GoLite.getCharacters();
                 e("#dialogs .dialog").each(function(H, I) {
@@ -824,7 +824,7 @@ var GoLite = (function(e) {
                 e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c == 2);
                 e("#dialogs .upsell, #step4 .upsell").toggle(c < 2);
                 e(document).bind("delete.scriptDialog insert.scriptDialog", function(I) {
-                    var G = (c >= 2) ? r : p;
+                    var G = r;
                     var H = e("#dialogs .num");
                     H.each(function(J) {
                         e(this).html((J + 1))
@@ -845,10 +845,10 @@ var GoLite = (function(e) {
             return a
         },
         getScripts: function() {
-            var A = e("#dialogs .dialog:not(.fake)"),
-                z = "talk",
-                w = [],
-                y = {};
+            var A = e("#dialogs .dialog:not(.fake)")
+              , z = "talk"
+              , w = []
+              , y = {};
             if (i) {
                 e.each(a, function(B) {
                     y[(B + 1)] = "default"
@@ -877,7 +877,7 @@ var GoLite = (function(e) {
                     var F = J.data("aidbkup");
                     var K = J.data("textbkup");
                     var H = J.data("voicebkup");
-                    if (typeof(F) != "undefined" && typeof(K) != "undefined" && typeof(H) != "undefined" && text.length > 0 && text == K && parseInt(F, 10) > 0 && L.voice == H) {
+                    if (typeof (F) != "undefined" && typeof (K) != "undefined" && typeof (H) != "undefined" && text.length > 0 && text == K && parseInt(F, 10) > 0 && L.voice == H) {
                         L.aid = parseInt(F, 10)
                     }
                 }
@@ -906,7 +906,7 @@ var GoLite = (function(e) {
                 focus: true
             };
             e.extend(z, y);
-            var w = (c >= 2) ? r : p;
+            var w = (c == 2) ? r : p;
             if (e("#dialogs .dialog:not(.fake)").length >= w) {
                 return
             }
@@ -947,9 +947,6 @@ var GoLite = (function(e) {
                 return
             }
             var w = f();
-            if (userData) {
-                w.userId = userData.uid;
-            }
             e(document).trigger("GoLite.stateChange", ["loading"]);
             e.ajaxSetup({
                 error: function(y, A, z) {
@@ -958,17 +955,10 @@ var GoLite = (function(e) {
                 }
             });
             o = true;
-            e.post("/ajax/previewText2Video", w, function(y) {
+            e.post("/api/setupText2VideoPreview", w, function(y) {
                 o = false;
                 if (y.error) {
                     showNotice(y.error, true);
-                    e(document).trigger("GoLite.stateChange", [""]);
-                    return
-                } 
-                if (y.htmlError) {
-                    jQuery("#htmlerror").html(y.htmlError);
-                    if (y.htmlCSS) for (const i in y.htmlCSS) jQuery("#html_error").css(i, y.htmlCSS[i]);
-                    showOverlay(jQuery("#html_error"));
                     e(document).trigger("GoLite.stateChange", [""]);
                     return
                 }
@@ -990,27 +980,33 @@ var GoLite = (function(e) {
                 error: null
             })
         },
-        save: function(C) {
+        save: function(E) {
             if (o) {
                 return
             }
-            C = C || {};
-            var F = {};
-            e.extend(F, C);
-            var E = e("#movie_title");
-            var B = e.trim(E.val());
-            if (B == E.attr("placeholder")) {
-                B = ""
+            E = E || {};
+            var H = {};
+            e.extend(H, E);
+            var D = e("#group_setting option:selected").val();
+            var G = e("#movie_title");
+            var B = e("#cat_setting option:selected").val();
+            var C = e.trim(G.val());
+            if (C == G.attr("placeholder")) {
+                C = ""
             }
-            if (B.length == 0) {
+            if (C.length == 0) {
                 e("#movie_title").focus();
-                showNotice(GT.gettext("Please enter a movie title"), true);
+                showNotice("Please enter a movie title", true);
                 return
             }
-            var D = e("#movie_description");
-            var A = e.trim(D.val());
-            if (A == D.attr("placeholder")) {
+            var F = e("#movie_description");
+            var A = e.trim(F.val());
+            if (A == F.attr("placeholder")) {
                 A = ""
+            }
+            if (B == "" && publish_setting == "gallery") {
+                showNotice("Please choose a category", true);
+                return
             }
             var w = null;
             try {
@@ -1018,47 +1014,43 @@ var GoLite = (function(e) {
                 if (w.length) {
                     w = w[0]
                 }
-            } catch (z) {
-                showNotice(z, true);
-            }
+            } catch (z) {}
             var y = f();
-            if (userData) {
-                y.userId = userData.uid;
-            }
             y.tag = "";
-            y.title = B;
+            y.title = C;
             y.desc = A;
+            y.g_setting = D;
+            y.p_setting = publish_setting;
+            y.category = B;
             if (w) {
                 y.thumbnail = w
             }
-            if (F.youtubePublish) {
-                y.youtube_publish = F.youtubePublish
+            if (H.youtubePublish) {
+                y.youtube_publish = H.youtubePublish
             }
-            if (F.publish_quality) {
-                y.publish_quality = F.publish_quality
+            if (H.publish_quality) {
+                y.publish_quality = H.publish_quality
             }
+            if (H.ed_assignment) {
+                y.ed_assignment = H.ed_assignment
+            }
+            if (userData) y.userId = userData.id || userData.uid;
             e.ajaxSetup({
-                error: function(G, I, H) {
+                error: function(I, K, J) {
                     o = false;
                     e(document).trigger("GoLite.stateChange", [""]);
                 }
             });
             o = true;
             showOverlay(e("#publishing"));
-            e.post("/ajax/saveText2Video", y, function(G) {
+            e.post("/api/saveText2Video", y, function(I) {
                 o = false;
-                if (G.error) {
+                if (I.error) {
                     e.unblockUI();
-                    showNotice(G.error, true);
+                    showNotice(I.error, true);
                     return
                 }
-                if (G.htmlError) {
-                    e.unblockUI();
-                    jQuery("#htmlerror").html(G.htmlError);
-                    showOverlay(jQuery("#html_error"), G.htmlCSS || {});
-                    return
-                }
-                window.location = G.url
+                window.location = I.url
             }, "json");
             e.ajaxSetup({
                 error: null
@@ -1066,11 +1058,11 @@ var GoLite = (function(e) {
         },
         initForEdit: function(D) {
             initModeForEdit = true;
-            var J = golite_theme != "talkingpicz";
+            var K = golite_theme != "talkingpicz";
             b = D.enc_mid;
-            var N = e("#templates div.item").length;
+            var O = e("#templates div.item").length;
             var y = false;
-            for (var O = 0; O < N; O++) {
+            for (var P = 0; P < O; P++) {
                 if (t.data("tid") == D.enc_tid) {
                     y = true;
                     break
@@ -1081,114 +1073,115 @@ var GoLite = (function(e) {
                 return false
             }
             u = D.opening_closing;
-            var K, R;
+            var L, S;
             for (var C in D.characters[0]) {
                 if (D.characters[0][C] == 1) {
-                    K = C
+                    L = C
                 }
             }
             for (var C in D.characters[1]) {
                 if (D.characters[1][C] == 2) {
-                    R = C
+                    S = C
                 }
             }
-            var T, M, I, P, Q, w, A, E, z;
-            var V = J ? l[0].findCharacterPosById(K) : "";
-            var U = J ? l[1].findCharacterPosById(R) : "";
-            if (J) {
-                if (V < 0 || U < 0) {
-                    var H, G, L, S;
-                    if (V < 0) {
-                        H = 0;
-                        G = K;
-                        L = D.char_cids[0];
-                        S = jQuery(".snippets div.item").clone();
-                        S.attr("data-cid", G);
-                        S.attr("data-voice", "eric");
-                        S.attr("data-thumb", customCCHeadsBaseUrl + L + ".png");
-                        jQuery("img", S).attr("src", customCCThumbsBaseUrl + L + ".png");
-                        S.appendTo("div.character div.items");
-                        GoLite.addCC(null, H)
+            var U, N, J, Q, R, w, A, F, z;
+            var W = K ? l[0].findCharacterPosById(L) : "";
+            var V = K ? l[1].findCharacterPosById(S) : "";
+            if (K) {
+                var E = "joey";
+                if (W < 0 || V < 0) {
+                    var I, H, M, T;
+                    if (W < 0) {
+                        I = 0;
+                        H = L;
+                        M = D.char_cids[0];
+                        T = jQuery(".snippets div.item").clone();
+                        T.attr("data-cid", H);
+                        T.attr("data-voice", E);
+                        T.attr("data-thumb", customCCHeadsBaseUrl + M + ".png");
+                        jQuery("img", T).attr("src", customCCThumbsBaseUrl + M + ".png");
+                        T.appendTo("div.character div.items");
+                        GoLite.addCC(null, I)
                     }
-                    if (U < 0) {
-                        H = 1;
-                        G = R;
-                        L = D.char_cids[1];
-                        S = jQuery(".snippets div.item").clone();
-                        S.attr("data-cid", G);
-                        S.attr("data-voice", "eric");
-                        S.attr("data-thumb", customCCHeadsBaseUrl + L + ".png");
-                        jQuery("img", S).attr("src", customCCThumbsBaseUrl + L + ".png");
-                        S.appendTo("div.character div.items");
-                        GoLite.addCC(null, H)
+                    if (V < 0) {
+                        I = 1;
+                        H = S;
+                        M = D.char_cids[1];
+                        T = jQuery(".snippets div.item").clone();
+                        T.attr("data-cid", H);
+                        T.attr("data-voice", E);
+                        T.attr("data-thumb", customCCHeadsBaseUrl + M + ".png");
+                        jQuery("img", T).attr("src", customCCThumbsBaseUrl + M + ".png");
+                        T.appendTo("div.character div.items");
+                        GoLite.addCC(null, I)
                     }
                 }
             }
             var B = D.script.length;
-            for (var O = 0; O < B; O++) {
-                I = D.script[O].char_num;
-                P = I - 1;
-                Q = i ? D.script[O].facial[I] : "";
-                w = D.script[O].aid;
-                A = D.script[O].cid;
-                E = D.script[O].sorder;
-                z = D.script[O].voice;
-                thisText = D.script[O].text;
-                thisType = D.script[O].type;
-                if (O > 0) {
+            for (var P = 0; P < B; P++) {
+                J = D.script[P].char_num;
+                Q = J - 1;
+                R = i ? D.script[P].facial[J] : "";
+                w = D.script[P].aid;
+                A = D.script[P].cid;
+                F = D.script[P].sorder;
+                z = D.script[P].voice;
+                thisText = D.script[P].text;
+                thisType = D.script[P].type;
+                if (P > 0) {
                     if (i) {
                         GoLite.insertDialog({
-                            charId: P,
-                            facial: Q,
+                            charId: Q,
+                            facial: R,
                             focus: false
                         })
                     } else {
                         GoLite.insertDialog({
-                            charId: P,
+                            charId: Q,
                             focus: false
                         })
                     }
                     e(document).trigger("insert.scriptDialog");
-                    T = jQuery("#dialogs .dialog:not(.fake)");
-                    M = T.eq(O)
+                    U = jQuery("#dialogs .dialog:not(.fake)");
+                    N = U.eq(P)
                 } else {
-                    T = jQuery("#dialogs .dialog:not(.fake)");
-                    M = T.eq(0);
-                    M.data("charId", P);
+                    U = jQuery("#dialogs .dialog:not(.fake)");
+                    N = U.eq(0);
+                    N.data("charId", Q);
                     if (i) {
-                        M.trigger("updateFacial", [Q, facialExpression.name(Q)])
+                        N.trigger("updateFacial", [R, facialExpression.name(R)])
                     }
                 }
-                M.data("aid", w);
-                M.data("aidbkup", w);
-                M.data("textbkup", thisText);
-                M.data("voicebkup", z);
-                M.data("sorder", E);
-                M.data("voice", z);
-                if (J) {
-                    var F = l[P].findCharacterPosById(A);
-                    l[P].gotoByOffset(F);
-                    a[P] = l[P].getItem();
-                    a[P].data("voice", z)
+                N.data("aid", w);
+                N.data("aidbkup", w);
+                N.data("textbkup", thisText);
+                N.data("voicebkup", z);
+                N.data("sorder", F);
+                N.data("voice", z);
+                if (K) {
+                    var G = l[Q].findCharacterPosById(A);
+                    l[Q].gotoByOffset(G);
+                    a[Q] = l[Q].getItem();
+                    a[Q].data("voice", z)
                 }
-                M.data("method", D.dialog_methods[O]);
-                M.trigger("initInput", [w]);
-                if (M.data("method") == "mic") {
-                    e(".dialog_" + M.data("method"), M).siblings().removeClass("on").end().addClass("on")
+                N.data("method", D.dialog_methods[P]);
+                N.trigger("initInput", [w]);
+                if (N.data("method") == "mic") {
+                    e(".dialog_" + N.data("method"), N).siblings().removeClass("on").end().addClass("on")
                 }
-                if (M.data("method") == "tts") {
-                    M.find(".dialog_input").val(thisText).trigger("change");
-                    M.find(".counter").hide()
+                if (N.data("method") == "tts") {
+                    N.find(".dialog_input").val(thisText).trigger("change");
+                    N.find(".counter").hide()
                 }
             }
-            if (J) {
-                var V = l[0].findCharacterPosById(K);
-                var U = l[1].findCharacterPosById(R);
-                if (V >= 0) {
-                    l[0].gotoByOffset(V)
+            if (K) {
+                var W = l[0].findCharacterPosById(L);
+                var V = l[1].findCharacterPosById(S);
+                if (W >= 0) {
+                    l[0].gotoByOffset(W)
                 }
-                if (U >= 0) {
-                    l[1].gotoByOffset(U)
+                if (V >= 0) {
+                    l[1].gotoByOffset(V)
                 }
             }
             jQuery(document).trigger("GoLite.stateChange", []);
@@ -1209,18 +1202,15 @@ var GoLite = (function(e) {
                     c = 0
                 } else {
                     c = 1;
-                    if (y.plus == 1 || y.role == "admin") {
+                    if (y.plus == 1) {
                         c = 2;
-                        if (y.business == 1 || y.role == "admin") {
-                            c = 3
-                        }
                         e("#templates .plus-cover").remove();
-                        e(".plus-character").html(e(".snippets .plus-char-txt").clone());
+                        e(".plus-character").html("<strong>Premium Character</strong>");
                         e("#dialogs .max").hide()
                     }
                     e("div.character .customlink").addClass(y.plus == 1 ? "isplus" : "isbasic")
                 }
-                e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c >= 2);
+                e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c == 2);
                 e("#dialogs .upsell, #step4 .upsell").toggle(c < 2);
                 g();
                 if (w && typeof w == "function") {
@@ -1228,8 +1218,18 @@ var GoLite = (function(e) {
                 }
             }, "json")
         },
-        getFunc(t) {
-            return t;
+        showSelectCCOverlay: function(y) {
+            var w = GoLite.getCharacters();
+            var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(),y,(c >= 2));
+            z.setDefaultCharacterById(w[y].data("cid"));
+            z.setDefaultVoice(w[y].data("voice"));
+            z.show()
+        },
+        showSelectVoiceOverlay: function(y) {
+            var w = GoLite.getCharacters();
+            var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(),y,(c >= 2));
+            z.setDefaultVoice(w[y].data("voice"));
+            z.show()
         },
         addCC: function(y, w) {
             e.each(l, function(B, A) {
@@ -1242,19 +1242,16 @@ var GoLite = (function(e) {
                     l[B].gotoByOffset(z)
                 }
             })
-        },
-        getWatermarks: function() {
-            b && getWatermarks(b)
         }
     }
-})(jQuery);
-
+}
+)(jQuery);
 function blockUICenterX() {
     $block = jQuery(".blockUI.blockMsg");
     $block.css("left", (jQuery(window).width() - $block.width()) / 2 + jQuery(window).scrollLeft() + "px")
 }
-
-function showOverlay(c) {
+function showOverlay(c, a) {
+    a = a || {};
     var b = {
         padding: 0,
         margin: 0,
@@ -1267,6 +1264,7 @@ function showOverlay(c) {
         backgroundColor: "transparent",
         cursor: "auto"
     };
+    jQuery.extend(b, a);
     jQuery.blockUI({
         message: c,
         css: b,
@@ -1276,9 +1274,32 @@ function showOverlay(c) {
     });
     blockUICenterX()
 }
-
+function showOverlayWithoutCenter(c, a) {
+    a = a || {};
+    var b = {
+        padding: 0,
+        margin: 0,
+        width: "auto",
+        top: -Math.round(screen.width / screen.height),
+        left: "29%",
+        textAlign: "center",
+        color: "#000",
+        border: "none",
+        backgroundColor: "transparent",
+        cursor: "auto"
+    };
+    jQuery.extend(b, a);
+    jQuery.blockUI({
+        message: c,
+        css: b,
+        overlayCSS: {
+            cursor: "auto"
+        }
+    });
+    blockUICenterX()
+}
 function showNotice(c, a) {
-    a = typeof(a) != "undefined" ? a : false;
+    a = typeof (a) != "undefined" ? a : false;
     var b = jQuery('<div class="growlUI"></div>');
     b.toggleClass("error", a);
     b.append("<h1>Notification</h1>");
@@ -1307,29 +1328,9 @@ function showNotice(c, a) {
         }
     })
 }
-var psWin = null,
-    psHook = "";
-
-function popUpgrade(b) {
-    if (psWin && !psWin.closed) {
-        psWin.focus()
-    } else {
-        var a = "https://goanimate.com/business/videoplans?hook=golite.site";
-        if (view_name == "youtube") {
-            a = "http://goanimate.com/?ui=popup&app=youtube&hook=golite.site"
-        }
-        if (b) {
-            a += "&hook=" + b
-        } else {
-            if (psHook) {
-                a += "&hook=" + psHook
-            }
-        }
-        showOverlay(jQuery("#upgrade"));
-        psWin = window.open(a, "gapayment")
-    }
-}
-
+var psWin = null
+  , psHook = "";
+function popUpgrade(a) {}
 function showPublish() {
     if (view_name == "youtube") {
         if (jQuery("#publish").length == 0) {
@@ -1343,15 +1344,24 @@ function showPublish() {
         return
     }
 }
-
+function changePublishSettings(a) {
+    jQuery(".publish_setting_button").removeClass("selected");
+    jQuery("#" + a).addClass("selected");
+    publish_setting = a;
+    if (a == "gallery") {
+        jQuery("#cat_setting").show()
+    } else {
+        jQuery("#cat_setting").hide()
+    }
+}
 function customCharSignup() {
     psHook = "golite_customcharacter.site";
     popUpgrade()
 }
-
-function SelectCCDialog(g, a, c, d) {
-    var f = new VoiceSelectionWidget(jQuery(".voiceselectorwidget", g), d, c);
-    var b = new CCBrowserSimple(jQuery(".ccbrowsercontainer", g), customCC_model);
+function SelectCCDialog(g, a, c) {
+    var d = VoiceCatalog.getModel();
+    var f = new VoiceSelectionWidget(jQuery(".voiceselectorwidget", g),d,c);
+    var b = new CCBrowserSimple(jQuery(".ccbrowsercontainer", g),customCC_model);
     var e = function() {
         if (f.getSelectedVoice() == null) {
             window.alert(GT.gettext("Please select a voice for the character"));
@@ -1410,7 +1420,7 @@ function SelectCCDialog(g, a, c, d) {
             jQuery("#voiceselect_plusupgrade", g).click(function() {
                 popUpgrade("golite_customvoice.site")
             });
-            showOverlay(g);
+            showOverlayWithoutCenter(g);
             f.onChange(function(j) {
                 var h = j.data("voice-info");
                 var i = (!h.plus || c);
@@ -1421,9 +1431,9 @@ function SelectCCDialog(g, a, c, d) {
         }
     }
 }
-
-function SelectVoiceDialog(f, a, b, c) {
-    var e = new VoiceSelectionWidget(jQuery(".voiceselectorwidget", f), c, b);
+function SelectVoiceDialog(f, a, b) {
+    var c = VoiceCatalog.getModel();
+    var e = new VoiceSelectionWidget(jQuery(".voiceselectorwidget", f),c,b);
     var d = function() {
         if (e.getSelectedVoice() == null) {
             window.alert(GT.gettext("Please select a voice for the character"));
@@ -1477,7 +1487,6 @@ function SelectVoiceDialog(f, a, b, c) {
         }
     }
 }
-var VoiceCatalog;
 var VoiceLanguageDisplay = function(b) {
     var a = null;
     b.click(function() {
@@ -1485,20 +1494,30 @@ var VoiceLanguageDisplay = function(b) {
     });
     var c = {
         updateByVoiceId: function(d) {
-            if (VoiceCatalog) {
-                var e = VoiceCatalog.lookupVoiceInfo(d);
-                while (e) {
-                    var f = {
-                        gender: e.sex,
-                        locale: e.locale
-                    };
+            var f;
+            const lang_model = VoiceCatalog.getModel();
+            for (const langId in lang_model) {
+                const i = lang_model[langId]['options'].find(i => i.id == d);
+                if (i) f = {
+                    gender: i.sex,
+                    locale: { 
+                        id: langId, 
+                        lang: i.lang, 
+                        country: i.country, 
+                        desc: lang_model[langId].desc 
+                    }
+                };
+            }
+            const interval = setInterval(() => {
+                if (f) {
                     if ((a && a.gender) != f.gender || (a && a.locale) != f.locale) {
                         a = f;
                         b.find(".gender").removeClass().addClass("gender " + f.gender);
                         b.find(".lang").removeClass().addClass("lang " + (f.locale.country || ("lg_" + f.locale.lang)))
                     }
+                    clearInterval(interval);
                 }
-            }
+            }, 1000)
         }
     };
     return c
@@ -1530,18 +1549,21 @@ var VoiceLanguageDisplay = function(b) {
             }).bind("onPropertyChange", function() {
                 d.checkForEmpty()
             })
-        };
+        }
+        ;
         d.fadeOnFocus = function() {
             if (d.showing) {
                 d.setOpacity(d.options.fadeOpacity)
             }
-        };
+        }
+        ;
         d.setOpacity = function(f) {
             d.$label.stop().animate({
                 opacity: f
             }, d.options.fadeDuration);
             d.showing = (f > 0)
-        };
+        }
+        ;
         d.checkForEmpty = function(f) {
             if (d.$field.val() == "") {
                 d.prepForShow();
@@ -1549,7 +1571,8 @@ var VoiceLanguageDisplay = function(b) {
             } else {
                 d.setOpacity(0)
             }
-        };
+        }
+        ;
         d.prepForShow = function(f) {
             if (!d.showing) {
                 d.$label.css({
@@ -1559,7 +1582,8 @@ var VoiceLanguageDisplay = function(b) {
                     d.hideOnChange(g)
                 })
             }
-        };
+        }
+        ;
         d.hideOnChange = function(f) {
             if ((f.keyCode == 16) || (f.keyCode == 9)) {
                 return
@@ -1569,9 +1593,11 @@ var VoiceLanguageDisplay = function(b) {
                 d.showing = false
             }
             d.$field.unbind("keydown.infieldlabel")
-        };
+        }
+        ;
         d.init()
-    };
+    }
+    ;
     a.InFieldLabels.defaultOptions = {
         fadeOpacity: 0.5,
         fadeDuration: 300
@@ -1585,7 +1611,36 @@ var VoiceLanguageDisplay = function(b) {
             var d = a(this).find("input[type='text'],input[type='password'],textarea");
             if (d.length == 0) {
                 return
-            }(new a.InFieldLabels(c[0], d[0], b))
+            }
+            (new a.InFieldLabels(c[0],d[0],b))
         })
     }
-})(jQuery);
+}
+)(jQuery);
+(function(b) {
+    function a() {
+        b(".btn-group").each(function() {
+            var d = b(this);
+            var e = function() {
+                d.addClass("open");
+                b("body").bind("click", c)
+            };
+            var c = function(f) {
+                if (b(f.target).closest(".dropdown-menu").length == 0) {
+                    d.removeClass("open");
+                    b("body").unbind("click", c)
+                }
+            };
+            b(".dropdown-toggle", d).click(function(f) {
+                if (d.hasClass("open")) {
+                    c(f)
+                } else {
+                    e()
+                }
+                f.stopPropagation()
+            })
+        })
+    }
+    b(document).ready(a)
+}
+)(jQuery);

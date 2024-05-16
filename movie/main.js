@@ -12,7 +12,7 @@ module.exports = {
 		console.log(c1, c2);
 		return new Promise((resolve, reject) => {
 			moviearray = [];
-			const xml2js = require('jyvee-xml2js');
+			const xml2js = require('xml2js');
 
 			function xmlToJson(xmlString) {
 				return new Promise((resolve, reject) => {
@@ -34,16 +34,16 @@ module.exports = {
 			moviearray = [];
 			let moviexml;
 			console.log(theme);
-			if (fs.existsSync(`${__dirname}/../../_TEMPLATES/${id}_${theme}.xml`)) {
-				moviexml = fs.readFileSync(`${__dirname}/../../_TEMPLATES/${id}_${theme}.xml`).toString();
-				settings = JSON.parse(fs.readFileSync(`${__dirname}/../../_TEMPLATES/${id}_${theme}.json`).toString());
+			if (fs.existsSync(`./_TEMPLATES/${id}_${theme}.xml`)) {
+				moviexml = fs.readFileSync(`./_TEMPLATES/${id}_${theme}.xml`).toString();
+				settings = JSON.parse(fs.readFileSync(`./_TEMPLATES/${id}_${theme}.json`).toString());
 			}
-			else return resolve({ "success": false });
+			else return reject("The selected template does not exist.")
 			//let jObj = "";
 			const xmlJs = require('xml-js');
 			let scenejsoncache = [];
-			xmlToJson(moviexml)
-				.then(async jsonOutput => {
+			xmlToJson(moviexml).then(async jsonOutput => {
+				try {
 					//Add the first scene timings
 					for (let v of settings.toffset) {
 						scenetimes.unshift(v);
@@ -350,20 +350,13 @@ module.exports = {
 						sound = 4;
 						let endingformat = settings.audioOffset;
 						for (let i = 1; i < micids.length; i++) {
-							scenejsoncache.push(`
-			<sound id="SOUND${sound}" index="${i + 1}" track="0" vol="1" tts="1">
-			<sfile>ugc.${micids[i]}</sfile>
-			<start>${(Math.round(times[settings.toffset.length + i - 1]) * 24) + endingformat}</start>
-			<stop>${(Math.round(times[settings.toffset.length + i]) * 24) + (times[settings.toffset.length + i - 1] * 24) + endingformat}</stop>
-			<fadein duration="0" vol="0"/>
-			<fadeout duration="0" vol="0"/>
-			<ttsdata>
-			<type><![CDATA[tts]]></type>
-			<text><![CDATA[poop]]></text>
-			<voice><![CDATA[converted from the qvm]]></voice>
-			</ttsdata>
-			</sound>
-			`);
+							scenejsoncache.push(`<sound id="SOUND${sound}" index="${i + 1}" track="0" vol="1" tts="1">
+							<sfile>ugc.${micids[i]}</sfile>
+							<start>${(Math.round(times[settings.toffset.length + i - 1]) * 24) + endingformat}</start>
+							<stop>${(Math.round(times[settings.toffset.length + i]) * 24) + (times[settings.toffset.length + i - 1] * 24) + endingformat}</stop>
+							<fadein duration="0" vol="0"/>
+							<fadeout duration="0" vol="0"/>
+							</sound>`);
 							sound += 2;
 							endingformat = (Math.round(times[settings.toffset.length + i - 1]) * 24) + endingformat;
 						}
@@ -384,7 +377,11 @@ module.exports = {
 						}
 						fs.writeFileSync('./previews/template.xml', moviearray + scenejsoncache.join("") + "</film>");
 						//console.log("ITS DONE!");
-					})
+					} catch (e) {
+						console.log(e);
+						reject(e);
+					}
+				})
 			resolve({ "success": true });
 		});
 	},

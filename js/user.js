@@ -326,39 +326,16 @@ function logout(t) {
     });
 }
 function loggedIn(user) {
-    jQuery.extend(CCStandaloneBannerAdUI, {
-        actionshopSWF: "/static/tommy/2011/animation/actionshop.swf",
-        apiserver: window.location.origin + "/",
-        clientThemePath: "/static/tommy/2011/<client_theme>",
-        userId: user.uid || user.id
-    });
-    jQuery.post(`/api/getUserSWFFiles?userId=${user.uid || user.id}`, files => {
-        for (const file of files) {
-            $("#FlashGamePlayer_swfFilesDropdown").show();
-            $("#FlashGamePlayer_swfFilesAll").append(`<li><a href="javascript:FlashGameSetup('${file.url}');">${file.id}</a></li>`);
-        }
-    })
     userData = user;
     getSchoolInfo();
-    jQuery.post("/api/check4SavedUserInfo", {
-        displayName: user.displayName || user.name,
-        email: user.email,
-        role: user.role,
-        admin: user.admin,
-        uid: user.uid || user.id
-    }, () => {
-        jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
-            const json = JSON.parse(d);
-            addVal2Element('freeconvert-key', json.freeConvertKey);
-            addVal2Element('topmediaai-key', json.topMediaAIKey);
-            if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
-        })
-    });
     hideElement('signup-button');
     hideElement('login-button');
     showElement('isLogin');
     switch (window.location.pathname) {
-        case "/create": {
+        case "/quickvideo": {
+            reloadCCList();
+            break;
+        } case "/create": {
             checkStudioLoadingStatus();
             reloadCCListForTut();
             break;
@@ -379,68 +356,6 @@ function loggedIn(user) {
             break;
         } case "/movies": {
             refreshMovieList();
-            break;
-        } case "/quickvideo": {
-            GoLite.showSelectCCOverlay = function(y) {
-                jQuery.post("/api/getTextToSpeechVoices", {
-                    uid: user.uid || user.id
-                }, d => {
-                    var w = GoLite.getCharacters();
-                    var z = new SelectCCDialog(jQuery(".snippets .selectccoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
-                    z.setDefaultCharacterById(w[y].data("cid"));
-                    z.setDefaultVoice(w[y].data("voice"));
-                    z.show()
-                });
-            };
-            GoLite.showSelectVoiceOverlay = function(y) {
-                jQuery.post("/api/getTextToSpeechVoices", {
-                    uid: user.uid || user.id
-                }, d => {
-                    var w = GoLite.getCharacters();
-                    var z = new SelectVoiceDialog(jQuery(".snippets .selectvoiceoverlay").clone(), y, GoLite.getFunc('(c >= 2)'), d);
-                    z.setDefaultVoice(w[y].data("voice"));
-                    z.show()
-                });
-            };
-            VoiceCatalog = {
-                lookupVoiceInfo(voice_id) {
-                    jQuery.post("/api/getTextToSpeechVoices", {
-                        uid: user.uid || user.id
-                    }, lang_model => {
-                        console.log(lang_model);
-                        for (var langId in lang_model) {
-                            const voiceInfo = lang_model[langId].options.find(i => i.id == voice_id);
-                            if (voiceInfo) {
-                                return {
-                                    desc: voiceInfo.desc,
-                                    sex: voiceInfo.sex,
-                                    plus: voiceInfo.plus,
-                                    locale: { 
-                                        id: langId, 
-                                        lang: voiceInfo.lang, 
-                                        country: voiceInfo.country, 
-                                        desc: lang_model[langId].desc 
-                                    }
-                                };
-                            }
-                        }
-                        return null;
-                    });
-                },
-                getDefaultVoice() {
-                    jQuery.post("/api/getTextToSpeechVoices", {
-                        uid: user.uid || user.id
-                    }, lang_model => {
-                        console.log(lang_model);
-                        for (var langId in lang_model) {
-                            for (var i = 0; i < lang_model[langId].options.length; i++) {
-                                if (typeof lang_model[langId].options[i].id === 'string') return lang_model[langId].options[i].id;
-                            }
-                        }
-                        return null;
-                    });
-                }
-            };
             break;
         } case "/go_full": {
             $(document).ready(function() {
@@ -511,6 +426,32 @@ function loggedIn(user) {
             break;
         }
     }
+    jQuery.extend(CCStandaloneBannerAdUI, {
+        actionshopSWF: "/static/tommy/2011/animation/actionshop.swf",
+        apiserver: window.location.origin + "/",
+        clientThemePath: "/static/tommy/2011/<client_theme>",
+        userId: user.uid || user.id
+    });
+    jQuery.post(`/api/getUserSWFFiles?userId=${user.uid || user.id}`, files => {
+        for (const file of files) {
+            $("#FlashGamePlayer_swfFilesDropdown").show();
+            $("#FlashGamePlayer_swfFilesAll").append(`<li><a href="javascript:FlashGameSetup('${file.url}');">${file.id}</a></li>`);
+        }
+    })
+    jQuery.post("/api/check4SavedUserInfo", {
+        displayName: user.displayName || user.name,
+        email: user.email,
+        role: user.role,
+        admin: user.admin,
+        uid: user.uid || user.id
+    }, () => {
+        jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
+            const json = JSON.parse(d);
+            addVal2Element('freeconvert-key', json.freeConvertKey);
+            addVal2Element('topmediaai-key', json.topMediaAIKey);
+            if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
+        })
+    });
 }
 function userSignup(email, password, name) {
     signupComplete = true;
