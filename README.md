@@ -1,7 +1,7 @@
 # GoNexus
 
 ## About
-GoNexus is an LVM clone which brings back GoAnimate for Schools and a sort of "continuation" of the obsolete project "GoAnimate For Schools Remastered". It is currently private and closed source but that'll change once the final version is released. This is also a great alternative for FlashThemes if you claim to have the following problems with the site:
+GoNexus is an LVM clone which brings back GoAnimate for Schools and a sort of "continuation" of the obsolete project "GoAnimate for Schools Remastered". It is currently private and closed source but that'll change once the final version is released. This is also a great alternative for FlashThemes if you claim to have the following problems with the site:
 * The site is too slow and loads slow even though I have good Wi-Fi like Starlink
 * I have problems creating an account
 * FlashThemes has serverside crashes, etc.
