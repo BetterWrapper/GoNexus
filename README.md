@@ -35,7 +35,7 @@ Codenames are BetterWrapper, and OrangeAura.
 * Find a new site host for GoNexus (Not done)
 * Add 2 new functional scenes to Slices Of Daily Life (Not done)
 * Release The Final Version Of GoNexus (15% done)
-* Fix characters not loading in the 2010 lvm (Not done)
+* Fix characters not loading in the 2010 LVM (Not done)
 * Refactor School Management System (Almost done)
 * Create an interactive Getting Started Guide (Almost done)
 
