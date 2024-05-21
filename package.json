@@ -1,11 +1,11 @@
 {
-	"name": "betterwrapper-ga4s",
-	"version": "0.0.2",
+	"name": "Nexus",
+	"version": "0.1.0",
 	"scripts": {
 		"start": "node server.js",
 		"test": "nodemon server.js"
 	},
-	"main": "index.js",
+	"main": "server.js",
 	"dependencies": {
 		"@ffmpeg-installer/ffmpeg": "^1.1.0",
 		"bcrypt": "^5.1.1",
@@ -28,6 +28,8 @@
 		"xml-js": "^1.6.11",
 		"xml2js": "github:josephanimate2021/jyvee-xml2js",
 		"xmlbuilder": "~11.0.0",
-		"xmldoc": "^1.1.2"
+		"xmldoc": "^1.1.2",
+		"electron": "^11.5.0",
+		"axios": "*"
 	}
 }

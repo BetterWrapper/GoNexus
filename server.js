@@ -1,7 +1,8 @@
 const fs = require("fs");
 const env = Object.assign(process.env, JSON.parse(fs.readFileSync("./env.json")), JSON.parse(fs.readFileSync("./config.json")));
 const apiKeys = {
-	FreeConvert: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2EiLCJpZCI6IjY0ZTkzOGY3ZWEwMWJhZDg0ZGRiMTg2ZSIsImludGVyZmFjZSI6ImFwaSIsInJvbGUiOiJ1c2VyIiwiZW1haWwiOiJqYWNraWVjcm9zbWFuQGdtYWlsLmNvbSIsInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjkzMDA2MTEwLCJleHAiOjIxNjYzNzAxMTB9.96d6AQ5hwUdpDWIpL0jGDgShkky9NcK_RJAslHjmaRc"
+	FreeConvert: env.API_KEYS.FreeConvert,
+	Typesense: env.API_KEYS.Typesense
 }
 const http = require("http");
 const crypto = require("crypto");
@@ -139,7 +140,7 @@ http
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./tts/info.json'))));
 							break;
-						} case "/api/themes/get": { // list's all themes from the themelist.xml file
+						} case "/api/Gothemes/get": { // list's all themes from the themelist.xml file
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(pse.getThemes()));
 							break;
@@ -1257,5 +1258,5 @@ http
 	}).listen(process.env.PORT || env.SERVER_PORT, '127.0.0.1', async () => {
 		if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 		fs.readdirSync(env.CACHÉ_FOLDER).forEach(file => fs.unlinkSync(`${env.CACHÉ_FOLDER}/${file}`));
-		console.log("GoNexus Has Started.");
+		console.log("Nexus has started.");
 	});

@@ -1,10 +1,10 @@
 {
     "welcome_screen": {
         "header": {
-            "h4": "Welcome To Nexus's Interactive Getting Started Guide!"
+            "h4": "Welcome to Nexus! Let's get started!"
         },
         "body": {
-            "p": "In this guide, you will be learning how to use Nexus with some demos provided in this Guide"
+            "p": "In this guide, you will be learning how to use Nexus with some demos provided in this guide."
         },
         "footer": {
             "small": "If you already know how to use Nexus, click <a href='javascript:skipGuide()'>here</a> to skip this guide."
@@ -24,7 +24,7 @@
             }
         },
         "footer": {
-            "small": "Already made a character? click <a href='javascript:checkUserChars()'>here</a> to go to the theme selection for the lvm."
+            "small": "Already made a character? Click <a href='javascript:checkUserChars()'>here</a> to go to the theme selection for the lvm."
         },
         "prev": "welcome_screen",
         "next": "cc"
@@ -34,19 +34,19 @@
             "h4": "Making A Character"
         },
         "body": {
-            "p": "After you select a theme. the CC from 2016 will load the theme you selected. below you can use it to create your first character.",
+            "p": "After you select a theme, the CC from 2016 will load the theme you selected. Below, you can use it to create your first character.",
             "div": {
                 "class": "getting_started_char_creator"
             }
         },
         "footer": {
-            "small": "Already made a character? click <a href='javascript:checkUserChars()'>here</a> to go to the theme selection for the lvm."
+            "small": "Already made a character? Click <a href='javascript:checkUserChars()'>here</a> to go to the theme selection for the lvm."
         },
         "prev": "char_themes_selector"
     },
     "cc_success": {
         "header": {
-            "h4": "Character Saved"
+            "h4": "Character saved"
         },
         "body": {
             "p": "You character has been saved successfully! Click on the Next button to continue to the next step."
@@ -77,7 +77,7 @@
             "h4": "Making A Video"
         },
         "body": {
-            "p": "After you select a theme. the LVM from 2016 will load the theme you selected. below you can use it to create your first video.",
+            "p": "After you select a theme, the LVM from 2016 will load the theme you selected. below you can use it to create your first video.",
             "div": {
                 "class": "getting_started_video_maker"
             }

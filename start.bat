@@ -1,7 +1,7 @@
 :: Important stuff
 @echo off && cls
 set APP_NAME=Nexus
-set APP_VERSION=0.0.2 Beta
+set APP_VERSION=0.1.0 Beta
 set NODE_ENV=dev
 title %APP_NAME% %APP_VERSION% [Initializing]
 ::::::::::::::::::::
@@ -18,8 +18,8 @@ cls
 
 :: Check for installation
 if not exist node_modules (
-        title %APP_NAME% %APP_VERSION% [Installing dependecies]
-	echo %APP_NAME% does not have it's dependecies installed! Installing dependecies...
+        title %APP_NAME% %APP_VERSION% [Installing dependencies]
+	echo %APP_NAME% does not have it's dependencies installed! Installing dependencies...
 	call npm install
 	cls
 	goto start
