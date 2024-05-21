@@ -1,6 +1,7 @@
 _CACHÉ/
 _SAVED/
 _ASSETS/
+node_modules/
 frames
 # views/includes/usercss.ejs
 .space
@@ -12,4 +13,3 @@ ftContent
 package-lock.json
 # Local Netlify folder
 .netlify
-node_modules/
