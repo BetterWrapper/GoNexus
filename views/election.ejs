@@ -1,0 +1,1068 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Make an Election Video for Free with The Nexus Quick Video Maker!</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="Make Your Own Election Video starring the leading presidential candidates . Add some zing to the West Wing - Click, Drag, Action!">
+        <meta name="keywords" content="Make a video, MovieMaker, Politics, Election, Primary, Obama, Romney, Perry, Bachmann, Paul, Cain, Candidate, Spin, Debate, News, Pundit, Talking Head.">
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        <link href="/qvm_files/buttons.css.gz.css" rel="stylesheet" type="text/css">
+        <link href="/static/qvm/templates/politics/theme.css" rel="stylesheet" type="text/css">
+        <link href="/qvm_files/voiceselectionwidget.css.gz.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans:bold|Anton" rel="stylesheet" type="text/css">
+        <!--[if lt IE 9]>
+            <link href="http://lightspeed.goanimate.com/static/285/go/css/script2cartoon/ie.css" rel="stylesheet" type="text/css">
+        <![endif]-->
+        <link href="/qvm_files/school_golite.css.gz.css" rel="stylesheet" type="text/css">
+        <script>
+            var srv_tz_os = -5, 
+                view_name = "school", 
+                user_cookie_name = "u_info", 
+                golite_theme = "politics";
+        </script>
+        <script src="/qvm_files/jquery-1.4.4.min.js.gz.js"></script>
+        <script src="/qvm_files/jquery-ui.1.8.16.custom.min.js"></script>
+        <script src="/qvm_files/jquery.blockUI.js.gz.js"></script>
+        <script src="/qvm_files/jquery.scrollTo.min.js.gz.js"></script>
+        <script src="/qvm_files/jquery.jplayer.min.js.gz.js"></script>
+        <script src="/qvm_files/jquery.tmpl.min.js.gz.js"></script>
+        <script src="/qvm_files/lite_politics.js"></script>
+        <script src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
+        <script src="/qvm_files/Gettext.js.gz.js"></script>
+        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+        <script type="text/javascript">
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({
+                locale_data: json_locale_data
+            });
+        </script>
+    </head>
+    <body id="school">
+        <script>
+            GoLite.settings.player = {
+                swf: "/static/tommy/2012/animation/player.swf",
+                height: 384,
+                width: 550
+            }
+            GoLite.settings.thumbnailChooser = {
+                swf: "/static/qvm/thumbnailChooser.swf",
+                height: 170,
+                width: 295
+            }
+            VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
+            jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
+                apiserver: "/qvm_micRecord_",
+                u_info: ""
+            });
+            function stepTo(step) {
+                var settings = {
+                    duration: 1500,
+                    offset: {
+                        top: -10
+                    }
+                };
+                // auto focus dialog input
+                if (step == '#step3') settings.onAfter = function() { jQuery('#dialogs .focus .dialog_input').focus(); };
+                jQuery.scrollTo(step, settings);
+            }
+        </script>
+        <div id="bg"></div>
+        <div id="container">
+            <div id="nav_links">
+                <div class="inside">
+                    <ul>
+                        <li class="home" title="Back to Home">
+                            <a href="/create" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');">
+                                Home
+                            </a>
+                        </li>
+                        <li class="seperate">&nbsp;</a>
+                            <li class="intro on"><a onclick="stepTo('#intro')">0</a></li>
+                            <li class="step1"><a onclick="stepTo('#step1');">1</a></li>
+                            <li class="step2"><a onclick="stepTo('#step2');">2</a></li>
+                            <li class="step3"><a onclick="stepTo('#step3');">3</a></li>
+                            <li class="step4"><a onclick="GoLite.preview();stepTo('#step4');">4</a></li>
+                            <li class="seperate">&nbsp;</a>
+                            <li class="next" title="Next step"><a>Next</a></li>
+                            <li class="prev" title="Previous step"><a>Previous</a></li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div id="login_bar" style="display:none">
+                    <div class="inside">
+                        You'll need to signup to save your video.  Do it now.		
+                        <div class="options">
+                            <a href="javascript:jQuery.blockUI()" onclick="updateUserState(response => {
+                                jQuery.unblockUI();
+                                setTimeout(() => {
+                                    if (GoLite.userData) jQuery('#login_bar').slideUp()
+                                    showNotice(response)
+                                }, 500);
+                            });">Confirm Account</a> -
+                            <a id="login_link" href="#">Login</a> -
+                            <a id="signup_link" href="#">Sign up</a>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    jQuery('#login_link').click(function(e) {
+                        e.preventDefault();
+                        showOverlay(jQuery('#login'));
+                        jQuery('#login_email').focus();
+                    });
+                    jQuery('#signup_link').click(function(e) {
+                        e.preventDefault();
+                        showOverlay(jQuery('#signup'), {top: '80px'});
+                        jQuery('#email').focus();
+                    });
+                </script>
+                <div id="intro" class="section">
+                    <div class="inside">
+                        <h1>Put some Zing in the West Wing!</h1>
+                        <h2>Make Your Own Animated Election Video</h2>
+                        <p>
+                            Why should the candidates have all the fun? 
+                            How come regular folks never get to sidestep questions, stick to the party line or blame the other team? 
+                            Well, GoAnimate says you can! Get your keyboard or mic ready, and let's hear the pols tell it like it is!
+                        </p>
+                    </div>
+                    <div class="featured">
+                        <h3>Featured Videos</h3>
+                        <div id="featured_videos">
+                            <!--<a class="featured_video" data-mid="00BjXldckeuA" data-author="lipko" data-authorUrl="http://goanimate.com/user/09836_B000Js" href="http://goanimate.com/movie/00BjXldckeuA/1">
+                                <img src="http://goanimate.com//files/thumbnails/movie/1888/1978888/7409947.jpg" alt="The GNN Debate" />
+                                <span class="caption">The GNN Debate</span>
+                            </a>-->
+                        </div>
+                        <div id="overlay-player" class="lightbox" style="display:none">
+                            <div class="lightbox_wrapper">
+                                <div class="overlay-player-container"></div>
+                                <a onclick="jQuery('.overlay-player-container').empty();jQuery.unblockUI();stepTo('#step1');" class="btn_next">
+                                    Make Your Own
+                                </a>
+                                <a onclick="jQuery('.overlay-player-container').empty();jQuery.unblockUI();" class="close_btn">&#215;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="btn_next" href="#step1" onclick="stepTo('#step1'); return false;">Go!</a>
+                    <a class="by_ga" href="https://vyond.com" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');"></a>
+                </div>
+                <script id="previewTmpl" type="text/x-jquery-tmpl">
+                    <div class="sharer"></div>
+                    <iframe src="https://nexus.loophole.site/player/embed?movieId=${movieId}?autostart=1&sharer=1" id="iframe_player" allowtransparency="true" frameborder="0" height="390" scrolling="no" width="550"></iframe>
+                    <div class="movie-info clearfix">
+                        <a class="movie-info-title" target="_blank" href="https://nexus.loophole.site/public_movie?movieId=${movieId}">
+                            ${movieTitle}
+                        </a>
+                        <span class="movie-info-author">by <a target="_blank" href="${authorUrl}">${author}</a></span>
+                    </div>
+                </script>
+                <div id="seperator0"></div>
+                <div id="step1" class="section">
+                    <h2>Select a setting for your political skit</h2>
+                    <a class="previous_step" href="#intro" onclick="stepTo('#intro'); return false;">Back</a>
+                    <div class="inside">
+                        <div id="templates" class="item_selector clearfix">
+                            <div class="items">
+                                <div class="item" data-tid="0C1w43Ra9goA" data-thumb="/static/qvm/templates/politics/thumb/6898641.jpg" title="The Pub" data-desc="“FlipFloppers” pub. Where thirsts are quenched, whistles are wet and many ships have been sunk by loose lips. Can these candidates keep up their guard, while throwing darts and accusations at each other? Make your own video!" data-charlimit="4">
+                                    <img src="/static/qvm/templates/politics/img/step01/bg05.jpg"/>
+                                    <div class="host_wrapper">
+                                        <h3>Bartender</h3>
+                                        <div class="hosts">
+                                            <div class="host selected" data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_bar_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.rush_limbaugh02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host1_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host1_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.glenn_beck02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host2_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host2_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.jon_stewart02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host3_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host3_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.katie_couric02" title="Journalist" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_host4_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host4_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.banker02" title="Wall St. Banker" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_banker_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_banker_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.protester02" title="Protester" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_demonstrator_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_demonstrator_whole.png"/>
+                                            </div>
+                                        </div>
+                                        <a title="Previous host" class="control_button prev">&lt;</a>
+                                        <a title="Next host" class="control_button next">&gt;</a>
+                                    </div>
+                                </div>
+                                <div class="item selected" data-tid="0-t3GZ0EqU0Q" data-thumb="/static/qvm/templates/politics/thumb/6898653.jpg" title="The Debate Stage" data-desc="Living rooms across the nation are eerily silent. Entire families stop arguing and stare at the television. The answers are short and scripted. Will someone get pushed out of their comfort zone? Don't blink or you'll miss it." data-charlimit="4">
+                                    <img src="/static/qvm/templates/politics/img/step01/bg04.jpg"/>
+                                    <div class="host_wrapper">
+                                        <h3>Host</h3>
+                                        <div class="hosts">
+                                            <div class="host" data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_bar_whole.png"/>
+                                            </div>
+                                            <div class="host selected" data-cid="politics2.rush_limbaugh02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host1_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host1_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.glenn_beck02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host2_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host2_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.jon_stewart02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host3_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host3_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.katie_couric02" title="Journalist" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_host4_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host4_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.banker02" title="Wall St. Banker" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_banker_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_banker_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.protester02" title="Protester" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_demonstrator_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_demonstrator_whole.png"/>
+                                            </div>
+                                        </div>
+                                        <a title="Previous host" class="control_button prev">&lt;</a>
+                                        <a title="Next host" class="control_button next">&gt;</a>
+                                    </div>
+                                </div>
+                                <div class="item" data-tid="03xFwRgj3fTk" data-thumb="/static/qvm/templates/politics/thumb/6898618.jpg" title="The Talk Show" data-desc="Late Night. Politically Active Audience. Sharp-tongued host who's a black belt in both “Silly” and “Sarcastic”. Can the candidates to the US presidential election roll with the punches? You make the video!" data-charlimit="4">
+                                    <img src="/static/qvm/templates/politics/img/step01/bg02.jpg"/>
+                                    <div class="host_wrapper">
+                                        <h3>Host</h3>
+                                        <div class="hosts">
+                                            <div class="host" data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_bar_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.rush_limbaugh02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host1_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host1_whole.png"/>
+                                            </div>
+                                            <div class="host selected" data-cid="politics2.glenn_beck02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host2_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host2_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.jon_stewart02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host3_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host3_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.katie_couric02" title="Journalist" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_host4_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host4_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.banker02" title="Wall St. Banker" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_banker_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_banker_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.protester02" title="Protester" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_demonstrator_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_demonstrator_whole.png"/>
+                                            </div>
+                                        </div>
+                                        <a title="Previous host" class="control_button prev">&lt;</a>
+                                        <a title="Next host" class="control_button next">&gt;</a>
+                                    </div>
+                                </div>
+                                <div class="item" data-tid="0YuKeNS2KAvA" data-thumb="/static/qvm/templates/politics/thumb/6898665.jpg" title="The Situation Room" data-desc="What about the debt ceiling? Has the budget been passed? What is the State of the Union? Can the Packers repeat as Super Bowl Champs? This is where the President addresses the nation on issues of the day." data-charlimit="1">
+                                    <img src="/static/qvm/templates/politics/img/step01/bg01.jpg"/>
+                                    <div class="host selected" data-invisible="true" data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png"></div>
+                                </div>
+                                <div class="item" data-tid="0f1UygTaW0F4" data-thumb="/static/qvm/templates/politics/thumb/6898674.jpg" title="Network News" data-desc="Tonight - from Washington, New York, London and Tokyo. Late-breaking news mixed with fun bits from pundits. Sound-bite analysis of the issues of the day. Those who win control the spin. What do your anchors have to say?" data-charlimit="4">
+                                    <img src="/static/qvm/templates/politics/img/step01/bg03.jpg"/>
+                                    <div class="host_wrapper">
+                                        <h3>Host</h3>
+                                        <div class="hosts">
+                                            <div class="host" data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_bar_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.rush_limbaugh02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host1_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host1_whole.png"/>
+                                            </div>
+                                            <div class="host selected" data-cid="politics2.glenn_beck02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host2_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host2_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.jon_stewart02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host3_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host3_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.katie_couric02" title="Journalist" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_host4_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host4_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.banker02" title="Wall St. Banker" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_banker_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_banker_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.protester02" title="Protester" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_demonstrator_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_demonstrator_whole.png"/>
+                                            </div>
+                                        </div>
+                                        <a title="Previous host" class="control_button prev">&lt;</a>
+                                        <a title="Next host" class="control_button next">&gt;</a>
+                                    </div>
+                                </div>
+                                <div class="item" data-tid="0DkTVr_wRG3U" data-thumb="/static/qvm/templates/politics/thumb/7541850.jpg" title="The Park" data-desc="Wall Street is Occupied, and the protesters have a message.  The people want to be heard loud and clear in the place where mortgages mortgaged the world's future.  They may be drinking the Kool-Aid, but they're NOT having a tea party." data-charlimit="1">
+                                    <img src="/static/qvm/templates/politics/img/step01/bg06.jpg"/>
+                                    <div class="host_wrapper">
+                                        <h3>Host</h3>
+                                        <div class="hosts">
+                                            <div class="host" data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_bar_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.rush_limbaugh02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host1_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host1_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.glenn_beck02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host2_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host2_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.jon_stewart02" title="TV host" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_host3_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host3_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.katie_couric02" title="Journalist" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_host4_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_host4_whole.png"/>
+                                            </div>
+                                            <div class="host" data-cid="politics2.banker02" title="Wall St. Banker" data-voice="" data-gender="M" data-thumb="/static/qvm/templates/politics/img/character/char_banker_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_banker_whole.png"/>
+                                            </div>
+                                            <div class="host selected" data-cid="politics2.protester02" title="Protester" data-voice="" data-gender="F" data-thumb="/static/qvm/templates/politics/img/character/char_demonstrator_100.png">
+                                                <img src="/static/qvm/templates/politics/img/character/char_demonstrator_whole.png"/>
+                                            </div>
+                                        </div>
+                                        <a title="Previous host" class="control_button prev">&lt;</a>
+                                        <a title="Next host" class="control_button next">&gt;</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="selector">
+                                <a class="select_button prev" href="#">&lt;</a>
+                                <div class="template_info">
+                                    <div id="template_name"></div>
+                                    <div id="template_desc"></div>
+                                </div>
+                                <a class="select_button next" href="#">&gt;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="btn_next" href="#step2" onclick="stepTo('#step2'); return false;">Next</a>
+                </div>
+                <div id="seperator1">
+                    <a class="by_ga" href="https://vyond.com/" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');"></a>
+                </div>
+                <div id="step2" class="section">
+                    <h2>Select the candidates for your skit</h2>
+                    <a class="previous_step" href="#step1" onclick="stepTo('#step1'); return false;">Back</a>
+                    <div class="inside">
+                        <div id="character_selector">
+                            <div class="character_list_wrapper selected">
+                                <div class="list_title republican" title="Republicans"></div>
+                                <div class="character_list">
+                                    <a data-cid="politics2.mitt_ronmey02" title="Mitt Romney" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_mitt_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_mitt_100.png"><img src="/static/qvm/templates/politics/img/character/char_mitt_100.png" alt=""/></a>
+                                    <a data-cid="politics2.michele_bachman02" title="Michele Bachmann" data-voice="" data-gender="F" data-avatar="/static/qvm/templates/politics/img/character/char_michele_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_michele_100.png"><img src="/static/qvm/templates/politics/img/character/char_michele_100.png" alt=""/></a>
+                                    <a data-cid="politics2.jon_huntsman02" title="Jon Huntsman" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_jon_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_jon_100.png"><img src="/static/qvm/templates/politics/img/character/char_jon_100.png" alt=""/></a>
+                                    <a data-cid="politics2.ron_paul02" title="Ron Paul" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_ron_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_ron_100.png"><img src="/static/qvm/templates/politics/img/character/char_ron_100.png" alt=""/></a>
+                                    <a data-cid="politics2.sarah_palin02" title="Sarah Palin" data-voice="" data-gender="F" data-avatar="/static/qvm/templates/politics/img/character/char_sarah_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_sarah_100.png"><img src="/static/qvm/templates/politics/img/character/char_sarah_100.png" alt=""/></a>
+                                    <a data-cid="politics2.newt_gingrich02" title="Newt Gingrich" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_newt_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_newt_100.png"><img src="/static/qvm/templates/politics/img/character/char_newt_100.png" alt=""/></a>
+                                    <a data-cid="politics2.rick_perry02" title="Rick Perry" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_rick_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_rick_100.png"><img src="/static/qvm/templates/politics/img/character/char_rick_100.png" alt=""/></a>
+                                    <a data-cid="politics2.john_boehner02" title="John Boehner" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_john_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_john_100.png"><img src="/static/qvm/templates/politics/img/character/char_john_100.png" alt=""/></a>
+                                    <a data-cid="politics2.paul_ryan02" title="Paul Ryan" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_paul_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_paul_100.png"><img src="/static/qvm/templates/politics/img/character/char_paul_100.png" alt=""/></a>
+                                    <a data-cid="politics2.rick_santorum02" title="Rick Santorum" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_ricks_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_ricks_100.png"><img src="/static/qvm/templates/politics/img/character/char_ricks_100.png" alt=""/></a>
+                                    <a data-cid="politics2.herman_cain02" title="Herman Cain" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_herman_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_herman_100.png"><img src="/static/qvm/templates/politics/img/character/char_herman_100.png" alt=""/></a>
+                                    <a data-cid="politics2.gary_johnson02" title="Gary Johnson" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_gary_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_gary_100.png"><img src="/static/qvm/templates/politics/img/character/char_gary_100.png" alt=""/></a>
+                                </div>
+                            </div>
+                            <div class="character_list_wrapper">
+                                <div class="list_title democratic" title="Democrats"></div>
+                                <div class="character_list">
+                                    <a data-cid="politics2.barack_obama02" title="Barack Obama" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_barack_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_barack_100.png"><img src="/static/qvm/templates/politics/img/character/char_barack_100.png" alt=""/></a>
+                                    <a data-cid="politics2.joe_biden02" title="Joe Biden" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_joe_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_joe_100.png"><img src="/static/qvm/templates/politics/img/character/char_joe_100.png" alt=""/></a>
+                                    <a data-cid="politics2.hillary_clinton02" title="Hillary Clinton" data-voice="" data-gender="F" data-avatar="/static/qvm/templates/politics/img/character/char_hillary_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_hillary_100.png"><img src="/static/qvm/templates/politics/img/character/char_hillary_100.png" alt=""/></a>
+                                </div>
+                            </div>
+                            <div class="character_list_wrapper">
+                                <div class="list_title" title="Others">Others</div>
+                                <div class="character_list">
+                                    <a data-cid="politics2.rush_limbaugh02" title="TV host" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_host1_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_host1_100.png"><img src="/static/qvm/templates/politics/img/character/char_host1_100.png" alt=""/></a>
+                                    <a data-cid="politics2.glenn_beck02" title="TV host" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_host2_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_host2_100.png"><img src="/static/qvm/templates/politics/img/character/char_host2_100.png" alt=""/></a>
+                                    <a data-cid="politics2.jon_stewart02" title="TV host" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_host3_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_host3_100.png"><img src="/static/qvm/templates/politics/img/character/char_host3_100.png" alt=""/></a>
+                                    <a data-cid="politics2.katie_couric02" title="Journalist" data-voice="" data-gender="F" data-avatar="/static/qvm/templates/politics/img/character/char_host4_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_host4_100.png"><img src="/static/qvm/templates/politics/img/character/char_host4_100.png" alt=""/></a>
+                                    <a data-cid="politics2.bar_tender02" title="Bartender" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_bar_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_bar_100.png"><img src="/static/qvm/templates/politics/img/character/char_bar_100.png" alt=""/></a>
+                                    <a data-cid="politics2.banker02" title="Wall St. Banker" data-voice="" data-gender="M" data-avatar="/static/qvm/templates/politics/img/character/char_banker_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_banker_100.png"><img src="/static/qvm/templates/politics/img/character/char_banker_100.png" alt=""/></a>
+                                    <a data-cid="politics2.protester02" title="Protester" data-voice="" data-gender="F" data-avatar="/static/qvm/templates/politics/img/character/char_demonstrator_whole.png" data-thumb="/static/qvm/templates/politics/img/character/char_demonstrator_100.png"><img src="/static/qvm/templates/politics/img/character/char_demonstrator_100.png" alt=""/></a>
+                                </div>
+                            </div>
+                            <div class="arrow"></div>
+                        </div>
+                        <div id="selected_characters_wrapper">
+                            Your Selected Candidates (<span id="character_nums">0/4</span>):
+                            <div id="selected_characters" class="clearfix">
+                                <div class="dummy">
+                                    <div class="empty_message">Drag Character Here</div>
+                                </div>
+                                <div class="placeholder"></div>
+                                <div class="placeholder"></div>
+                                <div class="placeholder"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="snippets" style="display:none">
+                        <strong class="plus-char-txt">GoPlus Character</strong>
+                        <div class="plus-cover">
+                            <div>
+                                <strong>GoPlus Template</strong> Upgrade to GoPlus to go to the next step.
+                            </div>
+                        </div>
+                        <div class="character" style="display:none">
+                            <a class="remove">Remove</a>
+                            <div class="replace">Drop here to replace</div>
+                        </div>
+                        <div class="dummy">
+                            <div class="empty_message">Drag Character Here</div>
+                        </div>
+                        <div class="selectvoiceoverlay lightbox" style="display:none">
+                            <div class="lightbox_wrapper">
+                                <style type="text/css">
+                                    .selectvoiceoverlay { 
+                                        width: 550px; 
+                                    }
+                                    .selectvoiceoverlay h2 { 
+                                        text-align: center; 
+                                        color: black; 
+                                        margin-bottom: 0px;  
+                                    }
+                                    .selectvoiceoverlay h3 { 
+                                        text-align: center; 
+                                        color: #999999; 
+                                        font-style: oblique; 
+                                        margin-top: 0px; 
+                                        margin-bottom: 2em; 
+                                        font-weight: normal; 
+                                    }
+                                    .selectvoiceoverlay .voiceselectorwidget { 
+                                        margin-left: auto; 
+                                        margin-right: auto; 
+                                    }
+                                    .selectvoiceoverlay a.bottomcancel { 
+                                        float: left; 
+                                        text-align: center; 
+                                        margin: 30px auto; 
+                                        display: block; 
+                                        color: #666666; 
+                                        font-size: 16px; 
+                                        font-weight: bold; 
+                                        text-decoration: none; 
+                                    }
+                                    .selectvoiceoverlay a.bottomcancel:hover { 
+                                        color: #777777; 
+                                        text-decoration: none; 
+                                    }
+                                </style>
+                                <h2>Select a voice for your character</h2>
+                                <h3>This change applies to the whole movie</h3>
+                                <script type="text/javascript">
+                                    var VoiceCatalog = (function() {
+                                        var lang_model = {"en":{"desc":"English","options":[{"id":"amy","desc":"Amy","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_amy.mp3","lang":"en","country":"GB","plus":false},{"id":"brian","desc":"Brian","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_brian.mp3","lang":"en","country":"GB","plus":false},{"id":"emma","desc":"Emma","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_emma.mp3","lang":"en","country":"GB","plus":false},{"id":"eric","desc":"Eric","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_eric.mp3","lang":"en","country":"US","plus":false},{"id":"jennifer","desc":"Jennifer","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_jennifer.mp3","lang":"en","country":"US","plus":false},{"id":"joey","desc":"Joey","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_joey.mp3","lang":"en","country":"US","plus":false},{"id":"kendra","desc":"Kendra","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_kendra.mp3","lang":"en","country":"US","plus":false},{"id":"kimberly","desc":"Kimberly","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_kimberly.mp3","lang":"en","country":"US","plus":false},{"id":"oc_kate","desc":"Kate","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_kate.mp3","lang":"en","country":"US","plus":false},{"id":"oc_paul","desc":"Paul","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_paul.mp3","lang":"en","country":"US","plus":false},{"id":"oc_julie","desc":"Julie","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_julie.mp3","lang":"en","country":"US","plus":false},{"id":"oc_steven","desc":"Steven","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_steven.mp3","lang":"en","country":"US","plus":false},{"id":"oc_susan","desc":"Susan","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_susan.mp3","lang":"en","country":"US","plus":false},{"id":"oc_bridget","desc":"Bridget","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_bridget.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_elizabeth","desc":"Elizabeth","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_elizabeth.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_simon","desc":"Simon","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_simon.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_catherine","desc":"Catherine","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_catherine.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_allison","desc":"Allison","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_allison.mp3","lang":"en","country":"US","plus":false},{"id":"oc_dave","desc":"Dave","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_dave.mp3","lang":"en","country":"US","plus":false},{"id":"oc_alan","desc":"Alan","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_alan.mp3","lang":"en","country":"AU","plus":false},{"id":"oc_grace","desc":"Grace","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_grace.mp3","lang":"en","country":"AU","plus":false},{"id":"oc_veena","desc":"Veena","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_veena.mp3","lang":"en","country":"IN","plus":false}]},"es":{"desc":"Spanish","options":[{"id":"miguel","desc":"Miguel","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_miguel.mp3","lang":"es","country":"US","plus":false},{"id":"penelope","desc":"Pen\u00e9lope","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_penelope.mp3","lang":"es","country":"US","plus":false},{"id":"oc_carmen","desc":"Carmen","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_carmen.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_juan","desc":"Juan","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_juan.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_jorge","desc":"Jorge","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_jorge.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_leonor","desc":"Leonor","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_leonor.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_violeta","desc":"Violeta","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_violeta.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_carlos","desc":"Carlos","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_carlos.mp3","lang":"es","country":"US","plus":false},{"id":"oc_soledad","desc":"Soledad","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_soledad.mp3","lang":"es","country":"US","plus":false},{"id":"oc_ximena","desc":"Ximena","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_ximena.mp3","lang":"es","country":"US","plus":false},{"id":"oc_francisca","desc":"Francisca","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_francisca.mp3","lang":"es","country":"CL","plus":false},{"id":"oc_diego","desc":"Diego","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_diego.mp3","lang":"es","country":"AR","plus":false},{"id":"oc_esperanza","desc":"Esperanza","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_esperanza.mp3","lang":"es","country":"MX","plus":false}]},"pt":{"desc":"Portuguese","options":[{"id":"oc_amalia","desc":"Amalia","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_amalia.mp3","lang":"pt","country":"PT","plus":false},{"id":"oc_eusebio","desc":"Eusebio","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_eusebio.mp3","lang":"pt","country":"PT","plus":false},{"id":"oc_gabriela","desc":"Gabriela","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_gabriela.mp3","lang":"pt","country":"BR","plus":false},{"id":"oc_fernanda","desc":"Fernanda","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_fernanda.mp3","lang":"pt","country":"BR","plus":false},{"id":"oc_felipe","desc":"Felipe","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_felipe.mp3","lang":"pt","country":"BR","plus":false}]},"ja":{"desc":"Japanese","options":[{"id":"oc_show","desc":"Show","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_show.mp3","lang":"ja","country":"JP","plus":false},{"id":"oc_misaki","desc":"Misaki","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_misaki.mp3","lang":"ja","country":"JP","plus":false},{"id":"akari","desc":"Akari","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_akari.mp3","lang":"ja","country":"JP","plus":false},{"id":"nanako","desc":"Nanako","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_nanako.mp3","lang":"ja","country":"JP","plus":false},{"id":"kaho","desc":"Kaho","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_kaho.mp3","lang":"ja","country":"JP","plus":false},{"id":"maki","desc":"Maki","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_maki.mp3","lang":"ja","country":"JP","plus":false},{"id":"anzu","desc":"Anzu","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_anzu.mp3","lang":"ja","country":"JP","plus":false},{"id":"seiji","desc":"Seiji","vendor":"Aij","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_seiji.mp3","lang":"ja","country":"JP","plus":false},{"id":"hiroshi","desc":"Hiroshi","vendor":"Aij","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_hiroshi.mp3","lang":"ja","country":"JP","plus":false},{"id":"koutarou","desc":"Koutarou","vendor":"Aij","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_koutarou.mp3","lang":"ja","country":"JP","plus":false}]},"default":{"desc":"More","options":[{"id":"oc_stefan","desc":"Stefan","vendor":"Oddcast","sex":"M","demo":"","lang":"de","country":"DE","plus":false},{"id":"oc_katrin","desc":"Katrin","vendor":"Oddcast","sex":"F","demo":"","lang":"de","country":"DE","plus":false},{"id":"oc_bernard","desc":"Bernard","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_bernard.mp3","lang":"fr","country":"FR","plus":false},{"id":"oc_jolie","desc":"Jolie","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_jolie.mp3","lang":"fr","country":"FR","plus":false},{"id":"oc_florence","desc":"Florence","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_florence.mp3","lang":"fr","country":"FR","plus":false},{"id":"oc_charlotte","desc":"Charlotte (French)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_charlotte.mp3","lang":"fr","country":"CA","plus":false},{"id":"oc_olivier","desc":"Olivier (French)","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_olivier.mp3","lang":"fr","country":"CA","plus":false},{"id":"oc_montserrat","desc":"Montserrat (Catalan)","vendor":"Oddcast","sex":"F","demo":"","lang":"ca","country":false,"plus":false},{"id":"oc_jordi","desc":"Jordi (Catalan)","vendor":"Oddcast","sex":"M","demo":"","lang":"ca","country":false,"plus":false},{"id":"oc_empar","desc":"Empar (Catalan)","vendor":"Oddcast","sex":"F","demo":"","lang":"ca","country":false,"plus":false},{"id":"oc_paola","desc":"Paola","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_silvana","desc":"Silvana","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_valentina","desc":"Valentina","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_luca","desc":"Luca","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_marcello","desc":"Marcello","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_roberto","desc":"Roberto","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_matteo","desc":"Matteo","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_giulia","desc":"Giulia","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_federica","desc":"Federica","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_afroditi","desc":"Afroditi","vendor":"Oddcast","sex":"F","demo":"","lang":"el","country":"GR","plus":false},{"id":"oc_nikos","desc":"Nikos","vendor":"Oddcast","sex":"M","demo":"","lang":"el","country":"GR","plus":false},{"id":"oc_annika","desc":"Annika","vendor":"Oddcast","sex":"F","demo":"","lang":"sv","country":"SE","plus":false},{"id":"oc_sven","desc":"Sven","vendor":"Oddcast","sex":"M","demo":"","lang":"sv","country":"SE","plus":false},{"id":"oc_willem","desc":"Willem","vendor":"Oddcast","sex":"M","demo":"","lang":"nl","country":"NL","plus":false},{"id":"oc_saskia","desc":"Saskia","vendor":"Oddcast","sex":"F","demo":"","lang":"nl","country":"NL","plus":false},{"id":"oc_zosia","desc":"Zosia","vendor":"Oddcast","sex":"F","demo":"","lang":"pl","country":"PL","plus":false},{"id":"oc_krzysztof","desc":"Krzysztof","vendor":"Oddcast","sex":"M","demo":"","lang":"pl","country":"PL","plus":false},{"id":"oc_carmela","desc":"Carmela (Galician)","vendor":"Oddcast","sex":"F","demo":"","lang":"gl","country":false,"plus":false},{"id":"oc_kerem","desc":"Kerem","vendor":"Oddcast","sex":"M","demo":"","lang":"tr","country":"TR","plus":false},{"id":"oc_zeynep","desc":"Zeynep","vendor":"Oddcast","sex":"F","demo":"","lang":"tr","country":"TR","plus":false},{"id":"oc_selin","desc":"Selin","vendor":"Oddcast","sex":"F","demo":"","lang":"tr","country":"TR","plus":false},{"id":"oc_frida","desc":"Frida","vendor":"Oddcast","sex":"F","demo":"","lang":"da","country":"DK","plus":false},{"id":"oc_magnus","desc":"Magnus","vendor":"Oddcast","sex":"M","demo":"","lang":"da","country":"DK","plus":false},{"id":"oc_vilde","desc":"Vilde","vendor":"Oddcast","sex":"F","demo":"","lang":"no","country":false,"plus":false},{"id":"oc_henrik","desc":"Henrik","vendor":"Oddcast","sex":"M","demo":"","lang":"no","country":false,"plus":false},{"id":"oc_olga","desc":"Olga","vendor":"Oddcast","sex":"F","demo":"","lang":"ru","country":"RU","plus":false},{"id":"oc_dmitri","desc":"Dmitri","vendor":"Oddcast","sex":"M","demo":"","lang":"ru","country":"RU","plus":false},{"id":"oc_milla","desc":"Milla","vendor":"Oddcast","sex":"F","demo":"","lang":"fi","country":"FI","plus":false},{"id":"oc_marko","desc":"Marko","vendor":"Oddcast","sex":"M","demo":"","lang":"fi","country":"FI","plus":false},{"id":"oc_ioana","desc":"Ioana","vendor":"Oddcast","sex":"F","demo":"","lang":"ro","country":"RO","plus":false},{"id":"oc_ludoviko","desc":"Ludoviko (Esperanto)","vendor":"Oddcast","sex":"M","demo":"","lang":"eo","country":false,"plus":false},{"id":"oc_yumi","desc":"Yumi","vendor":"Oddcast","sex":"F","demo":"","lang":"ko","country":"KR","plus":false},{"id":"oc_junwoo","desc":"Junwoo","vendor":"Oddcast","sex":"M","demo":"","lang":"ko","country":"KR","plus":false},{"id":"oc_linlin","desc":"Linlin (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_linlin.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_lisheng","desc":"Lisheng (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_lisheng.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_lily","desc":"Lily (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_lily.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_hui","desc":"Hui (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_hui.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_liang","desc":"Liang (Mandarin)","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_liang.mp3","lang":"zh","country":"CN","plus":false}]}};
+                                        return {
+                                            getModel: function() {
+                                                return lang_model;
+                                            },
+                                            lookupVoiceInfo: function(voice_id) {
+                                                for (var langId in lang_model) {
+                                                    for (var i=0; i<lang_model[langId]['options'].length; i++) {
+                                                        if (lang_model[langId]['options'][i].id == voice_id) {
+                                                            return {
+                                                                desc: lang_model[langId]['options'][i].desc,
+                                                                sex: lang_model[langId]['options'][i].sex,
+                                                                plus: lang_model[langId]['options'][i].plus,
+                                                                locale: { 
+                                                                    id: langId, 
+                                                                    lang: lang_model[langId]['options'][i].lang, 
+                                                                    country: lang_model[langId]['options'][i].country, 
+                                                                    desc: lang_model[langId].desc 
+                                                                }
+                                                            };
+                                                        }
+                                                    }
+                                                }
+                                                return null;
+                                            }
+                                        };
+                                    })();
+                                </script>
+                                <div class="voiceselectorwidget">
+                                    <div class="voiceselector"></div>
+                                    <!-- Templates -->
+                                    <div class="templates" style="display: none">
+                                        <!-- Voice list -->
+                                        <div class="categorytab">
+                                            <div class="flag" title="Language"></div>
+                                            <div class="masteroptionscontainer">
+                                                <div class="optionscontainer"></div>
+                                            </div>
+                                        </div>
+                                        <!-- Voice option -->
+                                        <div class="option">
+                                            <div class="cflag"></div>
+                                            <div class="sex"></div>
+                                            <span class="label"></span>
+                                            <span class="plus"> 
+                                                (Only for GoPlus)
+                                            </span>
+                                            <div class="playercontrol">
+                                                <div class="button play"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="jplayer"></div>
+                                </div>
+                                <div style="overflow: auto; padding-left: 85px;">
+                                    <a href="javascript:;" class="buttonbase buttonorange" id="voiceselectonly_confirm" style="margin:15px auto;float:left;display:block;">
+                                        <div class="buttontitle">Confirm</div>
+                                    </a>
+                                    <a href="javascript:;" class="buttonbase buttonblue dark" id="voiceselectonly_plusupgrade" style="margin:15px auto;float:left;display:none;">
+                                        <div class="buttontitle">Upgrade Now</div>
+                                    </a>
+                                    <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel">
+                                        <div style="width: 180px">Cancel</div>
+                                    </a>
+                                </div>
+                                <a onclick="jQuery.unblockUI()" class="close_btn">&#215;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="btn_next" href="#step3" onclick="stepTo('#step3'); return false;">Next</a>
+                </div>
+                <div id="seperator2">
+                    <a class="by_ga" href="https:/vyond.com/" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');"></a>
+                </div>
+                <div id="step3" class="section">
+                    <h2>
+                        <span>Type in or Record Your dialog</span>
+                    </h2>
+                    <a class="previous_step" href="#step2" onclick="stepTo('#step2'); return false;">Back</a>
+                    <div id="dialog_wrapper">
+                        <div id="dialogs" style="display:none">
+                            <div class="dialog focus" data-charid="0" data-facial="default">
+                                <div class="num">1</div>
+                                <div class="char_thumb">
+                                    <img src="/static/qvm/templates/politics/img/character/char_host1_100.png" alt="">
+                                    <a class="switch">Switch</a>
+                                    <div class="tips">Switch Actor</div>
+                                </div>
+                                <div class="box">
+                                    <div class="dialog_input_wrapper">
+                                        <textarea class="dialog_input" name="script_text[]"></textarea>
+                                        <span class="label">Type in or Record Your dialog</span>
+                                    </div>
+                                    <div class="counter" style="display:none;"></div>
+                                    <div class="voice_recorder"></div>
+                                    <div class="dialog_options">
+                                        <a class="dialog_switch">
+                                            Actor
+                                            <span class="tips">Switch Actor</span>
+                                        </a>
+                                        <a class="dialog_facial">
+                                            Emotion
+                                            <span class="tips">Switch Emotion</span>
+                                        </a>
+                                        <div class="langarea">
+                                            <div class="lang"></div>
+                                            <div class="gender"></div>
+                                            Voice						
+                                            <div class="tips">Switch Voice</div>
+                                        </div>
+                                    </div>
+                                    <div class="dialog_input_control">
+                                        <a class="dialog_tts on" data-method="tts">
+                                            <div class="icon"></div>
+                                            <span class="tips">Text to Speech</span>
+                                        </a>
+                                        <a class="dialog_mic" data-method="mic">
+                                            <div class="icon"></div>
+                                            <span class="tips">Voice Recording</span>
+                                        </a>
+                                        <a class="dialog_upload" data-method="upload">
+                                            <div class="icon"></div>
+                                            <span class="tips">Upload Voice</span>
+                                        </a>
+                                    </div>
+                                    <div class="dialog_control">
+                                        <a title="Delete" class="dialog_delete">Delete</a>
+                                        <a title="Insert Line" class="dialog_insert">Insert Line</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dialog fake" data-charid="1">
+                                <div class="char_thumb">
+                                    <img src="/static/qvm/templates/politics/img/character/char_host1_100.png" alt="">
+                                </div>
+                                <div class="box">
+                                    <div class="dialog_input_wrapper">
+                                        <div class="langarea"></div>
+                                        <textarea id="fake_dialog_input" class="dialog_input" name="script_text[]"></textarea>
+                                    </div>
+                                    <label for="fake_dialog_input" class="dialog_input_message">
+                                        <span class="basic">+ Add Dialog Line (10 max)</span>
+                                        <span class="plus">+ Add up to 30 dialog lines</span>
+                                    </label>
+                                    <div class="upsell">
+                                        Add up to 30 dialog lines in all your Quick App Videos! 
+                                        <a href="javascript:popUpgrade();">Upgrade to GoPlus &gt;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="no_characters">
+                            <p>You have to select at least one character for your video.</p>
+                            <p>Add one to enable the dialog interface and the preview.</p>
+                            <a href="javascript:;" class="buttonbase buttonblue dark" onclick="stepTo('#step2')" style="margin:0 auto;float:none;display:block;">
+                                <div class="buttontitle">Select a character</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="footer" style="display:none">
+                        <div class="bottom"></div>
+                        <a class="btn_next" onclick="GoLite.preview();stepTo('#step4');">Next</a>
+                        <div class="upgrade">
+                            <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
+                                <div class="buttontitle">Upgrade Now</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="facial_expression" class="lightbox" style="display:none">
+                        <div class="lightbox_wrapper">
+                            <h2>Choose a facial expression:</h2>
+                            <div id="expression">
+                                Expressions:
+                                <ul id="expression_list">
+                                    <li>
+                                        <a data-facial="default" class="default selected">Default</a>
+                                    </li>
+                                    <li>
+                                        <a data-facial="happy" class="happy">Happy</a>
+                                    </li>
+                                    <li>
+                                        <a data-facial="angry" class="angry">Angry</a>
+                                    </li>
+                                    <li>
+                                        <a data-facial="sad" class="sad">Sad</a>
+                                    </li>
+                                    <li>
+                                        <a data-facial="cry" class="cry">Cry</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <a id="facial_expression_submit" href="javascript:;">Confirm</a>
+                            <a onclick="jQuery.unblockUI();" class="close_btn">&#215;</a>
+                        </div>
+                    </div>
+                    <script>
+                        facialExpression.init({
+                            "default" : "Default",
+                            "happy": "Happy",
+                            "angry": "Angry",
+                            "sad": "Sad",
+                            "cry": "Cry"
+                        });
+                    </script>
+                    <div id="dialog_input_change_confirm" class="lightbox confirmbox" style="display:none">
+                        <div class="lightbox_wrapper">
+                            <p>Switch Voice Input</p>
+                            <p>The current line of dialog will reset if you switch to a different voice input.</p>
+                            <div class="confirm_buttons">
+                                <a class="action-btn alert" onclick="jQuery.unblockUI();">Proceed</a>
+                                <a class="action-btn disabled" onclick="jQuery.unblockUI();">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script id="dialogTmpl" type="text/x-jquery-tmpl">
+                    <div class="dialog">
+                        <div class="num"></div>
+                        <div class="char_thumb">
+                            <img src="${thumbURL}" alt="" />
+                            <a class="switch">Switch</a>
+                            <div class="tips">Switch Actor</div>
+                        </div>
+                        <div class="box">
+                            <div class="dialog_input_wrapper">
+                                <textarea class="dialog_input" name="script_text[]"></textarea>
+                                <span class="label">Type in or Record Your dialog</span>
+                            </div>
+                            <div class="counter" style="display:none;"></div>
+                            <div class="voice_recorder"></div>
+                            <div class="dialog_options">
+                                <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
+                                {{if hasFacial}}
+                                <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
+                                {{/if}}
+                                <div class="langarea">
+                                    <div class="lang"></div>
+                                    <div class="gender"></div>
+                                    Voice					
+                                    <div class="tips">Switch Voice</div>
+                                </div>
+                            </div>
+                            <div class="dialog_input_control">
+                                <a class="dialog_tts on" data-method="tts">
+                                    <div class="icon"></div>
+                                    <span class="tips">Text to Speech</span>
+                                </a>
+                                <a class="dialog_mic" data-method="mic">
+                                    <div class="icon"></div>
+                                    <span class="tips">Voice Recording</span>
+                                </a>
+                            </div>
+                            <div class="dialog_control">
+                                <a title="Delete" class="dialog_delete">Delete</a>
+                                <a title="Insert Line" class="dialog_insert">Insert Line</a>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+                <script>jQuery('#dialogs .dialog').scriptDialog();</script>
+                <div id="seperator3">
+                    <a class="by_ga" href="https://vyond.com/" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');"></a>
+                </div>
+                <div id="step4" class="section">
+                    <h2 class="title">Preview your video</h2>
+                    <a class="previous_step" href="#step3" onclick="stepTo('#step3'); return false;">Back</a>
+                    <div class="inside">
+                        <div class="anonymous">
+                            <h2>You need an account to preview and save your video.</h2>
+                            <a href="javascript:;" class="buttonbase buttonfacebook dark" id="btn_facebook_login" onclick="submitFBConnect();" style="width:220px;margin:15px auto;float:none;display:block;">
+                                <div class="buttontitle">Login with Facebook</div>
+                            </a>
+                            <a href="javascript:;" class="buttonbase buttonred dark" id="btn_signup" style="width:220px;margin:15px auto;float:none;display:block;">
+                                <div class="buttontitle">Signup Now</div>
+                            </a>
+                            <a href="javascript:;" class="buttonbase buttonpurple2 dark" id="bth_login" style="width:220px;margin:15px auto;float:none;display:block;">
+                                <div class="buttontitle">Login</div>
+                            </a>
+                        </div>
+                        <script>
+                        jQuery('#bth_login').click(function(e) {
+                            e.preventDefault();
+                            showOverlay(jQuery('#login'));
+                            jQuery('#login_email').focus();
+                        });
+                        jQuery('#btn_signup').click(function(e) {
+                            e.preventDefault();
+                            showOverlay(jQuery('#signup'), {top: '80px'});
+                            jQuery('#email').focus();
+                        });
+                    </script>
+                    <div class="no_characters" style="display:none">
+                        <p>You have to select at least one character for your video.</p>
+                        <p>Add one to enable the dialog interface and the preview.</p>
+                        <a href="javascript:;" class="buttonbase buttonblue dark" onclick="stepTo('#step2')" style="margin:0 auto;float:none;display:block;">
+                            <div class="buttontitle">Select a character</div>
+                        </a>
+                    </div>
+                    <div class="upgrade" style="display:none">
+                        <h2>Upgrade to GoPlus to enable preview and save your video.</h2>
+                        <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" id="btn_upgrade" style="margin:15px auto;float:none;display:block;">
+                            <div class="buttontitle">Upgrade Now</div>
+                        </a>
+                    </div>
+                    <div class="generate" style="display:none">
+                        <a class="btn_preview" href="#" onclick="GoLite.preview(); return false;">Generate Preview</a>
+                        <p>
+                            You made all the changes you wanted to your video?<br>
+                            Let's see how it looks like then!
+                        </p>
+                    </div>
+                    <div class="loading"></div>
+                    <div class="preview" style="display:none">
+                        <div id="player_container">
+                            This content requires the Adobe Flash Player 10.0.12. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                        </div>
+                        <a id="btn_save" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['save']); return false;">Save Now</a>
+                    </div>
+                    <div class="save" style="display:none">
+                        <div class="thumbnail">
+                            Choose your thumbnail
+                            <div id="thumb_chooser_container">
+                                This content requires the Adobe Flash Player 10.0.12. 
+                                <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                            </div>
+                        </div>
+                        <div class="title">
+                            <label for="movie_title">TITLE:</label>
+                            <input type="text" id="movie_title" name="movie_title" value="" maxlength="140" placeholder="Enter your title here">
+                        </div>
+                        <div class="description">
+                            <label for="movie_description">DESCRIPTION:</label>
+                            <textarea id="movie_description" name="movie_description" placeholder="Enter your description (optional)"></textarea>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="group_message" style="color:#999999;font-size:19px;padding-top:10px;text-align:center;">
+                            When you are finished with your video, you can post it to a group from the video page.
+                        </div>
+                        <div class="buttons">
+                            <a id="btn_publish" href="#" style="font-size:21px;" onclick="GoLite.save(); return false;">
+                                Save and Go To Video Page
+                            </a>
+                        </div>
+                        <div class="clear"></div>
+                        <a id="back_preview" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']); return false;">
+                            &lt; Back to Preview
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <script>GoLite.init(1);</script>
+            <div id="footer">
+                <a class="by_ga" href="https://vyond.com/" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');"></a>
+            </div>
+        </div>
+        <div id="alerts" style="display:none">
+            <div id="switch-template" class="lightbox confirmbox">
+                <div class="lightbox_wrapper">
+                    <p>Your video will be reinitialized</p>
+                    <p>Switching to a different template will reset the characters and the dialog you have entered.</p>
+                    <div class="confirm_buttons">
+                        <a class="action-btn alert" onclick="jQuery.unblockUI();">Proceed</a>
+                        <a class="action-btn disabled" onclick="jQuery.unblockUI();">Cancel</a>
+                    </div>
+                </div>
+            </div>
+            <div id="remove-character" class="lightbox confirmbox">
+                <div class="lightbox_wrapper">
+                    <p>Your video will be reinitialized</p>
+                    <p>Removing a character will reset the dialog you have entered.</p>
+                    <div class="confirm_buttons">
+                        <a class="action-btn alert" onclick="jQuery.unblockUI();">Proceed</a>
+                        <a class="action-btn disabled" onclick="jQuery.unblockUI();">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="publishing" class="lightbox" style="display:none">
+            <div class="lightbox_wrapper">Publishing ...</div>
+        </div>
+        <div id="login" class="lightbox" style="display:none">
+            <div class="lightbox_wrapper">
+                <h2>Login to Nexus</h2>
+                <form id="login_form" action="" method="post">
+                    <div id="login_form_message"></div>
+                    <div>
+                        <label>Email</label>
+                        <input id="login_email" type="text" name="email" value="">
+                    </div>
+                    <div>
+                        <label>Password</label>
+                        <input id="login_password" type="password" name="password" value="">
+                    </div>
+                    <div>
+                        <a href="javascript:;" class="buttonbase buttonblue" id="login_submit" style="margin:15px auto;float:none;display:block;">
+                            <div class="buttontitle">Login</div>
+                        </a>
+                    </div>
+                </form>
+                <a onclick="jQuery('#login_form_message').html('');jQuery('#login_email, #login_password').removeClass('error');jQuery.unblockUI();" class="close_btn">&#215;</a>
+            </div>
+        </div>
+        <script>
+            (function($) {
+                var processing = false;
+                function validateLogin() {
+                    var email = $('#login_email'), 
+                        email_val = $.trim(email.val()),
+                        password = $('#login_password[type="password"]');
+                    // remove error class from input
+                    $('#login_email, #login_password').removeClass('error');
+                    // Empty form error message
+                    formErrorMessage('Please Wait...');
+                    if (!email_val || email_val == email.attr('placeholder')) {
+                        email.addClass('error').focus();
+                        formErrorMessage('Please enter your Email');
+                        return false;
+                    }
+                    if (!password.val()) {
+                        $('#login_password').focus();
+                        password.addClass('error');
+                        formErrorMessage('Your password is incorrect. Is your caps lock on?');
+                        return false;
+                    }
+                    return true;
+                }
+                function formErrorMessage(message) {
+                    $('#login_form_message').html(message);
+                }
+                function submitLogin() {
+                    if (!validateLogin()) { return; }
+                    if (processing) { return; }
+                    processing = true;
+                    $.post('/ajax/doLogin', $('#login_form').serialize(), function(response) {
+                        parseResponse(response);
+                        processing = false;
+                        if (responseArray['code'] == 0) $(document).trigger('user.login');
+                        else formErrorMessage(responseArray['json'].errmsg)
+                    });
+                }
+                $(document).ready(function() {
+                    $('#login_submit').click(function(e) {
+                        e.preventDefault();
+                        submitLogin();
+                    });
+                });
+            })(jQuery);
+        </script>
+        <div id="signup" class="lightbox" style="display:none">
+            <div class="lightbox_wrapper">
+                <h2>Create an account</h2>
+                <form id="signup_form" action="" method="post">
+                    <div id="signup_form_message"></div>
+                    <div>
+                        <label for="email">Your Email Address</label>
+                        <input type="text" id="email" name="email" value="" placeholder="Your Email Address">
+                    </div>
+                    <div>
+                        <label for="username">Your Display Name</label>
+                        <input type="text" id="username" name="username" value="" placeholder="Your Display Name">
+                    </div>
+                    <div>
+                        <label for="password1">Your Password</label>
+                        <input type="password" id="password1" name="password1" value="" placeholder="Your Password">
+                    </div>
+                    <div>
+                        <label for="password2">Confirm Password</label>
+                        <input type="password" id="password2" name="password2" value="" placeholder="Confirm Password">
+                    </div>
+                    <div>
+                        <a href="javascript:;" class="buttonbase buttonblue" id="signup_submit" style="margin:15px auto;float:none;display:block;">
+                            <div class="buttontitle">Sign Up Now</div>
+                        </a>
+                    </div>
+                </form>
+                <a onclick="jQuery('#signup_form_message').html('');jQuery('#email, #username, #password1, #password2').removeClass('error');jQuery.unblockUI();" class="close_btn">&#215;</a>
+            </div>
+        </div>
+        <script></script>
+        <div id="upgrade" class="lightbox" style="display:none">
+            <div class="lightbox_wrapper">
+                <h2>Make animated videos exactly the way you want!</h2>
+                <p>Complete the transaction in the browser window that just opened and confirm below to enable the upgrade.</p>
+                <div>
+                    <a href="javascript:;" class="buttonbase buttonorange" id="upgrade_confirm" style="margin:15px auto;float:none;display:block;">
+                        <div class="buttontitle">Confirm</div>
+                    </a>
+                </div>
+                <a class="close_btn">&#215;</a>
+            </div>
+        </div>
+        <script>
+            jQuery('#upgrade_confirm, #upgrade .close_btn').click(function(e) {
+                e.preventDefault();
+                GoLite.updateUserState();
+                jQuery.unblockUI();
+            });
+        </script>
+        <script src="/qvm_files/jquery.swfobject.min.js.gz.js"></script>
+        <script src="/qvm_files/jquery.waypoints.min.js.gz.js"></script>
+        <script src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
+        <script>
+            jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+            (function($) {
+                $(document).ready(function() {
+                    $(document).trigger('GoLite.stateChange', ['']);
+                    var next = 'step1', prev = '';
+                    $('#nav_links .next').click(function(e) {
+                        e.preventDefault();
+                        next && stepTo('#' + next);
+                    });
+                    $('#nav_links .prev').click(function(e) {
+                        e.preventDefault();
+                        prev && stepTo('#' + prev);
+                    });
+                    $('.section').waypoint({offset: '50%'});
+                    $('body').delegate('.section', 'waypoint.reached', function(e, direction) {
+                        var $this = $(this);
+                        var id = $this.attr('id');
+                        if (direction == 'up') {
+                            if (id == 'step1') {
+                                next = 'step1';
+                                prev = '';
+                                id = 'intro';
+                            } else if (id == 'step2') {
+                                next = 'step2';
+                                prev = 'intro';
+                                id = 'step1';
+                            } else if (id == 'step3') {
+                                next = 'step3';
+                                prev = 'step1';
+                                id = 'step2';
+                            } else if (id == 'step4') {
+                                next = 'step4';
+                                prev = 'step2';
+                                id = 'step3';
+                            }
+                        } else {
+                            if (id == 'step1') {
+                                next = 'step2';
+                                prev = 'intro';
+                            } else if (id == 'step2') {
+                                next = 'step3';
+                                prev = 'step1';
+                            } else if (id == 'step3') {
+                                next = 'step4';
+                                prev = 'step2';
+                            } else if (id == 'step4') {
+                                next = '';
+                                prev = 'step3';
+                            }
+                        }
+                        $('#nav_links').find('li').removeClass('on').end().find('.' + id).addClass('on');
+                    });
+                    if ($('#login_bar').length) {
+                        $('#seperator0').waypoint(function(e) {
+                            $('#login_bar').slideDown();
+                        }, {
+                            offset: 'bottom-in-view', 
+                            triggerOnce: true
+                        });
+                        $(document).bind('user.hasAccount', function(e) {
+                            GoLite.updateUserState(function() {
+                                $(document).trigger('GoLite.stateChange', ['']);
+                                $('#login_bar').slideUp();
+                                showNotice('You are now logged in to Nexus');
+                            });
+                        });
+                    }
+                    $('#movie_title, #movie_description').placeholder();
+                    $('.featured_video').click(function(e) {
+                        e.preventDefault();
+                        var content = $('#previewTmpl').tmpl({
+                            movieId: $(this).data('mid'),
+                            movieTitle: $(this).find('.caption').text(),
+                            author: $(this).data('author'),
+                            authorUrl: $(this).data('authorUrl')
+                        });
+                        $('.overlay-player-container').empty().append(content);
+                        showOverlay($('#overlay-player'));
+                    });
+                });
+                $(window).load(function() {
+                    $('#nav_links').fadeIn();
+                    preLoadImages(
+                        "/static/qvm/templates/politics/img/character/char_bar_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_banker_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_barack_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_demonstrator_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_host2_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_herman_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_hillary_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_joe_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_john_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_gary_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_jon_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_host3_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_host4_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_michele_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_mitt_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_newt_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_paul_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_rick_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_ricks_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_ron_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_host1_whole.png",
+                        "/static/qvm/templates/politics/img/character/char_sarah_whole.png"
+                    );
+                });
+            })(jQuery);
+        </script>
+    </body>
+</html>

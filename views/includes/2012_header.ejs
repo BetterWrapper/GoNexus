@@ -1,3 +1,9 @@
+<% if (includeTopBar) { %>
+<div id="top-bar">
+    <a href="https://flashthemes.net/">&lt; Go to FlashThemes</a>
+    <a class="login" href="/studio">Make a Video &gt;</a>
+</div>
+<% } else { %>
 <div id="school-top">
     <h2>
         <a href="/public_index" style="color:coral">GoNexus</a>
@@ -9,3 +15,4 @@
         <a href="/videos">Explore Videos</a>
     </div>
 </div>
+<% } %>

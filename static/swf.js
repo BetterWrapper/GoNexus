@@ -13,10 +13,18 @@ module.exports = (req, res, url) => {
         return true;
     }
     function vQuery(u) {
-        if (
-            pathname.endsWith(".js") 
-            || pathname.endsWith(".css")
-        ) res.setHeader("Content-Type", `text/${pathname.substr(pathname.lastIndexOf(".") + 1)}`);
+        const mimeTypes = {
+            js: {
+                name: "text",
+                value: "javascript"
+            },
+            css: {
+                name: "text",
+                value: "css"
+            }
+        }
+        const mimeType = mimeTypes[pathname.substr(pathname.lastIndexOf(".") + 1)];
+        if (mimeType) res.setHeader("Content-Type", `${mimeType.name}/${mimeType.value}`);
         const v = !pathname.startsWith("/static/tommy") ? ('/' + url.query.v + pathname.split("/static")[1]) : pathname.split(
             `/static/tommy`
         )[1];

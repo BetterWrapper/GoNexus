@@ -1,0 +1,1106 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>Make eCards for Free Online with Nexus's Custom Video eCards</title>
+        <meta property="og:site_name" content="Nexus"/>
+        <meta property="fb:app_id" content="177116303202"/>
+        <meta name="description" content="Make eCards and video eCard greetings with Nexus's online eCard Video Maker. Create eCards for birthdays, holidays and more - Click, Drag, Action!"/>
+        <meta name="keywords" content="Animation, eCard, flash free, web 2.0, cartoon, comics, create animations free, movie, film, video"/>
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA"/>
+        <style>
+            @font-face {
+                font-family: 'Droid Sans';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Droid Sans Bold'), local('DroidSans-Bold'), url(/ui/fonts/EFpQQyG9GqCrobXxL-KRMQFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');
+            }
+        </style>
+        <link href="/static/tommy/2012/school/css/public.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/go/css/overlay.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/go/css/buttons.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/qvm/templates/talkingpicz_christmas/theme.css" rel="stylesheet" type="text/css"/>
+        <link href="/qvm_files/voiceselectionwidget.css.gz.css" rel="stylesheet" type="text/css"/>
+        <link href="/qvm_files/school_golite.css.gz.css" rel="stylesheet" type="text/css"/>
+        <!--[if lte IE 6]><link href="/static/go/css/ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+        <!--[if lte IE 7]><style type="text/css">div.header {z-index: 10;}</style><![endif]-->
+        <script type="text/javascript">
+            var srv_tz_os = -4, 
+                view_name = "school", 
+                user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <script src="/static/tommy/2012/go/js/prototype.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery-1.4.4.min.js"></script>
+        <script src="/static/tommy/2012/go/js/go2.js"></script>
+        <script src="/static/tommy/2012/go/js/overlay.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.blockUI.js"></script>
+        <script src="/static/tommy/2012/go/js/cookie.js"></script>
+        <script src="/static/tommy/2012/school/js/global.js"></script>
+        <script src="/static/tommy/2012/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+        <script type="text/javascript">
+            jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+        <script src="https://flashthemes.net/static/ft/js/swfupload/swfupload.js"></script>
+        <script src="https://flashthemes.net/static/ft/js/jquery/jquery.jplayer.min.js"></script>
+        <script src="https://flashthemes.net/static/ft/js/jquery/jquery.tmpl.min.js"></script>
+        <script src="/qvm_files/lite_tp.js"></script>
+        <script src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
+        <script src="/qvm_files/talkingpicz_importer.js"></script>        
+    </head>
+    <body>
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+        </script>
+        <%- include("includes/2012_header.ejs", {
+            includeTopBar: true
+        }) %>
+        <div class="container">
+            <div class="content">
+                <!--[if lt IE 9]>
+                    <link href="http://lightspeed.goanimate.com/static/311/go/css/script2cartoon/ie.css" rel="stylesheet" type="text/css">
+                <![endif]-->
+                <%- include("includes/2012_header.ejs", {
+                    includeTopBar: false
+                }) %>
+                <script>
+                    var golite_theme = 'holiday_ecard';
+                    GoLite.settings.player = {
+                        swf: "/static/tommy/2012/animation/player.swf",
+                        height: 384,
+                        width: 550
+                    }
+                    GoLite.settings.thumbnailChooser = {
+                        swf: "/static/qvm/thumbnailChooser.swf",
+                        height: 170,
+                        width: 295
+                    }
+                    GoLite.settings.tpEditor = {
+                        swf: "/static/qvm/templates/talkingpicz_christmas/img/step02/tpeditor.swf",
+                        apiserver: "/"
+                    }
+                    VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
+                    jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
+                        apiserver: "/qvm_micRecord_",
+                        u_info: ""
+                    });
+                </script>
+                <div id="app-main">
+                    <div class="app-main-bg"></div>
+                    <div class="app-main-inside">
+                        <div id="tp-intro">
+                            <div class="inside">
+                                <h2>Show off your creativity! It's really simple!</h2>
+                                <div id="intro-s1">Import an Image</div>
+                                <div id="intro-s2">Decorate It</div>
+                                <div id="intro-s3">Make it Speak</div>
+                                <div id="intro-s4">Share it!</div>
+                            </div>
+                            <a class="btn-next" href="#">Get Started</a>
+                        </div>
+                        <div id="tp-main" style="height:0">
+                            <div id="tp-nav">
+                                <ul>
+                                    <li title="Take a picture">
+                                        <a class="templates on">Take a picture</a>
+                                    </li>
+                                    <li title="Edit heads">
+                                        <a class="heads">Edit heads</a>
+                                    </li>
+                                    <li title="Record some lines">
+                                        <a class="dialogs disabled">Record some lines</a>
+                                    </li>
+                                    <li title="Choose background music">
+                                        <a class="bgmusic disabled">Choose background music</a>
+                                    </li>
+                                    <li title="Preview">
+                                        <a class="preview disabled">Preview</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="tp-templates" class="tp-section">
+                                <h2 class="tp-section-title">Choose a Setting</h2>
+                                <div id="tp-templates-container">
+                                    <div class="tp-template">
+                                        <a href="#" title="Candle Talk" data-tid="0-O8fA3E3Pqo" data-thumb="/static/qvm/templates/talkingpicz_christmas/thumb/9108738.jpg">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_01.jpg" alt=""/>
+                                        </a>
+                                    </div>
+                                    <div class="tp-template">
+                                        <a href="#" title="Hand Heart" data-tid="05z1VuW8S6mI" data-thumb="/static/qvm/templates/talkingpicz_christmas/thumb/9107086.jpg">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_04.jpg" alt=""/>
+                                        </a>
+                                    </div>
+                                    <div class="tp-template">
+                                        <a href="#" title="Hey! Pretty Snowlady..." data-tid="0tkUl-2smAoM" data-thumb="/static/qvm/templates/talkingpicz_christmas/thumb/8259641.jpg">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_05.jpg" alt=""/>
+                                        </a>
+                                    </div>
+                                    <div class="tp-template">
+                                        <a href="#" title="Birthday Balloon" data-tid="0oK-ZM8r98sc" data-thumb="/static/qvm/templates/talkingpicz_christmas/thumb/9107702.jpg">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_02.jpg" alt=""/>
+                                        </a>
+                                    </div>
+                                    <div class="tp-template">
+                                        <a href="#" title="Wine" data-tid="0R_GFe7FxGmU" data-thumb="/static/qvm/templates/talkingpicz_christmas/thumb/9107278.jpg">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_03.jpg" alt=""/>
+                                        </a>
+                                    </div>
+                                    <div class="tp-template">
+                                        <a href="#" title="Alien Christmas Camels" data-tid="0hw978AK4qRY" data-thumb="/static/qvm/templates/talkingpicz_christmas/thumb/8259589.jpg">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_06.jpg" alt=""/>
+                                        </a>
+                                    </div>
+                                    <div id="import-own" class="tp-import">
+                                        <a href="#">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_own.jpg" alt=""/>
+                                            <h3>Get an image from your computer</h3>
+                                            <p>Make one of your very own pictures talk! Simply browse and upload.</p>
+                                            <span>Upload Image &gt;</span>
+                                        </a>
+                                    </div>
+                                    <div id="import-fb" class="tp-import">
+                                        <a href="#" data-type="facebook">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_fb.jpg" alt=""/>
+                                            <p>Import images from your own Facebook account ** or from your friends</p>
+                                            <span>Import Now &gt;</span>
+                                        </a>
+                                    </div>
+                                    <div id="import-google" class="tp-import">
+                                        <a href="https://images.google.com/search?tbm=isch&amp;q=funny" target="_blank">
+                                            <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_google.jpg" alt=""/>
+                                            <span>Search funny pictures</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <a id="tp-templates-arrow-right" style="width:0">
+                                    <span></span>
+                                </a>
+                                <a id="tp-templates-arrow-left">
+                                    <span></span>
+                                </a>
+                            </div>
+                            <script>
+                                (function($) {
+                                    $('#tp-templates-arrow-left').click(function(e) {
+                                        $('#tp-templates-container').animate({
+                                            left: '-215px'
+                                        }, 600);
+                                        $(this).animate({
+                                            width: '0'
+                                        }, 600);
+                                        $('#tp-templates-arrow-right').animate({
+                                            width: '58px'
+                                        }, 600);
+                                    });
+                                    $('#tp-templates-arrow-right').click(function(e) {
+                                        $('#tp-templates-container').animate({
+                                            left: '0'
+                                        }, 600);
+                                        $(this).animate({
+                                            width: '0'
+                                        }, 600);
+                                        $('#tp-templates-arrow-left').animate({
+                                            width: '58px'
+                                        }, 600);
+                                    });
+                                })(jQuery);
+                            </script>
+                            <div id="characters" class="hide">
+                                <div id="chars_0-O8fA3E3Pqo">
+                                    <div data-cid="1" data-voice="paul" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg01_a.jpg"></div>
+                                    <div data-cid="2" data-voice="julie" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg01_b.jpg"></div>
+                                </div>
+                                <div id="chars_0oK-ZM8r98sc">
+                                    <div data-cid="1" data-voice="paul" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg02_a.jpg"></div>
+                                    <div data-cid="2" data-voice="julie" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg02_b.jpg"></div>
+                                </div>
+                                <div id="chars_0R_GFe7FxGmU">
+                                    <div data-cid="1" data-voice="paul" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg03_a.jpg"></div>
+                                    <div data-cid="2" data-voice="julie" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg03_b.jpg"></div>
+                                </div>
+                                <div id="chars_05z1VuW8S6mI">
+                                    <div data-cid="1" data-voice="paul" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg04_a.jpg"></div>
+                                    <div data-cid="2" data-voice="julie" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg04_b.jpg"></div>
+                                </div>
+                                <div id="chars_0tkUl-2smAoM">
+                                    <div data-cid="1" data-voice="paul" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg05_a.jpg"></div>
+                                    <div data-cid="2" data-voice="julie" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg05_b.jpg"></div>
+                                </div>
+                                <div id="chars_0hw978AK4qRY">
+                                    <div data-cid="1" data-voice="paul" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg06_a.jpg"></div>
+                                    <div data-cid="2" data-voice="simon" data-thumb="/static/qvm/templates/talkingpicz_christmas/bg/bg06_b.jpg"></div>
+                                </div>
+                            </div>
+                            <div class="snippets hide">
+                                <div class="selectvoiceoverlay lightbox" style="display:none">
+                                    <div class="lightbox_wrapper">
+                                        <style type="text/css">
+                                            .selectvoiceoverlay { 
+                                                width: 550px; 
+                                            }
+                                            .selectvoiceoverlay h2 { 
+                                                text-align: center; 
+                                                color: black; 
+                                                margin-bottom: 0px;  
+                                            }
+                                            .selectvoiceoverlay h3 { 
+                                                text-align: center; 
+                                                color: #999999; 
+                                                font-style: oblique; 
+                                                margin-top: 0px; 
+                                                margin-bottom: 2em; 
+                                                font-weight: normal; 
+                                            }
+                                            .selectvoiceoverlay .voiceselectorwidget { 
+                                                margin-left: auto; 
+                                                margin-right: auto; 
+                                            }
+                                            .selectvoiceoverlay a.bottomcancel { 
+                                                float: left; 
+                                                text-align: center; 
+                                                margin: 30px auto; 
+                                                display: block; 
+                                                color: #666666; 
+                                                font-size: 16px; 
+                                                font-weight: bold; 
+                                                text-decoration: none; 
+                                            }
+                                            .selectvoiceoverlay a.bottomcancel:hover { 
+                                                color: #777777; 
+                                                text-decoration: none; 
+                                            }
+                                        </style>
+                                        <h2>Select a voice for your character</h2>
+                                        <h3>This change applies to the whole movie</h3>
+                                        <div class="voiceselectorwidget">
+                                            <div class="voiceselector"></div>
+                                            <!-- Templates -->
+                                            <div class="templates" style="display: none">
+                                                <!-- Voice list -->
+                                                <div class="categorytab">
+                                                    <div class="flag" title="Language"></div>
+                                                    <div class="masteroptionscontainer">
+                                                        <div class="optionscontainer"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Voice option -->
+                                                <div class="option">
+                                                    <div class="cflag"></div>
+                                                    <div class="sex"></div>
+                                                    <span class="label"></span>
+                                                    <span class="plus"> 
+                                                        (Only for GoPlus)
+                                                    </span>
+                                                    <div class="playercontrol">
+                                                        <div class="button play"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="jplayer"></div>
+                                        </div>
+                                        <div style="overflow: auto; padding-left: 85px;">
+                                            <a href="javascript:;" class="buttonbase buttonorange" id="voiceselectonly_confirm" style="margin:15px auto;float:left;display:block;">
+                                                <div class="buttontitle">Confirm</div>
+                                            </a>
+                                            <a href="javascript:;" class="buttonbase buttonblue dark" id="voiceselectonly_plusupgrade" style="margin:15px auto;float:left;display:none;">
+                                                <div class="buttontitle">Upgrade Now</div>
+                                            </a>
+                                            <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel">
+                                                <div style="width: 180px">Cancel</div>
+                                            </a>
+                                        </div>
+                                        <a onclick="jQuery.unblockUI()" class="close_btn">&#215;</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tp-heads" class="tp-section">
+                                <div class="inside">
+                                    <div id="editor-container"></div>
+                                    <div id="editor-btn-group" class="buttons">
+                                        <a class="action-btn dark" onclick="stageManager.goTo('templates')">&lt; Back</a>
+                                        <a id="editor-btn-finish" class="action-btn" onclick="getEditorData()" style="float:right">
+                                            Record some lines &gt;
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                function createTPEditor(settings) {
+                                    var flashvars = {
+                                        apiserver: "/",
+                                        ut: "23"
+                                    };
+                                    jQuery.extend(flashvars, settings);
+                                    jQuery('#editor-container').flash({
+                                        id: "tpeditor",
+                                        swf: "/static/qvm/templates/talkingpicz_christmas/img/step02/tpeditor.swf",
+                                        height: 461,
+                                        width: 850,
+                                        bgcolor: "#222222",
+                                        scale: "exactfit",
+                                        allowScriptAccess: "always",
+                                        allowFullScreen: "true",
+                                        wmode: "transparent",
+                                        hasVersion: "10.0.12",
+                                        flashvars
+                                    });
+                                }
+                                function getEditorData() {
+                                    var data = document.getElementById('tpeditor').serialize();
+                                    console.log(data);
+                                    var bgData = {
+                                        encAssetId: data.encAssetId,
+                                        imagedata: data.imagedata
+                                    }
+                                    delete data.encAssetId;
+                                    delete data.imagedata;
+                                    bgData.component = {};
+                                    jQuery.each(data, function(i, item) {
+                                        bgData.component[i] = item;
+                                    });
+                                    GoLite.useBackground(bgData);
+                                }
+                                function updateHeadCount(count) {
+                                    jQuery('#editor-btn-finish').toggleClass('disabled', (count == 0));
+                                }
+                            </script>
+                            <div id="tp-loading" class="tp-section">
+                                <div class="inside">
+                                    <img id="tp-loading-background" src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_01.jpg" alt=""/>
+                                    <!--<div class="buttons">
+                                        <a class="action-btn">+ Add Head</a>
+                                        <a class="action-btn" style="position:absolute;top:0;right:0">Record some lines &gt;</a>
+                                    </div>-->
+                                </div>
+                                <div class="cover">
+                                    <div class="title">You have selected the "<span id="template_name"></span>" template.</div>
+                                    <ul>
+                                        <li>Importing Image</li>
+                                        <li>Adding Heads</li>
+                                        <li>Resizing Heads</li>
+                                        <li>Positioning Heads</li>
+                                    </ul>
+                                    <div class="loading">Loading Dialog Interface...</div>
+                                </div>
+                            </div>
+                            <div id="tp-dialogs" class="tp-section">
+                                <div id="tp-dialogs-aside">
+                                    <img src="/static/qvm/templates/talkingpicz_christmas/img/step01/img_foto_01.jpg" alt=""/>
+                                </div>
+                                <div id="tp-dialogs-wrapper">
+                                    <div id="dialogs">
+                                        <div class="dialog focus" data-charid="0">
+                                            <div class="num">1</div>
+                                            <div class="char_thumb">
+                                                <img src="/static/qvm/templates/talkingpicz_christmas/bg/bg01_a.jpg" alt="">
+                                                <a class="switch">Switch</a>
+                                                <div class="tips">Switch Actor</div>
+                                            </div>
+                                            <div class="box">
+                                                <div class="dialog_input_wrapper">
+                                                    <textarea class="dialog_input" name="script_text[]"></textarea>
+                                                    <span class="label">Type in or Record Your dialog</span>
+                                                </div>
+                                                <div class="counter" style="display:none;"></div>
+                                                <div class="voice_recorder"></div>
+                                                <div class="dialog_options">
+                                                    <a class="dialog_switch">
+                                                        Actor
+                                                        <span class="tips">Switch Actor</span>
+                                                    </a>
+                                                    <div class="langarea">
+                                                        <div class="lang"></div>
+                                                        <div class="gender"></div>
+                                                        Voice								
+                                                        <div class="tips">Switch Voice</div>
+                                                    </div>
+                                                </div>
+                                                <div class="dialog_input_control">
+                                                    <a class="dialog_tts on" data-method="tts">
+                                                        <div class="icon"></div>
+                                                        <span class="tips">Text to Speech</span>
+                                                    </a>
+                                                    <a class="dialog_mic" data-method="mic">
+                                                        <div class="icon"></div>
+                                                        <span class="tips">Voice Recording</span>
+                                                    </a>
+                                                </div>
+                                                <div class="dialog_control">
+                                                    <a title="Delete" class="dialog_delete">Delete</a>
+                                                    <a title="Insert Line" class="dialog_insert">Insert Line</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dialog fake" data-charid="1">
+                                            <div class="char_thumb">
+                                                <img src="/static/qvm/templates/talkingpicz_christmas/bg/bg01_b.jpg" alt="">
+                                            </div>
+                                            <div class="box">
+                                                <div class="dialog_input_wrapper">
+                                                    <div class="langarea"></div>
+                                                    <textarea id="fake_dialog_input" class="dialog_input" name="script_text[]"></textarea>
+                                                </div>
+                                                <label for="fake_dialog_input" class="dialog_input_message">
+                                                    <span class="basic">+ Add Dialog Line (10 max)</span>
+                                                    <span class="plus">+ Add up to 30 dialog lines</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="buttons">
+                                        <a class="action-btn dark" onclick="stageManager.goTo('dialogsBack')" style="float:left;margin-left:20px">&lt; Back</a>
+                                        <a id="dialogs-preview" class="action-btn" onclick="stageManager.goTo('bgmusic');" style="float:right;margin-right:25px">Select Background music &gt;</a>
+                                        <a id="dialogs-upgrade" class="action-btn upgrade" href="javascript:popUpgrade();" style="display:none;float:right;margin-right:20px">Upgrade Now</a>
+                                    </div>
+                                </div>
+                                <div id="dialog_input_change_confirm" class="lightbox confirmbox" style="display:none">
+                                    <div class="lightbox_wrapper">
+                                        <p>Switch Voice Input</p>
+                                        <p>The current line of dialog will reset if you switch to a different voice input.</p>
+                                        <div class="confirm_buttons">
+                                            <a class="action-btn alert" onclick="jQuery.unblockUI();">Proceed</a>
+                                            <a class="action-btn disabled" onclick="jQuery.unblockUI();">Cancel</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script id="dialogTmpl" type="text/x-jquery-tmpl">
+                                <div class="dialog">
+                                    <div class="num"></div>
+                                    <div class="char_thumb">
+                                        <img src="${thumbURL}" alt="" />
+                                        <a class="switch">Switch</a>
+                                        <div class="tips">Switch Actor</div>
+                                    </div>
+                                    <div class="box">
+                                        <div class="dialog_input_wrapper">
+                                            <textarea class="dialog_input" name="script_text[]"></textarea>
+                                            <span class="label">Type in or Record Your dialog</span>
+                                        </div>
+                                        <div class="counter" style="display:none;"></div>
+                                        <div class="voice_recorder"></div>
+                                        <div class="dialog_options">
+                                            <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
+                                            {{if hasFacial}}
+                                            <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
+                                            {{/if}}
+                                            <div class="langarea">
+                                                <div class="lang"></div>
+                                                <div class="gender"></div>
+                                                Voice					
+                                                <div class="tips">Switch Voice</div>
+                                            </div>
+                                        </div>
+                                        <div class="dialog_input_control">
+                                            <a class="dialog_tts on" data-method="tts">
+                                                <div class="icon"></div>
+                                                <span class="tips">Text to Speech</span>
+                                            </a>
+                                            <a class="dialog_mic" data-method="mic">
+                                                <div class="icon"></div>
+                                                <span class="tips">Voice Recording</span>
+                                            </a>
+                                        </div>
+                                        <div class="dialog_control">
+                                            <a title="Delete" class="dialog_delete">Delete</a>
+                                            <a title="Insert Line" class="dialog_insert">Insert Line</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </script>
+                            <div id="tp-bgmusic" class="tp-section">
+                                <div class="inside">
+                                    <h2 class="tp-section-title">Choose a song for background music</h2>
+                                    <div id="music-wrapper">
+                                        Song selected: <span id="music-selected"></span>
+                                        <ul id="music-list" class="clearfix">
+                                            <li class="music" data-file="nosound" data-tc="common">
+                                                <div class="music-name">No Background Music</div>
+                                                <div class="music-duration">&nbsp;</div>
+                                            </li>
+                                            <li class="music on" data-file="A_Special_Place.mp3" data-tc="common">
+                                                <div class="btn-play"></div><div class="btn-stop"></div>
+                                                <div class="music-name">A Special Place</div>
+                                                <div class="music-duration">(1:06)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Bossa_Story.mp3" data-tc="common">
+                                                <div class="btn-play"></div><div class="btn-stop"></div>
+                                                <div class="music-name">Bossa Story</div>
+                                                <div class="music-duration">(1:01)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Busy_Afternoon.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Busy Afternoon</div>
+                                                <div class="music-duration">(1:29)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Champagne_And_Caviar.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Champagne And Caviar</div>
+                                                <div class="music-duration">(1:01)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Funky_Mama.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Funky Mama</div>
+                                                <div class="music-duration">(1:03)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Happy_Go_Lucky.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Happy Go Lucky</div>
+                                                <div class="music-duration">(1:07)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Havana_Moon.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Havana Moon</div>
+                                                <div class="music-duration">(1:09)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Imagine_Anything.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Imagine Anything</div>
+                                                <div class="music-duration">(1:00)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="La_Fete_Foraine.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">La Fete Foraine</div>
+                                                <div class="music-duration">(1:30)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Picnic_For_Two.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Picnic For Two</div>
+                                                <div class="music-duration">(1:01)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Romantic_Night_Out.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Romantic Night Out</div>
+                                                <div class="music-duration">(2:13)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Secret_Garden.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Secret Garden</div>
+                                                <div class="music-duration">(1:10)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Smile.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Smile</div>
+                                                <div class="music-duration">(1:10)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Smilin_.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Smilin'</div>
+                                                <div class="music-duration">(1:09)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Soul_Mate.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Soul Mate</div>
+                                                <div class="music-duration">(1:02)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Sunny_Side_Of_The_Road.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Sunny Side Of The Road</div>
+                                                <div class="music-duration">(1:07)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Turn_Back_Around.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Turn Back Around</div>
+                                                <div class="music-duration">(1:00)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Waikiki.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Waikiki</div>
+                                                <div class="music-duration">(1:03)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Yellow_Carousel.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Yellow Carousel</div>
+                                                <div class="music-duration">(1:08)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                            <li class="music" data-file="Yesterday_s_Tango.mp3" data-tc="common">
+                                                <div class="btn-play"></div>
+                                                <div class="btn-stop"></div>
+                                                <div class="music-name">Yesterday's Tango</div>
+                                                <div class="music-duration">(1:17)</div>
+                                                <div class="loading"></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="buttons">
+                                        <a class="action-btn dark" onclick="stageManager.goTo('dialogs')">&lt; Back</a>
+                                        <a id="preview-signup" class="action-btn" onclick="previewSignup();" style="float:right">
+                                            Sign Up to Preview &gt;
+                                        </a>
+                                        <a id="preview-preview" class="action-btn" onclick="GoLite.preview();" style="float:right">
+                                            Preview &gt;
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tp-preview" class="tp-section">
+                                <div class="inside">
+                                    <div class="loading">
+                                        <img src="/ui/gifs/loading2.gif" alt=""/>
+                                    </div>
+                                    <div class="preview" style="display:none;position:relative;">
+                                        <h2 class="tp-section-title">Preview your video</h2>
+                                        <div id="player_container">
+                                            This content requires the Adobe Flash Player 10.0.12. 
+                                            <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                                        </div>
+                                        <a class="action-btn dark" onclick="stageManager.goTo('bgmusic')" style="position:absolute;bottom:0;left:0;">
+                                            &lt; Back
+                                        </a>
+                                        <a id="btn_save" class="action-btn" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['save']);return false;">
+                                            Save Now &gt;
+                                        </a>
+                                    </div>
+                                    <div class="save" style="display:none">
+                                        <div class="thumbnail">
+                                            Choose your thumbnail
+                                            <div id="thumb_chooser_container">
+                                                This content requires the Adobe Flash Player 10.0.12. 
+                                                <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
+                                            </div>
+                                        </div>
+                                        <div class="title">
+                                            <label for="movie_title">TITLE:</label>
+                                            <input type="text" id="movie_title" name="movie_title" value="" maxlength="140" placeholder="Enter your title here">
+                                        </div>
+                                        <div class="description">
+                                            <label for="movie_description">MESSAGE:</label>
+                                            <textarea id="movie_description" name="movie_description" placeholder="Enter your message (optional)"></textarea>
+                                        </div>
+                                        <div class="credits">
+                                            <label for="movie_credits">CREDITS:</label>
+                                            <textarea id="movie_credits" name="movie_credits" placeholder="If not yours, give credits to the owner of the pictures you are using"></textarea>
+                                            <span class="footnote">* Credits are added to your video's message</span>
+                                        </div>
+                                        <div style="clear:both"></div>
+                                        <div class="buttons">
+                                            <a id="btn_publish" class="action-btn" href="#" onclick="GoLite.save(); return false;">
+                                                Publish &gt;
+                                            </a>
+                                        </div>
+                                        <a id="back-preview" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['preview']);return false;">
+                                            &lt; Back to Preview
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="app-bottom">
+                    <div class="app-bottom-inside clearfix">
+                        <div id="about">
+                            <h2>Nexus at a Glance</h2>
+                            Nexus offers a wide range of video production tools from simple animated templates to a full-featured studio 
+                            allowing you to make your own 100% custom series and videos.
+                            <ul id="feature-highlights">
+                                <li class="tool">
+                                    <div>Extra Simple Video Making Tools</div>
+                                </li>
+                                <li class="character">
+                                    <div>Create Your Own Custom Characters</div>
+                                </li>
+                                <li class="voices">
+                                    <div>Record Voices, Import Images and Live Action</div>
+                                </li>
+                                <li class="share">
+                                    <div>Publish Your Videos all over the Internet</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="more-apps" class="clearfix" data-list="qvms"></div>
+                    </div>
+                </div>
+                <div id="publishing" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">Publishing...</div>
+                </div>
+                <div id="fb_uploading" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">Uploading...</div>
+                </div>
+                <div id="please_wait" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">Please wait...</div>
+                </div>
+                <div id="fb_upload_error" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">
+                        <h2>Import images from Facebook</h2>
+                        <div id="fb_upload_err_msg"></div>
+                        <div class="back-btn">
+                            <a class="action-btn" onclick="showOverlay(jQuery('#fb_import'));">Back</a>
+                        </div>
+                        <a onclick="showOverlay(jQuery('#fb_import'));" class="close_btn">&#215;</a>
+                    </div>
+                </div>
+                <div id="fb_import" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper" style="padding: 10px 40px;">
+                        <h2>Import images from 
+                            <span id="fb_username"></span> 
+                            Facebook account
+                            <span class="not_this_fb_acc">(
+                                <a onclick="switchFBUser();">Use different account</a>
+                            )</span>
+                        </h2>
+                        <div id="fb_container_nav">
+                            <div id="fb_user_selector">
+                                <div class="title">Browse People:</div>
+                                <div class="main">
+                                    <div class="fb_user_pic">
+                                        <div class="fb_user_loading">
+                                            <div class="fb_user_loading_text">Loading Friends</div>
+                                            <div class="fb_user_loading_img"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dropdown"></div>
+                            </div>
+                            <div id="fb_album_selector">
+                                <div class="title">
+                                    <span id="username"></span>'s Albums:
+                                </div>
+                                <div class="main">
+                                    <div class="fb_album_pic">
+                                        <div class="fb_album_loading">
+                                            <div class="fb_album_loading_text">Loading Albums</div>
+                                            <div class="fb_album_loading_img"></div>
+                                        </div>
+                                        <div class="fb_album_empty">No Album is found.</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown"></div>
+                            </div>
+                        </div>
+                        <div id="fb_container_photos"></div>
+                        <a onclick="jQuery.unblockUI();" class="close_btn">&#215;</a>
+                    </div>
+                </div>
+                <div id="upload-image" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">
+                        <div id="upload-image-main">
+                            <h2>Get an image from your computer</h2>
+                            <div class="upload-btn">
+                                <span id="swfuButtonPlaceholder"></span>
+                                (max.2MB, .jpg, .png)
+                            </div>
+                            <div id="upload-message"></div>
+                            <div id="upload-progress-container">
+                                Uploading...
+                                <div id="upload-progress-bar">
+                                    <div id="upload-progress"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="upload-image-tips clearfix">
+                            <h2>Tips for choosing the best photo</h2>
+                            <div class="upload-image-tip tip1">
+                                Facing Camera			
+                            </div>
+                            <div class="upload-image-tip tip2">
+                                Side View			
+                            </div>
+                            <div class="upload-image-tip tip3">
+                                Too small			
+                            </div>
+                        </div>
+                        <a onclick="jQuery.unblockUI();" class="close_btn">&#215;</a>
+                    </div>
+                </div>
+                <script>
+                    (($) => {
+                        var html = '<h2>Video Makers On Nexus</h2>';
+                        var complete = 0;
+                        $.getJSON("/api/getTemplates", d => {
+                            html += Object.keys(d).map(v => `<div class="channel_box">
+                                <div class="image"><img src="/static/qvm/templates/${v}/channel.jpg" alt="${d[v].title}"/></div>
+                                <a class="btn_create create_ttv" href="/quickvideo?theme=${v}">Make a Short Video &gt;</a>
+                            </div>`).join("");
+                            complete++
+                        })
+                        $.getJSON("/api/themes/get", d => {
+                            html += d.filter(i => i.attr.isHidden != "1").map(v => `<div class="channel_box">
+                                <div class="image">
+                                    <img src="/static/qvm/templates/${v.attr.id}/channel.jpg" alt="${v.attr.name}"/>
+                                    </div>
+                                    <a class="btn_create create_cartoon" href="/go_full?theme=${v.attr.id}">Make a Long Video &gt;</a>
+                                </div>`).join("");
+                                complete++
+                        })
+                        const interval = setInterval(() => {
+                            if (complete == 2) {
+                                $("#more-apps").html(html);
+                                clearInterval(interval);
+                            }
+                        }, 500);
+                    })(jQuery);
+                    function initSwfUplad() {
+                        jQuery('#upload-image').find('#upload-progress-container').hide().end().find('.upload-btn').show();
+                        if (window.swfu) return;
+                        window.swfu = new SWFUpload({
+                            // Backend Settings
+                            upload_url: "/api/saveBackground",
+                            post_params: {
+                                isTemplate: true
+                            },
+                            // File Upload Settings
+                            file_size_limit : "2 MB",
+                            file_types : "*.jpg;*.jpeg;*.png",
+                            file_types_description : "Image file",
+                            file_upload_limit : "1",
+                            file_queue_limit : "1",
+                            // Event Handler Settings
+                            file_queue_error_handler : fileQueueError,
+                            file_dialog_complete_handler : fileDialogComplete,
+                            upload_progress_handler : uploadProgress,
+                            upload_success_handler : uploadSuccess,
+                            upload_complete_handler : uploadComplete,
+                            // Button Settings
+                            button_image_url: "/static/qvm/templates/talkingpicz_christmas/img/step01/btn_upload_259x53.png",
+                            button_placeholder_id : "swfuButtonPlaceholder",
+                            button_width: 259,
+                            button_height: 53,
+                            button_text: '<span class="fontstyle">Upload an image &gt;</span>',
+                            button_text_style: ".fontstyle { color: #ffffff; font-size:24px; font-style:italic; font-family: Trebuchet MS,Tahoma,sans-serif; }",
+                            button_text_top_padding: 10,
+                            button_text_left_padding: 25,
+                            button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+                            button_cursor: SWFUpload.CURSOR.HAND,
+                            button_action: SWFUpload.BUTTON_ACTION.SELECT_FILE,
+                            // Flash Settings
+                            flash_url : "/static/libs/swfupload.swf",
+                            debug: false
+                        });
+                    }
+                    (function($) {
+                        var musicListed = false;
+                        function initMusicList() {
+                            if (musicListed) return;
+                            $('#music-list').bind('change', function(e, music) {
+                                $('#music-selected').html(
+                                    music.find('.music-name').html()
+                                ).data('music', music.data('tc') + '.' + music.data('file'));
+                            }).musicList();
+                            musicListed = true;
+                        }
+                        function StageManager() {
+                            var that = this,
+                            sectionHeight = 575;
+                            this.mode = '';
+                            this.goTo = function(stage) {
+                                if (stage == 'intro') return;
+                                var active = stage;
+                                if (stage == 'loading') {
+                                    active = 'heads';
+                                    if (this.mode != 'template') $('#tp-nav a:not(.templates)').removeData('activated');
+                                    this.mode = 'template';
+                                } else if (stage == 'heads') {
+                                    if (this.mode != 'head') $('#tp-nav a:not(.templates)').removeData('activated');
+                                    this.mode = 'head';
+                                } else if (stage == 'dialogsBack') {
+                                    if (this.mode == 'template') {
+                                        active = 'templates';
+                                        stage = 'templates';
+                                    } else {
+                                        active = 'heads';
+                                        stage = 'heads';
+                                    }
+                                }
+                                updateNav(active);
+                                showStage(stage);
+                                // stop music player
+                                $('#music-list').trigger('stop');
+                                if (stage == 'loading') loadingDialogs();
+                                else if (stage == 'dialogs') jQuery('#dialogs .focus .dialog_input').focus();
+                                else if (stage == 'bgmusic') initMusicList();
+                            };
+                            function updateNav(active) {
+                                $('#tp-nav a').each(function() {
+                                    var $this = $(this);
+                                    $this.removeClass('on disabled');
+                                    if ($this.hasClass(active)) {
+                                        $this.addClass('on');
+                                        $this.data('activated', true);
+                                        if (active == 'heads' && that.mode == 'template') $this.removeData('activated');
+                                    } else {
+                                        if (active == 'heads' && that.mode == 'template') $this.addClass('disabled');
+                                        else if (!$this.data('activated')) $this.addClass('disabled');
+                                    }
+                                });
+                            }
+                            function showStage(id) {
+                                $('.tp-section').height(0);
+                                $('#tp-' + id).height(sectionHeight);
+                            }
+                            function loadingDialogs() {
+                                var l = $('#tp-loading .cover li').removeClass('tick').each(function(i) {
+                                    var self = $(this);
+                                    setTimeout(function() {self.addClass('tick')}, 500 * (i+1));
+                                }).length;
+                                setTimeout(function() {that.goTo('dialogs')}, 500 * l + 300);
+                            }
+                        }
+                        $(function() {
+                            window.stageManager = new StageManager();
+                            $('#tp-intro .btn-next').click(function(e){
+                                e.preventDefault();
+                                stageManager.goTo('templates', true);
+                                $('#tp-intro').height(0);
+                                $('#tp-main').height(575);
+                            });
+                            $('#tp-nav a').click(function(e) {
+                                var self = $(this);
+                                if (! self.hasClass('intro')) e.preventDefault();
+                                if (self.hasClass('disabled') || self.hasClass('on')) return;
+                                stageManager.goTo(this.className);
+                                if (self.hasClass('preview')) GoLite.preview();
+                            });
+                        });
+                        $('#import-own a').click(function(e) {
+                            e.preventDefault();
+                            initSwfUplad();
+                            showOverlay($("#upload-image"))
+                        });
+                        $('#import-fb a').click(function(e) {
+                            e.preventDefault();
+                            showOverlay($('#please_wait'));
+                            facebookConnect();
+                            showOverlay($('#fb_import'));
+                        });
+                        GoLite.init(1);
+                        $('#dialogs .dialog').scriptDialog();
+                        window.previewSignup = function() {
+                            showSignup();
+                            registerSignupLoginCompleteHandler(donePreviewSignup);
+                        };
+                        function donePreviewSignup() {
+                            GoLite.updateUserState(function(userState) {
+                                $(document).trigger('GoLite.stateChange', ['']);
+                                showNotice('You are now logged in to Nexus');
+                            });
+                        }
+                    })(jQuery);
+                </script>
+                <div id="upsell" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">
+                        <div class="upsell-main">
+                            <h2>Upgrade to GoPlus and Get All This Cool Stuff!</h2>
+                            <ul class="blk clearfix">
+                                <li class="blk1">Add Up to 5 Heads</li>
+                                <li class="blk2">8 Extra Talking Heads</li>
+                                <li class="blk3">&gt;40 Extra Stickers</li>
+                                <li class="blk4">3 Extra eCard Templates</li>
+                                <li class="blk5">20 Extra Dialog Lines</li>
+                                <li class="blk6">6 Extra Frames</li>
+                            </ul>
+                            <div class="buttons">
+                                <a class="btn-upsell" href="javascript:;" onclick="popUpgrade()">Get GoPlus &gt;</a>
+                                <a class="cancel" href="javascript:;" onclick="psPop=false;jQuery.unblockUI();">Cancel</a>
+                            </div>
+                        </div>
+                        <div class="upsell-more clearfix">
+                            <h2>And there's just for the Video eCards! GoPlus covers everything on GoAnimate</h2>
+                            <ul class="upsell-more-points clearfix">
+                                <li class="studio">Unlimited Studio Access</li>
+                                <li class="app">More Themes</li>
+                                <li class="char">Free Characters</li>
+                                <li class="export">Free HD Export to YouTube</li>
+                                <li class="voice">More Voices</li>
+                            </ul>
+                            <a class="action-btn signup" href="https://web.archive.org/web/20120517140356/http://goanimate.com/plusfeatures/?hook=upsell_overlay.site" target="_blank" style="margin-top:40px;">Learn More &gt;</a>
+                        </div>
+                        <a class="close_btn" onclick="psPop=false;jQuery.unblockUI();">&#215;</a>
+                    </div>
+                </div>
+                <div id="upgrade" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">
+                        <h2>Make animated videos exactly the way you want!</h2>
+                        <p>Complete the transaction in the browser window that just opened and confirm below to enable the upgrade.</p>
+                        <div>
+                            <a href="javascript:;" class="buttonbase buttonorange" id="upgrade_confirm" style="margin:15px auto;float:none;display:block;">
+                                <div class="buttontitle">Confirm</div>
+                            </a>
+                        </div>
+                        <a class="close_btn">&#215;</a>
+                    </div>
+                </div>
+                <script>
+                    jQuery('#upgrade_confirm, #upgrade .close_btn').click(function(e) {
+                        e.preventDefault();
+                        GoLite.updateUserState();
+                        jQuery.unblockUI();
+                    });
+                </script>
+                <script src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
+                <script>
+                    jQuery(document).ready(function() {
+                        jQuery('#movie_title, #movie_description, #movie_credits').placeholder();
+                    });
+                </script>
+                <script type="text/javascript">
+                    function facebookConnect() {
+                        if (!FB) return displayFeedback("1" + "Sorry, Facebook is blocked at your location.");
+                        showOverlay(jQuery("#please_wait"));
+                        FB.login(function(response) {
+                            if (response.authResponse) {
+                                var fb_profile_id = response.authResponse.userID;
+                                fbImportManager.settings.access_token = response.authResponse.accessToken;
+                                fbImportManager.initImport();
+                            } else jQuery.unblockUI();
+                        }, {
+                            scope:'user_photos,friends_photos'
+                        });
+                    }
+                    function switchFBUser() {
+                        if (!FB) return displayFeedback("1" + "Sorry, Facebook is blocked at your location.");
+                        showOverlay(jQuery("#please_wait"));
+                        FB.logout(function(response) {
+                            showNotice(GT.gettext("You may now click Import images from Facebook again."));
+                        });
+                    }
+                </script>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <%- include("includes/2012_footer.ejs") %>
+    </body>
+</html>

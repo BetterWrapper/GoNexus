@@ -605,7 +605,11 @@ module.exports = function (req, res, url) {
 						movie.meta(mId).then(m => {
 							const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`))
 							const json = user.users.find(i => i.id == data.userId);
-							for (const meta of templateAssets) json.assets.unshift(meta);
+							for (const meta of templateAssets) {
+								fs.writeFileSync(`${asset.folder}/${meta.id}`, fs.readFileSync(`${asset.tempFolder}/${meta.id}`));
+								json.assets.unshift(meta);
+								fs.unlinkSync(`${asset.tempFolder}/${meta.id}`);
+							}
 							json.movies.unshift(m);
 							fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(user, null, "\t"));
 							templateAssets = [];
@@ -676,11 +680,12 @@ module.exports = function (req, res, url) {
 							}
 						}
 						const flashvars = {
+							appCode: "go",
 							movieLid: 11,
 							movieId: "templatePreview",
 							autostart: 1,
 							is_golite_preview: 1,
-							ut: "23",
+							ut: 23,
 							apiserver: "/",
 							storePath: process.env.STORE_URL + "/<store>",
 							clientThemePath: process.env.CLIENT_URL + "/<client_theme>"
@@ -707,8 +712,7 @@ module.exports = function (req, res, url) {
 										console.log("Body: " + JSON.stringify(body));
 										di = body.id;
 										try {
-											const buffer = asset.load(di);
-											const duration = body.duration = await getMp3Duration(buffer);
+											const duration = body.duration;
 											if (duration.toString().includes(".")) {
 												const round = Math.round(duration);
 												let seconds = round / 1000;
@@ -728,7 +732,7 @@ module.exports = function (req, res, url) {
 													console.log("Keep pushing till its there");
 												}
 											}
-											body.enc_asset_id = ttsid.toString();
+											body.ttsid = ttsid.toString();
 											templateAssets.unshift(body);
 											ouri++;
 											if (i == texts.length - 1) {
@@ -793,6 +797,7 @@ module.exports = function (req, res, url) {
 									scenetimes.push(seconds + 1);
 								}
 								ouri++;
+								micRecorderInfo.ttsid = ttsid.toString();
 								if (i == texts.length - 1) {
 									movie.genxml(
 										qvm_theme, 

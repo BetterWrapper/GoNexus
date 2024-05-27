@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Quick Apps - Make a Video - GoNexus</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="title" content="Make a Video - GoNexus">
+        <meta property="og:site_name" content="GoNexus">
+        <meta property="fb:app_id" content="177116303202">
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        <style>
+            @font-face {
+                font-family: 'Droid Sans';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Droid Sans Bold'), local('DroidSans-Bold'), url(/ui/fonts/EFpQQyG9GqCrobXxL-KRMQFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');
+            }
+        </style>
+        <link href="/static/tommy/2012/go/css/buttons.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/school/css/public.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/go/css/overlay.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/go/css/create.css" rel="stylesheet" type="text/css"/>        
+        <script type="text/javascript">
+            var srv_tz_os = -4, 
+                view_name = "school", 
+                user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <script src="/static/tommy/2012/go/js/prototype.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery-1.4.4.min.js"></script>
+        <script src="/static/tommy/2012/go/js/go2.js"></script>
+        <script src="/static/tommy/2012/go/js/overlay.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.blockUI.js"></script>
+        <script src="/static/tommy/2012/go/js/cookie.js"></script>
+        <script src="/static/tommy/2012/school/js/global.js"></script>
+        <script src="/static/tommy/2012/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+        <script type="text/javascript">
+            jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+        <script src="/static/tommy/2012/go/js/studio.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+        </script>
+        <%- include("includes/2012_header.ejs", {
+            includeTopBar: true
+        }) %>
+        <% const githubBranch = '1ea6ff3d5d8b1cff8148745784632fa1fef8399a'; %>
+        <% const githubUrl = `https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/` %>
+        <div class="container">
+            <div class="content">
+                <%- include("includes/2012_header.ejs", {
+                    includeTopBar: false
+                }) %>
+                <div class="ga_channel_title ga_channel_nav">
+                    <h1>
+                        <a href="/create?page_layout=2012">Make a Video</a>
+                    </h1> &gt;
+                
+                    <div id="channel_app_filter">
+                        <span>Quick Apps</span>
+                        <span class="arrow"></span>
+                        <ul>
+                            <li><a href="/create?page_layout=2012&sort_by=quick">Quick Apps</a></li>
+                            <li><a href="/create?page_layout=2012&sort_by=full">Full-Featured Apps</a></li>
+                        </ul>
+                    </div>
+                
+                </div>
+                <div class="channel_box">
+                    <h3>Video eCards</h3>
+                    <a class="image xmaspicz" href="/text2video?filename=ecards-free">
+                        <div class="message">This is a beta template. Please expect things to break during usage.</div>
+                    </a>
+                    <a class="btn_create create_ttv" href="/text2video?filename=ecards-free">
+                        Make a Short Video &gt;
+                    </a>
+                </div>
+                <div class="channel_box">
+                    <h3>Election 2012 Quick</h3>
+                    <a class="image politics" href="/text2video?filename=election">
+                        <div class="message">This is a beta template. Please expect things to break during usage.</div>
+                    </a>
+                    <a class="btn_create create_ttv" href="/text2video?filename=election">Make a Short Video &gt;</a>
+                </div>
+                <div class="channel_box">
+                    <h3>Talking Picz</h3>
+                    <a class="image talkpic" href="/text2video?filename=talkingpicz">
+                        <div class="message">This is a beta template. Please expect things to break during usage.</div>
+                    </a>
+                    <a class="btn_create create_ttv" href="/text2video?filename=talkingpicz">Make a Short Video &gt;</a>
+                </div>
+                <% for (const i in params.templates) { %>
+                    <div class="channel_box">
+                        <h3><%= params.templates[i].title %></h3>
+                        <a href="/quickvideo?theme=<%= i %>">
+                            <img 
+                                style="background: transparent; height: 155px; width: 308px;"  
+                                src='/static/qvm/templates/<%= i %>/channel.jpg'
+                            ><% if (!params.templates[i].ga_template) { %>
+                                <% const userInfo = params.users.find(d => d.id == params.templates[i].user) %>
+                                <div class="plus-label">This template was created by <%= userInfo.name %></div>
+                            <% } %>
+                        </a>
+                        <a class="btn_create create_ttv" href="/quickvideo?theme=<%= i %>">Make a Short Video &gt;</a>
+                        <% if (!params.templates[i].ga_template) { %>
+                            <% const d = params.templates[i].user %>
+                            <a class="btn_create create_slideshow" href="/public_user/<%= d %>">User's Profile &gt;</a>
+                        <% } %>
+                    </div>
+                <% } %>
+                <script>
+                function loginStudio(thm,lid) {
+                    registerSignupLoginCompleteHandler(function() {
+                        location.reload(true);
+                    });
+                    showSignup(250);
+                }
+                
+                (function($) {
+                function showMenu() {
+                    $('#channel_app_filter').addClass('on');
+                    $('#channel_app_filter ul').show();
+                    $('body').bind('click', hideMenu);
+                }
+                function hideMenu(e) {
+                    if ($(e.target).closest('#channel_app_filter').length == 0) {
+                        $('#channel_app_filter').removeClass('on');
+                        $('#channel_app_filter ul').hide();
+                        $('body').unbind('click', hideMenu);
+                    }
+                }
+                $('#channel_app_filter').click(function(e){
+                    if ($(this).hasClass('on')) hideMenu(e);
+                    else showMenu();
+                    e.stopPropagation();
+                });
+                })(jQuery);
+                </script>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <%- include("includes/2012_footer.ejs") %>
+    </body>
+</html>

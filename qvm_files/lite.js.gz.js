@@ -5,20 +5,6 @@ var VoiceCatalog = {
         return this.lang_model || this.fallback_langModel
     }
 };
-function detectLogin(action, actionNum) {
-    if (!action || !actionNum) alert("Missing one or more actions.");
-    switch (action) {
-        case "customchars": {
-            console.log(userData)
-            if (!userData) alert("Please login to nexus in order to use custom characters");
-            else {
-                jQuery.blockUI();
-                GoLite.showSelectCCOverlay(actionNum);
-            }
-            break;
-        }
-    }
-} 
 jQuery.ajax({
     url: VoiceCatalog.apiPath,
     type: 'POST',
@@ -207,7 +193,7 @@ VoiceRecorder.recording = false;
 VoiceRecorder.defaultSettings = {
     swf: "",
     flashvars: {
-        apiserver: "/qvm_",
+        apiserver: "/qvm_micRecord_",
         appCode: "go",
         u_info: ""
     }
@@ -726,12 +712,46 @@ var GoLite = (function(e) {
         settings: {
             dialigMaxLength: 180
         },
+        auth: firebase.auth(),
+        params(stuff) {
+            return new URLSearchParams(stuff);
+        },
+        checkLogin(num) {
+            this.auth.onAuthStateChanged(user => {
+                if (!user && jQuery('#login_bar').length) {
+                    jQuery('#seperator0').waypoint(function(e) {
+                        jQuery('#login_bar').slideDown();
+                    }, {offset: 'bottom-in-view', triggerOnce: true});
+            
+                    jQuery(document).bind('user.hasAccount', function(e) {
+                        updateUserState(function(response) {
+                            jQuery.unblockUI();
+                            jQuery(document).trigger('GoLite.stateChange', ['']);
+                            setTimeout(() => {
+                                jQuery('#login_bar').slideUp();
+                                showNotice(response);
+                            }, 500);
+                        });
+                    });
+                } else {
+                    GoLite.userData = user;
+                    if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
+                }
+                if (!this.params(window.location.search).get("editmode")) this.init(num);
+                else this.initForEdit(num);
+            });
+        },
+        userLogin(form, callback) {
+            const json = Object.fromEntries(this.params(form));
+            console.log(json);
+            this.auth.signInWithEmailAndPassword(json.email, json.password).then(callback).catch(callback);
+        },
         init: function(D) {
             if (d) {
                 return
             }
             d = true;
-            c = D;
+            c = !this.userData ? D : D < 2 ? 2 : D;
             var A = new ItemSelector(e("#templates"));
             t = A.getItem();
             e("#template_name").html(t.attr("title"));
@@ -822,7 +842,7 @@ var GoLite = (function(e) {
                     e(this).trigger("updatevoice", [F[G].data("voice")])
                 });
                 e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c == 2);
-                e("#dialogs .upsell, #step4 .upsell").toggle(c < 2);
+                e("div.character").find(".isbasic").toggle(c < 2).end().find(".isplus").toggle(c == 2);
                 e(document).bind("delete.scriptDialog insert.scriptDialog", function(I) {
                     var G = r;
                     var H = e("#dialogs .num");
@@ -963,7 +983,6 @@ var GoLite = (function(e) {
                     return
                 }
                 b = y.enc_mid;
-                u = y.opening_closing;
                 var z = e("#dialogs .dialog:not(.fake)");
                 e.each(y.script, function(C, A) {
                     var B = z.eq(C);
@@ -1034,7 +1053,7 @@ var GoLite = (function(e) {
             if (H.ed_assignment) {
                 y.ed_assignment = H.ed_assignment
             }
-            if (userData) y.userId = userData.id || userData.uid;
+            e.extend(y, this.userData);
             e.ajaxSetup({
                 error: function(I, K, J) {
                     o = false;
@@ -1197,18 +1216,16 @@ var GoLite = (function(e) {
             return c
         },
         updateUserState: function(w) {
-            e.get("/ajax/getUserMetaInfo", function(y) {
-                if (y.error) {
-                    c = 0
-                } else {
-                    c = 1;
-                    if (y.plus == 1) {
+            this.auth.onAuthStateChanged(function(y) {
+                if (y) {
+                    GoLite.userData = y;
+                    if (y.emailVerified) {
                         c = 2;
                         e("#templates .plus-cover").remove();
                         e(".plus-character").html("<strong>Premium Character</strong>");
                         e("#dialogs .max").hide()
                     }
-                    e("div.character .customlink").addClass(y.plus == 1 ? "isplus" : "isbasic")
+                    e("div.character").find(".isbasic").toggle(c < 2).end().find(".isplus").toggle(c == 2);
                 }
                 e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c == 2);
                 e("#dialogs .upsell, #step4 .upsell").toggle(c < 2);
@@ -1216,7 +1233,7 @@ var GoLite = (function(e) {
                 if (w && typeof w == "function") {
                     w(c)
                 }
-            }, "json")
+            })
         },
         showSelectCCOverlay: function(y) {
             var w = GoLite.getCharacters();
@@ -1330,7 +1347,9 @@ function showNotice(c, a) {
 }
 var psWin = null
   , psHook = "";
-function popUpgrade(a) {}
+function popAccountModal() {
+    showOverlay(jQuery("#upgrade"));
+}
 function showPublish() {
     if (view_name == "youtube") {
         if (jQuery("#publish").length == 0) {

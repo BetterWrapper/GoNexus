@@ -62,15 +62,16 @@
                 jQuery.unblockUI();
             }, 5000)
         </script>
-        <div id="top-bar">
-            <a href="https://flashthemes.net">&lt; Go to FlashThemes</a>
-            <a class="login" href="/create">Make a Video &gt;</a>
-        </div>
+        <%- include("includes/2012_header.ejs", {
+            includeTopBar: true
+        }) %>
         <div class="container">
             <div class="content">
                 <div id="gallery-top">
                     <div class="gallery-top-inside">
-                        <%- include("includes/2012_header.ejs") %>
+                        <%- include("includes/2012_header.ejs", {
+                            includeTopBar: false
+                        }) %>
                         <div class="public_top_block clearfix" style="background:none;">
                             <div class="public_top_left">
                                 <div class="avatar">

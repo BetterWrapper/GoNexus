@@ -127,7 +127,34 @@ http
 			switch (req.method) {
 				case "GET": {
 					switch (parsedUrl.pathname) {
-						case "/api/serveLVMViaURL": {
+						case "/api/getTemplateFiles": {
+							const zip = nodezip.create();
+							const path = `./static/qvm/templates/${parsedUrl.query.theme}`;
+							fUtil.addToZip(zip, `theme.css`, fs.readFileSync(`${path}/theme.css`).toString("utf8"));
+							fs.readdirSync(`${path}/thumb`).forEach(file => {
+								if (fs.existsSync(`${path}/thumb/${file}`)) {
+									fUtil.addToZip(zip, `thumb/${file}`, fs.readFileSync(`${path}/thumb/${file}`));
+								}
+							});
+							fs.readdirSync(`${path}/bg`).forEach(file => {
+								if (fs.existsSync(`${path}/bg/${file}`)) {
+									fUtil.addToZip(zip, `bg/${file}`, fs.readFileSync(`${path}/bg/${file}`));
+								}
+							});
+							fs.readdirSync(`${path}/img`).forEach(folder => {
+								if (fs.existsSync(`${path}/img/${folder}`)) {
+									const stats = fs.lstatSync(`${path}/img/${folder}`);
+									if (stats.isDirectory()) {
+										fs.readdirSync(`${path}/img/${folder}`).forEach(file => {
+											fUtil.addToZip(zip, `img/${folder}/${file}`, fs.readFileSync(`${path}/img/${folder}/${file}`));
+										});
+									} else fUtil.addToZip(zip, `img/${folder}`, fs.readFileSync(`${path}/img/${folder}`));
+								}
+							});
+							res.setHeader("Content-Type", "application/zip");
+							zip.zip().then(i => res.end(i));
+							break;
+						} case "/api/serveLVMViaURL": {
 							if (parsedUrl.query.i.endsWith(".mo")) res.setHeader("Content-Type", "application/x-gettext-translation; charset=UTF-8")
 							else if (parsedUrl.query.i.endsWith(".swf")) res.setHeader("Content-Type", "application/vnd.adobe.flash.movie");
 							https.get(parsedUrl.query.i, r => {
@@ -138,6 +165,10 @@ http
 						} case "/api/getTTSVoices": { // gets all of the TTS Voices
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./tts/info.json'))));
+							break;
+						} case "/api/getTemplates": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./templates.json'))));
 							break;
 						} case "/api/themes/get": { // list's all themes from the themelist.xml file
 							res.setHeader("Content-Type", "application/json");
@@ -1253,7 +1284,9 @@ http
 			console.log(x);
 			res.end(x.toString());
 		}
-		console.log(req.method, req.url, '-', res.statusCode);
+		const date = new Date();
+		const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`;
+		console.log(time, req.method, req.url, '-', res.statusCode);
 	}).listen(process.env.PORT || env.SERVER_PORT, '127.0.0.1', async () => {
 		if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 		fs.readdirSync(env.CACHÉ_FOLDER).forEach(file => fs.unlinkSync(`${env.CACHÉ_FOLDER}/${file}`));

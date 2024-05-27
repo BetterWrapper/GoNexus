@@ -62,7 +62,7 @@
     </head>
     <body class="page-action-videomaker">
         <div class="modal" id="studioBlock">
-            <div class="modal-dialog modal-lg" style="width: 991px;">
+            <div class="modal-dialog" style="width: 991px;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" id="closeStudio">
@@ -72,6 +72,20 @@
                         <h2 class="modal-title">Custom LVM</h2>
                     </div>
                     <div class="modal-body" id="studiodiv">You need Adobe Flash Player in order to use the Custom LVM</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="templatesModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h2 class="modal-title"><span id="template_theme"></span> Templates</h2>
+                    </div>
+                    <div class="modal-body btn-group btn-group-lg" role="group" id="templates" aria-label="..."></div>
                 </div>
             </div>
         </div>
@@ -117,7 +131,7 @@
                                         name: "2010 LVM Tutorial Woman (Not a dev but added her to bring back nostalgia)",
                                         id: "4715202"
                                     },
-				    {
+                                    {
                                         name: "2010 LVM Tutorial Woman From FlashThemes (Not a dev)",
                                         id: "123"
                                     },
@@ -276,6 +290,13 @@
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
         <script src="/js/user.js"></script>
         <script>
+            function showTemplates(stuff) {
+                $("#template_theme").text(stuff.split(".")[0]);
+                $("#templates").html(stuff.split(".")[1].split(",").map(info => {
+                    return `<a type="button" class="btn btn-default" href="/quickvideo?theme=${info}">${info}</a>`
+                }));;
+                $("#templatesModal").modal('show')
+            }
             let tId, tmcId, studio = "2016", chars = [], hasChars = false, themes = [], loadingStudio = false, previewerMovieXML, previewerFlashvars;
             const flashvars = {
                 tts_enabled: 1,
@@ -553,7 +574,8 @@
                     normal: 0,
                     rows: 1
                 }
-                const imgbase = 'https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/1ea6ff3d5d8b1cff8148745784632fa1fef8399a/server/pages/img/themes/';
+                const githubBranch = '1ea6ff3d5d8b1cff8148745784632fa1fef8399a';
+                const githubUrl = `https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/${githubBranch}/server/pages/img/themes/`;
                 for (const theme of d) {
                     if (theme.attr.isHidden == "1") continue;
                     themes.push(theme.attr);
@@ -561,7 +583,7 @@
                         <div class="theme" id="thm-${theme.attr.id}">
                             <div class="theme-cell">
                                 <div class="theme-cover launch">
-                                    <img src="${imgbase}${theme.attr.id}.${theme.attr.ext}" alt="${theme.attr.name}">
+                                    <img src="${githubUrl}${theme.attr.id}.${theme.attr.ext}" alt="${theme.attr.name}">
                                 </div>
                                 <div class="theme-meat">
                                     <div class="apps">
@@ -583,10 +605,14 @@
                                             </a>` : ''
                                         }
                                         ${
-                                            theme.attr.qvm ? `<a class="btn btn-default" 
+                                            theme.attr.qvm ? !theme.attr.qvm.includes(",") ? `<a class="btn btn-default" 
                                                 href="/quickvideo?filename=${theme.attr.qvm}" title="" 
                                                 data-original-title="QVM Template"><i class="i-qvm"></i>
-                                            </a>` : ''
+                                            </a>` : `<button class="btn btn-default" onclick="showTemplates(\`${
+                                                theme.attr.name
+                                            }.${
+                                                theme.attr.qvm
+                                            }\`)" title="" data-original-title="QVM Template"><i class="i-qvm"></i></button>` : ''
                                         }
                                     </div>
                                 </div>

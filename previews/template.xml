@@ -1,7 +1,7 @@
 <film copyable="0" duration="16.5" published="1" pshare="1">
   <meta>
-    <title><![CDATA[template1]]></title>
-    <tag><![CDATA[school]]></tag>
+    <title><![CDATA[]]></title>
+    <tag><![CDATA[]]></tag>
     <hiddenTag><![CDATA[]]></hiddenTag>
     <desc><![CDATA[]]></desc>
     <mver><![CDATA[4]]></mver>
@@ -272,7 +272,7 @@
 						<fadein duration="48" vol="1"/>
 						<fadeout duration="48" vol="0"/>
 						</sound><sound id="SOUND2" index="1" track="0" vol="1" tts="1">
-					<sfile>ugc.04470354778227792.mp3</sfile>
+					<sfile>ugc.asset-0.mp3</sfile>
 					<start>132</start>
 					<stop>156</stop>
 					<fadein duration="0" vol="0"/>

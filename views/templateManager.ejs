@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="dns-prefetch" href="//web.archive.org/web/20170130231943/http://d2qrjeyl4jwu9j.cloudfront.net/">
+
+<title>Template Manager - GoNexus</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="GoAnimate for Schools is a safe environment for students to fully express their creativity through video and a great place for educators to share educational videos with other educators worldwide.">
+
+<meta property="og:site_name" content="GoAnimate for Schools">
+<meta property="fb:app_id" content="122508887813978">
+<meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
+
+
+<style>
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+    }
+</style>
+<link rel="stylesheet" href="/ui/css/common_combined.css">
+
+<link rel="stylesheet" href="/ui/css/plans.css">
+
+<script>
+var srv_tz_os = -5, view_name = "school", user_cookie_name = "u_info_school";
+var user_country = "US";
+</script>
+
+<!--[if lt IE 9]>
+<script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/19521fcedc8fb38b/go/js/lib/html5shiv.js"></script>
+<![endif]-->
+<script src="/js/common_combined.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+<script src="/js/user.js"></script>
+<script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+<script type="text/javascript">
+var I18N_LANG = 'en_US';
+var GT = new Gettext({'locale_data': json_locale_data});
+</script>
+
+</head>
+<body class="page-action-public_signup">
+<script type="text/javascript">
+if (self !== top) jQuery('body').hide();
+</script>
+
+<%- include("includes/header.ejs", {isVideoList: false}) %>
+
+<div class="container">
+    <header class="page-header">
+        <div class="row">
+            <div class="col-sm-8 col-lg-8">
+                <h1 class="page-title">Start Making Templates Today</h1>
+            </div>
+            <div class="col-sm-4 col-lg-4">
+                <strong>What Is This?</strong><br>
+		This is a page where you can choose to either create a template or edit existing templates on Nexus. this will remove the need to create a template with no HTML knowledge.
+            </div>
+        </div>
+    </header>
+
+    <div class="plans">
+        <div class="plan-bg hidden-xs hidden-sm">
+            <img src="/ui/img/img_bg_blackboard.png">
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-5 col-lg-4 col-md-offset-1 col-lg-offset-2">
+                <div class="plan-wrapper teacher-plan">
+                    <div class="plan-title">Template Maker</div>
+                    <div class="plan-content">
+                        <div class="plan-description">
+                            <p>Allows anyone to create a template in Nexus</p>
+                        </div>
+                    </div>
+
+                    <a class="plan-price single_price_link" href="/templateManager?action=create">
+                        Create A Template
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-5 col-lg-4">
+                <div class="plan-wrapper school-plan">
+                    <div class="plan-title">Template Editor</div>
+                    <div class="plan-content">
+                        <div class="plan-description">
+                            <p>Allows a user to edit a template they created if they need to.</p>
+                            <p>If you have made any mistake during template creation or just want to make your template better, this is for you.</p>
+                        </div>
+                        <div class="plan-accounts">
+                            <form class="plan-form" id="template_chooser" role="form">
+                                <input type="hidden" name="action" value="edit">
+                                <div class="form-row">
+                                    <label for="templates" title="What templates do you want to edit?">
+                                        Your Templates
+                                    </label>
+                                    <select class="form-control" id="templates" name="templateTheme">
+                                        <option value="">You don't have any templates.</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <a class="plan-price plan-form-submit disabled" href="javascript:;" onclick='checkTemplateForm()'>
+                        Edit Template
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="info-section">
+    <div class="container">
+        <h3>Useful Information</h3>
+        <div class="row">
+            <div class="hidden-xs col-sm-6 col-md-6 col-lg-6">
+                There are so many benifits to creating/editing a template using this tool.
+                <ol>
+                    <li>You can create all of the templates you want with knowledge of HTML</li>
+                    <li>If you ever make a mistake while making templates, you may edit them at any time.</li>
+                    <li>Unlike flashthemes, you can actually make templates without any contest whatsoever or submiting a request to us to have your template added to Nexus!</li>
+                    <li>In Nexus, we believe that everyone should have the ability to create whatever they want and that includes Templates and so much more!</li>
+                    <li>When it comes to making templates, you need to know some css. don't worry, during template creation/editing, you are allowed to download a zip file containing all of the materials needed to make a template so that you don't have to start creating a CSS file for your template from scratch which will mess things up.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkTemplateForm() {
+        const form = $("#template_chooser").serialize()
+        const json = Object.fromEntries(new URLSearchParams(form));
+        if (json.templateTheme) location.href = "/templateManager?" + form;
+        else displayFeedback("1Please select a template")
+    }
+</script>
+
+<%- include("includes/footer.ejs") %>
+
+</body>
+</html>

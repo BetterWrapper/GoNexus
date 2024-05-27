@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Make a Video - GoNexus</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="title" content="Make a Video - GoNexus">
+        <meta property="og:site_name" content="GoNexus">
+        <meta property="fb:app_id" content="177116303202">
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        <style>
+            @font-face {
+                font-family: 'Droid Sans';
+                font-style: normal;
+                font-weight: 700;
+                src: local('Droid Sans Bold'), local('DroidSans-Bold'), url(/ui/fonts/EFpQQyG9GqCrobXxL-KRMQFhaRv2pGgT5Kf0An0s4MM.woff) format('woff');
+            }
+        </style>
+        <link href="/static/tommy/2012/go/css/buttons.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/school/css/public.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/go/css/overlay.css" rel="stylesheet" type="text/css"/>
+        <link href="/static/tommy/2012/go/css/create.css" rel="stylesheet" type="text/css"/>        
+        <script type="text/javascript">
+            var srv_tz_os = -4, 
+                view_name = "school", 
+                user_cookie_name = "u_info_school";
+            var user_country = "US";
+        </script>
+        <script src="/static/tommy/2012/go/js/prototype.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery-1.4.4.min.js"></script>
+        <script src="/static/tommy/2012/go/js/go2.js"></script>
+        <script src="/static/tommy/2012/go/js/overlay.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.swfobject.min.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.blockUI.js"></script>
+        <script src="/static/tommy/2012/go/js/cookie.js"></script>
+        <script src="/static/tommy/2012/school/js/global.js"></script>
+        <script src="/static/tommy/2012/go/js/Gettext.js"></script>
+        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+        <script type="text/javascript">
+            jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+
+            var I18N_LANG = 'en_US';
+            var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
+        <script src="/static/tommy/2012/go/js/studio.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            if (self !== top) jQuery('body').hide();
+        </script>
+        <%- include("includes/2012_header.ejs", {
+            includeTopBar: true
+        }) %>
+        <% const githubBranch = '1ea6ff3d5d8b1cff8148745784632fa1fef8399a'; %>
+        <% const githubUrl = `https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/` %>
+        <div class="container">
+            <div class="content">
+                <%- include("includes/2012_header.ejs", {
+                    includeTopBar: false
+                }) %>
+                <div class="channel-slider">
+                    <div id="quick_apps" class="ga_channel_title">
+                        <div class="slider-buttons">
+                            <button type="button" class="slider-button next" title="Next">
+                                <img class="arrow" src="/static/tommy/2012/go/img/spacer.gif" alt=""/>
+                            </button>
+                            <button type="button" class="slider-button prev" title="Previous">
+                                <img class="arrow" src="/static/tommy/2012/go/img/spacer.gif" alt=""/>
+                            </button>
+                            <div class="slider-page">
+                                <span class="slider-page-current">1</span>/
+                                <span class="slider-page-total">1</span>
+                            </div>
+                            <a class="browse-all" href="/create?page_layout=2012&sort_by=quick">
+                                Browse all &gt;
+                            </a>
+                        </div>
+                        <h2>Quick Apps</h2>
+                        Make your first video in minutes! Choose some characters. Record some lines. Done!
+                    </div>
+                    <div class="channel-slider-body">
+                        <div class="channel-slides clearfix">
+                            <% for (const i in params.templates) { %>
+                                <div class="channel_box">
+                                    <h3><%= params.templates[i].title %></h3>
+                                    <a href="/quickvideo?theme=<%= i %>">
+                                        <img 
+                                            style="background: transparent; height: 155px; width: 308px;"  
+                                            src='/static/qvm/templates/<%= i %>/channel.jpg'
+                                        ><% if (!params.templates[i].ga_template) { %>
+                                            <% const userInfo = params.users.find(d => d.id == params.templates[i].user) %>
+                                            <div class="plus-label">This template was created by <%= userInfo.name %></div>
+                                        <% } %>
+                                    </a>
+                                    <a class="btn_create create_ttv" href="/quickvideo?theme=<%= i %>">Make a Short Video &gt;</a>
+                                    <% if (!params.templates[i].ga_template) { %>
+                                        <% const d = params.templates[i].user %>
+                                        <a class="btn_create create_slideshow" href="/public_user/<%= d %>">User's Profile &gt;</a>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="channel-slider">
+                    <div id="full_apps" class="ga_channel_title">
+                        <div class="slider-buttons">
+                            <button type="button" class="slider-button next" title="Next">
+                                <img class="arrow" src="/static/tommy/2012/go/img/spacer.gif" alt=""/>
+                            </button>
+                            <button type="button" class="slider-button prev" title="Previous">
+                                <img class="arrow" src="/static/tommy/2012/go/img/spacer.gif" alt=""/>
+                            </button>
+                            <div class="slider-page">
+                                <span class="slider-page-current">1</span>/
+                                <span class="slider-page-total">1</span>
+                            </div>
+                            <a class="browse-all" href="/create?page_layout=2012&sort_by=full">Browse all &gt;</a>
+                        </div>
+                        <h2>Full-Featured Apps</h2>
+                        Jump in the director's chair and make a movie!  Click ... Drag ... Action !
+                    </div>
+                    <div class="channel-slider-body">
+                        <div class="channel-slides clearfix">
+                            <% for (const v of params.themes.filter(i => i.attr.isHidden != "1")) { %>
+                                <div class="channel_box">
+                                    <h3><%= v.attr.name %></h3>
+                                    <a href="javascript:checkLogin('<%= v.attr.id %>')">
+                                        <img 
+                                            style="background: transparent; height: 155px; width: 308px;" 
+                                            src='<%= githubUrl %><%= githubBranch %>/server/pages/img/themes/<%= v.attr.id %>.<%= v.attr.ext %>'
+                                        >
+                                    </a>
+                                    <a class="btn_create create_cartoon" href="javascript:checkLogin('<%= v.attr.id %>')">
+                                        Make a Movie &gt;
+                                    </a>
+                                    <% if (v.attr.cc_theme_id) { %>
+                                        <a class="btn_create create_cc" href="/cc?themeId=<%= v.attr.cc_theme_id %>&page_layout=2012">
+                                            Create a Character &gt;
+                                        </a>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div id="create-overlay" class="lightbox" style="display:none">
+                    <div class="lightbox_wrapper">
+                        <h2>
+                            <div>Sign up to unlock Nexus's full featured Video Maker.</div>
+                            <div>It'll let you make amazing videos!</div>
+                        </h2>
+                
+                        <div id="studio-features">
+                            <img src="/static/tommy/2012/go/img/create/img_studio.jpg" alt="Studio features"/>
+                            <div id="studio-n1">Pick a style that fits your story</div>
+                            <div id="studio-n2">Add your own music and voice recordings to your video</div>
+                            <div id="studio-n3">There are many backgrounds for you to use. Choose one thats fits your video</div>
+                            <div id="studio-n4">Get characters to sit, talk, dance, or fight</div>
+                            <div id="studio-n5">Manipulate background music, sound effects, and voice recordings</div>
+                            <div id="studio-n6">Create your own characters and cast them in your movie</div>
+                            <div id="studio-n7">Position characters exactly where you need them to be</div>
+                            <div id="studio-n8">Control how you video flows using a simple timeline</div>
+                        </div>
+                
+                        <a href="/public_signup?page_layout=2012" class="buttonbase buttonblue" style="margin:10px auto;float:none;display:block">
+                            <div class="buttontitle">Sign Up</div>
+                        </a>
+                
+                        <a onclick="jQuery.unblockUI();" class="close_btn">&#215;</a>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    function checkLogin(thm) {
+                        try {
+                            if (userData) location.href = `/go_full?page_layout=2012&tray=${thm}`
+                            else showOverlay(jQuery('#create-overlay'));
+                        } catch {
+                            showOverlay(jQuery('#create-overlay'), {
+                                top: Math.round(screen.width / screen.height)
+                            });
+                        }
+                    }
+                    (function($){
+                        $('.channel-slider').each(function() {
+                            var slider = $(this);
+                            var current = 1;
+                            var slides = Math.ceil(slider.find('.channel_box').length / 3);
+                            slider.find('.slider-button').click(function(e) {
+                                e.preventDefault();
+                    
+                                if ($(this).hasClass('next')) {
+                                    if (current >= slides) return;
+                                    current++;
+                    
+                                    if (current == 2) {
+                                        slider.find('.slider-button.prev').removeAttr('disabled');
+                                    }
+                                    if (current == slides) {
+                                        $(this).attr('disabled', 'disabled');
+                                    }
+                                } else {
+                                    if (current == 1) return;
+                                    current--;
+                    
+                                    if (current == 1) {
+                                        $(this).attr('disabled', 'disabled');
+                                    }
+                                    if (current == slides - 1) {
+                                        slider.find('.slider-button.next').removeAttr('disabled');
+                                    }
+                                }
+                                slider.find('.channel-slides').css('left', -960*(current-1)).end().find('.slider-page-current').text(current);
+                            }).filter('.prev').attr('disabled', 'disabled');
+                    
+                            slider.find('.slider-page-total').text(slides);
+                        });
+                    })(jQuery);
+                </script>
+            </div>
+        </div>
+        <%- include("includes/2012_footer.ejs") %>
+    </body>
+</html>

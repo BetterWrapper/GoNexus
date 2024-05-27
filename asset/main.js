@@ -23,6 +23,7 @@ function searchStuff(tId, data) {
 }
 module.exports = {
 	folder: './_ASSETS',
+	tempFolder: './_CACHÉ',
 	load(aId, isStream = false) {
 		return fs[isStream ? 'createReadStream' : 'readFileSync'](`${this.folder}/${aId}`);
 	},
@@ -93,12 +94,17 @@ module.exports = {
 		return ("" + Math.random()).replace(".", "");
 	},
 	save(buffer, meta, data) {
-		meta.enc_asset_id = this.generateId();
+		if (data.isTemplate) {
+			if (data.recorderId) meta.enc_asset_id = data.recorderId;
+			else meta.enc_asset_id = `asset-${fUtil.getNextFileId("asset-", `.${meta.ext}`)}`;
+		} else meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
-		if (data.isTemplate && data.recorderId) meta.enc_asset_id = data.recorderId;
-		fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
-		if (data.isTemplate) return meta;
+		if (data.isTemplate) {
+			fs.writeFileSync(`${this.tempFolder}/${meta.id}`, buffer);
+			return meta;
+		}
 		else {
+			fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
 			const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
 			json.users.find(i => i.id == data.userId).assets.unshift(meta);
 			fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));

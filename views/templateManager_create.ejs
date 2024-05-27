@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="dns-prefetch" href="//web.archive.org/web/20160913102301/https://d2qrjeyl4jwu9j.cloudfront.net/">
+
+<title>Create a Template - GoNexus</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="GoAnimate for Schools is a safe environment for students to fully express their creativity through video and a great place for educators to share educational videos with other educators worldwide.">
+
+<meta property="og:site_name" content="GoAnimate for Schools">
+<meta property="fb:app_id" content="122508887813978">
+<meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
+
+<style>
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Lato Regular'), local('Lato-Regular'), url(/ui/fonts/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        src: local('Lato Bold'), local('Lato-Bold'), url(/ui/fonts/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+    }
+</style>
+<link rel="stylesheet" href="/ui/css/common_combined.css">
+
+<link rel="stylesheet" href="/lvm_files/school/css/public/order.css.gz.css">
+
+<script>
+var srv_tz_os = -4, view_name = "school", user_cookie_name = "u_info_school";
+var user_country = "US";
+</script>
+
+<!--[if lt IE 9]>
+<script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/c5bab4fb87fee33e/go/js/lib/html5shiv.js"></script>
+<![endif]-->
+<script src="/js/common_combined.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+<script src="/js/user.js"></script>
+<script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+<script type="text/javascript">
+var I18N_LANG = 'en_US';
+var GT = new Gettext({'locale_data': json_locale_data});
+</script>
+
+
+
+
+</head>
+<body class="page-action-public_signup">
+<script type="text/javascript">
+if (self !== top) jQuery('body').hide();
+</script>
+
+<%- include("includes/header.ejs", {isVideoList: false}) %>
+
+<script>
+
+</script>
+
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/templateManager">Template Manager</a></li>
+        <li class="active">Create a template</li>
+    </ol>
+    <hr>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <form class="form-horizontal" id="order-form" action="javascript:;" method="post" novalidate>
+                <div class="payment-form-section">
+                    <div>
+                        <h3>About Your Template</h3>
+
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Template Name<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="template_name" value="" maxlength="50" placeholder="David Escobar">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Template Files</label>
+                            <div class="col-sm-5">
+                                <input class="form-control" name="template_files_zip" type="file" accept=".zip"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Preferred Template URL<span class="text-danger">*</span></label>
+                            <div class="col-sm-9"><script>document.write(`
+                                <div class="input-group">
+                                    <span class="input-group-addon">${window.location.origin}/quickvideo?theme=</span>
+                                    <input class="form-control" type="text" name="template_id" value="" maxlength="25" placeholder="your_template_id" autocomplete="off">
+                                </div>`)</script>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Theme Name For Your Template<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="template_theme" value="" maxlength="40" placeholder="Comedy World">
+                            </div>
+                        </div><script>document.write(`
+                        <div class="form-group">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <input type="hidden" name="template_uid" value="${userData.uid || userData.id}"/>
+                            </div>
+                        </div>`)</script>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Template Intro<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="template_intro" placeholder="GoNexus brings you a collection of scenes from your template for you to re-enact and make up comical, satirical or even dramatic stories." style="height: 100px;" maxlength="66"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">
+                                Steps for users to create their own video using your template
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="template_introSteps" placeholder="The drill? 1. Select a template / 2. Choose characters / 3. Type in a dialog / 4. Watch your masterpiece!" style="height: 100px;" maxlength="66"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Get Example Template Files</label>
+                            <p class="text-muted">This will help you create your template without messing things up.</p>
+                            <div class="col-sm-6">
+                                <a class="form-control" type="button" download="template_files.zip" href="/api/getTemplateFiles?theme=everydaylife">
+                                    Download Files
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="payment-form-section-divider"></div>
+                        <button class="btn btn-xs btn-green pull-right" onclick="templateManager.addScene()" type="button">
+                            Add Scene
+                        </button>
+                        <h3>Your Template Scenes</h3>
+                        <p class="text-muted">
+                            This section will allow you to add as many scenes as you like into your template. 
+                            a movie made in either Nexus or FlashThemes will be required to make your scene functional in your template.
+                        </p>
+
+                        <div id="templatesFormExample" style="display: none;">
+                            <div id="scene-arraynum" class="scene" data-num="arraynum">
+                                <h4 class="scene-text">
+                                    Scene arraynum - 
+                                    <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('arraynum')" type="button">
+                                        Remove
+                                    </button>
+                                </h4>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Scene Name<span class="text-danger">*</span></label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control scene-form-arraynum" type="text" data-name="step2title" value="" maxlength="25" placeholder="Just Browing YouTube">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Scene Description<span class="text-danger">*</span></label>
+                                    <div class="col-sm-6">
+                                        <textarea class="form-control scene-form-arraynum" data-name="step2desc" value="" maxlength="66" placeholder="2 characters deside to browse youtube when all of the sudden something bad happens. Animate the conversation!"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Default Scene<span class="text-danger">*</span></label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control scene-form-arraynum" data-name="step2class">
+                                            <option value=true>true</option>
+                                            <option value=false>false</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <input type="hidden" name="step2tidarraynum" value="step2tidvalarraynum"/>
+                                    </div>
+                                </div>
+                                <div class="payment-form-section-divider"></div>
+                            </div>
+                        </div>
+                        <div id="templates"></div>
+                        <button class="btn btn-xs btn-green pull-right" onclick="templateManager.addCharacter()" type="button">
+                            Add Character
+                        </button>
+                        <h3>Your Template Stock Characters</h3>
+                        <p class="text-muted">These will be the characters that will be included in your template. If you like you can also enable the ability for a user to use custom characters. (Theme ID and tags will be required though)</p>
+
+                        <div id="stockCharactersFormExample" style="display: none;">
+                            <div id="char-arraynum" class="char" data-num="arraynum">
+                                <h4 class="char-text">
+                                    Character arraynum - 
+                                    <button class="btn btn-xs btn-red" onclick="templateManager.removeCharacter('arraynum')" type="button">
+                                        Remove
+                                    </button>
+                                </h4>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Character Name<span class="text-danger">*</span></label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" name="step3namearraynum" value="" maxlength="25" placeholder="First name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Default Character</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" name="char_defaultarraynum">
+                                            <option value=true>true</option>
+                                            <option value=false>false</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label">Gender</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" name="step3genderarraynum">
+                                            <option value=F>Female</option>
+                                            <option value=M>Male</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="payment-form-section-divider"></div>
+                            </div>
+                        </div>
+                        <div id="stockCharacters"></div>
+                    </div>
+                    <div class="payment-form-section-footer">
+                        <div class="row">
+                            <div class="col-sm-8 col-sm-offset-2">
+                                <p>After pressing the button below, your template will be created for the public and everyone will be able to use it the second they see the link on the <a href="/studio">2012 Create Page</a></p>
+                            </div>
+                        </div>
+                        <button class="btn btn-orange btn-lg" type="submit">Create Template &gt;</button>
+                        <input type="hidden" name="template_type" value="new">
+                    </div>
+                </div>
+
+<button class="btn btn-green btn-lg" onclick="templateManager.initTemplatePreview()">Preview Template &gt;</button>
+
+            </form>
+            <br><br>
+        </div>
+
+<script>
+    class TemplateManager {
+        constructor() {
+            this.addScene();
+            this.addCharacter();
+            this.createForm($("#order-form").serialize())
+        }
+        addScene() {
+            this.sceneCount = this.sceneCount || 1;
+            const html = $("#templatesFormExample").html().toString().split("arraynum").join(this.sceneCount);
+            $("#templates").append(html.split(`step2tidval${this.sceneCount}`).join(Math.round(Math.random() * 7)));
+            $(`.scene-form-${this.sceneCount}`).each((index, elem) => {
+                $(elem).attr("name", $(elem).data("name") + this.sceneCount);
+            })
+            this.sceneCount++
+        }
+        addCharacter() {
+            this.charCount = this.charCount || 1;
+            $("#stockCharacters").append($("#stockCharactersFormExample").html().toString().split("arraynum").join(this.charCount++));
+        }
+        removeScene(num) {
+            if (num == 1) return displayFeedback("1You cannot remove the 1st scene.");
+            $(`#scene-${num}`).remove();
+            this.sceneCount--;
+            $(".scene").each((index, elem) => {
+                if ($(elem).data("num") != "arraynum") {
+                    $(elem).attr("id", `scene-${index}`);
+                    $(elem).find(`.scene-text`).html(`Scene ${index} - 
+                    <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('${index}')" type="button">
+                        Remove
+                    </button>`);
+                    $(`.scene-form-${index}`).each((index2, elem2) => {
+                        $(elem2).attr("name", $(elem2).data("name") + index);
+                    })
+                }
+            })
+        }
+        removeCharacter(num) {
+            if (num == 1) return displayFeedback("1You cannot remove the 1st character.");
+            $(`#char-${num}`).remove();
+            this.charCount--;
+            $(".char").each((index, elem) => {
+                if ($(elem).data("num") != "arraynum") {
+                    $(elem).attr("id", `char-${index}`);
+                    $(elem).find(`.char-text`).html(`Character ${index} - 
+                    <button class="btn btn-xs btn-red" onclick="templateManager.removeCharacter('${index}')" type="button">
+                        Remove
+                    </button>`);
+                }
+            })
+        }
+        createForm(form) {
+            this.form = form;
+            this.json = Object.fromEntries(new URLSearchParams(this.form))
+        }
+        initTemplateCreation() {
+            return new Promise((res, rej) => {
+                $.post("/api/initTemplateCreation", this.json, res)
+            })
+        }
+        initTemplatePreview() {
+            $("#init-preview").modal("show");
+            if (this.form != $("#order-form").serialize()) this.createForm($("#order-form").serialize());
+            this.initTemplateCreation().then(json => {
+                $.post("/api/initTemplatePreview", json, d => {
+                    if (d.success) window.open(`/quickvideo?theme=${this.json.template_id}&isPreview=true`);
+                    else {
+                        $("#init-preview").modal("hide");
+                        displayFeedback(1 + d.msg);
+                    }
+                })
+            })
+        }
+    }
+    var templateManager = new TemplateManager();
+</script>
+
+        <div class="col-md-4 col-lg-3">
+            <div class="case-studies">
+                <div class="case">
+                    <div class="case-quote">
+                        <p>I have created around 2 templates for wrapper classic in the past but one of them was a rushed theme who's name was <a href="/quickvideo?theme=michigan">Michigan</a>. But thanks to this tool, i won't need to modify a qvm html just to make templates ever again and all i need from this is my CSS knowledge. this is going to be the best tool for Nexus in a production state so that users will have the best chance to create their own templates without winning in a contest or sending a request to anyone just to have their template sent out to production. the best part is, i can preview my template before it's available for production. Thanks joseph for working on Nexus on your own for a pretty long time and having the idea to make this tool. you are the best!</p>
+                        <div class="case-customer">
+                            - <span class="name"><a href="/public_user/wD87hhngLkhZNvtwraYOUEYeWUl2" target="_blank">Itinerary Jyvee</a></span>,<br>Nexus Developer
+                        </div>
+                    </div>
+                </div><!--
+                <div class="case">
+                    <div class="case-quote">
+                        <p>The Common Core State Standards asks students to write arguments and to present their findings. GoAnimate allows students an engaging way to present their findings to the class using technology. Pairing the use of technology and writing in an assignment allows students to be better prepared for both college and career.</p>
+                        <div class="case-customer">
+                            - <span class="name"><a href="https://web.archive.org/web/20160913102301/http://blog.goanimate4schools.com/9th-graders-argue-that-goanimate-rocks-in-little-rock-ak/" target="_blank">Suzanne Rogers</a></span>,<br>M.Ed, High School Educator
+                        </div>
+                    </div>
+                </div>
+                <div class="case">
+                    <div class="case-quote">
+                        <p>The site’s innovative digital storytelling techniques making animation a breeze and tons of fun – and I look forward to using it more in the years to come.</p>
+                        <div class="case-customer">
+                            - <span class="name"><a href="https://web.archive.org/web/20160913102301/http://blog.goanimate4schools.com/the-road-to-respect-paved-by-goanimate-for-schools/" target="_blank">James Gorcesky</a></span>,<br>7th &amp; 8th grade Art and Technology Teacher
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="init-preview">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Preparing</h3>
+            </div>
+            <div class="modal-body">
+                <br>
+                <p class="text-center h4">Your template is currently being setup for preview, please wait...</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal order-processing-modal" id="order-processing">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Processing</h3>
+            </div>
+            <div class="modal-body">
+                <br>
+                <p class="text-center h4">Your template is being created, please wait...</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("includes/footer.ejs") %>
+
+</body>
+</html>

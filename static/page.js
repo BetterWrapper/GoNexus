@@ -29,11 +29,15 @@ function fetchCharOrder(themeId, pathname) {
 		if (themeId == themes.attr.cc_theme_id) {
 			switch (pathname) {
 				case "/cc": {
-					json.html = `<li><a href="/cc_browser?themeId=${themeId}">${themes.attr.name} Characters</a></li><li class="active">Create a new character</li>`;
+					json.html = `<li><a href="/cc_browser?themeId=${themeId}">${
+						themes.attr.name
+					} Characters</a></li><li class="active">Create a new character</li>`;
 					break;
 				} case "/cc_browser": {
 					json.html = `<li class="active">${themes.attr.name} Characters</li>`;
-					json.msg = `Browse characters already available in the ${themes.attr.name} theme and use them as a starting point to create new custom characters.`;
+					json.msg = `Browse characters already available in the ${
+						themes.attr.name
+					 } theme and use them as a starting point to create new custom characters.`;
 					break;
 				}
 			}
@@ -41,7 +45,13 @@ function fetchCharOrder(themeId, pathname) {
 	}
 	return json;
 }
-
+function retroFilename(filename, page_layout) {
+	switch (page_layout) {
+		case "2012": return filename + "_2012";
+		case "2010": return filename + "_2010";
+		default: return filename;
+	}
+}
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -186,18 +196,46 @@ module.exports = function (req, res, url) {
 			filename = "videos";
 			break;
 		} case "/create": {
-			filename = "create";
+			params = {
+				themes: getThemes(),
+				templates: JSON.parse(fs.readFileSync('./templates.json')),
+				users: JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users
+			}
+			filename = retroFilename("create", query.page_layout);
+			if (query.sort_by) filename = filename + `_${query.sort_by}`;
 			break;
-		} case "/quickvideo": {
+		} case "/studio": {
+			params = {
+				themes: getThemes(),
+				templates: JSON.parse(fs.readFileSync('./templates.json')),
+				users: JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users
+			}
+			filename = "create_2012";
+			break;
+		} case "/text2video": { // this url path will be for certain qvms like talkingpicz, ecards, etc.
 			const quickvideoThemeids = {
-				everydaylife: true,
-				basketball: true
+				talkingpicz: true,
+				"ecards-free": true,
+				election: true
 			};
 			if (quickvideoThemeids[url.query.filename]) filename = url.query.filename;
 			else return res.end('This theme has not been added to the server. Current Theme: ' + url.query.filename);
 			break;
+		} case "/quickvideo": {
+			filename = "qvm";
+			const template = JSON.parse(fs.readFileSync('./templates.json'))[url.query.theme];
+			if (!template) return res.end('This theme has not been added to the server. Current Theme: ' + url.query.theme);
+			params = {
+				qvm: template,
+				customCharInfo: new URLSearchParams(template.customChars_info).toString()
+			}
+			break;
 		} case "/login": {
 			filename = "login";
+			break;
+		} case "/templateManager": {
+			filename = "templateManager";
+			if (query.action) filename = filename + '_' + query.action
 			break;
 		} case "/movies": {
 			filename = "list";
@@ -245,7 +283,7 @@ module.exports = function (req, res, url) {
 				return res.end();
 			}
 			title = "Video Editor";
-			filename = "studio";
+			filename = retroFilename("studio", query.page_layout);
 			attrs = {
 				data: query.swfPath ? query.swfPath : process.env.SWF_URL + "/go_full.swf",
 				type: "application/x-shockwave-flash",

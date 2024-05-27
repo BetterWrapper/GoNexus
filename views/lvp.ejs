@@ -70,13 +70,14 @@
         <script type="text/javascript">
             if (self !== top) jQuery('body').hide();
         </script>
-        <div id="top-bar">
-            <a href="https://flashthemes.net/">&lt; Go to FlashThemes</a>
-            <a class="login" href="/create">Make a Video &gt;</a>
-        </div>
+        <%- include("includes/2012_header.ejs", {
+            includeTopBar: true
+        }) %>
         <div class="container">
             <div class="content">
-                <%- include("includes/2012_header.ejs") %>
+                <%- include("includes/2012_header.ejs", {
+                    includeTopBar: false
+                }) %>
                 <div id="movie-content"></div>
                 <div class="moviebasic">
                     <label class="data">Player Year: 
