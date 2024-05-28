@@ -1,9 +1,9 @@
-node_modules
-_CACHÉ
-_SAVED
-_ASSETS
+_CACHÉ/
+_SAVED/
+_ASSETS/
+node_modules/
 frames
-views/includes/usercss.ejs
+# views/includes/usercss.ejs
 .space
 Spacefile
 Discovery.md
@@ -11,6 +11,5 @@ Discovery.md
 tts/voices.json
 ftContent
 package-lock.json
-
 # Local Netlify folder
 .netlify

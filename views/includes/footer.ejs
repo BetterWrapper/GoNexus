@@ -17,13 +17,35 @@
         <div class="row site-footer-copyright">
             <div class="col-sm-6">
                 <div class="site-footer-socials-container">
-                    Follow us on:
-                    <ul class="site-footer-socials clearfix"></ul>
+					<ul class="site-footer-socials clearfix"></ul>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="pull-right">
-                    <img src="https://nodejs.org/static/images/logo.svg" alt="Node.JS" height="51" width="117"/>
+			<style>
+				.ftm {
+					display: flex;
+					align-items: flex-start;
+				}
+
+				.lim {
+					margin-right: 10px;
+					flex-shrink: 0;
+				}
+
+				.txt {
+					
+				}
+				p {
+					margin: 0;
+					padding: 0;
+				}
+
+			</style>
+            <div class="col-sm-6 ftm">
+				<div class="pull-left" style="overflow:hidden;"> 
+					<p class="txt" style="margin: 20px;">Powered by</p>
+                </div>
+                <div class="pull-right" style="overflow:hidden;">
+					<img src="https://nodejs.org/static/images/logo.svg" alt="Node.JS" height="51" width="117" class="lim"/>
                     &nbsp;&nbsp;&nbsp;
                     <script>document.write(`Nexus &copy; ${new Date().getFullYear()}`)</script>
                 </div>
