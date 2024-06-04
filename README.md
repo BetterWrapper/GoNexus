@@ -1,4 +1,4 @@
-# ![GoNexus](https://cdn.discordapp.com/attachments/1137163610393690193/1242586287266074705/android-chrome-512x512.png?ex=66602c69&is=665edae9&hm=fb68e65747dd951ace92b9769ebe4b39246e38b5d3882e55429c7899281ea69c&) GoNexus
+# GoNexus
 
 ## About
 GoNexus is an LVM clone which brings back GoAnimate for Schools and a sort of "continuation" of the obsolete project "GoAnimate for Schools Remastered". It is currently private and closed source but that'll change once the final version is released. This is also a great alternative for FlashThemes if you claim to have the following problems with the site:
