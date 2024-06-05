@@ -29,7 +29,7 @@ Codenames are BetterWrapper, and OrangeAura.
 * Magical
   
 ## To Do
-* Add the 2011, early 2012, and 2015 videomakers ![75%](https://progress-bar.dev/75)
+* Add all videomakers ![75%](https://progress-bar.dev/75)
 * Fix voice clip issues in the QVM ![0%](https://progress-bar.dev/0)
 * Fix custom characters and it's emotions for the 2011 and 2012 videomakers ![60%](https://progress-bar.dev/60)
 * Find a new site host for GoNexus ![0%](https://progress-bar.dev/0)
