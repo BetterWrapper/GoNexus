@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <list version="1.0">
 	<fvm_meta theme_code="" is_biz="0" />
-	<theme id="custom" name="Comedy World" ext="jpg" cc_theme_id="family" qvm="everydaylife,pt" />
-	<theme id="action" name="Lil' Peepz" ext="jpg" cc_theme_id="cc2" qvm="basketball,space,pirate,office" />
-	<theme id="animal" name="Lil' Petz" ext="jpg" cc_theme_id="animal" qvm="gopets" />
+	<theme id="custom" name="Comedy World" ext="jpg" cc_theme_id="family" />
+	<theme id="action" name="Lil' Peepz" ext="jpg" cc_theme_id="cc2" />
+	<theme id="animal" name="Lil' Petz" ext="jpg" cc_theme_id="animal" />
 	<theme id="retro" name="Cartoon Classics" ext="jpg" />
     <theme id="anime" name="Anime" ext="jpg" cc_theme_id="anime" />
     <theme id="ninjaanime" name="Ninja Anime" ext="jpg" cc_theme_id="ninjaanime" />

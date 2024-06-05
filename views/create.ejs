@@ -277,13 +277,15 @@
             <div class="create-header">
                 <h1 class="h3">Select a Theme</h1>
             </div>
-            <div class="themes row" id="themes_row_1"></div>
-            <div class="themes row" id="themes_row_2"></div>
-            <div class="themes row" id="themes_row_3"></div>
-            <div class="themes row" id="themes_row_4"></div>
-            <div class="themes row" id="themes_row_5"></div>
-            <div class="themes row" id="themes_row_6"></div>
-            <div class="themes row" id="themes_row_7"></div>
+            <% let rowCount = 1; %>
+            <% const rowsDisplayed = []; %>
+            <% for (let i = 0; i < params.themes.length; i++) { %>
+                <% if (!rowsDisplayed[rowCount]) { %>
+                    <div class="themes row" id="themes_row_<%= rowCount %>"></div>
+                    <% rowsDisplayed[rowCount] = true; %>
+                <% } %>
+                <% if (i == 3) rowCount++ %>
+            <% } %>
         </div>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>

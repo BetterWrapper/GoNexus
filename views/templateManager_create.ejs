@@ -81,21 +81,37 @@ if (self !== top) jQuery('body').hide();
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-lg-8">
+            <div class="form-horizontal">
+                <div class="payment-form-section" id="templateFilesDownload"></div>
+            </div>
+        </div>
+        <div class="col-md-8 col-lg-8">
             <form class="form-horizontal" id="order-form" action="javascript:;" method="post" novalidate>
                 <div class="payment-form-section">
                     <div>
                         <h3>About Your Template</h3>
-
+                        <button class="btn btn-xs btn-green pull-right" data-toggle="modal" data-target="#templateIdeas" type="button">
+                            Template Ideas
+                        </button>
                         <div class="form-group">
                             <label for="" class="col-sm-3 control-label">Template Name<span class="text-danger">*</span></label>
                             <div class="col-sm-6">
-                                <input class="form-control" type="text" name="template_name" value="" maxlength="50" placeholder="David Escobar">
+                                <input class="form-control" type="text" name="template_name" value="" maxlength="50" id="templateName">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Template Files</label>
+                            <label for="" class="col-sm-3 control-label">Custom Characters</label>
+                            <div class="col-sm-6" id="template_customChars_enable">
+                                <select class="form-control" name="template_customChars_enable" onchange="templateManager.customCharsSetup()">
+                                    <option value="0">Disabled</option>
+                                    <option value="1">Enabled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" title="You may upload your template files using the provided template files that you modified.">
+                            <label class="col-sm-3 control-label">Template Files<span class="text-danger">*</span></label>
                             <div class="col-sm-5">
-                                <input class="form-control" name="template_files_zip" type="file" accept=".zip"/>
+                                <input class="form-control" id="template_files_zip" onchange="templateManager.fileUploaded()" type="file" accept=".zip"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -103,25 +119,24 @@ if (self !== top) jQuery('body').hide();
                             <div class="col-sm-9"><script>document.write(`
                                 <div class="input-group">
                                     <span class="input-group-addon">${window.location.origin}/quickvideo?theme=</span>
-                                    <input class="form-control" type="text" name="template_id" value="" maxlength="25" placeholder="your_template_id" autocomplete="off">
+                                    <input class="form-control" type="text" name="template_id" maxlength="25" placeholder="template_id">
                                 </div>`)</script>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Theme Name For Your Template<span class="text-danger">*</span></label>
+                            <label for="" class="col-sm-3 control-label">Theme Name For Your Template (
+                                <a href="javascript:templateManager.loadThemes()">Reload Themes</a>
+                            )</label>
                             <div class="col-sm-6">
-                                <input class="form-control" type="text" name="template_theme" value="" maxlength="40" placeholder="Comedy World">
+                                <select class="form-control" name="template_theme" id="themeId" onchange="templateManager.ccThemeIdChange(this)">
+                                    <option value="">No Themes Loaded</option>
+                                </select>
                             </div>
-                        </div><script>document.write(`
-                        <div class="form-group">
-                            <div class="col-sm-6 col-sm-offset-3">
-                                <input type="hidden" name="template_uid" value="${userData.uid || userData.id}"/>
-                            </div>
-                        </div>`)</script>
+                        </div>
                         <div class="form-group">
                             <label for="" class="col-sm-3 control-label">Template Intro<span class="text-danger">*</span></label>
                             <div class="col-sm-6">
-                                <textarea class="form-control" name="template_intro" placeholder="GoNexus brings you a collection of scenes from your template for you to re-enact and make up comical, satirical or even dramatic stories." style="height: 100px;" maxlength="66"></textarea>
+                                <textarea class="form-control" name="template_intro" id="templateIntro" style="height: 100px;"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -130,20 +145,26 @@ if (self !== top) jQuery('body').hide();
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="col-sm-6">
-                                <textarea class="form-control" name="template_introSteps" placeholder="The drill? 1. Select a template / 2. Choose characters / 3. Type in a dialog / 4. Watch your masterpiece!" style="height: 100px;" maxlength="66"></textarea>
+                                <textarea class="form-control" name="template_introSteps" id="introSteps" style="height: 100px;"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Get Example Template Files</label>
-                            <p class="text-muted">This will help you create your template without messing things up.</p>
-                            <div class="col-sm-6">
-                                <a class="form-control" type="button" download="template_files.zip" href="/api/getTemplateFiles?theme=everydaylife">
-                                    Download Files
-                                </a>
-                            </div>
-                        </div>
-
                         <div class="payment-form-section-divider"></div>
+                        <div id="customChars_info" style="display: none;">
+                            <h3>Custom Character Feature Implmention</h3>
+                            <p class="text-muted">
+                                This is a section of this form where you can fill out 
+                                all of the infomation needed to add a feature where users 
+                                can use the characters they created in your template.
+                            </p>
+                            <div class="form-group">
+                                <label for="" class="col-sm-3 control-label">Tags</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="template_customChars_tags" id="customCharTags">
+                                </div>
+                            </div>
+                            <input type="hidden" name="template_customChars_cc_theme_id" id="ccThemeId"/>
+                            <div class="payment-form-section-divider"></div>
+                        </div>
                         <button class="btn btn-xs btn-green pull-right" onclick="templateManager.addScene()" type="button">
                             Add Scene
                         </button>
@@ -152,95 +173,26 @@ if (self !== top) jQuery('body').hide();
                             This section will allow you to add as many scenes as you like into your template. 
                             a movie made in either Nexus or FlashThemes will be required to make your scene functional in your template.
                         </p>
-
-                        <div id="templatesFormExample" style="display: none;">
-                            <div id="scene-arraynum" class="scene" data-num="arraynum">
-                                <h4 class="scene-text">
-                                    Scene arraynum - 
-                                    <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('arraynum')" type="button">
-                                        Remove
-                                    </button>
-                                </h4>
-                                <div class="form-group">
-                                    <label for="" class="col-sm-3 control-label">Scene Name<span class="text-danger">*</span></label>
-                                    <div class="col-sm-6">
-                                        <input class="form-control scene-form-arraynum" type="text" data-name="step2title" value="" maxlength="25" placeholder="Just Browing YouTube">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="" class="col-sm-3 control-label">Scene Description<span class="text-danger">*</span></label>
-                                    <div class="col-sm-6">
-                                        <textarea class="form-control scene-form-arraynum" data-name="step2desc" value="" maxlength="66" placeholder="2 characters deside to browse youtube when all of the sudden something bad happens. Animate the conversation!"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="" class="col-sm-3 control-label">Default Scene<span class="text-danger">*</span></label>
-                                    <div class="col-sm-6">
-                                        <select class="form-control scene-form-arraynum" data-name="step2class">
-                                            <option value=true>true</option>
-                                            <option value=false>false</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <input type="hidden" name="step2tidarraynum" value="step2tidvalarraynum"/>
-                                    </div>
-                                </div>
-                                <div class="payment-form-section-divider"></div>
-                            </div>
-                        </div>
                         <div id="templates"></div>
-                        <button class="btn btn-xs btn-green pull-right" onclick="templateManager.addCharacter()" type="button">
-                            Add Character
-                        </button>
                         <h3>Your Template Stock Characters</h3>
-                        <p class="text-muted">These will be the characters that will be included in your template. If you like you can also enable the ability for a user to use custom characters. (Theme ID and tags will be required though)</p>
-
-                        <div id="stockCharactersFormExample" style="display: none;">
-                            <div id="char-arraynum" class="char" data-num="arraynum">
-                                <h4 class="char-text">
-                                    Character arraynum - 
-                                    <button class="btn btn-xs btn-red" onclick="templateManager.removeCharacter('arraynum')" type="button">
-                                        Remove
-                                    </button>
-                                </h4>
-                                <div class="form-group">
-                                    <label for="" class="col-sm-3 control-label">Character Name<span class="text-danger">*</span></label>
-                                    <div class="col-sm-6">
-                                        <input class="form-control" type="text" name="step3namearraynum" value="" maxlength="25" placeholder="First name">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="" class="col-sm-3 control-label">Default Character</label>
-                                    <div class="col-sm-6">
-                                        <select class="form-control" name="char_defaultarraynum">
-                                            <option value=true>true</option>
-                                            <option value=false>false</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="" class="col-sm-3 control-label">Gender</label>
-                                    <div class="col-sm-6">
-                                        <select class="form-control" name="step3genderarraynum">
-                                            <option value=F>Female</option>
-                                            <option value=M>Male</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="payment-form-section-divider"></div>
-                            </div>
-                        </div>
+                        <p class="text-muted">
+                            These will be the characters that will be included in your template. 
+                            If you like you can also enable the ability for a user to use custom characters. 
+                            (Theme ID and tags will be required though)
+                        </p>
                         <div id="stockCharacters"></div>
                     </div>
                     <div class="payment-form-section-footer">
                         <div class="row">
                             <div class="col-sm-8 col-sm-offset-2">
-                                <p>After pressing the button below, your template will be created for the public and everyone will be able to use it the second they see the link on the <a href="/studio">2012 Create Page</a></p>
+                                <p>After pressing the button below, 
+                                    your template will be created for the public and everyone will be able to use it 
+                                    the second they see the link on the
+                                    <a href="/studio">2012 Create Page</a>
+                                </p>
                             </div>
                         </div>
-                        <button class="btn btn-orange btn-lg" type="submit">Create Template &gt;</button>
+                        <button class="btn btn-orange btn-lg" onclick="templateManager.publishTemplate()">Create Template &gt;</button>
                         <input type="hidden" name="template_type" value="new">
                     </div>
                 </div>
@@ -253,79 +205,389 @@ if (self !== top) jQuery('body').hide();
 
 <script>
     class TemplateManager {
-        constructor() {
+        constructor(theme) {
+            this.initTemplateTheme = theme;
+            this.prepTemplateFilesDownload();
+            this.loadThemes();
             this.addScene();
-            this.addCharacter();
-            this.createForm($("#order-form").serialize())
+            this.createForm($("#order-form").serialize());
+            this.templateEditor = {};
+            $.getJSON("/api/getTemplates", d => {
+                this.templateEditor.allTemplates = d;
+                $("#template_ideas").html(
+                    Object.keys(d).filter(i => d[i].themeName).map(v => `<button class="template col-xs-5" id="${
+                        v
+                    }_template" onclick="templateManager.selectTemplate('${v}')">
+                        <input type="radio" name="template" value="${v}"/> ${d[v].title}<br>
+                        <img src="/static/qvm/templates/${v}/channel.jpg" style="height: 155px; width: 308px;"/>
+                    </button>`)
+                );
+            })
+        }
+        prepTemplateFilesDownload(theme) {
+            $("#templateFilesDownload").html(`<div>
+                <h3>Get Example Template Files</h3>
+                <p class="text-muted">This will help you create your template without messing things up.</p>
+                <a class="form-control" download="template_files.zip" href="/api/getTemplateFiles?theme=${
+                    theme || this.initTemplateTheme
+                }">Download Files</a>
+            </div>`);
+        }
+        selectTemplate(id) {
+            $(`#${id}_template`).find(`input[value="${id}"]`).prop("checked", true);
+        }
+        ccThemeIdChange(obj) {
+            const themeInfo = this.themes.find(i => i.attr.id == obj.value);
+            if (themeInfo.attr.cc_theme_id) {
+                $("#ccThemeId").val(themeInfo.attr.cc_theme_id);
+                if (this.json.template_customChars_enable == "1") displayFeedback(
+                    "0Custom Characters were automatically enabled because a cc theme was present in the theme you selected."
+                )
+            } else {
+                $("#ccThemeId").val('');
+                if (this.json.template_customChars_enable == "1") displayFeedback(
+                    "1Custom Characters were automatically disabled because a cc theme was not present in the theme you selected."
+                )
+            }
+            this.loadStockChars(themeInfo.attr.cc_theme_id);
+            this.customCharsSetup();
+        }
+        loadThemes() {
+            jQuery.blockUI();
+            $.getJSON("/api/themes/get", d => {
+                this.themes = d;
+                $("#themeId").html(d.filter(i => i.attr.isHidden != "1").filter(i => i.attr.cc_theme_id).map(v => `<option value="${
+                    v.attr.id
+                }">${v.attr.name}</option>`));
+                this.ccThemeIdChange(document.getElementById('themeId'));
+            })
+        }
+        customCharsSetup() {
+            this.checkForm();
+            if (this.json.template_customChars_enable == "1" && $("#ccThemeId").val()) $("#customChars_info").show();
+            else $("#customChars_info").hide();
         }
         addScene() {
-            this.sceneCount = this.sceneCount || 1;
-            const html = $("#templatesFormExample").html().toString().split("arraynum").join(this.sceneCount);
-            $("#templates").append(html.split(`step2tidval${this.sceneCount}`).join(Math.round(Math.random() * 7)));
-            $(`.scene-form-${this.sceneCount}`).each((index, elem) => {
-                $(elem).attr("name", $(elem).data("name") + this.sceneCount);
-            })
-            this.sceneCount++
+            this.sceneArray = this.sceneArray || [];
+            this.sceneArray.unshift({
+                index: this.sceneArray.length + 1,
+                val: Math.random().toString().substr(2)
+            });
+            this.addSceneHTML();
         }
-        addCharacter() {
-            this.charCount = this.charCount || 1;
-            $("#stockCharacters").append($("#stockCharactersFormExample").html().toString().split("arraynum").join(this.charCount++));
+        randomIntFromInterval(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+        addSceneHTML() {
+            this.checkForm();
+            ((array) => {
+                $("#templates").html(array.reverse().map(i => `<div id="scene-${i.index}">
+                    <h4 class="scene-text">
+                        Scene ${i.index} - <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('${i.index}')" type="button">
+                            Remove
+                        </button>
+                    </h4>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Scene Name<span class="text-danger">*</span></label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" value="${
+                                this.sceneConfig ? this.sceneConfig[i.val] ? this.sceneConfig[i.val][`step2title${i.index}`] || "" : "" : ""
+                            }" name="step2title${
+                                i.index
+                            }" maxlength="40" placeholder="Just Browing YouTube" onchange="templateManager.saveConfig(this, 'step2title${
+                                i.index
+                            }', 'scene-${i.val}')">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Scene Description<span class="text-danger">*</span></label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" onchange="templateManager.saveConfig(this, 'step2desc${
+                                i.index
+                            }', 'scene-${i.val}')" name="step2desc${
+                                i.index
+                            }" placeholder="2 characters deside to browse youtube when something bad happens. Animate the story!">${
+                                this.sceneConfig ? this.sceneConfig[i.val] ? this.sceneConfig[i.val][`step2desc${i.index}`] || "" : "" : ""
+                            }</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a title="Reload Your Movies" class="col-sm-3 control-label" href="javascript:templateManager.loadMovies()">
+                            Your Movie
+                        </a>
+                        <div class="col-sm-6">
+                            <select class="form-control movie-scene" onchange="templateManager.saveConfig(this, 'step2movie${
+                                i.index
+                            }', 'scene-${i.val}')" name="step2movie${
+                                i.index
+                            }">
+                                <option value="">You don't have any movies</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="step2tid${i.index}" value="${i.val}"/>
+                    <input type="hidden" name="step2class${i.index}" value="${i.index == 1 ? 'item selected' : 'item'}"/>
+                    <div class="payment-form-section-divider"></div>
+                </div>`));
+            })(this.sceneArray);
+        }
+        loadMovies() {
+            if (userData) {
+                jQuery.blockUI();
+                $.getJSON(`/movieList?uid=${userData.uid || userData.id}`, d => {
+                    $(".movie-scene").html(d.map(v => `<option value="${v.id}">${v.title}</option>`));
+                    jQuery.unblockUI();
+                });
+            }
+        }
+        addStockCharsHTML(callback) {
+            this.checkForm();
+            ((array) => {
+                $("#stockCharacters").html(array.map(i => `<div id="char-${i.index}">
+                    <img style="float: right;" src="/char_thumbs/${i.val}.png"/>
+                    <h4 class="char-text"> 
+                        Character ${i.index} - <button class="btn btn-xs btn-red" onclick="templateManager.removeCharacter('${
+                            i.index
+                        }')" type="button">Remove</button>
+                    </h4>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Character Name</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" onchange="templateManager.saveConfig(this, 'step3name${
+                                i.index
+                            }', 'char-${i.val}')" name="step3name${i.index}" value="${
+                                this.charConfig ? this.charConfig[i.val] ? this.charConfig[i.val][`step3name${i.index}`] || "" : "" : ""
+                            }" maxlength="25" placeholder="Character name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">Gender</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" name="step3gender${i.index}" onchange="templateManager.saveConfig(this, 'step3gender${
+                                i.index
+                            }', 'char-${i.val}')">
+                                <option value=F>Female</option>
+                                <option value=M${
+                                    this.charConfig ? this.charConfig[i.val] ? this.charConfig[i.val][`step3gender${
+                                        i.index
+                                    }`] == "M" ? ' selected' : "" : "" : ""
+                                }>Male</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="step3cid${i.index}" value="${i.val}"/>
+                    <input type="hidden" name="step3head${i.index}" value="/char_heads/${i.val}.png"/>
+                    <input type="hidden" name="step3thumb${i.index}" value="/char_thumbs/${i.val}.png"/>
+                    <div class="payment-form-section-divider"></div>
+                </div>`));
+                if (callback) callback();
+            })(this.charArray);
+        }
+        saveConfig(s, i, t) {
+            const [type, id] = t.split("-");
+            this[`${type}Config`] = this[`${type}Config`] || {};
+            this[`${type}Config`][id] = this[`${type}Config`][id] || {};
+            this[`${type}Config`][id][i] = s.value;
+            console.log(this[`${type}Config`]);
+        }
+        loadStockChars(tid) {
+            $.post(`/api/getLatestPremadeCharIds?ti=${tid}`, array => {
+                this.charArray = array;
+                this.addStockCharsHTML(jQuery.unblockUI);
+            })
         }
         removeScene(num) {
-            if (num == 1) return displayFeedback("1You cannot remove the 1st scene.");
-            $(`#scene-${num}`).remove();
-            this.sceneCount--;
-            $(".scene").each((index, elem) => {
-                if ($(elem).data("num") != "arraynum") {
-                    $(elem).attr("id", `scene-${index}`);
-                    $(elem).find(`.scene-text`).html(`Scene ${index} - 
-                    <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('${index}')" type="button">
-                        Remove
-                    </button>`);
-                    $(`.scene-form-${index}`).each((index2, elem2) => {
-                        $(elem2).attr("name", $(elem2).data("name") + index);
-                    })
-                }
-            })
+            if (this.sceneArray.length == 1) return displayFeedback("1You cannot remove any more scenes.");
+            const oldArray = this.sceneArray;
+            const newArray = [];
+            this.sceneArray = [];
+            for (const stuff of oldArray) {
+                if (stuff.index != num) newArray.unshift({
+                    val: stuff.val
+                });
+            }
+            for (var i = 0; i < newArray.length; i++) {
+                this.sceneArray.unshift({
+                    index: i + 1,
+                    val: newArray[i].val
+                })
+            }
+            this.addSceneHTML();
         }
         removeCharacter(num) {
-            if (num == 1) return displayFeedback("1You cannot remove the 1st character.");
-            $(`#char-${num}`).remove();
-            this.charCount--;
-            $(".char").each((index, elem) => {
-                if ($(elem).data("num") != "arraynum") {
-                    $(elem).attr("id", `char-${index}`);
-                    $(elem).find(`.char-text`).html(`Character ${index} - 
-                    <button class="btn btn-xs btn-red" onclick="templateManager.removeCharacter('${index}')" type="button">
-                        Remove
-                    </button>`);
-                }
-            })
+            if (this.charArray.length < 3) return displayFeedback("1You cannot remove any more characters.");
+            const oldArray = this.charArray;
+            const newArray = [];
+            this.charArray = [];
+            for (const stuff of oldArray) {
+                if (stuff.index != num) newArray.unshift({
+                    val: stuff.val
+                });
+            }
+            for (var i = 0; i < newArray.length; i++) {
+                this.charArray.unshift({
+                    index: i + 1,
+                    val: newArray[i].val
+                })
+            }
+            this.charArray = this.charArray.reverse();
+            this.addStockCharsHTML();
         }
         createForm(form) {
             this.form = form;
             this.json = Object.fromEntries(new URLSearchParams(this.form))
         }
-        initTemplateCreation() {
-            return new Promise((res, rej) => {
-                $.post("/api/initTemplateCreation", this.json, res)
-            })
-        }
-        initTemplatePreview() {
-            $("#init-preview").modal("show");
+        checkForm() {
             if (this.form != $("#order-form").serialize()) this.createForm($("#order-form").serialize());
-            this.initTemplateCreation().then(json => {
-                $.post("/api/initTemplatePreview", json, d => {
-                    if (d.success) window.open(`/quickvideo?theme=${this.json.template_id}&isPreview=true`);
+        }
+        initTemplateCreation() {
+            jQuery.extend(this, this.json);
+            this.template_uid = userData.id || userData.uid
+            delete this.json;
+            delete this.form;
+            return new Promise((res, rej) => {
+                $.post("/api/initTemplateCreation", this, d => {
+                    const json = JSON.parse(d);
+                    this.checkForm();
+                    if (!json[this.json.template_id]) res(json);
                     else {
-                        $("#init-preview").modal("hide");
-                        displayFeedback(1 + d.msg);
+                        let b = new FormData();
+                        b.append("import", document.getElementById("template_files_zip").files[0]);
+                        for (const i in this.json) b.append(i, this.json[i]);
+                        $.ajax({
+                            url: "/api/uploadTemplateFile",
+                            method: "POST",
+                            data: b,
+                            processData: false,
+                            contentType: false,
+                            dataType: "json"
+                        }).done(d => {
+                            d.data = JSON.stringify(json);
+                            res(d);
+                        });
                     }
                 })
             })
         }
+        fileUploaded() {
+            this.template_files_uploaded = true;
+        }
+        initTemplatePreview() {
+            this.previewJson = this.previewJson || {};
+            if (
+                this.form == $("#order-form").serialize() 
+                && this.previewJson.success
+                && !this.template_files_uploaded
+            ) return $("#preview-success").modal("show");
+            else $("#init-preview").modal("show");
+            this.checkForm();
+            this.initTemplateCreation().then(json => {
+                if (json.message) {
+                    $("#init-preview").modal("hide");
+                    return displayFeedback(json.message);
+                }
+                $.post("/api/initTemplatePreview", json, c => {
+                    const d = this.previewJson = JSON.parse(c);
+                    $("#init-preview").modal("hide");
+                    if (d.success) {
+                        $("#preview-success").modal("show");
+                        this.template_files_uploaded = false;
+                    } else displayFeedback(1 + d.msg);
+                })
+            })
+        }
+        confirmTemplateSelection() {
+            const templateContent = "#templateContent";
+            this.templateEditor.ideaSelector = {
+                form: $(templateContent).serialize()
+            } 
+            this.templateEditor.ideaSelector.json = Object.fromEntries(new URLSearchParams(this.templateEditor.ideaSelector.form));
+            this.templateEditor.id = this.templateEditor.ideaSelector.json.template;
+            $("#err-message").text('');
+            location.href = templateContent;
+            if (!this.templateEditor.id) return $("#err-message").text("Please select a template");
+            const templateInfo = this.templateEditor.allTemplates[this.templateEditor.id];
+            $("#templateIdeas").modal("hide");
+            $("#templateName").val(templateInfo.title);
+            if (templateInfo.customChars_info) {
+                $("#template_customChars_enable").find(
+                    'select[name="template_customChars_enable"]'
+                ).find('option[value="1"]').prop("selected", true);
+                $("#customCharTags").val(templateInfo.customChars_info.tags)
+            }
+            $("#themeId").find(`option[value="${
+                this.themes.find(i => i.attr.name == templateInfo.themeName).attr.id
+            }"]`).prop("selected", true);
+            $("#templateIntro").text(templateInfo.intro)
+            $("#introSteps").text(templateInfo.intro_steps);
+            this.sceneArray = [];
+            this.charArray = [];
+            this.sceneConfig = {};
+            this.charConfig = {};
+            this.loadMovies();
+            for (let i = 0; i < templateInfo.templates.length; i++) {
+                const sceneInfo = templateInfo.templates[i];
+                const val = Math.random().toString().substr(2);
+                const index = i + 1;
+                this.sceneConfig[val] = {};
+                this.sceneConfig[val][`step2title${index}`] = sceneInfo.title;
+                this.sceneConfig[val][`step2desc${index}`] = sceneInfo.desc;
+                this.sceneArray.unshift({
+                    index,
+                    val
+                });
+            }
+            this.addSceneHTML();
+            for (let i = 0; i < templateInfo.stockCharacters.length; i++) {
+                const charInfo = templateInfo.stockCharacters[i];
+                const val = charInfo.cid;
+                const index = i + 1;
+                this.charConfig[val] = {};
+                this.charConfig[val][`step3name${index}`] = charInfo.name;
+                this.charConfig[val][`step3gender${index}`] = charInfo.gender;
+                this.charArray.unshift({
+                    index,
+                    val
+                });
+            }
+            this.addStockCharsHTML();
+            this.prepTemplateFilesDownload(this.templateEditor.id);
+        }
+        publishTemplate() {
+            this.publishJson = this.publishJson || {};
+            if (
+                this.form == $("#order-form").serialize() 
+                && this.publishJson.success
+                && !this.template_files_uploaded
+            ) return $("#publish-success").modal("show");
+            else $("#order-processing").modal("show");
+            this.checkForm();
+            this.initTemplateCreation().then(json => {
+                if (json.message) {
+                    $("#order-processing").modal("hide");
+                    return displayFeedback(json.message);
+                }
+                jQuery.extend(json, this.json);
+                $.post("/api/publishTemplate", json, c => {
+                    const d = this.publishJson = JSON.parse(c);
+                    $("#order-processing").modal("hide");
+                    if (d.success) {
+                        $("#publish-success").modal("show");
+                        this.template_files_uploaded = false;
+                    } else displayFeedback(1 + d.msg);
+                })
+            })
+        }
+        previewRedirect() {
+            window.open(`/quickvideo?theme=${this.json.template_id}&isPreview=true`, '_blank').focus();
+            $("#preview-success").modal("hide");
+        }
+        publishedTemplateRedirdct() {
+            window.open(`/quickvideo?theme=${this.json.template_id}`, '_blank').focus();
+            $("#publish-success").modal("hide");
+        }
     }
-    var templateManager = new TemplateManager();
+    var templateManager = new TemplateManager("everydaylife");
 </script>
 
         <div class="col-md-4 col-lg-3">
@@ -366,7 +628,87 @@ if (self !== top) jQuery('body').hide();
             </div>
             <div class="modal-body">
                 <br>
-                <p class="text-center h4">Your template is currently being setup for preview, please wait...</p>
+                <p class="text-center h4">Your template is currently being setup for preview. please wait...</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="templateEditor-init">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Preparing Template</h3>
+            </div>
+            <div class="modal-body">
+                <br>
+                <p class="text-center h4">We are currently setting up your template right now. please wait...</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="publish-success">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Success</h3>
+            </div>
+            <div class="modal-body">
+                <br>
+                <p class="text-center h4">
+                    Your template has been created and published to Nexus. 
+                    <a href="javascript:templateManager.publishedTemplateRedirdct()">Click here</a>
+                    to see your template in it's former glory.
+                </p>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="templateIdeas">
+    <div class="modal-dialog modal-lg">
+        <form class="modal-content" id="templateContent" action="javascript:;">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">Template Ideas</h3>
+            </div>
+            <div class="modal-body">
+                <p class="text-center h4">
+                    When you make something like a video for example, 
+                    you may sometimes not have any ideas on how you are going to make a video.
+                    Same thing can apply when it comes to making templates which is why we added the Template ideas feature.
+                    Below you can see all of the templates to choose from and yes your template id will need to be different so that we don't
+                    overlap other templates.
+                </p>
+                <small id="err-message" class="text-center" style="color: red;"></small>
+                <div id="template_ideas" class="row"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="templateManager.confirmTemplateSelection()">
+                    Confirm Template Selection
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal" id="preview-success">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Success</h3>
+            </div>
+            <div class="modal-body">
+                <br>
+                <p class="text-center h4">
+                    Your template is ready for preview. 
+                    <a href="javascript:templateManager.previewRedirect()">Click here</a>
+                    to preview your template.
+                </p>
                 <br>
             </div>
         </div>
@@ -380,7 +722,7 @@ if (self !== top) jQuery('body').hide();
             </div>
             <div class="modal-body">
                 <br>
-                <p class="text-center h4">Your template is being created, please wait...</p>
+                <p class="text-center h4">Your template is being created. please wait...</p>
                 <br>
             </div>
         </div>

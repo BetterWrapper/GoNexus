@@ -1,0 +1,146 @@
+{
+    "mystery1": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV525_streaming",
+        "name": "Mystery 1 Boy 1",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "mystery": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV528_streaming",
+        "name": "Mystery 2 Boy",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "kawabo": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV017_streaming",
+        "name": "Kawabo",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "girl": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV016_streaming",
+        "name": "older sister",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "F",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "girl1": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV023_streaming",
+        "name": "girl",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "F",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "girl2": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV024_streaming",
+        "name": "girls",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "F",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "man": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV018_streaming",
+        "name": "man 2",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "Botchan": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV523_streaming",
+        "name": "Botchan",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "girl3": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV521_streaming",
+        "name": "Girls\"",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "F",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "announcer": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV522_streaming",
+        "name": "Female announcer",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "F",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "announcer1": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV524_streaming",
+        "name": "Male announcer",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "genki": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV520_streaming",
+        "name": "Genki loli",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "honey": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/VOV401_bytesing3_kangkangwuqu",
+        "name": "bright honey",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "lady": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/VOV402_bytesing3_oh",
+        "name": "kind lady",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "F",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "fuga": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/VOV402_bytesing3_aidelizan",
+        "name": "Fuga mezzo-soprano",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    },
+    "sakura": {
+        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/jp_005",
+        "name": "Sakura",
+        "isLocal": true,
+        "provider": "capcut",
+        "gender": "M",
+        "lang": "English",
+        "flag": "JP"
+    }
+}

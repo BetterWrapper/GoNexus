@@ -19,7 +19,27 @@ function getCharType(buffer) {
 module.exports = function (req, res, url) {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
-		case "/goapi/getCCPreMadeCharacters": {
+		case "/api/getLatestPremadeCharIds": {
+			res.setHeader("Content-Type", "application/json");
+			const array = fs.readdirSync("./premadeChars/xml");
+			const table = [];
+			var count = 0;
+			for (const i of array) {
+				const val = i.slice(0, -4);
+				const buffer = fs.readFileSync(`./premadeChars/xml/${i}`);
+				const tid = character.getTheme(buffer);
+				if (
+					tid == url.query.ti
+					&& fs.existsSync(`./premadeChars/thumb/${val}.png`)
+					&& fs.existsSync(`./premadeChars/head/${val}.png`)
+				) table.unshift({
+					index: (count++) + 1,
+					val
+				})
+			}
+			res.end(JSON.stringify(table.reverse()));
+			break;
+		} case "/goapi/getCCPreMadeCharacters": {
 			loadPost(req, res).then(async data => {
 				let chars = '';
 				if (data.v == "2010" && fs.existsSync(`./_PREMADE/${data.theme_code || data.themeId}.json`)) try { 

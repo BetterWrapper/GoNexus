@@ -30,36 +30,36 @@ function getSchoolInfo () {
                 cursor: 'auto'
             }
         });
-        $(".form_user_id").val(userData.uid || userData.id);
+        jQuery(".form_user_id").val(userData.uid || userData.id);
         jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
             schoolInfo = d;
             if (d.name) {
-                if (d.admin == (userData.uid || userData.id)) $(".is_school_admin").show()
-                $(".no-school").hide();
-                $(".has-school").show();
-                $("#schoolName").html(
+                if (d.admin == (userData.uid || userData.id)) jQuery(".is_school_admin").show()
+                jQuery(".no-school").hide();
+                jQuery(".has-school").show();
+                jQuery("#schoolName").html(
                     `<a href="javascript:copyText('#schoolUrl', '#manage_school')">${d.name}</a>`
                 );
-                $("#schoolUrl").remove();
-                $(`<input type="hidden" id="schoolUrl" value="${
+                jQuery("#schoolUrl").remove();
+                jQuery(`<input type="hidden" id="schoolUrl" value="${
                     window.location.origin
                 }/school/${d.id}"/>`).appendTo('body');
                 document.getElementById('schoolId').title = d.id;
-                $("#schoolId").text(d.id);
+                jQuery("#schoolId").text(d.id);
                 const texts = {
                     groups: `${d.groups.length} Groups`,
                     teachers: `${d.teachers.length} Teachers`,
                     students: `${d.students.length} Students`
                 }
                 for (const i in texts) if (d[i].length == 1) texts[i] = texts[i].slice(0, -1);
-                $("#groupCount").text(texts.groups);
-                $("#teacherCount").text(texts.teachers);
-                $("#studentCount").text(texts.students);
+                jQuery("#groupCount").text(texts.groups);
+                jQuery("#teacherCount").text(texts.teachers);
+                jQuery("#studentCount").text(texts.students);
                 function get(type) {
                     if (!userData.role) return d[type];
                     return d[userData.role + 's'].find(i => i.id == userData.id)[type] || []
                 }
-                $("#has-groups").html((get('groups')).map(v => {
+                jQuery("#has-groups").html((get('groups')).map(v => {
                     const texts = {
                         teachers: `${
                             v.teachers ? v.teachers.length : '1'
@@ -91,7 +91,7 @@ function getSchoolInfo () {
                         </ul>
                     </div></div>`
                 }).join(""));
-                $("#has-teachers").html((get('teachers')).map(v => {
+                jQuery("#has-teachers").html((get('teachers')).map(v => {
                     const texts = {
                         groups: `${v.groups.length} Groups`,
                         students: `${
@@ -121,7 +121,7 @@ function getSchoolInfo () {
                         </ul>
                     </div></div>`
                 }).join(""));
-                $("#has-students").html((get('students')).map(v => {
+                jQuery("#has-students").html((get('students')).map(v => {
                     const texts = {
                         groups: `${v.groups.length} Groups`,
                         teachers: `${
@@ -151,10 +151,10 @@ function getSchoolInfo () {
                         </ul>
                     </div></div>`
                 }).join(""));
-                $(".group-select").html('<option value="">No Group Selected</option>' + (get('groups')).map(v => `<option value="${
+                jQuery(".group-select").html('<option value="">No Group Selected</option>' + (get('groups')).map(v => `<option value="${
                     v.id
                 }">${v.name}</option>`));
-                const groupSelectorLimited = $("#group-select-limited");
+                const groupSelectorLimited = jQuery("#group-select-limited");
                 if (groupSelectorLimited) for (let i = 0; i < groupSelectorLimited.data("number"); i++)  {
                     const groupInfo = (get('groups'))[i]
                     if (groupInfo) groupSelectorLimited.append(`<option value="${
@@ -162,41 +162,41 @@ function getSchoolInfo () {
                     }">${groupInfo.name}</option>`);
                 }
                 if ((get('groups')).length >= 1) {
-                    $("#no-groups").hide();
-                    $("#has-groups").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
-                        '#manage_groups', $('#group_maker')
+                    jQuery("#no-groups").hide();
+                    jQuery("#has-groups").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_groups', jQuery('#group_maker')
                     )">Create more groups</a>`);
                 } else {
-                    $("#has-groups").html('').hide();
-                    $("#no-groups").show();
+                    jQuery("#has-groups").html('').hide();
+                    jQuery("#no-groups").show();
                 }
                 if ((get('teachers')).length >= 1) {
-                    $("#no-teachers").hide();
-                    $("#has-teachers").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
-                        '#manage_teachers', $('#assign_teacher')
+                    jQuery("#no-teachers").hide();
+                    jQuery("#has-teachers").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_teachers', jQuery('#assign_teacher')
                     )">Assign More Teachers</a>`);
                 } else {
-                    $("#has-teachers").html('').hide();
-                    $("#no-teachers").show();
+                    jQuery("#has-teachers").html('').hide();
+                    jQuery("#no-teachers").show();
                 }
                 if ((get('students')).length >= 1) {
-                    $("#no-students").hide();
-                    $("#has-students").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
-                        '#manage_students', $('#assign_student')
+                    jQuery("#no-students").hide();
+                    jQuery("#has-students").show().append(`<a href="javascript:;" onclick="showOverlayOnElement(
+                        '#manage_students', jQuery('#assign_student')
                     )">Assign More Students</a>`);;
                 } else {
-                    $("#has-students").html('').hide();
-                    $("#no-students").show();
+                    jQuery("#has-students").html('').hide();
+                    jQuery("#no-students").show();
                 }
             } else {
-                $(".has-school").hide();
-                $(".no-school").show();
-                $("#has-groups").html('').hide();
-                $("#no-groups").show();
-                $("#has-teachers").html('').hide();
-                $("#no-teachers").show();
-                $("#has-students").html('').hide();
-                $("#no-students").show();
+                jQuery(".has-school").hide();
+                jQuery(".no-school").show();
+                jQuery("#has-groups").html('').hide();
+                jQuery("#no-groups").show();
+                jQuery("#has-teachers").html('').hide();
+                jQuery("#no-teachers").show();
+                jQuery("#has-students").html('').hide();
+                jQuery("#no-students").show();
             }
         })
     }
@@ -227,6 +227,7 @@ auth.onAuthStateChanged(user => {
                 });
             }
             switch (window.location.pathname) {
+                case "/templateManager":
                 case "/dashboard":
                 case "/videos":
                 case "/forgotpassword":
@@ -246,15 +247,15 @@ auth.onAuthStateChanged(user => {
                 case "/login": {
                     switch (window.location.pathname) {
                         case "/public_signup": {
-                            $("#signup-container").hide();
-                            $("#signup-processing").hide();
+                            jQuery("#signup-container").hide();
+                            jQuery("#signup-processing").hide();
                             break;
                         } case "/login": {
-                            $("#login-container").hide();
+                            jQuery("#login-container").hide();
                             break;
                         }
                     }
-                    $("#email-verification-container").show();
+                    jQuery("#email-verification-container").show();
                     break;
                 }
             }
@@ -286,6 +287,7 @@ function logout(t) {
                         case "/create":
                         case "/cc": 
                         case "/go_full": 
+                        case "/templateManager":
                         case "/movies": {
                             window.location.href = '/';
                             break;
@@ -314,6 +316,7 @@ function logout(t) {
                 case "/create":
                 case "/cc": 
                 case "/go_full": 
+                case "/templateManager":
                 case "/movies": {
                     window.location.href = '/';
                     break;
@@ -332,6 +335,10 @@ function loggedIn(user) {
     hideElement('login-button');
     showElement('isLogin');
     switch (window.location.pathname) {
+        case "/templateManager": {
+            getTemplates(user);
+            break;
+        }
         case "/quickvideo": {
             reloadCCList();
             break;
@@ -348,26 +355,26 @@ function loggedIn(user) {
             break;
         } case "/dashboard": {
             if (user.role) {
-                if (user.role != "student") $(`#${user.role}-stuff`).show();
-            } else $(`#personal-stuff`).show();
-            $("#loadFTUserFeeds").text('load more');
-            $("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
+                if (user.role != "student") jQuery(`#${user.role}-stuff`).show();
+            } else jQuery(`#personal-stuff`).show();
+            jQuery("#loadFTUserFeeds").text('load more');
+            jQuery("#loadFTUserFeeds_all").text('load all of the flashthemes user feed');
             loadFTUserFeeds();
             break;
         } case "/movies": {
             refreshMovieList();
             break;
         } case "/go_full": {
-            $(document).ready(function() {
+            jQuery(document).ready(function() {
                 studio_data.flashvars.apiserver = window.location.origin + '/';
                 if (enable_full_screen) {
         
                     if (!true) {
-                        $('#studio_container').css('top', '0px');
+                        jQuery('#studio_container').css('top', '0px');
                     }
-                    $('#studio_container').show();
-                    $('.site-footer').hide();
-                    $('#studioBlock').css('height', '1800px');
+                    jQuery('#studio_container').show();
+                    jQuery('.site-footer').hide();
+                    jQuery('#studioBlock').css('height', '1800px');
         
                     if (false) {
                         checkCopyMovie(`javascript:proceedWithFullscreenStudio('${JSON.stringify(user)}', 'isJson')`, '');
@@ -377,34 +384,34 @@ function loggedIn(user) {
                         proceedWithFullscreenStudio(user);
                     }
         
-                    $(window).on('resize', function() {
+                    jQuery(window).on('resize', function() {
                         ajust_studio();
                     });
-                    $(window).on('studio_resized', function() {
+                    jQuery(window).on('studio_resized', function() {
                         if (show_cc_ad) {
                             _ccad.refreshThumbs();
                         }
                     });
         
                     if (studioApiReady) {
-                        var api = studioApi($('#studio_holder'));
+                        var api = studioApi(jQuery('#studio_holder'));
                         api.bindStudioEvents();
                     }
-                    $('.ga-importer').prependTo($('#studio_container'));
+                    jQuery('.ga-importer').prependTo(jQuery('#studio_container'));
                 } else setTimeout(() => {
-                    $('#studioBlock').flash(studio_data);
+                    jQuery('#studioBlock').flash(studio_data);
                 }, 1);
                 // Video Tutorial
-                videoTutorial = new VideoTutorial($("#video-tutorial"));
+                videoTutorial = new VideoTutorial(jQuery("#video-tutorial"));
             })
             // restore studio when upsell overlay hidden
             .on('hidden', '#upsell-modal', function(e) {
-                if ($(e.target).attr('id') == 'upsell-modal') {
+                if (jQuery(e.target).attr('id') == 'upsell-modal') {
                     restoreStudio();
                 }
             })
             .on('studioApiReady', function() {
-                var api = studioApi($('#studio_holder'));
+                var api = studioApi(jQuery('#studio_holder'));
                 api.bindStudioEvents();
             })
             break;
@@ -426,6 +433,7 @@ function loggedIn(user) {
             break;
         }
     }
+    var CCStandaloneBannerAdUI = CCStandaloneBannerAdUI || {}
     jQuery.extend(CCStandaloneBannerAdUI, {
         actionshopSWF: "/static/tommy/2011/animation/actionshop.swf",
         apiserver: window.location.origin + "/",
@@ -434,8 +442,8 @@ function loggedIn(user) {
     });
     jQuery.post(`/api/getUserSWFFiles?userId=${user.uid || user.id}`, files => {
         for (const file of files) {
-            $("#FlashGamePlayer_swfFilesDropdown").show();
-            $("#FlashGamePlayer_swfFilesAll").append(`<li><a href="javascript:FlashGameSetup('${file.url}');">${file.id}</a></li>`);
+            jQuery("#FlashGamePlayer_swfFilesDropdown").show();
+            jQuery("#FlashGamePlayer_swfFilesAll").append(`<li><a href="javascript:FlashGameSetup('${file.url}');">${file.id}</a></li>`);
         }
     })
     jQuery.post("/api/check4SavedUserInfo", {
@@ -458,8 +466,8 @@ function userSignup(email, password, name) {
     displayName = name;
     auth.createUserWithEmailAndPassword(email, password).catch(e => {
         console.log(e);
-        $("#signup-processing").hide();
-        $("#error-message").text(e.message);
+        jQuery("#signup-processing").hide();
+        jQuery("#error-message").text(e.message);
     });
 }
 function userLogin(email, password) {
@@ -468,7 +476,7 @@ function userLogin(email, password) {
         console.log(e);
         processing = false;
         formErrorMessage(e.message);
-        $('#btn-login').text(buttonText);
+        jQuery('#btn-login').text(buttonText);
     });
 }
 function userLogout() {
@@ -546,10 +554,10 @@ function loadUserContent(userData) {
                             </div></div></div></div>`;
                             else if (i == 7) {
                                 addLink2Element('more', `${window.location.origin}/user?id=${params.get("id")}&filename=user-videos`);
-                                $("#more").show();
+                                jQuery("#more").show();
                             }
                         }
-                        $("#profileVideos").html(htmls);
+                        jQuery("#profileVideos").html(htmls);
                         if (json.length == 0) addText2Element('profileVideos', '<center>No Videos</center>');
                     } else {
                         var C = 0;
@@ -558,10 +566,10 @@ function loadUserContent(userData) {
                             C += 12;
                             for (; c < C; c++) {
                                 if (c > json.length - 1) {
-                                    $("#load_more").hide();
+                                    jQuery("#load_more").hide();
                                     break;
                                 }
-                                $("#userVideos").append(`<div class="col-sm-6 col-md-4"><div class="profile-video"><div class="video-container">
+                                jQuery("#userVideos").append(`<div class="col-sm-6 col-md-4"><div class="profile-video"><div class="video-container">
                                 <a class="video-thumbnail" href="${window.location.origin}/player?movieId=${json[c].id}">
                                     <div class="vthumb vthumb-300">
                                         <div class="vthumb-clip"><div class="vthumb-clip-inner"><span class="valign"></span><img src="/movie_thumbs/${json[c].id}.png" alt="${json[c].title}"/></div></div>
@@ -574,7 +582,7 @@ function loadUserContent(userData) {
                                 </div></div></div></div>`);
                             }
                         }
-                        $("#load_more").click(() => loadRows());
+                        jQuery("#load_more").click(() => loadRows());
                         loadRows();
                         addText2Element('video-count', json.length);
                     }
@@ -585,7 +593,7 @@ function loadUserContent(userData) {
 }
 function downloadMyStuff() {
     try {
-        $("#stuff-downloading-overlay").modal({
+        jQuery("#stuff-downloading-overlay").modal({
             keyboard: false, 
             backdrop: "static"
         });
@@ -595,7 +603,7 @@ function downloadMyStuff() {
             email: userData.email
         }, (d) => {
             const json = JSON.parse(d);
-            $("#stuff-downloading-overlay").modal('hide');
+            jQuery("#stuff-downloading-overlay").modal('hide');
             if (json.success) {
                 window.location.href = json.fileUrl;
             } else displayFeedback(1 + json.error);
@@ -607,7 +615,7 @@ function downloadMyStuff() {
 }
 function uploadMyStuff() {
     try {
-        $("#stuff-uploading-overlay").modal({
+        jQuery("#stuff-uploading-overlay").modal({
             keyboard: false, 
             backdrop: "static"
         });
@@ -622,7 +630,7 @@ function uploadMyStuff() {
             contentType: false,
             dataType: "json"
         }).done((d) => {
-            $("#stuff-uploading-overlay").modal('hide');
+            jQuery("#stuff-uploading-overlay").modal('hide');
             if (d.success) {
                 displayFeedback(0 + d.msg);
                 switch (window.location.pathname) {

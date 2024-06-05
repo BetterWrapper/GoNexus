@@ -222,10 +222,21 @@ module.exports = function (req, res, url) {
 			else return res.end('This theme has not been added to the server. Current Theme: ' + url.query.filename);
 			break;
 		} case "/quickvideo": {
-			filename = "qvm";
-			const template = JSON.parse(fs.readFileSync('./templates.json'))[url.query.theme];
+			let template;
+			if (query.isPreview) {
+				const json = JSON.parse(fs.readFileSync('./previews/template.json'))[url.query.theme];
+				const currentSession = session.get(req);
+				if (currentSession && currentSession.data && json.user == currentSession.data.current_uid) {
+					filename = "qvm_preview";
+					template = json;
+				} else return res.end("The theme you are trying to preview either doesen't belong to you or does not exist in this server.");
+			} else {
+				template = JSON.parse(fs.readFileSync('./templates.json'))[url.query.theme];
+				filename = "qvm";
+			}
 			if (!template) return res.end('This theme has not been added to the server. Current Theme: ' + url.query.theme);
 			params = {
+				flashvars: {},
 				qvm: template,
 				customCharInfo: new URLSearchParams(template.customChars_info).toString()
 			}
@@ -461,7 +472,7 @@ module.exports = function (req, res, url) {
 			break;
 		}
 	}
-	Object.assign(params ? params.flashvars : {}, query);
+	Object.assign(params ? params.flashvars || {} : {}, query);
 	ejs.renderFile(`./views/${filename}.ejs`, {
 		gopoints: uInfo.gopoints || 0,
 		css: uInfo.settings ? `<style>${uInfo.settings.api.customcss}</style>` : '<script>checkIfSiteNeeds2ReloadAfterLogin()</script>',

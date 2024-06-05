@@ -3,9 +3,9 @@
 	"version": "0.1.0",
 	"scripts": {
 		"start": "node server.js",
-		"test": "nodemon server.js"
+		"test": "electron ."
 	},
-	"main": "server.js",
+	"main": "./main.js",
 	"dependencies": {
 		"@ffmpeg-installer/ffmpeg": "^1.1.0",
 		"bcrypt": "^5.1.1",
@@ -22,7 +22,6 @@
 		"node-fetch": "^2.6.7",
 		"node-zip": "github:kyriosli/node-zip",
 		"nodemailer": "^6.9.7",
-		"nodemon": "^3.1.0",
 		"request": "^2.88.2",
 		"sax": ">=0.6.0",
 		"xml-js": "^1.6.11",

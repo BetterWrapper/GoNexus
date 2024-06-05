@@ -131,26 +131,22 @@ http
 						case "/api/getTemplateFiles": {
 							const zip = nodezip.create();
 							const path = `./static/qvm/templates/${parsedUrl.query.theme}`;
-							fUtil.addToZip(zip, `theme.css`, fs.readFileSync(`${path}/theme.css`).toString("utf8"));
-							fs.readdirSync(`${path}/thumb`).forEach(file => {
-								if (fs.existsSync(`${path}/thumb/${file}`)) {
-									fUtil.addToZip(zip, `thumb/${file}`, fs.readFileSync(`${path}/thumb/${file}`));
-								}
-							});
-							fs.readdirSync(`${path}/bg`).forEach(file => {
-								if (fs.existsSync(`${path}/bg/${file}`)) {
-									fUtil.addToZip(zip, `bg/${file}`, fs.readFileSync(`${path}/bg/${file}`));
-								}
-							});
-							fs.readdirSync(`${path}/img`).forEach(folder => {
-								if (fs.existsSync(`${path}/img/${folder}`)) {
-									const stats = fs.lstatSync(`${path}/img/${folder}`);
-									if (stats.isDirectory()) {
-										fs.readdirSync(`${path}/img/${folder}`).forEach(file => {
-											fUtil.addToZip(zip, `img/${folder}/${file}`, fs.readFileSync(`${path}/img/${folder}/${file}`));
-										});
-									} else fUtil.addToZip(zip, `img/${folder}`, fs.readFileSync(`${path}/img/${folder}`));
-								}
+							fs.readdirSync(path).forEach(file => {
+								const stats = fs.lstatSync(`${path}/${file}`);
+								if (stats.isDirectory()) {
+									fs.readdirSync(`${path}/${file}`).forEach(folder => {
+										if (fs.existsSync(`${path}/${file}/${folder}`)) {
+											const stats = fs.lstatSync(`${path}/${file}/${folder}`);
+											if (stats.isDirectory()) {
+												fs.readdirSync(`${path}/${file}/${folder}`).forEach(file2 => {
+													fUtil.addToZip(zip, `${file}/${folder}/${file2}`, fs.readFileSync(`${path}/${
+														file
+													}/${folder}/${file2}`));
+												});
+											} else fUtil.addToZip(zip, `${file}/${folder}`, fs.readFileSync(`${path}/${file}/${folder}`));
+										}
+									});
+								} else fUtil.addToZip(zip, file, fs.readFileSync(`${path}/${file}`));
 							});
 							res.setHeader("Content-Type", "application/zip");
 							zip.zip().then(i => res.end(i));

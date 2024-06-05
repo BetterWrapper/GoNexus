@@ -110,7 +110,7 @@ if (self !== top) jQuery('body').hide();
                                         Your Templates
                                     </label>
                                     <select class="form-control" id="templates" name="templateTheme">
-                                        <option value="">You don't have any templates.</option>
+                                        <option value="">Loading Templates...</option>
                                     </select>
                                 </div>
                             </form>
@@ -151,6 +151,13 @@ if (self !== top) jQuery('body').hide();
         const json = Object.fromEntries(new URLSearchParams(form));
         if (json.templateTheme) location.href = "/templateManager?" + form;
         else displayFeedback("1Please select a template")
+    }
+    function getTemplates(userData) {
+        $.getJSON("/api/getTemplates", d => {
+            $("#templates").html(Object.keys(d).map(v => {
+                if (d[v].user == (userData.id || userData.uid)) return `<option value="${v}">${d[v].title}</option>`;
+            }).join("") || '<option value="">You don\'t have any templates.</option>')
+        });
     }
 </script>
 

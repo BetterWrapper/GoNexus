@@ -111,7 +111,7 @@ ul {
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: 0 0;
-  background: transparent url(/static/qvm/templates/everydaylife/img/top_nav/btn_all.gif) no-repeat 0 0;
+  background: transparent url(./img/top_nav/btn_all.gif) no-repeat 0 0;
   display: block;
   padding-top: 25px;
   height: 0;
@@ -121,7 +121,7 @@ ul {
 }
 
 #nav_links .seperate {
-  background: transparent url(/static/qvm/templates/everydaylife/img/top_nav/img_line.gif) no-repeat 0 0;
+  background: transparent url(./img/top_nav/img_line.gif) no-repeat 0 0;
   margin: 0 10px;
   height: 25px
 }
@@ -230,7 +230,7 @@ ul {
 }
 
 .previous_step {
-  background: transparent url(/static/qvm/templates/everydaylife/img/btn_ps.png) no-repeat 0 0;
+  background: transparent url(./img/btn_ps.png) no-repeat 0 0;
   overflow: hidden;
   height: 28px;
   width: 125px;
@@ -257,12 +257,12 @@ ul {
 }
 
 #intro {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step00/img_tran00_bg.jpg) no-repeat 0 0;
+  background: transparent url(./img/step00/img_tran00_bg.jpg) no-repeat 0 0;
   height: 650px
 }
 
 #youtube #intro {
-  background-image: url(/static/qvm/templates/everydaylife/img/step00/img_tran00_bg_yt.jpg)
+  background-image: url(./img/step00/img_tran00_bg_yt.jpg)
 }
 
 #intro .inside {
@@ -286,7 +286,7 @@ ul {
 }
 
 #intro .btn_next {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step00/btn_next00.jpg) no-repeat 0 0;
+  background: transparent url(./img/step00/btn_next00.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   height: 68px;
@@ -316,7 +316,7 @@ ul {
 }
 
 #seperator0 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step00/img_tran00.jpg) no-repeat 0 0;
+  background: transparent url(./img/step00/img_tran00.jpg) no-repeat 0 0;
   height: 450px
 }
 
@@ -325,12 +325,12 @@ ul {
 }
 
 #step1 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step01/img_step01_bg.jpg) no-repeat 0 0;
+  background: transparent url(./img/step01/img_step01_bg.jpg) no-repeat 0 0;
   height: 650px
 }
 
 #youtube #step1 {
-  background-image: url(/static/qvm/templates/everydaylife/img/step01/img_step01_bg_yt.jpg)
+  background-image: url(./img/step01/img_step01_bg_yt.jpg)
 }
 
 #step1 h2 {
@@ -355,7 +355,7 @@ ul {
 }
 
 #step1 .btn_next {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step01/btn_next01.jpg) no-repeat 0 0;
+  background: transparent url(./img/step01/btn_next01.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   height: 68px;
@@ -387,17 +387,17 @@ ul {
 }
 
 #seperator1 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step01/img_tran01.jpg) no-repeat left top;
+  background: transparent url(./img/step01/img_tran01.jpg) no-repeat left top;
   height: 450px
 }
 
 #step2 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step02/img_step02_bg.jpg) no-repeat 0 0;
+  background: transparent url(./img/step02/img_step02_bg.jpg) no-repeat 0 0;
   height: 650px
 }
 
 #youtube #step2 {
-  background-image: url(/static/qvm/templates/everydaylife/img/step02/img_step02_bg_yt.jpg)
+  background-image: url(./img/step02/img_step02_bg_yt.jpg)
 }
 
 #step2 h2 {
@@ -421,7 +421,7 @@ ul {
 }
 
 #step2 .btn_next {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step02/btn_next02.jpg) no-repeat 0 0;
+  background: transparent url(./img/step02/btn_next02.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   height: 68px;
@@ -453,19 +453,19 @@ ul {
 }
 
 #seperator2 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step02/img_tran02.jpg) no-repeat left top;
+  background: transparent url(./img/step02/img_tran02.jpg) no-repeat left top;
   height: 450px
 }
 
 #step3 h2 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_top.jpg) no-repeat 0 0;
+  background: transparent url(./img/step03/img_step03_bg_top.jpg) no-repeat 0 0;
   margin: 0;
   padding: 0;
   height: 137px
 }
 
 #youtube #step3 h2 {
-  background-image: url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_top_yt.jpg)
+  background-image: url(./img/step03/img_step03_bg_top_yt.jpg)
 }
 
 #step3 h2 span {
@@ -481,35 +481,35 @@ ul {
 }
 
 #dialog_wrapper {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_middle.jpg) repeat-y 0 0
+  background: transparent url(./img/step03/img_step03_bg_middle.jpg) repeat-y 0 0
 }
 
 #youtube #dialog_wrapper {
-  background-image: url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_middle_yt.jpg)
+  background-image: url(./img/step03/img_step03_bg_middle_yt.jpg)
 }
 
 #step3 .footer {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_bottom.jpg) no-repeat left bottom;
+  background: transparent url(./img/step03/img_step03_bg_bottom.jpg) no-repeat left bottom;
   position: relative;
   height: 115px
 }
 
 #youtube #step3 .footer {
-  background-image: url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_bottom_yt.jpg)
+  background-image: url(./img/step03/img_step03_bg_bottom_yt.jpg)
 }
 
 #step3 .bottom {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_middle.jpg) repeat-y 0 0;
+  background: transparent url(./img/step03/img_step03_bg_middle.jpg) repeat-y 0 0;
   height: 100px;
   width: 960px
 }
 
 #youtube #step3 .bottom {
-  background-image: url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_middle_yt.jpg)
+  background-image: url(./img/step03/img_step03_bg_middle_yt.jpg)
 }
 
 #step3 .btn_next {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/btn_preview03.jpg) no-repeat 0 0;
+  background: transparent url(./img/step03/btn_preview03.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   height: 68px;
@@ -541,17 +541,17 @@ ul {
 }
 
 #seperator3 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/img_tran03.jpg) no-repeat left top;
+  background: transparent url(./img/step03/img_tran03.jpg) no-repeat left top;
   height: 450px
 }
 
 #step4 {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step04/img_step04_bg.jpg) no-repeat 0 0;
+  background: transparent url(./img/step04/img_step04_bg.jpg) no-repeat 0 0;
   height: 651px
 }
 
 #youtube #step4 {
-  background-image: url(/static/qvm/templates/everydaylife/img/step04/img_step04_bg_yt.jpg)
+  background-image: url(./img/step04/img_step04_bg_yt.jpg)
 }
 
 #step4 h2 {
@@ -703,7 +703,7 @@ ul {
 }
 
 #btn_save {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step04/btn_save04.jpg) no-repeat 0 0;
+  background: transparent url(./img/step04/btn_save04.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   margin: 10px auto;
@@ -734,7 +734,7 @@ ul {
 }
 
 #btn_publish {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step04/btn_publish04.jpg) no-repeat 0 0;
+  background: transparent url(./img/step04/btn_publish04.jpg) no-repeat 0 0;
   display: block;
   margin: 0 auto;
   overflow: hidden;
@@ -750,7 +750,7 @@ ul {
 }
 
 #btn_youtube_publish {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step04/btn_publish04_public.jpg) no-repeat 0 0;
+  background: transparent url(./img/step04/btn_publish04_public.jpg) no-repeat 0 0;
   display: block;
   float: left;
   overflow: hidden;
@@ -766,7 +766,7 @@ ul {
 }
 
 #btn_youtube_private {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step04/btn_publish04_private.jpg) no-repeat 0 0;
+  background: transparent url(./img/step04/btn_publish04_private.jpg) no-repeat 0 0;
   display: block;
   float: right;
   overflow: hidden;
@@ -891,7 +891,7 @@ ul {
 }
 
 #templates .select_button {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step01/img_arrowl01.png) no-repeat 0 0;
+  background: transparent url(./img/step01/img_arrowl01.png) no-repeat 0 0;
   height: 0;
   width: 35px;
   padding-top: 57px;
@@ -904,7 +904,7 @@ ul {
 }
 
 #templates .select_button.next {
-  background-image: url(/static/qvm/templates/everydaylife/img/step01/img_arrowr01.png)
+  background-image: url(./img/step01/img_arrowr01.png)
 }
 
 #templates .items {
@@ -995,7 +995,7 @@ ul {
 }
 
 .character_selector .select_button {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step01/img_arrowl01.png) no-repeat 0 0;
+  background: transparent url(./img/step01/img_arrowl01.png) no-repeat 0 0;
   height: 0;
   width: 35px;
   padding-top: 57px;
@@ -1008,7 +1008,7 @@ ul {
 }
 
 .character_selector .select_button.next {
-  background-image: url(/static/qvm/templates/everydaylife/img/step01/img_arrowr01.png)
+  background-image: url(./img/step01/img_arrowr01.png)
 }
 
 .character_selector .items {
@@ -1131,7 +1131,7 @@ ul {
 }
 
 .dialog .switch {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/btn_switch_b.png) no-repeat 0 0;
+  background: transparent url(./img/step03/btn_switch_b.png) no-repeat 0 0;
   display: none;
   overflow: hidden;
   height: 0;

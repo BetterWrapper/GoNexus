@@ -24,6 +24,34 @@ function getMp3Duration(buffer) {
 		});
 	})
 }
+// parses a param in a json that most likely could reassemble an array but in a string. Example: dev[0][isJyvee]: true
+function parseStringArray(data, extras) {
+	const json = {
+		arraycount: 0,
+		array: []
+	};
+	function contentCollection() {
+		for (const i in data) {
+			if (i.startsWith(`${extras.start}[${json.arraycount}]`)) {
+				const param = i.split("][")[1].split("]")[0];
+				json.array[json.arraycount] = json.array[json.arraycount] || {};
+				json.array[json.arraycount][param] = data[`${extras.start}[${json.arraycount}][${param}]`];
+			}
+		}
+	}
+	while (json.array.length != getStringArrayLength(data, extras.start)) {
+		if (json.array[json.arraycount] && Object.keys(json.array[json.arraycount]).length == extras.amount) json.arraycount++
+		if (!json.array[json.arraycount]) contentCollection();
+	}
+	return json.array;
+}
+function getStringArrayLength(data, start) {
+	let count = 0;
+	for (const i in data) {
+		if (i.startsWith(`${start}[${count}]`)) count++
+	}
+	return count;
+}
 const nodezip = require("node-zip");
 const session = require("../misc/session");
 const https = require("https");
@@ -78,7 +106,148 @@ module.exports = function (req, res, url) {
 			break;
 		} case "POST": {
 			switch (url.pathname) {
-				case "/qvm_micRecord_goapi/saveSound/": {
+				case "/api/initTemplatePreview": {
+					function err(text, data) {
+						data.msg = text;
+						res.end(JSON.stringify(data));
+					}
+					loadPost(req, res).then(data => {
+						switch (data.code) {
+							case "no_uid": return err("You need to have a Nexus account in order to preview your template", data);
+							case "missing_fields": return err(
+								"You need to fill out some required fields in order to preview your template", data
+							);
+							case "success": {
+								if (!data.data) return err("Something was successful but had no data returned for some reason", data);
+								fs.writeFileSync(`./previews/template.json`, JSON.stringify(JSON.parse(data.data), null, "\t"));
+								res.end(JSON.stringify({
+									success: true
+								}))
+								break;
+							}
+						}
+					})
+					break;
+				} case "/api/publishTemplate": {
+					function err(text, data) {
+						data.msg = text;
+						res.end(JSON.stringify(data));
+					}
+					loadPost(req, res).then(data => {
+						switch (data.code) {
+							case "no_uid": return err("You need to have a Nexus account in order to publish your template", data);
+							case "missing_fields": return err(
+								"You need to fill out some required fields in order to publish your template", data
+							);
+							case "success": {
+								if (!data.data) return err("Something was successful but had no data returned for some reason", data);
+								const templates = JSON.parse(fs.readFileSync('./templates.json'));
+								templates[data.template_id] = JSON.parse(data.data)[data.template_id];
+								fs.writeFileSync(`./templates.json`, JSON.stringify(templates, null, "\t"));
+								if (fs.existsSync('./previews/template.json')) fs.unlinkSync('./previews/template.json')
+								res.end(JSON.stringify({
+									success: true
+								}))
+								break;
+							}
+						}
+					})
+					break;
+				} case "/api/initTemplateCreation": {
+					loadPost(req, res).then(data => {
+						const charArray = parseStringArray(data, {
+							start: 'charArray',
+							amount: 2
+						});
+						const sceneArray = parseStringArray(data, {
+							start: 'sceneArray',
+							amount: 2
+						});
+						const userInfo = JSON.parse(fs.readFileSync(asset.folder + '/users.json')).users.find(i => i.id == data.template_uid);
+						if (!userInfo) return res.end(JSON.stringify({
+							code: "no_uid"
+						}));
+						const required_fields = {
+							template_id: true,
+							template_name: true,
+							template_theme: true,
+							template_intro: true,
+							template_introSteps: true
+						}
+						for (const i in required_fields) {
+							if (!data[i]) return res.end(JSON.stringify({
+								code: "missing_fields"
+							}))
+						}
+						const themes = parse.getThemes();
+						const json = {};
+						json[data.template_id] = {
+							themeName: themes.find(i => i.attr.id == data.template_theme).attr.name,
+							customChars_info: {
+								cc_theme_id: data.template_customChars_cc_theme_id || "family",
+								tags: data.template_customChars_tags
+							},
+							user: data.template_uid,
+							disableFeatures: {},
+							nonSelectableCharInfo: {},
+							stockCharacters: [],
+							creator_html: `This Template is created by <a href="/public_user/${
+								userInfo.id
+							}" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');">${
+								userInfo.name
+							}</a>.`,
+							title: data.template_name,
+							intro: data.template_intro,
+							intro_steps: data.template_introSteps,
+							templates: []
+						}
+						if (data.template_customChars_enable != "1") delete json[data.template_id].customChars_Info;
+						console.log(json);
+						if (fs.existsSync(`./static/qvm/templates/${data.template_id}`)) {
+							let json = JSON.parse(fs.readFileSync('./templates.json'));
+							if (fs.existsSync('./previews/template.json')) json = JSON.parse(
+								fs.readFileSync('./previews/template.json')
+							)
+							if (json[data.template_id].user != data.template_uid) return res.end(JSON.stringify({
+								message: "1Sorry, but the template id you are trying to provide was already taken. Please choose a different id."
+							}))
+						}
+						for (var i = 0; i < charArray.length; i++) {
+							json[data.template_id].stockCharacters[i] = { 
+								cid: data[`step3cid${i + 1}`],
+								name: data[`step3name${i + 1}`],
+								gender: data[`step3gender${i + 1}`],
+								head: data[`step3head${i + 1}`],
+								thumb: data[`step3thumb${i + 1}`]
+							}
+							if (i < 2) json[data.template_id].stockCharacters[i][`char${i + 1}_default`] = true;
+						}
+						for (var i = 0; i < sceneArray.length; i++) {
+							if (!data[`step2title${i + 1}`]) return res.end(JSON.stringify({
+								message: `1You need to provide a name for Scene ${i + 1}`
+							}))
+							if (!data[`step2movie${i + 1}`]) return res.end(JSON.stringify({
+								message: `1Either you need to login to Nexus or you need to select a movie for Scene ${i + 1}`
+							}))
+							if (!data[`step2desc${i + 1}`]) return res.end(JSON.stringify({
+								message: `1You need to provide a description for Scene ${i + 1}`
+							}))
+							const num_bg = (i + 1) < 10 ? `0${i + 1}` : i + 1
+							json[data.template_id].templates.unshift({
+								class: data[`step2class${i + 1}`],
+								tid: data[`step2tid${i + 1}`],
+								thumb: `/movie_thumbs/${data[`step2movie${i + 1}`]}.png`,
+								title: data[`step2title${i + 1}`],
+								desc: data[`step2desc${i + 1}`],
+								"char-thumb-a": `/static/qvm/templates/${data.template_id}/bg/bg${num_bg}_a.jpg`,
+								"char-thumb-b": `/static/qvm/templates/${data.template_id}/bg/bg${num_bg}_b.jpg`,
+								background: `/static/qvm/templates/${data.template_id}/bg/bg${num_bg}.jpg`
+							})
+						}
+						res.end(JSON.stringify(json))
+					})
+					break;
+				} case "/qvm_micRecord_goapi/saveSound/": {
 					loadPost(req, res).then(async f => {
 						res.end(await new Promise(resolve => {
 							function errXml(e) {
@@ -293,6 +462,40 @@ module.exports = function (req, res, url) {
 							res.end("1")
 						}
 					})
+					break;
+				} case "/api/uploadTemplateFile": {
+					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						if (!files.import) res.end(JSON.stringify({
+							message: "1You need to upload your template file to continue initializing your template."
+						}))
+						else {
+							const file = files.import;
+							if (file.originalFilename.endsWith(".zip") && file.mimetype == "application/x-zip-compressed") {
+								const zip = nodezip.unzip(fs.readFileSync(file.filepath));
+								const firstpath = `./static/qvm/templates/${f.template_id}`;
+								if (!fs.existsSync(firstpath)) fs.mkdirSync(firstpath);
+								for (const i in zip) {
+									if (zip[i].isDir || typeof zip[i] == "function" || i.endsWith("Thumbs.db")) continue;
+									let path = firstpath;
+									const buffer = await movie.stream2buffer(zip[i].toReadStream());
+									if (i.includes("/")) {
+										const filename = i.substr(i.lastIndexOf("/") + 1);
+										for (const c of i.split("/")) {
+											if (c != filename) {
+												path += `/${c}`;
+												if (!fs.existsSync(path)) fs.mkdirSync(path);
+											} else fs.writeFileSync(`${path}/${c}`, buffer);
+										}
+									} else fs.writeFileSync(`${path}/${i}`, buffer);
+								}
+								res.end(JSON.stringify({
+									code: 'success'
+								}))
+							} else res.end(JSON.stringify({
+								message: "1The template file you uploaded is not a zip file. Please upload your template file zip to continue initializing your template."
+							}))
+						}
+					});
 					break;
 				}
 				case "/goapi/getPointStatus/":

@@ -848,26 +848,19 @@
                 </div>
                 <script>
                     (($) => {
-                        var html = '<h2>Video Makers On Nexus</h2>';
+                        var html = '<h2>Quick Video Makers To Choose From</h2>';
                         var complete = 0;
                         $.getJSON("/api/getTemplates", d => {
                             html += Object.keys(d).map(v => `<div class="channel_box">
-                                <div class="image"><img src="/static/qvm/templates/${v}/channel.jpg" alt="${d[v].title}"/></div>
+                                <div class="image"><img src="/static/qvm/templates/${v}/channel.jpg" alt="${
+                                    d[v].title
+                                }" style="height: 155px; width: 308px;"/></div>
                                 <a class="btn_create create_ttv" href="/quickvideo?theme=${v}">Make a Short Video &gt;</a>
                             </div>`).join("");
                             complete++
                         })
-                        $.getJSON("/api/themes/get", d => {
-                            html += d.filter(i => i.attr.isHidden != "1").map(v => `<div class="channel_box">
-                                <div class="image">
-                                    <img src="/static/qvm/templates/${v.attr.id}/channel.jpg" alt="${v.attr.name}"/>
-                                    </div>
-                                    <a class="btn_create create_cartoon" href="/go_full?theme=${v.attr.id}">Make a Long Video &gt;</a>
-                                </div>`).join("");
-                                complete++
-                        })
                         const interval = setInterval(() => {
-                            if (complete == 2) {
+                            if (complete == 1) {
                                 $("#more-apps").html(html);
                                 clearInterval(interval);
                             }
