@@ -1,8 +1,8 @@
 :: Important stuff
 @echo off && cls
 set APP_NAME=Nexus
-set APP_VERSION=0.1.0 Beta
-set NODE_ENV=dev
+set APP_VERSION=0.1.0
+set NODE_ENV=prod
 title %APP_NAME% %APP_VERSION% [Initializing]
 ::::::::::::::::::::
 :: Initialization ::
@@ -31,9 +31,4 @@ if not exist node_modules (
 :start
 title %APP_NAME% %APP_VERSION% [Starting]
 echo %APP_NAME% is now starting...
-echo Please navigate to http://localhost:8090 on your browser.
-if %NODE_ENV%==dev (
-	npm test
-) else (
-	npm start
-)
+if %NODE_ENV%==dev (npm test) else (if %NODE_ENV%==prod (npm start) else (echo "Unknown environment." && timeout 5 && exit) ) 
