@@ -26,7 +26,6 @@ switch (process.platform) {
 	}
 	case "linux": {
 		pluginName = "./flash/linux/libpepflashplayer.so";
-		// i don't know what this does but it makes flash work
 		app.commandLine.appendSwitch("no-sandbox");
 		break;
 	}

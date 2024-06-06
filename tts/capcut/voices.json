@@ -1,6 +1,6 @@
 {
     "mystery1": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV525_streaming",
+        "vid": "0",
         "name": "Mystery 1 Boy 1",
         "isLocal": true,
         "provider": "capcut",
@@ -9,7 +9,7 @@
         "flag": "JP"
     },
     "mystery": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV528_streaming",
+        "vid": "1",
         "name": "Mystery 2 Boy",
         "isLocal": true,
         "provider": "capcut",
@@ -18,7 +18,7 @@
         "flag": "JP"
     },
     "kawabo": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV017_streaming",
+        "vid": "2",
         "name": "Kawabo",
         "isLocal": true,
         "provider": "capcut",
@@ -27,7 +27,7 @@
         "flag": "JP"
     },
     "girl": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV016_streaming",
+        "vid": "3",
         "name": "older sister",
         "isLocal": true,
         "provider": "capcut",
@@ -36,7 +36,7 @@
         "flag": "JP"
     },
     "girl1": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV023_streaming",
+        "vid": "4",
         "name": "girl",
         "isLocal": true,
         "provider": "capcut",
@@ -45,7 +45,7 @@
         "flag": "JP"
     },
     "girl2": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV024_streaming",
+        "vid": "5",
         "name": "girls",
         "isLocal": true,
         "provider": "capcut",
@@ -54,7 +54,7 @@
         "flag": "JP"
     },
     "man": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV018_streaming",
+        "vid": "6",
         "name": "man 2",
         "isLocal": true,
         "provider": "capcut",
@@ -63,7 +63,7 @@
         "flag": "JP"
     },
     "Botchan": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV523_streaming",
+        "vid": "7",
         "name": "Botchan",
         "isLocal": true,
         "provider": "capcut",
@@ -72,8 +72,8 @@
         "flag": "JP"
     },
     "girl3": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV521_streaming",
-        "name": "Girls\"",
+        "vid": "8",
+        "name": "Girls",
         "isLocal": true,
         "provider": "capcut",
         "gender": "F",
@@ -81,7 +81,7 @@
         "flag": "JP"
     },
     "announcer": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV522_streaming",
+        "vid": "9",
         "name": "Female announcer",
         "isLocal": true,
         "provider": "capcut",
@@ -90,7 +90,7 @@
         "flag": "JP"
     },
     "announcer1": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV524_streaming",
+        "vid": "10",
         "name": "Male announcer",
         "isLocal": true,
         "provider": "capcut",
@@ -99,7 +99,7 @@
         "flag": "JP"
     },
     "genki": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/BV520_streaming",
+        "vid": "11",
         "name": "Genki loli",
         "isLocal": true,
         "provider": "capcut",
@@ -108,7 +108,7 @@
         "flag": "JP"
     },
     "honey": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/VOV401_bytesing3_kangkangwuqu",
+        "vid": "12",
         "name": "bright honey",
         "isLocal": true,
         "provider": "capcut",
@@ -117,7 +117,7 @@
         "flag": "JP"
     },
     "lady": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/VOV402_bytesing3_oh",
+        "vid": "13",
         "name": "kind lady",
         "isLocal": true,
         "provider": "capcut",
@@ -126,7 +126,7 @@
         "flag": "JP"
     },
     "fuga": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/VOV402_bytesing3_aidelizan",
+        "vid": "14",
         "name": "Fuga mezzo-soprano",
         "isLocal": true,
         "provider": "capcut",
@@ -135,7 +135,7 @@
         "flag": "JP"
     },
     "sakura": {
-        "vid": "sg-wss://sami-sg1.byteintlapi.com/internal/api/v1/jp_005",
+        "vid": "15",
         "name": "Sakura",
         "isLocal": true,
         "provider": "capcut",

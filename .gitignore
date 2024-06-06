@@ -13,3 +13,5 @@ ftContent
 package-lock.json
 # Local Netlify folder
 .netlify
+jyvee.json
+jyvee.xml
