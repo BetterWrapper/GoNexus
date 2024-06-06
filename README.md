@@ -41,3 +41,28 @@ Codenames are BetterWrapper, and OrangeAura.
 
 ## Final Release Version
 This project will be worth the wait when it is released, but don't expect it to be released soon.
+
+## Installation
+
+To keep things basic here, this project was built ontop of GoAnimate Wrapper which uses nodejs so obviously you will need [nodejs](https://nodejs.org/) to get started.
+
+### NodeJS Installation On Windows
+
+To Install NodeJS On Windows, you will need to visit the nodejs website as seen in the link above and be sure to download the latest nodejs version. The latest version as of June 5 2024 is 22.2.0. Once you've downloaded the nodejs executable (or a .msi file) double click on the file and from there you will do what the setup wizzard tells you to do. After that, confirm that you really have nodejs installed by opening command prompt and run the following:
+```bash
+node -v
+```
+If you have nodejs installed, then running the command should tell you your current nodejs version. If everything's done, boom, now you are ready to start using Nexus.
+
+### NodeJS Installation On Linux
+
+To Install NodeJS On Linux, you will need to visit this [GitHub Link](https://github.com/nodesource/distributions) and follow the documentation that's in there. Once you think everything's installed, you are ready to start using Nexus!
+
+### Nexus Setup
+Once you have NodeJS Installed, you will open your ternimal (Or CMD depending on your OS) and cd to the Nexus folder. Once there, you will run npm install once since this will be your first time you have used Nexus. every time you want to use Nexus, you may run either npm test or npm start. This will provide you with 2 options:
+
+1. You may use Nexus without the use of electron.
+2. You may use Nexus with the use of electron.
+
+And that's pretty much it! if you have any questions, pleasse join our [Discord Server](https://discord.gg/BcVeWEhuqJ).
+
