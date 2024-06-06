@@ -44,7 +44,7 @@ This project will be worth the wait when it is released, but don't expect it to 
 
 ## Installation
 
-To keep things basic here, this project was built ontop of GoAnimate Wrapper which uses nodejs so obviously you will need nodejs[https://nodejs.org/] to get started.
+To keep things basic here, this project was built ontop of GoAnimate Wrapper which uses nodejs so obviously you will need [nodejs](https://nodejs.org/) to get started.
 
 ### NodeJS Installation On Windows
 
@@ -56,7 +56,7 @@ If you have nodejs installed, then running the command should tell you your curr
 
 ### NodeJS Installation On Linux
 
-To Install NodeJS On Linux, you will need to visit this GitHub Link[https://github.com/nodesource/distributions] and follow the documentation that's in there. Once you think everything's installed, you are ready to start using Nexus!
+To Install NodeJS On Linux, you will need to visit this [GitHub Link](https://github.com/nodesource/distributions) and follow the documentation that's in there. Once you think everything's installed, you are ready to start using Nexus!
 
 ### Nexus Setup
 Once you have NodeJS Installed, you will open your ternimal (Or CMD depending on your OS) and cd to the Nexus folder. Once there, you will run npm install once since this will be your first time you have used Nexus. every time you want to use Nexus, you may run either npm test or npm start. This will provide you with 2 options:
@@ -64,5 +64,5 @@ Once you have NodeJS Installed, you will open your ternimal (Or CMD depending on
 1. You may use Nexus without the use of electron.
 2. You may use Nexus with the use of electron.
 
-And that's pretty much it! if you have any questions, pleasse click here[https://discord.gg/BcVeWEhuqJ] to join our Discord Server.
+And that's pretty much it! if you have any questions, pleasse join our [Discord Server](https://discord.gg/BcVeWEhuqJ).
 
