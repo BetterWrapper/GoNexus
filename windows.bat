@@ -2,7 +2,7 @@
 @echo off && cls
 set APP_NAME=Nexus
 set APP_VERSION=0.1.0
-set NODE_ENV=prod
+set NODE_ENV=dev
 title %APP_NAME% %APP_VERSION% [Initializing]
 ::::::::::::::::::::
 :: Initialization ::
