@@ -9,7 +9,7 @@ title %APP_NAME% %APP_VERSION% [Initializing]
 ::::::::::::::::::::
 
 :: Terminate existing node.js apps
-TASKKILL /IM node.exe /F 2>nul
+TASKKILL /F /IM node.exe
 cls
 
 :::::::::::::::::
