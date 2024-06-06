@@ -31,4 +31,4 @@ if not exist node_modules (
 :start
 title %APP_NAME% %APP_VERSION% [Starting]
 echo %APP_NAME% is now starting...
-if %NODE_ENV%==dev (npm test) else (if %NODE_ENV%==prod (npm start) else (echo "Unknown environment." && timeout 5 && exit) ) 
+if %NODE_ENV%==dev (npm test) else (npm start)
