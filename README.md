@@ -77,10 +77,10 @@ After it is installed, run `brew install node`. Then, you should be done!
 
 ### Nexus Setup
 
-Once you have NodeJS installed, you will go to the Nexus folder. Open your desired terminal and click on the app with the name of your desired operating system's structure:
+Once you have NodeJS installed, you will go to the Nexus folder. Open your desired terminal and run:
 
-* `windows.bat`
-* `mac.command`
-* `linux.sh`
+* Windows: Type `windows.bat`
+* Mac: Type `sh mac.sh`
+* Linux: Type `sh linux.sh`
 
 If there is no app for your operating system, please let us know in the issues tab and we will make one!
