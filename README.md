@@ -81,6 +81,6 @@ Once you have NodeJS installed, you will go to the Nexus folder. Open your desir
 
 * Windows: Type `windows.bat`
 * Mac: Type `sh mac.sh`
-* Linux (debian): Type `sh linux.sh`
+* Linux: Type `sh linux.sh`
 
 If there is no app for your operating system, please let us know in the issues tab and we will make one!
