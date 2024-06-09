@@ -1167,12 +1167,8 @@ http
 								hasProjectDownloads: true,
 								projectDownloads: [
 									{
-										downloadUrl: "https://file.garden/ZP0Nfnn29AiCnZv5/nexus_downloads/Nexus-0.0.1-beta.zip",
-										projectName: "Nexus Version 0.0.1 Beta"
-									},
-									{
-										downloadUrl: "https://file.garden/ZP0Nfnn29AiCnZv5/nexus_downloads/Nexus-0.0.1.zip",
-										projectName: "Nexus Version 0.0.1"
+										downloadUrl: "https://github.com/josephanimate2021/Nexus/archive/refs/heads/main.zip",
+										projectName: "Nexus Version 0.1.0"
 									}
 								]
 							}));
