@@ -231,17 +231,16 @@ module.exports = function (req, res, url) {
 							}))
 							if (!data[`step2desc${i + 1}`]) return res.end(JSON.stringify({
 								message: `1You need to provide a description for Scene ${i + 1}`
-							}))
-							const num_bg = (i + 1) < 10 ? `0${i + 1}` : i + 1
+							}));
 							json[data.template_id].templates.unshift({
 								class: data[`step2class${i + 1}`],
 								tid: data[`step2tid${i + 1}`],
 								thumb: `/movie_thumbs/${data[`step2movie${i + 1}`]}.png`,
 								title: data[`step2title${i + 1}`],
 								desc: data[`step2desc${i + 1}`],
-								"char-thumb-a": `/static/qvm/templates/${data.template_id}/bg/bg${num_bg}_a.jpg`,
-								"char-thumb-b": `/static/qvm/templates/${data.template_id}/bg/bg${num_bg}_b.jpg`,
-								background: `/static/qvm/templates/${data.template_id}/bg/bg${num_bg}.jpg`
+								"char-thumb-a": `/static/qvm/templates/${data.template_id}/bg/bg${data[`step2bgnum${i + 1}`]}_a.jpg`,
+								"char-thumb-b": `/static/qvm/templates/${data.template_id}/bg/bg${data[`step2bgnum${i + 1}`]}_b.jpg`,
+								background: `/static/qvm/templates/${data.template_id}/bg/bg${data[`step2bgnum${i + 1}`]}.jpg`
 							})
 						}
 						res.end(JSON.stringify(json))
@@ -465,9 +464,14 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/api/uploadTemplateFile": {
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
-						if (!files.import) res.end(JSON.stringify({
-							message: "1You need to upload your template file to continue initializing your template."
-						}))
+						if (!files.import) {
+							if (f.template_type == "new") res.end(JSON.stringify({
+								message: "1You need to upload your template file to continue initializing your template."
+							}))
+							else res.end(JSON.stringify({
+								code: 'success'
+							}));
+						}
 						else {
 							const file = files.import;
 							if (file.originalFilename.endsWith(".zip") && file.mimetype == "application/x-zip-compressed") {

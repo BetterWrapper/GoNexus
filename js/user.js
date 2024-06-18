@@ -336,7 +336,21 @@ function loggedIn(user) {
     showElement('isLogin');
     switch (window.location.pathname) {
         case "/templateManager": {
-            getTemplates(user);
+            if (!window.location.search) getTemplates(user);
+            else {
+                while (
+                    templateManager.templateEditor 
+                    && templateManager.templateEditor.allTemplates 
+                    && templateManager.templateEditor.id
+                    && templateManager.templateEditor.allTemplates[templateManager.templateEditor.id]
+                ) {
+                    console.log(templateManager)
+                    if (
+                        templateManager.templateEditor.allTemplates[templateManager.templateEditor.id].user == (user.uid || user.id)
+                    ) templateManager.editorMode()
+                    break;
+                }
+            }
             break;
         }
         case "/quickvideo": {

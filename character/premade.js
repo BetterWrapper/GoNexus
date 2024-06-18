@@ -37,7 +37,7 @@ module.exports = function (req, res, url) {
 					val
 				})
 			}
-			res.end(JSON.stringify(table.reverse()));
+			res.end(JSON.stringify(table));
 			break;
 		} case "/goapi/getCCPreMadeCharacters": {
 			loadPost(req, res).then(async data => {

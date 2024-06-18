@@ -44,10 +44,6 @@ var user_country = "US";
 <script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/c5bab4fb87fee33e/go/js/lib/html5shiv.js"></script>
 <![endif]-->
 <script src="/js/common_combined.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-<script src="/js/user.js"></script>
 <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
 <script type="text/javascript">
 var I18N_LANG = 'en_US';
@@ -81,14 +77,10 @@ if (self !== top) jQuery('body').hide();
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-lg-8">
-            <div class="form-horizontal">
-                <div class="payment-form-section" id="templateFilesDownload"></div>
-            </div>
-        </div>
-        <div class="col-md-8 col-lg-8">
             <form class="form-horizontal" id="order-form" action="javascript:;" method="post" novalidate>
                 <div class="payment-form-section">
                     <div>
+                        <div id="templateFilesDownload"></div>
                         <h3>About Your Template</h3>
                         <button class="btn btn-xs btn-green pull-right" data-toggle="modal" data-target="#templateIdeas" type="button">
                             Template Ideas
@@ -119,14 +111,14 @@ if (self !== top) jQuery('body').hide();
                             <div class="col-sm-9"><script>document.write(`
                                 <div class="input-group">
                                     <span class="input-group-addon">${window.location.origin}/quickvideo?theme=</span>
-                                    <input class="form-control" type="text" name="template_id" maxlength="25" placeholder="template_id">
+                                    <input class="form-control" type="text" name="template_id" maxlength="25" placeholder="template_id" id="templateTheme">
                                 </div>`)</script>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="" class="col-sm-3 control-label">Theme Name For Your Template (
+                            <label for="" class="col-sm-3 control-label">Theme Name For Your Template 
                                 <a href="javascript:templateManager.loadThemes()">Reload Themes</a>
-                            )</label>
+                            </label>
                             <div class="col-sm-6">
                                 <select class="form-control" name="template_theme" id="themeId" onchange="templateManager.ccThemeIdChange(this)">
                                     <option value="">No Themes Loaded</option>
@@ -193,7 +185,6 @@ if (self !== top) jQuery('body').hide();
                             </div>
                         </div>
                         <button class="btn btn-orange btn-lg" onclick="templateManager.publishTemplate()">Create Template &gt;</button>
-                        <input type="hidden" name="template_type" value="new">
                     </div>
                 </div>
 
@@ -213,6 +204,7 @@ if (self !== top) jQuery('body').hide();
             this.createForm($("#order-form").serialize());
             this.templateEditor = {};
             $.getJSON("/api/getTemplates", d => {
+                const templateTheme = this.params(window.location.search).get("theme");
                 this.templateEditor.allTemplates = d;
                 $("#template_ideas").html(
                     Object.keys(d).filter(i => d[i].themeName).map(v => `<button class="template col-xs-5" id="${
@@ -222,33 +214,31 @@ if (self !== top) jQuery('body').hide();
                         <img src="/static/qvm/templates/${v}/channel.jpg" style="height: 155px; width: 308px;"/>
                     </button>`)
                 );
+                if (templateTheme) {
+                    this.templateEditor.id = templateTheme;
+                    while (this.themes) {
+                        this.initTemplateEditor(d[templateTheme]);
+                        break;
+                    }
+                }
             })
         }
+        params(d) {
+            return new URLSearchParams(d);
+        }
         prepTemplateFilesDownload(theme) {
-            $("#templateFilesDownload").html(`<div>
-                <h3>Get Example Template Files</h3>
+            $("#templateFilesDownload").html(`<h3>Get Example Template Files</h3>
                 <p class="text-muted">This will help you create your template without messing things up.</p>
                 <a class="form-control" download="template_files.zip" href="/api/getTemplateFiles?theme=${
                     theme || this.initTemplateTheme
-                }">Download Files</a>
-            </div>`);
+                }">Download Files</a><div class="payment-form-section-divider"></div>`);
         }
         selectTemplate(id) {
             $(`#${id}_template`).find(`input[value="${id}"]`).prop("checked", true);
         }
         ccThemeIdChange(obj) {
             const themeInfo = this.themes.find(i => i.attr.id == obj.value);
-            if (themeInfo.attr.cc_theme_id) {
-                $("#ccThemeId").val(themeInfo.attr.cc_theme_id);
-                if (this.json.template_customChars_enable == "1") displayFeedback(
-                    "0Custom Characters were automatically enabled because a cc theme was present in the theme you selected."
-                )
-            } else {
-                $("#ccThemeId").val('');
-                if (this.json.template_customChars_enable == "1") displayFeedback(
-                    "1Custom Characters were automatically disabled because a cc theme was not present in the theme you selected."
-                )
-            }
+            $("#ccThemeId").val(themeInfo.attr.cc_theme_id);
             this.loadStockChars(themeInfo.attr.cc_theme_id);
             this.customCharsSetup();
         }
@@ -281,7 +271,7 @@ if (self !== top) jQuery('body').hide();
         addSceneHTML() {
             this.checkForm();
             ((array) => {
-                $("#templates").html(array.reverse().map(i => `<div id="scene-${i.index}">
+                $("#templates").html(array.map(i => `<div id="scene-${i.index}">
                     <h4 class="scene-text">
                         Scene ${i.index} - <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('${i.index}')" type="button">
                             Remove
@@ -312,9 +302,7 @@ if (self !== top) jQuery('body').hide();
                         </div>
                     </div>
                     <div class="form-group">
-                        <a title="Reload Your Movies" class="col-sm-3 control-label" href="javascript:templateManager.loadMovies()">
-                            Your Movie
-                        </a>
+                        <label for="" class="col-sm-3 control-label">Your Movie</label>
                         <div class="col-sm-6">
                             <select class="form-control movie-scene" onchange="templateManager.saveConfig(this, 'step2movie${
                                 i.index
@@ -329,6 +317,7 @@ if (self !== top) jQuery('body').hide();
                     <input type="hidden" name="step2class${i.index}" value="${i.index == 1 ? 'item selected' : 'item'}"/>
                     <div class="payment-form-section-divider"></div>
                 </div>`));
+                setTimeout(this.loadMovies, 1);
             })(this.sceneArray);
         }
         loadMovies() {
@@ -379,9 +368,13 @@ if (self !== top) jQuery('body').hide();
                     <input type="hidden" name="step3head${i.index}" value="/char_heads/${i.val}.png"/>
                     <input type="hidden" name="step3thumb${i.index}" value="/char_thumbs/${i.val}.png"/>
                     <div class="payment-form-section-divider"></div>
-                </div>`));
+                </div>`).join("") || "There are currently no stock characters to choose from right now. Maybe try selecting a different theme.");
                 if (callback) callback();
             })(this.charArray);
+        }
+        editorMode() {
+            this.templateEditor.isEditor = true;
+            $("#templateTheme").val(this.templateEditor.id);
         }
         saveConfig(s, i, t) {
             const [type, id] = t.split("-");
@@ -430,7 +423,6 @@ if (self !== top) jQuery('body').hide();
                     val: newArray[i].val
                 })
             }
-            this.charArray = this.charArray.reverse();
             this.addStockCharsHTML();
         }
         createForm(form) {
@@ -442,7 +434,8 @@ if (self !== top) jQuery('body').hide();
         }
         initTemplateCreation() {
             jQuery.extend(this, this.json);
-            this.template_uid = userData.id || userData.uid
+            this.template_uid = userData.id || userData.uid;
+            this.template_type = this.templateEditor.isEditor ? "edit" : "new";
             delete this.json;
             delete this.form;
             return new Promise((res, rej) => {
@@ -496,18 +489,7 @@ if (self !== top) jQuery('body').hide();
                 })
             })
         }
-        confirmTemplateSelection() {
-            const templateContent = "#templateContent";
-            this.templateEditor.ideaSelector = {
-                form: $(templateContent).serialize()
-            } 
-            this.templateEditor.ideaSelector.json = Object.fromEntries(new URLSearchParams(this.templateEditor.ideaSelector.form));
-            this.templateEditor.id = this.templateEditor.ideaSelector.json.template;
-            $("#err-message").text('');
-            location.href = templateContent;
-            if (!this.templateEditor.id) return $("#err-message").text("Please select a template");
-            const templateInfo = this.templateEditor.allTemplates[this.templateEditor.id];
-            $("#templateIdeas").modal("hide");
+        initTemplateEditor(templateInfo) {
             $("#templateName").val(templateInfo.title);
             if (templateInfo.customChars_info) {
                 $("#template_customChars_enable").find(
@@ -524,7 +506,6 @@ if (self !== top) jQuery('body').hide();
             this.charArray = [];
             this.sceneConfig = {};
             this.charConfig = {};
-            this.loadMovies();
             for (let i = 0; i < templateInfo.templates.length; i++) {
                 const sceneInfo = templateInfo.templates[i];
                 const val = Math.random().toString().substr(2);
@@ -552,6 +533,19 @@ if (self !== top) jQuery('body').hide();
             }
             this.addStockCharsHTML();
             this.prepTemplateFilesDownload(this.templateEditor.id);
+        }
+        confirmTemplateSelection() {
+            const templateContent = "#templateContent";
+            this.templateEditor.ideaSelector = {
+                form: $(templateContent).serialize()
+            } 
+            this.templateEditor.ideaSelector.json = Object.fromEntries(new URLSearchParams(this.templateEditor.ideaSelector.form));
+            this.templateEditor.id = this.templateEditor.ideaSelector.json.template;
+            $("#err-message").text('');
+            location.href = templateContent;
+            if (!this.templateEditor.id) return $("#err-message").text("Please select a template")
+            $("#templateIdeas").modal("hide");
+            this.initTemplateEditor(this.templateEditor.allTemplates[this.templateEditor.id]);
         }
         publishTemplate() {
             this.publishJson = this.publishJson || {};
@@ -589,6 +583,10 @@ if (self !== top) jQuery('body').hide();
     }
     var templateManager = new TemplateManager("everydaylife");
 </script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+<script src="/js/user.js"></script>
 
         <div class="col-md-4 col-lg-3">
             <div class="case-studies">

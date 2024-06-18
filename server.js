@@ -51,6 +51,7 @@ const sdb = require("./school/db");
 const slg = require("./school/login");
 const gsd = require("./school/getting_started");
 const url = require("url");
+const fetch = require("node-fetch");
 const formidable = require("formidable");
 const session = require("./misc/session");
 const functions = [
@@ -179,6 +180,42 @@ http
 								console.log(e);
 							}
 							break;
+						} case "/api/postDiscordLogin": {
+							if (!parsedUrl.query.code) res.end("Login Error: Code Not Found");
+							const discord = {
+								baseurl: {
+									domain: 'discordapp.com',
+									path: '/api'
+								},
+								client: {
+									id: '1249730227513458759',
+									secret: 'sWuiEMfp80A2Zowbt0CP2sXjTK--Bdxk'
+								},
+								tokenGrantParams: {
+									grant_type: 'authorization_code',
+									code: parsedUrl.query.code,
+									redirect_uri: `${req.headers['x-forwarded-proto']}://${req.headers['x-forwarded-host']}${
+										parsedUrl.pathname
+									}`
+								}
+							};
+							const creds = Buffer.from(Object.keys(discord.client).map(v => discord.client[v]).join(":")).toString("base64");
+							https.request({
+								hostname: discord.baseurl.domain,
+								path: `${discord.baseurl.path}/oauth2/token`,
+								method: "POST",
+								headers: {
+									Authorization: `Basic ${creds}`,
+									'Content-Type': 'application/json'
+								}
+							}, r => {
+								const buffers = [];
+								r.on("data", b => buffers.push(b)).on("end", () => {
+									console.log(Buffer.concat(buffers).toString())
+								})
+							}).end(
+								JSON.stringify(Object.fromEntries(new URLSearchParams(new URLSearchParams(discord.tokenGrantParams).toString())))
+							)
 						} default: break;
 					}
 					break;

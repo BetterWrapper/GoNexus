@@ -104,12 +104,12 @@ if (self !== top) jQuery('body').hide();
                         </div>
                         <div class="plan-accounts">
                             <form class="plan-form" id="template_chooser" role="form">
-                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="action" value="create">
                                 <div class="form-row">
                                     <label for="templates" title="What templates do you want to edit?">
                                         Your Templates
                                     </label>
-                                    <select class="form-control" id="templates" name="templateTheme">
+                                    <select class="form-control" id="templates" name="theme">
                                         <option value="">Loading Templates...</option>
                                     </select>
                                 </div>
@@ -149,7 +149,7 @@ if (self !== top) jQuery('body').hide();
     function checkTemplateForm() {
         const form = $("#template_chooser").serialize()
         const json = Object.fromEntries(new URLSearchParams(form));
-        if (json.templateTheme) location.href = "/templateManager?" + form;
+        if (json.theme) location.href = "/templateManager?" + form;
         else displayFeedback("1Please select a template")
     }
     function getTemplates(userData) {
