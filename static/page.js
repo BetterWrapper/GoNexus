@@ -285,16 +285,16 @@ module.exports = function (req, res, url) {
 			break;
 		} case "/go_full": {
 			let presave = query.movieId && query.movieId.startsWith("m") ? query.movieId: `m-${fUtil.getNextFileId("movie-", ".xml")}`;
-			const path = query.movieId ? query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", query.movieId.substr(query.movieId.lastIndexOf(
-				"-"
-			) + 1)) : query.movieId.startsWith("ft-") ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "" : "";
+			const path = query.movieId ? query.movieId.startsWith("m-") ? fUtil.getFileIndex(
+				"movie-", ".xml", query.movieId.substr(query.movieId.lastIndexOf("-") + 1)
+			) : query.movieId.startsWith("ft-") ? `./ftContent/${url.query.movieId.split("ft-")[1]}.zip` : "" : "";
 			if (query.movieId && (url.query.movieId.startsWith("m-") || url.query.movieId.startsWith("ft-")) && !existsSync(path)) {
 				res.statusCode = 302;
 				res.setHeader("Location", "/");
 				return res.end();
 			}
 			title = "Video Editor";
-			filename = retroFilename("studio", query.page_layout);
+			filename = retroFilename(req.headers.host.includes("localhost") ? "studioLocal" : "studio", query.page_layout);
 			attrs = {
 				data: query.swfPath ? query.swfPath : process.env.SWF_URL + "/go_full.swf",
 				type: "application/x-shockwave-flash",
@@ -473,6 +473,29 @@ module.exports = function (req, res, url) {
 		}
 	}
 	Object.assign(params ? params.flashvars || {} : {}, query);
+	if (req.headers.host.includes("localhost")) {
+		const localhostUser = "GoNexus Project Tester"
+		if (!fs.existsSync("./_ASSETS/local.json")) fs.writeFileSync("./_ASSETS/local.json", JSON.stringify({
+			name: localhostUser,
+			id: Buffer.from(localhostUser).toString("base64"),
+			movies: [],
+			assets: [],
+			apiKeys: {
+				Topmediaai: "",
+				FreeConvert: ""
+			},
+			gopoints: 0,
+			settings: {
+				api: {
+					ttstype: {
+						apiserver: "https://lazypy.ro/",
+						value: "Acapela"
+					},
+					customcss: ""
+				}
+			}
+		}, null, "\t"))
+	}
 	ejs.renderFile(`./views/${filename}.ejs`, {
 		gopoints: uInfo.gopoints || 0,
 		css: uInfo.settings ? `<style>${uInfo.settings.api.customcss}</style>` : '<script>checkIfSiteNeeds2ReloadAfterLogin()</script>',
@@ -481,6 +504,7 @@ module.exports = function (req, res, url) {
 		attrs,
 		params,
 		charOrder,
+		isLocalhost: req.headers.host.includes("localhost"),
 		flashvarsString: new URLSearchParams(params ? params.flashvars : {}).toString(),
 		object: toObjectString,
 		paramString: toParamString

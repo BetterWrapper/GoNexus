@@ -84,8 +84,8 @@ var GT = new Gettext({'locale_data': json_locale_data});
 
 <div class="alert alert-danger">
 	<div class="alert-content text-center">
-        GoNexus is currently under development right now. things like video importing and eta does not work yet. 
-        <a href="https://github.com/josephanimate2021/GoNexus" target="_blank">GITHUB LINK</a>.
+        GoNexus is currently under development right now. things like video importing and etc does not work yet. 
+        <a href="https://github.com/BetterWrapper/GoNexus" target="_blank">GITHUB LINK</a>.
     </div>
 </div>
 
@@ -265,8 +265,8 @@ var videoCounts = {
     all: "0",
     trash: "0"
 };
-function refreshMovieList() {
-    jQuery.getJSON(`/movieList?uid=${userData.uid || userData.id}`, (meta) => {
+function refreshMovieList(customPath) {
+    jQuery.getJSON(customPath || `/movieList?uid=${userData.uid || userData.id}`, (meta) => {
         document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
         if (meta.length < 1) {
             jQuery("#myvideos").hide();
@@ -375,10 +375,14 @@ function deleteMovie(mId, bypassConfirm = false) {
     });
 }
 </script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-<script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-<script src="/js/user.js"></script>
+<% if (!isLocalhost) { %>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+    <script src="/js/user.js"></script>
+<% } else { %>
+    <script>refreshMovieList("/movieList")</script>
+<% } %>
 <script src="https://josephanimate2021.github.io/static/55910a7cd204c37c/go/js/video.js.gz.js"></script>
 <script src="/js/mymovies.js"></script>
 

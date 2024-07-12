@@ -42,10 +42,12 @@
         <script type="text/javascript">
             var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
         </script>
-        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-        <script src="/js/user.js"></script>
+        <% if (!isLocalhost) { %>
+            <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+            <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+            <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+            <script src="/js/user.js"></script>
+        <% } %>
         <script src="/js/common_combined.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.swfobject.min.js"></script>
         <script src="/lvm_files/go/js/jquery/jquery.blockUI-2.66.0.js"></script>
@@ -87,56 +89,58 @@
                         <a href="javascript:;" id="loadFTUserFeeds_all"></a>
                         <progress id="loadFTUserFeeds_loading_all" style="display: none;"></progress><br>
                     </div>
-                    <div id="student-stuff" style="display: none;">
-                        <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
-                            <form class="panel panel-default" id="groupJoinForm">
-                                <div class="panel-body">
-                                    <h3 class="panel-title bold">Join a Group</h3>
-                                </div>
-                                <center class="panel-heading" style="background-color: #FFFFFF">
-                                    Enter the code for the group you want to join<br><br>
-                                    <input type="text" name="groupCode"/>
-                                    <input type="submit" class="btn btn-default" value="Join Group"/>
-                                </center>
-                            </form>
-                        </div>
-                    </div>
-                    <div id="teacher-stuff" style="display: none;">
-                        <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
-                            <form class="panel panel-default" id="groupCodeForm">
-                                <div class="panel-body">
-                                    <div style="float: left;" class="panel-title">Your Groups</div>
-                                    <a style="float: right;" href="javascript:;" data-target="#manage_groups" data-toggle="modal">See All</a>
-                                </div>
-                                <center class="panel-heading">
-                                    Select a group from it's dropdown menu to view it's invitation code. 
-                                    Students can use this code to join the group.<br><br>
-                                    <select name="groupId" class="form-control" id="group-select-limited" data-number="7" onchange="groupCodeReveal()">
-                                        <option value="">Everyone</option>
-                                    </select><br>
-                                    Group Code <input type="text" id="group-code" value="No group code detected" readonly/>
-                                </center>
-                            </form>
-                        </div>
-                    </div>
-                    <div id="personal-stuff" style="display: none;">
-                    </div>
-                    <div id="flashthemes-stuff" style="display: none;">
-                        <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <h3 class="panel-title bold">Latest Followers (
-                                        <span id="ft-follower-count"></span>
-                                    )</h3>
-                                </div>
-                                <center class="panel-heading" style="background-color: #FFFFFF">
-                                    Enter the code for the group you want to join<br><br>
-                                    <input type="text" name="groupCode"/>
-                                    <input type="submit" class="btn btn-default" value="Join Group"/>
-                                </center>
+                    <% if (!isLocalhost) { %>
+                        <div id="student-stuff" style="display: none;">
+                            <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                                <form class="panel panel-default" id="groupJoinForm">
+                                    <div class="panel-body">
+                                        <h3 class="panel-title bold">Join a Group</h3>
+                                    </div>
+                                    <center class="panel-heading" style="background-color: #FFFFFF">
+                                        Enter the code for the group you want to join<br><br>
+                                        <input type="text" name="groupCode"/>
+                                        <input type="submit" class="btn btn-default" value="Join Group"/>
+                                    </center>
+                                </form>
                             </div>
                         </div>
-                    </div>
+                        <div id="teacher-stuff" style="display: none;">
+                            <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                                <form class="panel panel-default" id="groupCodeForm">
+                                    <div class="panel-body">
+                                        <div style="float: left;" class="panel-title">Your Groups</div>
+                                        <a style="float: right;" href="javascript:;" data-target="#manage_groups" data-toggle="modal">See All</a>
+                                    </div>
+                                    <center class="panel-heading">
+                                        Select a group from it's dropdown menu to view it's invitation code. 
+                                        Students can use this code to join the group.<br><br>
+                                        <select name="groupId" class="form-control" id="group-select-limited" data-number="7" onchange="groupCodeReveal()">
+                                            <option value="">Everyone</option>
+                                        </select><br>
+                                        Group Code <input type="text" id="group-code" value="No group code detected" readonly/>
+                                    </center>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="personal-stuff" style="display: none;">
+                        </div>
+                        <div id="flashthemes-stuff" style="display: none;">
+                            <div class="col-md-4" style="float: right; margin: 50px; width: 390px;">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <h3 class="panel-title bold">Latest Followers (
+                                            <span id="ft-follower-count"></span>
+                                        )</h3>
+                                    </div>
+                                    <center class="panel-heading" style="background-color: #FFFFFF">
+                                        Enter the code for the group you want to join<br><br>
+                                        <input type="text" name="groupCode"/>
+                                        <input type="submit" class="btn btn-default" value="Join Group"/>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
                 </div>
             </div>
             <!-- FOOTER -->

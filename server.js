@@ -221,7 +221,11 @@ http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/group/join": {
+						case "/api/localDatabase/get": {
+							res.setHeader("Content-Type", "application/json");
+							res.end(fs.readFileSync("./_ASSETS/local.json"));
+							break;
+						} case "/api/group/join": {
 							loadPost(req, res).then(data => {
 								const queryData = Object.fromEntries(new URLSearchParams(parsedUrl.query));
 								if (!queryData.groupCode) return res.end("1You need to enter a group code.");

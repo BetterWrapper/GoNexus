@@ -64,6 +64,7 @@ const createWindow = () => {
 				{ role: "resetZoom" },
 				{ type: "separator" },
 				{ role: "toggleDevTools" },
+				{ role: "reload" },
 				{ type: "separator" },
 				{ role: "minimize" },
 				...(process.platform == "darwin" ? [

@@ -25,62 +25,82 @@
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li id="signup-button"><a href="/public_signup">Signup</a></li>
-                <li id="login-button"><a href="/login">Login</a></li>
-                <li class="dropdown" id="isLogin" style="display: none">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Your Account <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/dashboard">Dashboard</a></li>
-                        <li><a href="javascript:downloadMyStuff()">Download Your Stuff</a></li>
-                        <li><a href="javascript:;" data-toggle="modal" data-target="#apiKeysOverlay">Your API Keys (For Stuff like TTS and etc)</a></li>
-                        <li><a href="javascript:document.getElementById('stuff-upload').click()">Upload Your Stuff</a></li>
-                        <li><a href="/movies">Your Videos</a></li>
-                        <li class="divider"></li>
-                        <li><a href="/account">Account Settings</a></li>
-                        <li class="divider"></li>
-                        <li><a class="logout-link" href="javascript:userLogout()">Logout</a></li>
-                        <li class="divider"></li>
-                        <li id="top_nav_points">
-                            <p style="margin: 25px;"><%- gopoints %></p>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown" id="isAccountAdmin" style="display: none;">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Manage <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="javascript:;" data-target="#manage_students" data-toggle="modal">
-                                Students
-                                <div class="text-muted small">Add students</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" data-target="#manage_teachers" data-toggle="modal">
-                                Teachers
-                                <div class="text-muted small">Add teachers</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;" data-target="#manage_groups" data-toggle="modal">
-                                Groups
-                                <div class="text-muted small">Create groups, manage group permissions</div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="javascript:;" data-target="#manage_school" data-toggle="modal">
-                                School Profile
-                                <div class="text-muted small">Enter your school information</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/templateManager">
-                                Templates
-                                <div class="text-muted small">Manage Your Templates</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <% if (!isLocalhost) { %>
+                    <li id="signup-button"><a href="/public_signup">Signup</a></li>
+                    <li id="login-button"><a href="/login">Login</a></li>
+                    <li class="dropdown" id="isLogin" style="display: none">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Your Account <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/dashboard">Dashboard</a></li>
+                            <li><a href="javascript:downloadMyStuff()">Download Your Stuff</a></li>
+                            <li><a href="javascript:;" data-toggle="modal" data-target="#apiKeysOverlay">Your API Keys (For Stuff like TTS and etc)</a></li>
+                            <li><a href="javascript:document.getElementById('stuff-upload').click()">Upload Your Stuff</a></li>
+                            <li><a href="/movies">Your Videos</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/account">Account Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a class="logout-link" href="javascript:userLogout()">Logout</a></li>
+                            <li class="divider"></li>
+                            <li id="top_nav_points">
+                                <p style="margin: 25px;"><%- gopoints %></p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="isAccountAdmin" style="display: none;">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Manage <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:;" data-target="#manage_students" data-toggle="modal">
+                                    Students
+                                    <div class="text-muted small">Add students</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" data-target="#manage_teachers" data-toggle="modal">
+                                    Teachers
+                                    <div class="text-muted small">Add teachers</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" data-target="#manage_groups" data-toggle="modal">
+                                    Groups
+                                    <div class="text-muted small">Create groups, manage group permissions</div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:;" data-target="#manage_school" data-toggle="modal">
+                                    School Profile
+                                    <div class="text-muted small">Enter your school information</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/templateManager">
+                                    Templates
+                                    <div class="text-muted small">Manage Your Templates</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <% } else { %>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Options<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/dashboard">Dashboard</a></li>
+                            <li><a href="javascript:downloadMyStuff()">Download Your Stuff</a></li>
+                            <li><a href="javascript:document.getElementById('stuff-upload').click()">Upload Your Stuff</a></li>
+                            <li><a href="/movies">Your Videos</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/account">Account Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a class="logout-link" href="javascript:closeApp()">Close GoNexus</a></li>
+                            <li class="divider"></li>
+                            <li id="top_nav_points">
+                                <p style="margin: 25px;"><%- gopoints %></p>
+                            </li>
+                        </ul>
+                    </li>
+                <% } %>
                 <li class="dropdown">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">Useful Tools<span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -660,6 +680,13 @@
         </div>
     </div>
 </div>
+<% if (isLocalhost) { %>
+    <script>
+        function getLocalDatabase() {
+            return new Promise((res, rej) => jQuery.post("/api/localDatabase/get", res));
+        }
+    </script>
+<% } %>
 <script>
     var currentCustomCSS = `<%= css %>`;
     const school_permissions_list = [

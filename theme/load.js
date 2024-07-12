@@ -95,7 +95,8 @@ module.exports = function (req, res, url) {
 					if (data.v == '2010' || data.v == '2012') filename += `-${data.v}`;
 				}
 				res.setHeader("Content-Type", "application/zip");
-				const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
+				let userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
+				if (req.headers.host.includes("localhost")) userInfo = JSON.parse(fs.readFileSync('./_ASSETS/local.json'));
 				const tXML = fs.readFileSync(`${folder}/${filename}.xml`).toString().split("points").join(`points money="0" sharing="${userInfo.gopoints}"`);
 				fUtil.makeZipFromBuffer(Buffer.from(tXML), "themelist.xml").then((b) => res.end(b));
 
