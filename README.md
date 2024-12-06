@@ -8,11 +8,13 @@ GoNexus is an LVM clone which brings back GoAnimate and GoAnimate for Schools. I
 
 Codenames for the project are BetterWrapper and OrangeAura.
 
+## Project Owner
+* MysteriousOwen
+
 ## Developers
 * BluePeacocks
 * ~~Itinerary Jyvee~~
 * JosephAnimate
-* MysteriousOwen
 * Revolution909
 * Abyl
 * Kia
