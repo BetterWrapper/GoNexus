@@ -107,6 +107,11 @@
                         <li><a data-toggle="modal" data-target="#FlashThemesConverter" href="javascript:;">FlashThemes Video Converter</a></li>
                         <li><a data-toggle="modal" data-target="#FlashGamePlayer" href="javascript:;">Flash Game Player</a></li>
                         <li><a onclick="setupFlashThemesMovieUploader()" href="javascript:;">FlashThemes Movie Uploader</a></li>
+                        <li>
+                            <a data-toggle="modal" data-target="#videoWatcherViaXMLModal" href="javascript:;">
+                                Watch a GoAnimate Video Using a URL To a Movie XML Or ZIP
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <% if (isVideoList) { %>
@@ -136,6 +141,31 @@
 <form enctype='multipart/form-data' action='javascript:uploadMyStuff()' style="display: none;">
     <input id='stuff-upload' type="file" onchange="this.form.submit()" name='import' accept=".zip" />
 </form>
+<div id="videoWatcherViaXMLModal" class="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title">Watch A GoAnimate Video Using A URL To A Movie XML Or ZIP</h3>
+            </div>
+            <form class="modal-body" action="javascript:;" id="videoWatcherViaXMLModalForm">
+                <p>
+                    This tool may be helpful if you want to watch any goanimate archives without taking up space on your computer.
+                    To get started with this tool, please enter a URL below.
+                </p><hr>
+                <center>
+                    <p id="videoWatcherViaXMLModalError" style="color: red;"></p><br>
+                    <input style="width: 666px;" name="xmlurl" type="text" placeholder="Enter A URL..."/><br>
+                    <button type="submit" clas="btn btn-orange">Watch Video</button>
+                </center>
+            </form>
+            <div class="modal-footer" id="videoWatcherViaXMLModalResult"></div>
+        </div>
+    </div>
+</div>
 <div id="manage_students" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -499,27 +529,59 @@
                 <h3 class="modal-title">FlashThemes Movie Uploader</h3>
             </div>
             <center class="modal-body">
-                <p>Because FlashThemes did not add this feature, we are adding it ourselves. please thank us for doing all of the hard work we could for you all.</p>
+                <p>
+                    Because FlashThemes did not add this feature, we are adding it ourselves. 
+                    please thank us for doing all of the hard work we could for you all.
+                </p>
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    Please note that some videos may not be uploaded correctly to flashthemes because during testing 
+                    one of our developers noticed that flashthemes would show an error saying that 
+                    the video could not be played due to an unstable internet connection or a flash player issue 
+                    when in fact that's not the case. we are working on a bug fix to hopefully solve this problem entirely.
+                </div>
                 <p id="flashthemes_movie_uploader_error" style="color: red;"></p>
-                <p id="flashthemes_movie_uploader_success" style="color: green;"></p>
+                <p id="flashthemes_movie_uploader_success" style="color: green;"></p><hr>
                 <form action="javascript:;" id="flashthemesMovieUploaderForm">
-                    <input type="file" id="file" name="import" id="flashthemesMovieUploader" style="display: none;"/>
-                    <a href="javascript:;" onclick="document.getElementById('flashthemesMovieUploader').click()">Upload your movie zip from this device</a>
+                    <p>
+                        <input type="radio" name="uploadOptions" value="ftmovieZipOrXmlUpload" onchange="selectFtUploadOption(this)" required/> 
+                        Upload your movie zip or xml from this device
+                    </p>
+                    <input type="file" name="import" id="flashthemesMovieUploader" style="display: none;" accept=".zip,.xml"/><hr>
                     <h4>OR</h4>
-                    <p>Select a movie from the list</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Movie Thumbnail</th>
-                                <th>Movie Title</th>
-                                <th>Movie Description</th>
-                                <th>Last Modified</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mymovies2convert"></tbody>
-                     </table>
+                    <p>
+                        <input type="radio" name="uploadOptions" value="ftMovieSelectFromList" onchange="selectFtUploadOption(this)" required/> 
+                        Select a movie from the list
+                    </p>
+                    <div id="ftMovieSelectFromListTable" style="display: none;">
+                        <table style="display: none" id="hasUserVideosForFtUpload">
+                            <hr>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myFtmovies2convert"></tbody>
+                        </table>
+                        <p id="userHasNoVideosForFtUpload" style="display: none;">
+                            There are currently no videos to choose from at the moment. Why don't you make some videos <a href="/create">
+                                here
+                            </a>?
+                        </p>
+                    </div>
+                    <hr>
                     <h4>OR</h4>
-                    <label for="movieUploaderViaURL">Upload a movie from a URL (Must lead to a zip file) <input type="text" id="movieUploaderViaURL" name="movieURL"/></label><br>
+                    <p>
+                        <input type="radio" name="uploadOptions" value="ftMovieUploadFromURL" onchange="selectFtUploadOption(this)" required/>
+                        Upload a movie from a URL (Must lead to a zip or xml file) 
+                    </p><hr>
+                    <div id="ftMovieUploaderViaURL" style="display: none;">
+                        <input type="text" name="movieURL" placeholder="Enter a URL..."/><hr>
+                    </div>
                     <button class="btn btn-orange" type="submit" id="movieUploaderSubmitBtn">Begin Movie Upload</button>
                 </form>
             </center>
@@ -540,7 +602,8 @@
             <center class="modal-body">
                 <h1>FlashThemes Video Converter</h1>
                 <form action="javascript:;" class="converterForm" data-for="flashthemes" data-converting="true">
-                    <input name="url" type="text" placeholder="Paste FlashThemes Video link" style="margin: 0px; width: 822px; height: 29px;"/><br>
+                    <input name="url" type="text" placeholder="Paste FlashThemes Video link" style="margin: 0px; width: 822px; height: 29px;"/>
+                    <br>
                     <button type="submit" value="Start">
                         <span class="start-btn">Start</span>
                         <span class="glyphicon glyphicon-arrow-right"></span>
@@ -550,14 +613,22 @@
                 <div id="converter_result" style="display: none;">
                     <img id="converter_thumbnail"><br>
                     <p id="converter_videoTitle"></p><br>
+                    <div id="converter_videoPreview" style="display: none;">
+                        <h1>Preview Video <a style="float: right;" href="javascript:jQuery.unblockUI()" onclick="$(
+                            '#FlashThemesConverter'
+                        ).modal('show')">x</a></h1>
+                        <div id="converter_videoPreview_playerdiv"></div>
+                    </div>
+                    <small id="converter_videoDesc"></small><br>
                     <form action="javascript:;" class="converterForm" data-for="flashthemes" data-converting="false">
-                        Video type<br>
+                        What do you want to do with this video?<br>
                         <select name="videoType">
-                            <option value="zip">ZIP</option>
+                            <option value="zip">Download ZIP File</option>
                             <option value="import">Import Video To GoNexus</option>
+                            <option value="preview">Preview Converted Video</option>
                         </select><br>
                         <a id="converter_videoDownload"></a><br>
-                        <input type="submit" id="converter_submitbtn" value="Convert Video"/>
+                        <input type="submit" id="converter_submitbtn" value="Peform Action"/>
                     </form>
                 </div>
                 <p id="converter_error" style="color: red;"></p>
@@ -576,11 +647,22 @@
                             <h3><b>How to Download <br>FlashThemes videos<br> with GoNexus?</b></h3>
                             <div class="features">
                                 <ul class="itemstyle">
-                                    <li>Go to the Useful Tools dropdown menu<br> and click on FlashThemes Converter</li>
-                                    <li>from there, paste in<br> your FlashThemes Video URL in<br> the box below. This Tool will then fetch<br> the video info from the URL.</li>
-                                    <li>Select the file type you want your video to be downloaded at.<br> your video can be downloaded as a zip file<br> and you can even import your converted video to GoNexus!<br> after that, click on the &quot;Convert&quot; button</li>
-                                    <li>After the conversion is successfully completed,<br> hit the &quot;Download&quot; button. <br>(For Video Importing, you will automatically be redirected)</li>
-                                    <li>Once the video is downloaded,<br> you are ready to import the video to Wrapper: Offline<br> and any LVM clone you can find including GoNexus!</li>
+                                    <li>
+                                        Go to the Useful Tools dropdown menu<br> 
+                                        and click on FlashThemes Converter
+                                    </li>
+                                    <li>
+                                        From there, paste in<br> 
+                                        your FlashThemes Video URL in<br> 
+                                        the box below and click on the "Start" button. This Tool will then fetch<br> 
+                                        the video info from the URL.
+                                    </li>
+                                    <li>
+                                        After that's done,<br> 
+                                        you will select the action that you want to do with your video.
+                                    <li>
+                                        Once you selected the action, click on the Peform Action button and your action will be peformed.
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -588,11 +670,26 @@
                             <h3><b>Why use the FlashThemes Video Converter?</b></h3>
                             <div class="features">
                                 <ul class="itemstyle">
-                                    <li>Unlimited Downloads, so you can download all your videos for free without spending any FlashCoins.</li>
-                                    <li>If you ever wanted someone&#039;s comedy world character, you can simply use the converter to download a video that has a comedy world character and boom you have it!</li>
-                                    <li>Exporting for free has never been possible, but after using the converter, you may export the video to an MP4 format at any time. we can&#039;t add it here so that way we can prevent this tool from being taken down.</li>
-                                    <li>No FlashThemes Account is required here (except for some videos that are not public), this tool is totally free.</li>
-                                    <li>Support Downloading multiple formats, e.g. MP4 and MP3.</li>
+                                    <li>
+                                        Unlimited Downloads, 
+                                        so you can download all your videos for free without spending any FlashCoins.
+                                    </li>
+                                    <li>
+                                        If you ever wanted someone's character, 
+                                        you can simply use the converter to download a video that has a character and boom you have it!
+                                    </li>
+                                    <li>
+                                        Exporting for free has never been possible with FlashThemes, 
+                                        but after using the converter, you may export this video to an MP4 format at any time.
+                                    </li>
+                                    <li>
+                                        No FlashThemes Account is required here (except for some videos that are not public).
+                                        this tool is totally free!
+                                    </li>
+                                    <li>
+                                        After video conversion, 
+                                        you may preview the video to see what you will expect the video to do on GoNexus Servers.
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -602,7 +699,7 @@
                         <div class="col-md-4 text-center">
                             <span class="glyphicon40 glyphicon glyphicon-refresh"></span>
                             <h4><b>Unlimited Downloads</b></h4>
-                            <p>We offer unlimited downloads of FlashThemes videos to zip and xml.</p>
+                            <p>You may convert flashthemes videos as many times as you want without any cost of FlashCoins.</p>
                         </div>
                         <div class="col-md-4 text-center">
                             <span class="glyphicon40 glyphicon glyphicon-download-alt"></span>
@@ -612,7 +709,10 @@
                         <div class="col-md-4 text-center">
                             <span class="glyphicon40 glyphicon glyphicon-user"></span>
                             <h4><b>No FlashThemes Account Required</b></h4>
-                            <p>You don&#039;t need a FlashThemes account to convert and download FlashThemes videos to zip and xml formats.</p>
+                            <p>
+                                You don't need a FlashThemes account to convert most FlashThemes videos 
+                                and download them as zip or xml formats.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -688,7 +788,42 @@
     </script>
 <% } %>
 <script>
+    function selectFtUploadOption(obj) {
+        const elemIds = {
+            ftMovieSelectFromList: "#ftMovieSelectFromListTable",
+            ftmovieZipOrXmlUpload: "#flashthemesMovieUploader",
+            ftMovieUploadFromURL: "#ftMovieUploaderViaURL"
+        }
+        $("#flashthemesMovieUploaderForm")[0].reset();
+        Object.keys(elemIds).map(i => jQuery(elemIds[i]).hide());
+        $("#flashthemesMovieUploaderForm").find(`input[value="${jQuery(obj).val()}"]`)[0].checked = true;
+        jQuery(elemIds[jQuery(obj).val()]).show();
+    }
     var currentCustomCSS = `<%= css %>`;
+    $("#videoWatcherViaXMLModalForm").submit(() => {
+        const formdata = Object.fromEntries(new URLSearchParams($("#videoWatcherViaXMLModalForm").serialize()));
+        if (
+            !formdata.xmlurl.includes(".xml") && !formdata.xmlurl.includes(".zip")
+        ) $("#videoWatcherViaXMLModalResult").text('Please enter in a valid link that points to a goanimate movie xml or zip.');
+        else if ($.flash.available) $("#videoWatcherViaXMLModalResult").flash({
+            swf: "/static/tommy/ad44370a650793d9/animation/player.swf",
+            type: "application/x-shockwave-flash",
+            width: "640",
+            height: "360",
+            flashvars: {
+                apiserver: "/",
+                storePath: "/static/store/<store>",
+				ut: 60,
+				autostart: 1,
+				isWide: 1,
+				clientThemePath: "/static/tommy/ad44370a650793d9/<client_theme>",
+                movieId: `url-${formdata.xmlurl}`
+			},
+			allowScriptAccess: "always",
+			allowFullScreen: "true"
+        }) 
+        else $("#videoWatcherViaXMLModalResult").text('You need Adobe Flash Player in order to watch a video with a url to a movie xml or zip.');
+    })
     const school_permissions_list = [
         {
             permission: 'publicvids',
@@ -855,7 +990,7 @@
         const json = Object.fromEntries(new URLSearchParams($("#flashthemesMovieUploaderForm").serialize()));
         const formData = new FormData();
         for (const i in json) if (i != "import") formData.append(i, json[i]);
-        formData.append("import", document.getElementById('file').files[0])
+        formData.append("import", document.getElementById('flashthemesMovieUploader').files[0])
         $.ajax({
             url: "/api/uploadMovie2FlashThemes",
             method: "POST",
@@ -1051,20 +1186,29 @@
         } else alert('FT Action Required!');
     }
     function setupFlashThemesMovieUploader() {
+        $("#userHasNoVideosForFtUpload").hide();
+        $("#hasUserVideosForFtUpload").hide();
         jQuery.post('/api/getAllUsers', d => {
             const userInfo = d.find(i => i.id == userData.uid || userData.id);
             if (!userInfo.isFTAcc) setupFTAccRequiredModal('You need a FlashThemes Account in order to upload your movie to FlashThemes');
             else {
-                $("#mymovies2convert").html(userInfo.movies.map(movieInfo => `<tr>
-                    <td>
-                        <img height="30" width="50" src="/movie_thumbs/${movieInfo.id}.png"/>
-                    </td>
-                    <td>${movieInfo.title}</td>
-                    <td>${movieInfo.desc}</td><td>${
-                        movieInfo.date.split("T")[0].split("-")[1]
-                    }/${movieInfo.date.split("T")[0].split("-")[2]}/${movieInfo.date.split("T")[0].split("-")[0]}
-                    <input type="radio" name="movieId" value="${movieInfo.id}"/></td>
-                </tr>`).join(""));
+                if (userInfo.movies.length < 1) $("#userHasNoVideosForFtUpload").show();
+                else {
+                    $("#myFtmovies2convert").html(userInfo.movies.map(movieInfo => `<tr class="movie">
+                        <td>
+                            <input type="radio" name="movieId" value="${movieInfo.id}"/>
+                            <img height="30" width="50" src="${movieInfo.thumbUrl ? movieInfo.thumbUrl : `/movie_thumbs/${movieInfo.id}.png`}"/>
+                        </td>
+                        <td>
+                            <hr>
+                            ${movieInfo.title}
+                            <hr>
+                            Modified On ${new Date(movieInfo.date).toLocaleDateString()}
+                        </td>
+                        <td>${movieInfo.desc}</td>
+                    </tr>`).join(""));
+                    $("#hasUserVideosForFtUpload").show();
+                }
                 $("#FlashThemesMovieUploader").modal({
                     keyboard: false,
                     backdrop: "static"
@@ -1075,16 +1219,20 @@
     for (const elem of document.getElementsByClassName("converterForm")) {
         $(elem).submit(() => convertVideo(elem));
     }
-    const hideFlashGame = () => jQuery("#FlashGamePlayer_body").text('To get started, type in your SWF file url in the text box above.').css("color", "black");
+    const hideFlashGame = () => jQuery("#FlashGamePlayer_body").text(
+        'To get started, type in your SWF file url in the text box above.'
+    ).css("color", "black");
     function FlashGameSetup(fileUrl) {
         if ($.flash.available) {
             jQuery("#FlashGamePlayer_body").flash({
-                swf: fileUrl ? fileUrl : ("#FlashGamePlayer_swfUrl").val(),
+                swf: fileUrl ? fileUrl : $("#FlashGamePlayer_swfUrl").val(),
                 quality: "high",
                 height: "400",
                 width: "700"
             });
-        } else jQuery("#FlashGamePlayer_body").css("color", "red").text("You need to Adobe Flash Player installed in order to play Flash Games");
+        } else jQuery("#FlashGamePlayer_body").css("color", "red").text(
+            "You need to Adobe Flash Player installed in order to play Flash Games"
+        );
     }
     function convertVideo(elem) {
         if (apiKeySubmiting) return;
@@ -1096,38 +1244,63 @@
             $("#converter_videoDownload").hide();
         } else {
             if (document.getElementById('converter_videoDownload')) $("#converter_videoDownload").hide();
-            $("#converter_submitbtn").val('Converting Video...');
+            $("#converter_submitbtn").val('Please Wait...');
         }
         jQuery.post(`/api/beginVideoConvertFromURL`, {
             converting: $(elem).data("converting"),
             for: $(elem).data("for"),
             body: $(elem).serialize(),
-            loggedIn: userData && hasPermission('flashthemes'),
+            loggedIn: userData && hasPermission($(elem).data("for")),
             userParams: new URLSearchParams(userData).toString()
         }, d => {
             apiKeySubmiting = false;
             if ($(elem).data("converting")) {
                 $("#converter_loading").hide();
                 if (d.success) {
-                    document.getElementById('converter_thumbnail').src = d.thumbnailUrl;
-                    $('#converter_videoTitle').text(d.videoTitle.split("&amp;").join("&").split("&#39;").join("'"));
+                    document.getElementById('converter_thumbnail').src = `${d.apiserver}${d.thumbnailURL.substr(1)}`;
+                    $('#converter_videoTitle').text(d.videoTitle);
+                    $('#converter_videoDesc').text(d.movieDesc);
                     $("#converter_result").show();
                 } else $("#converter_error").text(d.error);
             } else {
                 if (d.success) {
-                    if (d.data.videoType == "import") {
-                        $("#converter_submitbtn").val('Redirecting...');
-                        location.href = d.redirect;
-                    } else {
-                        $("#converter_submitbtn").val('Convert Video');
-                        $("#converter_videoDownload").show();
-                        const downloadUrlElem = document.getElementById('converter_videoDownload');
-                        downloadUrlElem.innerHTML = 'Download Video';
-                        downloadUrlElem.href = d.downloadUrl;
-                        downloadUrlElem.download = `${$('#converter_videoTitle').text()}.${d.fileExt}`;
+                    switch (d.data.videoType) {
+                        case "preview": {
+                            $("#converter_submitbtn").val('Peform Action');
+                            $("#FlashThemesConverter").modal('hide');
+                            jQuery.blockUI({
+                                message: $("#converter_videoPreview"),
+                                css: {
+                                    width: "59%",
+                                    top: "20%",
+                                    left: "20%",
+                                    cursor: 'auto'
+                                },
+                                overlayCSS: {
+                                    cursor: 'auto'
+                                }
+                            });
+                            if ($.flash.available) $("#converter_videoPreview_playerdiv").flash(d.flashfata);
+                            else $("#converter_videoPreview_playerdiv").html(
+                                "You can't preview this video because you don't have Adobe Flash Player on your system."
+                            );
+                            break;
+                        } case "import": {
+                            $("#converter_submitbtn").val('Redirecting...');
+                            location.href = d.redirect;
+                            break;
+                        } default: {
+                            $("#converter_submitbtn").val('Peform Action');
+                            $("#converter_videoDownload").show();
+                            const downloadUrlElem = document.getElementById('converter_videoDownload');
+                            downloadUrlElem.innerHTML = 'Download Video';
+                            downloadUrlElem.href = d.base64;
+                            downloadUrlElem.download = `${$('#converter_videoTitle').text()}.${d.fileExt}`;
+                            break;
+                        }
                     }
                 } else {
-                    $("#converter_submitbtn").val('Convert Video');
+                    $("#converter_submitbtn").val('Peform Action');
                     $("#converter_error").text(d.error);
                 }
             }

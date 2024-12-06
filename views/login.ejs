@@ -159,7 +159,6 @@ $("#flashthemesloginform").submit(() => {
         password: jQuery("#ftpsw").val()
     }, d => {
         const code = `${d.split("{")[0]}`;
-        const password = btoa(jQuery("#ftpsw").val());
         switch (code) {
             case '0': {
                 jQuery.post('/api/addFTAcc', {
@@ -167,20 +166,24 @@ $("#flashthemesloginform").submit(() => {
                     lc: "en_US",
                     returnto: "/",
                     email: jQuery("#ftemail").val(),
-                    password
+                    password: jQuery("#ftpsw").val()
                 }, d => {
+                    function loginRedirect() {
+                        location.href = '/dashboard';
+                    }
                     if (d.displayNameRequired) {
-                        let displayName = prompt("Please Enter In Your Display Name.", "");
-                        while (!displayName || displayName == null) displayName = prompt("Please Enter In Your Display Name.", "");
+                        const displayNamePrompt = "Please Enter In Your Display Name.";
+                        let displayName = prompt(displayNamePrompt, "");
+                        while (!displayName || displayName == null) displayName = prompt(displayNamePrompt, "");
                         jQuery.post('/api/addFTAcc', {
                             displayName,
                             code: '0',
                             lc: "en_US",
                             returnto: "/",
                             email: jQuery("#ftemail").val(),
-                            password
+                            password: jQuery("#ftpsw").val()
                         }, d => {
-                            if (d.success) location.href = '/dashboard';
+                            if (d.success) loginRedirect();
                             else {
                                 processing = false;
                                 $(".close").show();
@@ -190,7 +193,7 @@ $("#flashthemesloginform").submit(() => {
                             }
                         });
                     }
-                    else if (d.success) location.href = '/dashboard';
+                    else if (d.success) loginRedirect();
                     else {
                         processing = false;
                         $(".close").show();

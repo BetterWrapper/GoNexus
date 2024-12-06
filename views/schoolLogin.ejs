@@ -56,9 +56,12 @@ var GT = new Gettext({'locale_data': json_locale_data});
 <script type="text/javascript">
 if (self !== top) jQuery('body').hide();
 </script>
-
+<!-- Had to make a temp fix for logging into schools. TODO: Fix null stuff-->
 <%- include("includes/header.ejs", {
-    isVideoList: false
+    isVideoList: false,
+    css: null,
+    isLocalhost: false,
+    gopoints: null
 }); %>
 
 <div class="hero">

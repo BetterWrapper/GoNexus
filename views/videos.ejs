@@ -128,7 +128,7 @@
                         width: "100%",
                     }, {
                         flashvars: {
-                            thumbnailURL: `/movie_thumbs/${movieId}.png`,
+                            thumbnailURL: `movie_thumbs/${movieId}.png`,
                             movieOwnerId: uid,
                             movieId,
                             apiserver: "/",
@@ -136,6 +136,7 @@
                             ut: "23",
                             autostart: "0",
                             isWide: "1",
+                            isEmbed: "1",
                             clientThemePath: "/static/<client_theme>",
                         },
                         allowScriptAccess: "always",
@@ -164,9 +165,20 @@
                 $.post("/api/getAllUsers").done(d => {
                     let allVidsCount = 0;
                     for (const userInfo of d) {
-                        $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${userInfo.id}')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
-                        $(`#${userInfo.id}-videos-count`).text(userInfo.movies.length);
+                        $("#videoFilters").append(`<a class="list-group-item nav-cate" id="${userInfo.id}-videos" onclick="switchFilters('${
+                            userInfo.id
+                        }')">By ${userInfo.name} <span class="badge" id="${userInfo.id}-videos-count">0</span></a>`);
+                        let counter = 0;
                         for (const movieInfo of userInfo.movies) {
+                            if (movieInfo.publishStatus == 'public' || movieInfo.published == "1")
+                            {
+                            counter++;
+                            }
+                        }
+                        $(`#${userInfo.id}-videos-count`).text(counter);
+                        for (const movieInfo of userInfo.movies) {
+                            if (movieInfo.publishStatus == 'public' || movieInfo.published == "1")
+                            {
                             allVidsCount++
                             $("#allvideos").append(`<div class="row video-row video-row-cate-explainer ${userInfo.id}" data-uid="${userInfo.id}">
                                 <div class="col-sm-4">
@@ -184,13 +196,20 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="video-title">
-                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${movieInfo.id}', '${movieInfo.title}', '${userInfo.id}')">${movieInfo.title}</a>
+                                        <a class="video-play-wistia" href="javascript:loadVideoPlayer('${
+                                            movieInfo.id
+                                        }', '${movieInfo.title}', '${userInfo.id}')">${movieInfo.title}</a>
                                     </div>
                                     <div class="video-length">${movieInfo.durationString}</div>
                                     <div class="video-desc">${movieInfo.desc}</div>
                                 </div>
                             </div>`);
-                            if ((new URLSearchParams(window.location.search)).get("movieId") && (new URLSearchParams(window.location.search)).get("movieId") == movieInfo.id) loadVideoPlayer(movieInfo.id, movieInfo.title, userInfo.id);
+                            if (
+                                (
+                                    new URLSearchParams(window.location.search)
+                                ).get("movieId") && (new URLSearchParams(window.location.search)).get("movieId") == movieInfo.id
+                            ) loadVideoPlayer(movieInfo.id, movieInfo.title, userInfo.id);
+                        }
                         }
                     }
                     $("#all-videos-count").text(allVidsCount);
@@ -226,7 +245,7 @@
                     }
                     return this;
                 });
-                if (
+                /*if (
                     (
                         typeof navigator.userAgent != 'undefined'
                     ) && (
@@ -236,7 +255,7 @@
                             navigator.userAgent.indexOf('Chrome/') > -1
                         )
                     )
-                ) $('.watch-categories').waypoint('sticky', {footer: '.site-footer'});
+                ) $('.watch-categories').waypoint('sticky', {footer: '.site-footer'});*/
                 function switchFilters(cate) {
                     $('.watch-categories .nav-cate').removeClass('active');
                     $(`#${cate}-videos`).addClass('active');

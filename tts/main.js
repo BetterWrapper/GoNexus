@@ -2,7 +2,7 @@ const https = require("https");
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(require('@ffmpeg-installer/ffmpeg').path);
 const asset = require("../asset/main");
-const get = require("../misc/get")
+const brotli = require("brotli");
 const md5 = require("js-md5");
 const fs = require("fs");
 const genderPrefixes = {
@@ -67,37 +67,39 @@ module.exports = {
 			return e
 		}
 	},
-	genVoice4Qvm(voiceName, text) {
+	genVoice4Qvm(voiceName, text, noSave = false) {
 		return new Promise(async (res, rej) => {
 			const voices = require(`./qvmvoices`).voices;
 			const voice = voices[voiceName];
 			let flags = {};
-			if (!voice) return rej("The selected voice does not exist.");
+			if (!voice) return rej(`The voiceName ${voiceName} does not exist.`);
 			async function saveAsset(stream) {
-				const promise = await new Promise((res, rej) => {
+				res(await new Promise((res, rej) => {
 					const buffers = [];
 					stream.on("data", b => buffers.push(b)).on("end", () => {
-						const buffer = Buffer.concat(buffers);
-						mp3Duration(buffer, (e, d) => {
-							const dur = d * 1e3;
-							if (e || !dur) return rej(e || "Unable to retrieve MP3 stream.");
-							res(asset.save(buffer, {
-								type: "sound",
-								subtype: "tts",
-								published: 0,
-								title: `[${voice.desc}] ${text}`,
-								tags: "",
-								duration: dur,
-								downloadtype: "progressive",
-								ext: "mp3"
-							}, {
-								isTemplate: true
-							}))
-						});
+						try {
+							const buffer = Buffer.concat(buffers);
+							mp3Duration(buffer, (e, d) => {
+								const dur = d * 1e3;
+								if (e || !dur) return rej(e || "Unable to retrieve MP3 stream.");
+								res(noSave ? buffer : asset.save(buffer, {
+									type: "sound",
+									subtype: "tts",
+									published: 0,
+									title: `[${voice.desc}] ${text}`,
+									tags: "",
+									duration: dur,
+									downloadtype: "progressive",
+									ext: "mp3"
+								}, {
+									isTemplate: true
+								}))
+							});
+						} catch (e) {
+							rej(e);
+						}
 					}).on("error", rej);
-				});
-				console.log(promise);
-				res(promise);
+				}));
 			}
 			try {
 				switch (voice.source) {
@@ -172,7 +174,7 @@ module.exports = {
 								pitch: pitch,
 								sfx: "none"
 							}).toString();
-	
+
 							https.get(
 								{
 									hostname: "www.cepstral.com",
@@ -184,10 +186,9 @@ module.exports = {
 									r.on("data", (b) => body += b);
 									r.on("end", () => {
 										const json = JSON.parse(body);
-	
-										https
-											.get(`https://www.cepstral.com${json.mp3_loc}`, saveAsset)
-											.on("error", rej);
+										console.log(json);
+										if (!json.error) https.get(`https://www.cepstral.com${json.mp3_loc}`, saveAsset).on("error", rej);
+										else rej(json.error_message)
 									});
 									r.on("error", rej);
 								}
@@ -220,7 +221,7 @@ module.exports = {
 					case "vocalware": {
 						var [eid, lid, vid] = voice.arg;
 						var cs = md5(`${eid}${lid}${vid}${text}1mp35883747uetivb9tb8108wfj`);
-						var q = qs.encode({
+						var q = new URLSearchParams({
 							EID: voice.arg[0],
 							LID: voice.arg[1],
 							VID: voice.arg[2],
@@ -230,7 +231,7 @@ module.exports = {
 							ACC: 5883747,
 							cache_flag: 3,
 							CS: cs,
-						});
+						}).toString();
 						https.get(
 							{
 								host: "cache-a.oddcast.com",
@@ -378,38 +379,22 @@ module.exports = {
 						break;
 					}
 					case "cereproc": {
-						const req = https.request(
-							{
-								hostname: "www.cereproc.com",
-								path: "/themes/benchpress/livedemo.php",
-								method: "POST",
-								headers: {
-									"content-type": "text/xml",
-									"accept-encoding": "gzip, deflate, br",
-									origin: "https://www.cereproc.com",
-									referer: "https://www.cereproc.com/en/products/voices",
-									"x-requested-with": "XMLHttpRequest",
-									cookie: "Drupal.visitor.liveDemo=666",
-								},
+						const query = new URLSearchParams({
+							voice: voice.arg,
+							audio_format: "mp3"
+						})
+						const req = https.request({
+							hostname: "api.cerevoice.com",
+							path: `/v2/demo?${query}`,
+							method: "POST",
+							headers: {
+								"content-type": "audio/mp3",
+								"accept-encoding": "gzip, deflate, br",
+								origin: "https://www.cereproc.com",
+								referer: "https://www.cereproc.com/"
 							},
-							(r) => {
-								var buffers = [];
-								r.on("data", (d) => buffers.push(d));
-								r.on("end", () => {
-									const xml = String.fromCharCode.apply(null, brotli.decompress(Buffer.concat(buffers)));
-									const beg = xml.indexOf("https://cerevoice.s3.amazonaws.com/");
-									const end = xml.indexOf(".mp3", beg) + 4;
-									const loc = xml.substr(beg, end - beg).toString();
-									https.get(loc, saveAsset).on("error", rej);
-								});
-								r.on("error", rej);
-							}
-						);
-						req.end(
-							`<speakExtended key='666'><voice>${voice.arg}</voice><text>${
-								text
-							}</text><audioFormat>mp3</audioFormat></speakExtended>`
-						);
+						}, saveAsset);
+						req.end(`<text>${text}</text>`);
 						break;
 					}
 				}

@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.104.2">
+    <title>Make a Video - GoNexus</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bgThumb {
+        width: 110px;
+        height: 72px;
+      }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
+    
+    <!-- Custom styles for the studio -->
+    <link href="/static/bootstrap/css/studio_html5.css" rel="stylesheet">
+    <link href="/ui/css/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/bootstrap/css/font.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.css" />
+  </head>
+  <body onload="studioHtml5 = new Studio()">
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">
+        <img src="/ui/img/logo_better.png" alt="GoNexus"/>
+      </a>
+      <button class="btn btn-secondary form-control antiDisable" onclick="studioHtml5.peformAction(this)" id="loadImporter">
+        <i class="glyphicon glyphicon-cloud-upload"></i>
+      </button>
+      <button class="btn btn-secondary form-control" onclick="studioHtml5.peformAction(this)" id="loadBackgrounds">
+        <i class="glyphicon glyphicon-picture"></i>
+      </button>
+      <button class="btn btn-secondary form-control" onclick="studioHtml5.peformAction(this)" id="loadCharacters">
+        <i class="glyphicon glyphicon-user"></i>
+      </button>
+      <button class="btn btn-secondary form-control" onclick="studioHtml5.peformAction(this)" id="loadSounds">
+        <i class="glyphicon glyphicon-music"></i>
+      </button>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="#">Sign out</a>
+        </div>
+      </div>
+    </header>
+    <input type="file" style="display: none;" id="importerFile" onchange="studioHtml5.loadImporterQuene(this)" multiple/>
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3 sidebar-sticky">
+            <ul class="nav flex-column mb-2" id="importer_quene">
+              <li class="nav-item" id="importer_quene_item_example" style="display: none;">
+                <select name="subtype" required>
+                  <option value="">Import File As...</option>
+                  <optgroup data-importType="images" style="display: none;">
+                    <option value="prop">Prop</option>
+                    <option value="bg">Background</a>
+                  </optgroup>
+                  <optgroup data-importType="sounds" style="display: none;">
+                    <option value="bgmusic">Music</option>
+                    <option value="soundeffect">Sound Effect</option>
+                    <option value="voiceover">Voice Over</option>
+                  </optgroup>
+                </select>
+                <button class="nav-link btn btn-primary" href="javascript:;" type="submit">Import Asset</button> 
+                <button class="nav-link btn btn-secondary" href="javascript:;" onclick="studioHtml5.closeQuene()">Close</button>
+              </li>
+            </ul>
+            <ul class="nav flex-column" id="stuff"></ul>
+          </div>
+        </nav>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">GoNexus HTML5 Studio</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-2">
+                <button type="button" class="btn btn-sm btn-outline-success">Preview</button>
+                <button type="button" class="btn btn-sm btn-outline-warning">Save</button>
+              </div>
+              <div class="dropdown">
+                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                  <span data-feather="calendar" class="align-text-bottom"></span>
+                  All Themes
+                </button>
+                <ul class="dropdown-menu" id="themes"></ul>
+              </div>
+            </div>
+          </div>
+          <div class="my-4 w-100">
+            <p>
+              Displaying Scene 
+              <a id="currentSceneNum" onclick="studioHtml5.loadScenes()" href="javascript:;"></a>.
+            </p>
+            <div id="studio_html5"></div>
+            <button onclick="studioHtml5.sceneSettings()" class="btn disabled">
+              Scene Settings
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script src="/js/jquery-ui.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.js"></script>
+    <script src="https://malsup.github.io/jquery.blockUI.js"></script>
+    <script>
+      class Studio {
+        constructor() {
+          this.scenes = [];
+          this.files = [];
+          this.currentScene = {};
+          this.showPleasewait();
+          this.studio = $("#studio_html5");
+          this.params = new URLSearchParams(window.location.search);
+          this.fallbackTheme = "common";
+          this.githubBranch = '9c07584ec95b766aea3509ef8d2f81dcc9d86ce2';
+          this.githubServerUrl = `https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/${this.githubBranch}/server`;
+          jQuery.getJSON("/api/themes/get?only_include_extras=true", d => {
+            this.extraThemes = d;
+          });
+          jQuery.getJSON("/api/themes/get?no_extras=true", d => {
+            this.themes = d;
+            $("#themes").html(this.themes.filter(i => i.attr.isHidden != "1").map(v => `<li>
+              <button class="dropdown-item" onclick="studioHtml5.themeSelect('${
+                v.attr.id
+              }')">${v.attr.name}</button>
+            </li>`).join(''));
+          });
+          const interval = setInterval(() => {
+            if (this.extraThemes && this.themes) {
+              clearInterval(interval);
+              const currentTheme = this.params.get("theme");
+              const altTheme = this.themes[0]?.attr.id || "custom";
+              const isExtraTheme = this.extraThemes.find(i => i.attr.id == currentTheme);
+              const isTheme = this.themes.find(i => i.attr.id == currentTheme);
+              this.themeSelect(isExtraTheme || isTheme ? currentTheme : altTheme, "loadBackgrounds", "disabled");
+              if (this.params.get("template")) {
+                this.template = this.params.get("template");
+              }
+            }
+          }, 1)
+        }
+        loadImporterQuene(obj) {
+          const supportedFiles = {
+            "images": [
+              "gif",
+              "png",
+              "jpg"
+            ],
+            "sounds": [
+              "mp3",
+              "ogg",
+              "wav",
+              "asf"
+            ]
+          }
+          this.importerStarted = true;
+          this.importerFile = obj.files[0];
+          for (const i in supportedFiles) {
+            for (const fileType of supportedFiles[i]) {
+              if (!this.importerFile.name.endsWith(fileType)) continue;
+              return this.loadImporter(i)
+            }
+          }
+          this.displayFeedback("Importer Notice", `Your file with the ${this.importerFile.name.substr(
+            this.importerFile.name.lastIndexOf(".")
+          )} extension is not supported.`)
+        }
+        displayScene(i) {
+          this.beforeScene = this.currentScene;
+          this.reloadSceneParts(this.scenes[i], i);
+        }
+        showBeforeScene() {
+          this.reloadSceneParts(this.beforeScene);
+        }
+        reloadSceneParts(info = this.currentScene, i = this.scenes.length) {
+          this.loadSceneStuff(info);
+          $("#currentSceneNum").html(i + 1);
+          this.currentScene = info;
+          jQuery.unblockUI();
+        }
+        loadScenes() {
+          let html = '';
+          for (var i = 0; i < this.scenes.length; i++) {
+            html += `<button class="col-sm btn btn-sm btn-outline-secondary" onclick="studioHtml5.displayScene(${i})">
+              Scene ${i + 1}
+            </button>`
+          }
+          html += `<button class="col-sm btn btn-sm btn-outline-secondary" onclick="studioHtml5.showBeforeScene()">
+            Scene ${this.scenes.length + 1}
+          </button>`;
+          jQuery.blockUI({ 
+            message: `<h1>All Scenes</h1><div class="row">${
+              html
+            }</div><button class="btn btn-primary" onclick="jQuery.unblockUI()">Close</button>`,
+            overlayCSS: {
+              cursor: 'auto'
+            },
+            css: {
+              top: '7%',
+              left: '0px',
+              width: '100%',
+              cursor: 'auto'
+            }
+          })
+        }
+        displayFeedback(header, text) {
+          $.jGrowl(text, { 
+            header,
+            life: text.length * text.length
+          });
+        }
+        closeQuene() {
+          $("#importer_quene").find('li[data-type="fileImport"]').remove();
+        }
+        showPleasewait() {
+          jQuery.blockUI();
+        }
+        hidePleasewait() {
+          jQuery.unblockUI();
+        }
+        themeSelect(newTheme, action, className) {
+          this.showPleasewait();
+          if (newTheme) {
+            this.currentScene.theme = newTheme;
+            this.currentTheme = newTheme;
+          }
+          this.changeAction(action, className);
+          this.swap();
+          this.hidePleasewait();
+        }
+        changeAction(action, className, antiDisable) {
+          if (action) this.currentAction = action;
+          if (className) this.className = className;
+          if (!antiDisable) this.currentElem = $(`#${this.currentAction}`);
+          this[this.currentAction]();
+        }
+        swap(oldElem) {
+          if (oldElem && oldElem.hasClass(this.className)) oldElem.removeClass(this.className);
+          if (!this.currentElem.hasClass(this.className)) this.currentElem.addClass(this.className);
+        }
+        peformAction(obj) {
+          this.showPleasewait();
+          const oldElem = this.currentElem;
+          this.changeAction($(obj)[0].id, '', $(obj).hasClass("antiDisable"));
+          if (!$(obj).hasClass("antiDisable")) this.swap(oldElem);
+          this.hidePleasewait();
+        }
+        loadImporter(importType) {
+          if (!this.importerStarted) document.getElementById('importerFile').click();
+          else if (!this.importerHTML) {
+            this.importerHTML = `<li class="nav-item" data-type="fileImport">
+              <form action="javascript:;" onsubmit="studioHtml5.uploadFile(this);">
+                ${$("#importer_quene_item_example").html()}
+              </form>
+            </li>`;
+            setTimeout(() => {
+              this.fileImportElem = $("#importer_quene").find('li[data-type="fileImport"]');
+              this.fileImportElem.find(`optgroup[data-importType="${importType}"]`).show();
+              this.importerHTML = `<li class="nav-item" data-type="fileImport">${this.fileImportElem.html()}</li>`
+            }, 1)
+          }
+          $("#importer_quene").html(this.importerHTML);
+        }
+        uploadFile(obj) {
+          this.showPleasewait();
+          const data = new FormData();
+          data.append("file", this.importerFile);
+          const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
+          for (const i in json) data.append(i, json[i]);
+          $.ajax({
+            url: "/ajax/saveUserProp",
+            method: "POST",
+            data,
+            processData: false,
+            contentType: false,
+            dataType: "json"
+          }).done((d) => {
+            console.log(d);
+          });
+        }
+        loadBackgrounds() {
+          jQuery.getJSON(`/api/theme/get?tId=${this.currentTheme}&tag=compositebg`, d => {
+            $("#stuff").html(d.map(v => `<li class="nav-item">
+              <button class="nav-link" onclick='studioHtml5.selectBackground(${JSON.stringify(v)})'' title="${v.attr.name}">
+                <img src="${this.githubServerUrl}/store/3a981f5cb2739137/${this.currentTheme}/bg/${v.attr.thumb}" alt="${
+                  v.attr.name
+                }" class="bgThumb"/>
+              </button>
+            </li>`).join(''));
+            if (!this.studioLoaded) {
+              $("#currentSceneNum").html("1");
+              $("button.disabled").each((index, elem) => {
+                if (!$(elem).hasClass("form-control")) $(elem).removeClass("disabled").addClass("btn-outline-secondary");
+              })
+              this.selectBackground(d[0]);
+              this.studioLoaded = true;
+            }
+          })
+        }
+        loadSceneStuff(info) {
+          this.selectBackground(info);
+        }
+        loadCharacters() {
+
+        }
+        selectBackground(info) {
+          console.log(info);
+          this.currentScene.background = info;
+          this.studio.html(`<img src="${
+            this.githubServerUrl
+          }/store/3a981f5cb2739137/${this.currentTheme}/bg/${info.attr.thumb}" height="354" width="550"/>`)
+        }
+        soundPreview(obj, id) {
+          if (id == this.audioId) {
+            this.audioPlaying ? this.soundPause() : this.soundContinue();
+            return;
+          }
+          this.audioId = id;
+          if (this.audioElem) this.soundPause();
+          this.audioElem = $(obj);
+          this.audio = new Audio(this.audioElem[0].id);
+          this.soundContinue();
+          const interval = setInterval(() => {
+            if (this.audio.ended) {
+              this.soundPause();
+              this.audio.load();
+              clearInterval();
+            }
+          }, 1);
+        }
+        soundContinue() {
+          this.audio.play();
+          this.audioPlaying = true;
+          this.audioElem.html('<i class="glyphicon glyphicon-stop"></i>');
+        }
+        soundPause() {
+          this.audio.pause();
+          this.audioElem.html('<i class="glyphicon glyphicon-play"></i>');
+          this.audioPlaying = false;
+        }
+        loadSounds(thisTheme) {
+          const theme = thisTheme || this.currentTheme
+          jQuery.getJSON(`/api/theme/get?tId=${theme}&tag=sound`, d => {
+            if (d[0]) $("#stuff").html(d.filter(i => i.attr.id.endsWith(".mp3")).map(v => `<li class="nav-item">
+              <p class="nav-link">
+                <a href="javascript:;" onclick='studioHtml5.loadSound(${JSON.stringify(v)})'' title="${v.attr.name}">${v.attr.name}</a>
+                <a href="javascript:;" onclick="studioHtml5.soundPreview(this, '${v.attr.id}')" id="${
+                  this.githubServerUrl
+                }/store/3a981f5cb2739137/${theme}/sound/${v.attr.id}">
+                  <i class="glyphicon glyphicon-play"></i>
+                </a>
+              </p>
+            </li>`).join(''));
+            else this.loadSounds(this.fallbackTheme)
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -132,7 +132,7 @@
         <height>354</height>
         <speech>0</speech>
     </effectAsset>
-</scene><scene id="SCENE3" adelay="24" lock="Y" index="3" color="16777215" guid="06896D1A-135E-B65F-8D6C-FC0AFC1D691E">
+</scene><scene id="SCENE3" adelay="48" lock="Y" index="3" color="16777215" guid="06896D1A-135E-B65F-8D6C-FC0AFC1D691E">
     <bg id="cbg_bedroom_BG65" index="0">
         <file>custom.office_blurred.png</file>
     </bg>
@@ -160,11 +160,11 @@
         <height>166.1</height>
         <speech>0</speech>
     </effectAsset>
-</scene><scene id="SCENE4" adelay="24" lock="Y" index="4" color="16777215" guid="DC1ADD9D-954D-B42D-24BE-D6EF2BC41D31">
-    <bg id="cbg_office_pentry_BG102" index="0">
-        <file>custom.office_pentry_bg.swf</file>
+</scene><scene id="SCENE4" adelay="48" lock="Y" index="4" color="16777215" guid="06896D1A-135E-B65F-8D6C-FC0AFC1D691E">
+    <bg id="cbg_bedroom_BG65" index="0">
+        <file>custom.office_blurred.png</file>
     </bg>
-    <char id="AVATOR1135" index="3" raceCode="1">
+    <char id="AVATOR1135" index="1" raceCode="1">
         <action face="1" motionface="1">ugc.51900632.stand2.xml</action>
         <x>408.3</x>
         <y>227.55</y>
@@ -172,7 +172,35 @@
         <yscale>1</yscale>
         <rotation>0</rotation>
     </char>
-    <char id="AVATOR1136" index="4" raceCode="1">
+    <char id="AVATOR1136" index="2" raceCode="1">
+        <action face="-1" motionface="1">ugc.53774620.stand2.xml</action>
+        <x>210.8333333</x>
+        <y>229.65</y>
+        <xscale>1</xscale>
+        <yscale>1</yscale>
+        <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT1" themecode="common" index="4">
+        <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+        <x>276.2175141</x>
+        <y>75.9</y>
+        <width>258.0649718</width>
+        <height>166.1</height>
+        <speech>0</speech>
+    </effectAsset>
+</scene><scene id="SCENE5" adelay="24" lock="Y" index="5" color="16777215" guid="DC1ADD9D-954D-B42D-24BE-D6EF2BC41D31">
+    <bg id="cbg_office_pentry_BG102" index="0">
+        <file>custom.office_pentry_bg.swf</file>
+    </bg>
+    <char id="AVATOR1137" index="3" raceCode="1">
+        <action face="1" motionface="1">ugc.51900632.stand2.xml</action>
+        <x>408.3</x>
+        <y>227.55</y>
+        <xscale>1</xscale>
+        <yscale>1</yscale>
+        <rotation>0</rotation>
+    </char>
+    <char id="AVATOR1138" index="4" raceCode="1">
         <action face="-1" motionface="1">ugc.53774620.stand2.xml</action>
         <x>210.8333333</x>
         <y>229.65</y>
@@ -206,11 +234,11 @@
         <height>354</height>
         <speech>0</speech>
     </effectAsset>
-</scene><scene id="SCENE5" adelay="48" lock="Y" index="5" color="16777215" guid="24E943AA-EED0-11A5-2B8E-D8588E151BA6">
+</scene><scene id="SCENE6" adelay="48" lock="Y" index="6" color="16777215" guid="24E943AA-EED0-11A5-2B8E-D8588E151BA6">
     <bg id="cbg_office_pentry_BG102" index="0">
         <file>custom.office_pentry_bg.swf</file>
     </bg>
-    <char id="AVATOR1135" index="3" raceCode="1">
+    <char id="AVATOR1137" index="3" raceCode="1">
         <action face="-1,-1" motionface="-1">ugc.51900632.walk.xml</action>
         <x>408.3,647.05</x>
         <y>227.55,227.55</y>
@@ -219,7 +247,7 @@
         <rotation>0,0</rotation>
         <assetMotion ver="2"/>
     </char>
-    <char id="AVATOR1136" index="4" raceCode="1">
+    <char id="AVATOR1138" index="4" raceCode="1">
         <action face="1" motionface="1">ugc.53774620.stand2.xml</action>
         <x>210.825</x>
         <y>229.65</y>
@@ -267,14 +295,14 @@
 </scene><sound id="SOUND0" index="0" track="0" vol="0.75" tts="0">
 						<sfile>common.Sunshine.mp3</sfile>
 						<start>1</start>
-						<stop>689.184</stop>
-						<trimEnd>689.184</trimEnd>
+						<stop>859.6800000000001</stop>
+						<trimEnd>859.6800000000001</trimEnd>
 						<fadein duration="48" vol="1"/>
 						<fadeout duration="48" vol="0"/>
 						</sound><sound id="SOUND2" index="1" track="0" vol="1" tts="1">
 					<sfile>ugc.asset-0.mp3</sfile>
 					<start>132</start>
-					<stop>156</stop>
+					<stop>180</stop>
 					<fadein duration="0" vol="0"/>
 					<fadeout duration="0" vol="0"/>
 					<ttsdata>
@@ -282,4 +310,10 @@
 					<text><![CDATA[poop]]></text>
 					<voice><![CDATA[joey1]]></voice>
 					</ttsdata>
-					</sound></film>
+					</sound><sound id="SOUND4" index="2" track="0" vol="1" tts="1">
+							<sfile>ugc.asset-0.mp3</sfile>
+							<start>180</start>
+							<stop>218.976</stop>
+							<fadein duration="0" vol="0"/>
+							<fadeout duration="0" vol="0"/>
+							</sound></film>

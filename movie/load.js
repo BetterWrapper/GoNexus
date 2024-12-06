@@ -4,17 +4,18 @@ const http = require("http");
 const loadPost = require("../misc/post_body");
 const fUtil = require("../misc/file");
 const formidable = require("formidable");
-let userId = null;
 const path = require("path");
 const tts = require("../tts/main");
 const asset = require("../asset/main");
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
+ffmpeg.setFfprobePath(require("@ffprobe-installer/ffprobe").path);
 const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
 var templateAssets = [];
 const ncs = require("../ncs/modules/search");
+const cloudinary = require("cloudinary").v2;
 function getMp3Duration(buffer) {
 	return new Promise((res, rej) => {
 		mp3Duration(buffer, (e, d) => {
@@ -53,12 +54,14 @@ function getStringArrayLength(data, start) {
 	return count;
 }
 const nodezip = require("node-zip");
+const JSZip = require("jszip");
 const session = require("../misc/session");
 const https = require("https");
 const framerate = 24;
 const frameToSec = (f) => f / framerate;
 const nodemailer = require('nodemailer');
 const xmldoc = require("xmldoc");
+const discord = require("discord.js");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -72,6 +75,7 @@ module.exports = function (req, res, url) {
 				default: {
 					const match = req.url.match(/\/movies\/([^/]+)$/);
 					if (!match) return;
+					const {data: currentSession} = session.get(req);
 					const id = match[1].substr(0, match[1].lastIndexOf("."));
 					const ext = match[1].substr(match[1].lastIndexOf(".") + 1);
 					switch (ext) {
@@ -87,7 +91,7 @@ module.exports = function (req, res, url) {
 							movie.loadZip({
 								movieId: id,
 							}, {
-								movieOwnerId: userId
+								movieOwnerId: currentSession.current_uid
 							}, true).then(v => res.end(v)).catch(e => {
 								console.log(e);
 								res.end("Not Found");
@@ -98,6 +102,13 @@ module.exports = function (req, res, url) {
 								res.setHeader("Content-Type", "video/mp4");
 								res.end(fs.readFileSync(fUtil.getFileIndex("movie-", ".mp4", id.substr(2))));
 							} else res.end("Not Found");
+							break;
+						} case "png": {
+							if (fs.existsSync(fUtil.getFileIndex("thumb-", ".png", id.substr(2)))) {
+								res.setHeader("Content-Type", "image/png");
+								res.end(fs.readFileSync(fUtil.getFileIndex("thumb-", ".png", id.substr(2))));
+							} else res.end("Not Found");
+							break;
 						}
 					}
 					break;
@@ -471,8 +482,7 @@ module.exports = function (req, res, url) {
 							else res.end(JSON.stringify({
 								code: 'success'
 							}));
-						}
-						else {
+						} else {
 							const file = files.import;
 							if (file.originalFilename.endsWith(".zip") && file.mimetype == "application/x-zip-compressed") {
 								const zip = nodezip.unzip(fs.readFileSync(file.filepath));
@@ -569,24 +579,26 @@ module.exports = function (req, res, url) {
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						res.setHeader("Content-Type", "application/json");
 						const userInfo = session.get(req);
-						function getFlashThemesUserInfo() {
-							return new Promise((res, rej) => {
-								https.get({
-									hostname: "flashthemes.net",
-									path: "/videomaker/custom/full/",
-									headers: {
-										cookie: userInfo.data.sessionCookies[1]
-									}
-								}, r => {
-									const buffers = [];
-									r.on("data", b => buffers.push(b)).on("end", () => {
-										const buffer = Buffer.concat(buffers).toString("utf8");
-										res(JSON.parse(buffer.split("studio_data.flashvars = ")[1].split("        var _ccad = null;")[0]));
-									})
+						if (!userInfo.data?.flashThemesLogin) return res.end(JSON.stringify({
+							success: false,
+							error: 'Please <a href="javascript:uploadMovieAfterLoginComplete()" onclick="showOverlayOnElement(\'#FlashThemesMovieUploader\', jQuery(\'#FTAccLoginWindowLightbox\'))">login</a> to your FlashThemes account again in order to continue uploading your movie to FlashThemes'
+						}));
+						const ftInfo = await new Promise((res, rej) => {
+							https.get({
+								hostname: "flashthemes.net",
+								path: "/videomaker/custom/full/",
+								headers: {
+									cookie: Buffer.from(userInfo.data.flashThemesLogin, 'base64').toString()
+								}
+							}, r => {
+								const buffers = [];
+								r.on("data", b => buffers.push(b)).on("end", () => {
+									const buffer = Buffer.concat(buffers).toString();
+									res(JSON.parse(buffer.split("studio_data.flashvars = ")[1].split("        var _ccad = null;")[0]));
 								})
 							})
-						}
-						function uploadMovie2FlashThemes(body_zip, thmb) {
+						})
+						function uploadMovie2FlashThemes(body_zip, thmb, mId) {
 							return new Promise(async (res, rej) => {
 								const info = {
 									body_zip,
@@ -595,7 +607,8 @@ module.exports = function (req, res, url) {
 									save_thumbnail: 1,
 									publish_quality: "360p",
 								};
-								for (const i in await getFlashThemesUserInfo()) info[i] = (await getFlashThemesUserInfo())[i];
+								if (mId) info.movieId = mId;
+								for (const i in ftInfo) info[i] = ftInfo[i];
 								console.log(info);
 								https.request({
 									method: "POST",
@@ -603,7 +616,7 @@ module.exports = function (req, res, url) {
 									path: "/goapi/saveMovie/",
 									headers: {
 										"Content-Type": "application/x-www-form-urlencoded",
-										cookie: userInfo.data.sessionCookies[1]
+										cookie: Buffer.from(userInfo.data.flashThemesLogin, 'base64').toString()
 									}
 								}, r => {
 									const buffers = [];
@@ -616,45 +629,78 @@ module.exports = function (req, res, url) {
 										});
 										else res({
 											success: false,
-											error: buffer.slice(buffer.indexOf("<message>"), buffer.indexOf("</message>", buffer.indexOf("<message>"))).toString() || "An unknown error occured"
+											error: buffer.slice(
+												buffer.indexOf("<message>"), buffer.indexOf("</message>", buffer.indexOf("<message>"))
+											).toString() || "An unknown error occured"
 										});
 									})
 								}).end(new URLSearchParams(info).toString());
 							})
 						}
-						if (!userInfo.data || !userInfo.data.sessionCookies) res.end(JSON.stringify({
-							success: false,
-							error: 'Please <a href="javascript:uploadMovieAfterLoginComplete()" onclick="showOverlayOnElement(\'#FlashThemesMovieUploader\', jQuery(\'#FTAccLoginWindowLightbox\'))">login</a> to your FlashThemes account again in order to continue uploading your movie to FlashThemes'
-						}));
-						else if (f.movieId) {
+						if (files.import) {
+							const fileInfo = files.import;
+							const b = fs.readFileSync(fileInfo.filepath);
+							switch (fileInfo.mimetype) {
+								case "application/x-zip-compressed": {
+									const zip = await JSZip.loadAsync(b);
+									if (!zip.files['movie.xml']) res.end(JSON.stringify({
+										success: false,
+										error: "The url to the zip file you provided does not have the movie.xml file inside the zip file which is required for FlashThemes to parse your movie properly. Please use a url which leads to a zip file but has the movie.xml file inside."
+									}));
+									else res.end(JSON.stringify(await uploadMovie2FlashThemes(
+										b.toString("base64"), (await movie.genImage()).toString("base64")
+									)));
+									break;
+								} default: return res.end(JSON.stringify({
+									success: false,
+									error: "The file you selected is not supported"
+								}));
+							}
+						} else if (f.movieId) {
 							const filepathxml = fUtil.getFileIndex("movie-", ".xml", f.movieId.substr(f.movieId.lastIndexOf("-") + 1));
 							const filepaththumb = fUtil.getFileIndex("thumb-", ".png", f.movieId.substr(f.movieId.lastIndexOf("-") + 1));
 							if (!fs.existsSync(filepathxml) || !fs.existsSync(filepaththumb)) res.end(JSON.stringify({
 								success: false,
-								error: "Your movie could not be uploaded to FlashThemes because one of your movie files are missing from the _SAVED folder in Neuxs. Please try uploading a different movie to Neuxs."
+								error: "Your movie could not be uploaded to FlashThemes because one of your movie files are missing from the _SAVED folder in GoNeuxs. Please try uploading a different movie to GoNeuxs."
 							}))
-							else movie.loadZip({
-								movieId: f.movieId
-							}, {
-								userId: userInfo.data.current_uid
-							}).then(async buff => res.end(JSON.stringify(await uploadMovie2FlashThemes(
-								buff.toString("base64"), 
-								fs.readFileSync(filepaththumb).toString("base64")
-							))))
-						} else if (f.movieURL) {
-							if (f.movieURL.endsWith(".zip")) https.get(f.movieURL, r => {
-								const buffers = [];
-								r.on("data", b => buffers.push(b)).on("end", async () => {
-									const zip = nodezip.unzip(Buffer.concat(buffers));
-									if (!zip['movie.xml']) res.end(JSON.stringify({
+							else {
+								(async isSuccessful => {
+									if (isSuccessful) {
+										res.end(JSON.stringify(await uploadMovie2FlashThemes(
+											(await movie.loadZip({
+												movieId: f.movieId
+											}, {
+												userId: userInfo.data.current_uid
+											})).toString("base64"), (await movie.genImage()).toString("base64")
+										)));
+									} else res.end(JSON.stringify({
 										success: false,
-										error: "The url to the zip file you provided does not have the movie.xml file inside the zip file which is required for FlashThemes to parse your movie properly. Please use a url which leads to a zip file but has the movie.xml file inside."
-									}));
-									else res.end(JSON.stringify(uploadMovie2FlashThemes((await zip.zip()).toString("base64"), (await movie.genImage()).toString("base64"))))
-								});
-							})
+										error: "An unknown error occured when attempting to upload movie assets into flashthemes"
+									}))
+								})(await movie.uploadMovieAssets2Flashthemes(
+									Buffer.from(userInfo.data.flashThemesLogin, "base64").toString(), filepathxml
+								));
+							}
+						} else if (f.movieURL) {
+							if (f.movieURL.endsWith(".zip")) {
+								const b = await movie.getBuffersOnline(f.movieURL);
+								const zip = await JSZip.loadAsync(b);
+								if (!zip.files['movie.xml']) res.end(JSON.stringify({
+									success: false,
+									error: "The url to the zip file you provided does not have the movie.xml file inside the zip file which is required for FlashThemes to parse your movie properly. Please use a url which leads to a zip file but has the movie.xml file inside."
+								}));
+								else res.end(JSON.stringify(await uploadMovie2FlashThemes(
+									b.toString("base64"), (await movie.genImage()).toString("base64")
+								)));
+							} else if (f.movieURL.endsWith(".xml")) {
+								const zip = nodezip.create();
+								fUtil.addToZip(zip, 'movie.xml', await movie.getBuffersOnline(f.movieURL));
+								res.end(JSON.stringify(await uploadMovie2FlashThemes(
+									(await zip.zip()).toString("base64"), (await movie.genImage()).toString("base64")
+								)))
+							}
 						}
-					})
+					});
 					break;
 				} case "/api/check4MovieFilepaths": {
 					loadPost(req, res).then(data => {
@@ -746,8 +792,8 @@ module.exports = function (req, res, url) {
 						}
 						parse.deleteTTSFiles(
 							fs.readFileSync(filepaths[0]), data.uId, fs.existsSync(
-								fUtil.getFileIndex("movie-autosaved-", ".xml", suffix)
-							) ? fs.readFileSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix)) : '1'
+								fUtil.getFileIndex("movie-autosaved-", ".xml", data.mId.substr(2))
+							) ? fs.readFileSync(fUtil.getFileIndex("movie-autosaved-", ".xml", data.mId.substr(2))) : '1'
 						).then(json => {
 							console.log(json);
 							if (!json) try {
@@ -792,7 +838,7 @@ module.exports = function (req, res, url) {
 						let thumb;
 						if (data.thumbnail) { // if there was a thumbnail in the video
 							thumb = Buffer.from(data.thumbnail, "base64")
-						} else switch (data.enc_tid){ // generate a thumbnail from the enc_tid param.
+						} else switch (data.enc_tid) { // generate a thumbnail from the enc_tid param.
 							case "0GWxgtNKvSes": {
 								thumb = fs.readFileSync(`./qvm_files/basketball/bg01.jpg`);
 								break;
@@ -801,7 +847,7 @@ module.exports = function (req, res, url) {
 								break;
 							} default: {
 								return res.end(JSON.stringify({
-									error: "A thumbnail does not exist for this id. because of that, your video could not be saved. if you think that this is a bug, please contact @_sleepyguy on discord and let him know about this bug."
+									error: "A thumbnail does not exist for this id. because of that, your video could not be saved. if you think that this is a bug, please contact one of our developers on the GoNexus Discord Server about this bug."
 								}));
 							}
 						}
@@ -1036,40 +1082,22 @@ module.exports = function (req, res, url) {
 						}
 					});
 					break;
-				} case "/api/sendUserInfo": { // sends the user info firebase provides to the server
-					function sendUserInfo() {
-						return new Promise(async resolve => {
-							const data = await loadPost(req, res)
-							userId = data.userId;
-							resolve();
-						});
-					}
-					sendUserInfo().then(() => res.end());
-					break;
 				} case "/goapi/getMovie/": { // loads a movie using the parse.js file
-					res.setHeader("Content-Type", "application/zip");
 					loadPost(req, res).then(async data => {
 						try {
+							res.setHeader("Content-Type", "application/zip");
 							if (url.query.movieId != "templatePreview") {
 								const b = await movie.loadZip(url.query, data);
 								if (!url.query.movieId.startsWith("ft-")) res.end(Buffer.concat([base, b]));
 								else res.end(b);
-							} else {
-								const buffers = [
-									base, 
-									await parse.packMovie(
-										fs.readFileSync("./previews/template.xml"), 
-										false, 
-										false, 
-										false, 
-										templateAssets
-									)
-								];
-								res.end(Buffer.concat(buffers));
-							}
+							} else res.end(Buffer.concat([
+								base, 
+								await parse.packMovie(fs.readFileSync("./previews/template.xml"), false, templateAssets)
+							]));
 						} catch (e) {
+							res.setHeader("Content-Type", "text/xml");
 							console.log(e);
-							res.end(1 + e);
+							res.end(1 + `<error><code>NOTFOUND</code><message></message><text></text></error>`);
 						}
 					});
 					break;
@@ -1083,7 +1111,7 @@ module.exports = function (req, res, url) {
 						}, null, "\t"))
 					}
 					const uId = url.query.url.substr(url.query.url.lastIndexOf("/") + 1);
-					https.get('https://dafunk.3hj.repl.co/insideFile?path=/users.json', r => {
+					https.get('https://dafunk.gonexus.xyz/insideFile?path=/users.json', r => {
 						const buffers = [];
 						r.on("data", b => buffers.push(b)).on("end", () => {
 							try {
@@ -1108,14 +1136,14 @@ module.exports = function (req, res, url) {
 								msg: '1Internal Server Error'
 							}))
 						}
-						const fieldsRequiredGlobaly = {
-							base64: 'AA',
-							type: 'video/mp4',
-							id: '666',
-							userData: 'id=666',
-							platform: 'dafunk'
-						};
-						for (const i in fieldsRequiredGlobaly) {
+						const fieldsRequiredGlobaly = [
+							"base64",
+							"type",
+							"id",
+							"userData",
+							"platform"
+						];
+						for (const i of fieldsRequiredGlobaly) {
 							if (!data[i]) res.end(JSON.stringify({
 								msg: "1Missing one or more required fields."
 							}))
@@ -1124,7 +1152,6 @@ module.exports = function (req, res, url) {
 						console.log(userData);
 						try {
 							const videoInfo = JSON.parse(fs.readFileSync(asset.folder + '/users.json')).users.find(i => i.id == userData.id || userData.uid).movies.find(i => i.id == data.id);
-							console.log(videoInfo);
 							switch (data.platform) {
 								case "dafunk": {
 									if (!data.userInfo) res.end(JSON.stringify({
@@ -1132,7 +1159,7 @@ module.exports = function (req, res, url) {
 									}));
 									else https.request({
 										method: "POST",
-										hostname: "dafunk.3hj.repl.co",
+										hostname: "dafunk.gonexus.xyz",
 										path: "/uploadViabase64",
 										headers: {
 											"Content-Type": "application/x-www-form-urlencoded"
@@ -1175,7 +1202,9 @@ module.exports = function (req, res, url) {
 									});
 									const html = `<p>${
 										f.message || 'I don\'t have anything else to say other than check out this animation i made.'
-									}<br>To view the animation i made, please do so <a href="${req.headers.origin}/movies/${data.id}.mp4">here</a>.</p>`
+									}<br>To view the animation i made, please do so <a href="${
+										req.headers.origin
+									}/movies/${data.id}.mp4">here</a>.</p>`
 									transporter.sendMail({
 										from: userData.email,
 										to: f.friendEmail,
@@ -1184,8 +1213,7 @@ module.exports = function (req, res, url) {
 									}, (error, info) => {
 										if (error) handleError(error)
 										else {
-											console.log('Email successfully sent! data:');
-											console.log(info);
+											console.log('Email successfully sent! data:', info);
 											res.end(JSON.stringify({
 												msg: '0Your video has been sent to a friend successfully!'
 											}));
@@ -1200,108 +1228,157 @@ module.exports = function (req, res, url) {
 					})
 					break;
 				} case "/api/videoExport/completed": { // converts the video frames into an actual video.
-					new formidable.IncomingForm().parse(req, async (e, f, files) => {
-						if (typeof f.frames == "undefined" || f.frames.length == 0) {
-							console.warn("Exporter: Conversion attempted with no frames.");
-							res.end(JSON.stringify({ 
-								success: false,
-								msg: "Frames missing." 
-							}));
+					loadPost(req, res).then(async data => {
+						// checks for existant video frames and id before doing any type of video conversion
+						if (typeof data.frames == "undefined" || data.frames.length == 0) {
+							console.warn("The Exporter attempted conversion with no frames.");
+							res.end(JSON.stringify({ msg: "The Exporter attempted conversion with no frames." }));
 							return;
-						} else if (typeof f.id == "undefined") {
-							console.warn("Exporter: Conversion attemped with no movie ID.");
-							res.end(JSON.stringify({
-								success: false,
-								msg: "Movie ID missing." 
-							}));
+						} else if (typeof data.id == "undefined") {
+							console.warn("The Exporter attempted conversion with no movie ID.");
+							res.end(JSON.stringify({ msg: "The Exporter attempted conversion with no movie ID." }));
 							return;
 						}
-						console.log("Exporter: Frames sent to server. Writing frames to temp path...");
 					
-						/* save all the frames */
-						const frames = f.frames;
-						if (!fs.existsSync(`./previews`)) fs.mkdirSync(`./previews`);
-						const base = path.join(__dirname, `../previews/${f.id}`);
-						if (!fs.existsSync(base)) fs.mkdirSync(base);
-						if (fs.existsSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2)))) return res.end(JSON.stringify({
-							success: false,
-							msg: "An export for your video already exists. Please delete an existing export for your video."
-						}))
-						for (let i in frames) {
+						console.log("The Exporter Frames were successfully sent to the server. Writing frames to a temporary path...");
+					
+						/* saves all the frames */
+						const frames = JSON.parse(data.frames);
+						const base = `${asset.tempFolder}/TEMP${data.id}`;
+						fs.mkdirSync(base);
+						for (var i = 0; i < frames.length; i++) {
 							const frameData = Buffer.from(frames[i == 1 ? 2 : i], "base64");
-							fs.writeFileSync(path.join(base, i + ".png"), frameData);
+							fs.writeFileSync(`${base}/${i}.png`, frameData);
 						}
 					
-						console.log("Exporter: Saving frames completed. Converting frames to a video...");
+						console.log("The Exporter successfully saved all of the video frames. Converting the saved frames into a video...");
 						
-						/* join them together */
+						/* joins the frames together */
 						const chicanery = ffmpeg().input(base + "/%d.png").on("start", (cmd) => {
-							console.log("Exporter: Spawned Ffmpeg with command:", cmd);
+							console.log("The Exporter Spawned Ffmpeg with the following command:", cmd);
 						}).on("end", () => {
-							console.log("Exporter: Video conversion successful. Merging Video...");
-							for (const i in frames) {
-								fs.unlinkSync(path.join(base, i + ".png"));
-							}
+							console.log("The Exporter converted your video successfully. Adding the GoNexus Outro to your video...");
+							// removes all frames from the temp path
+							const outputFilepath = fUtil.getFileIndex("movie-", ".mp4", data.id.substr(2));
+							for (const i in frames) fs.unlinkSync(`${base}/${i}.png`);
 							fs.rmdirSync(base);
-							/*ffmpeg(path.join(__dirname, `../outro.mp4`)).input(path.join(__dirname, `../previews/${f.id}.mp4`)).on("start", (cmd) => {
-								console.log("Exporter: Spawned Ffmpeg with command:", cmd);
-							}).on("end", () => {
-								console.log("Exporter: Video merge successful.");*/
-								res.end(JSON.stringify({
-									success: true,
-									base64: fs.readFileSync(fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2))).toString("base64")
-								}));/*
-							}).on("error", (err) => {
-								console.error("Exporter: Error merging video:", err);
-								res.end(JSON.stringify({
-									success: false,
-									msg: "Internal Server Error" 
+							// sets up cloudinary for video splicing
+							cloudinary.config({ 
+								cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+								api_key: process.env.CLOUDINARY_API_KEY,
+								api_secret: process.env.CLOUDINARY_API_SECRET
+							});
+							// joins the video and GoNexus outro together
+							cloudinary.uploader.upload(`./previews/${data.id}.mp4`, {
+								folder: '',
+								resource_type: 'video'
+							}).then(async (cloudinary_data) => {
+								/* 
+								cloudinary didn't mention in their video splicing tutorial that 
+								both videos needed to be the same size in order for them to be concated into one single video buffer.
+								That's all fixed now and the code's here in case any future 
+								GoNexus Source Code holders need it out of curiosity. 
+								*/
+								const videoURL = cloudinary.url(cloudinary_data.public_id, { 
+									// generates a video url using transformation effects
+									resource_type: "video",
+									transformation: [
+										{ 
+											crop: "fill", 
+											width: 706,
+											height: 408 
+										},
+										{
+											flags: "splice", 
+											overlay: "video:" + process.env.EXPORTED_VIDEO_OUTRO_CLOUDINARY_PUBLIC_ID
+										},
+										{ 
+											crop: "fill", 
+											width: 706,
+											height: 408 
+										},
+										{ 
+											flags: "layer_apply" 
+										},
+										{ 
+											overlay: process.env.EXPORTED_VIDEO_WATERMARK_CLOUDINARY_PUBLIC_ID
+										},
+										{ 
+											width: 240, 
+											height: 28,
+											x:10, 
+											y:10 
+										},
+										{ 
+											opacity: 80 
+										},
+										{ 
+											flags: "layer_apply", 
+											gravity: "south_west"
+										},
+										{
+											flag: "layer_apply" 
+										}
+									]
+								});
+								// write the results to the output path
+								fs.writeFileSync(outputFilepath, await movie.getBuffersOnline(videoURL));
+								console.log("The Exporter added the GoNexus outro your video successfully. Deleting any temp files that have been created during video conversion...");
+								// deletes temporary files to save space
+								fs.unlinkSync(`./previews/${data.id}.mp4`);
+								cloudinary.api.delete_resources(
+									[
+										cloudinary_data.public_id
+									], 
+									{ 
+										type: 'upload', 
+										resource_type: 'video' 
+									}
+								).then(d => {
+									console.log("The Exporter successfully deleted all of the temp files that have been created during video conversion with no errors. Response:", d);
+								}).catch(e => {
+									console.error("The Exporter failed to delete a file from cloudinary that was used to merge both your movie and outro together with the following error:", e);
+								});
+								res.end(JSON.stringify({ // end it all
+									success: '', 
+									base64: fs.readFileSync(outputFilepath, "base64") 
 								}));
-							}).videoCodec("libx264").audioCodec("aac").mergeToFile(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substring(2))))*/
+							});
 						}).on("error", (err) => {
-							console.error("Exporter: Error merging video:", err);
-							for (const i in frames) {
-								fs.unlinkSync(path.join(base, i + ".png"));
-							}
+							console.error("The Exporter failed to proccess your video with error:", err);
+							res.end(JSON.stringify({ msg: err.toString() }));
+							// removes all frames from the temp path
+							for (const i in frames) fs.unlinkSync(`${base}/${i}.png`);
 							fs.rmdirSync(base);
-							res.end(JSON.stringify({
-								success: false,
-								msg: "Internal Server Error" 
-							}));
 						});
-						
-						/* add the audio ourselves, i really don't wanna make it record it */
-						let audios = await parse.extractAudioTimes(fs.readFileSync(fUtil.getFileIndex("movie-", ".xml", f.id.substring(2))));
+						// adds in audio using their buffers and durations
+						let audios = await parse.extractAudioTimes(fs.readFileSync(fUtil.getFileIndex("movie-", ".xml", data.id.substr(2))));
 						let complexFilterString = "";
 						let delay = 0;
 						audios = audios.sort((a, b) => a.start - b.start);
-						for (const i in audios) {
+						for (var i = 0; i < audios.length; i++) { 
+							// uses the audio start and end times to create a point in the timeline for the audio to kick in
 							const audio = audios[i];
 							const baseDuration = audio.stop - audio.start;
 							const duration = Math.max(baseDuration, audio.trimEnd) - audio.trimStart;
 							chicanery.input(audio.filepath);
 							chicanery.addInputOption("-t", frameToSec(duration));
-							if (audio.trimStart > 0) {
-								chicanery.seekInput(frameToSec(audio.trimStart));
-							}
+							if (audio.trimStart > 0) chicanery.seekInput(frameToSec(audio.trimStart));
 							complexFilterString += `[${Number(i) + 1}:a]adelay=${(frameToSec(audio.start) * 1e3) - delay}[audio${i}];`;
 							delay += 100;
 						}
-						if (typeof complexFilterString == "number") chicanery
-							.complexFilter(complexFilterString + `${audios.map((_, i) => `[audio${i}]`).join("")}amix=inputs=${audios.length}[a]`)
-							.addOutputOptions("-async", "1")
-							.videoCodec("libx264")
-							.audioCodec("aac")
-							.outputOptions("-pix_fmt", "yuv420p")
-							.outputOptions("-ac", "1")
-							.outputOptions("-map", "0:v")
-							.outputOptions("-map", "[a]")
-							.outputOptions("-framerate", framerate)
-							.outputOptions("-r", framerate)
-							.duration(frameToSec(frames.length))
-							.output(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2))))
-							.run();
-						else chicanery.videoCodec("libx264").outputOptions("-framerate", framerate).outputOptions("-r", framerate).output(path.join(__dirname, `../`, fUtil.getFileIndex("movie-", ".mp4", f.id.substr(2)))).run();
+						if (complexFilterString) chicanery.complexFilter(complexFilterString + `${
+							// combines the audio to a complex filter string to add the audio to the timeline
+							audios.map((_, i) => `[audio${i}]`).join("")
+						}amix=inputs=${audios.length}[a]`).outputOptions("-map", "[a]");
+						// creates the final video product using ffmpeg
+						chicanery.addOutputOptions("-async", "1").videoCodec("libx264").audioCodec(
+							"aac"
+						).outputOptions("-pix_fmt", "yuv420p").outputOptions("-ac", "1").outputOptions(
+							"-map", "0:v"
+						).outputOptions("-framerate", framerate).outputOptions("-r", framerate).duration(frameToSec(frames.length)).output(
+							`./previews/${data.id}.mp4`
+						).run();
 					});
 					break;
 				} case "/api/check4ExportedMovieExistance": { // checks for an existing exported video.

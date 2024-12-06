@@ -1,47 +1,37 @@
 /**
- * Session Manager For GoNexus (Codename: BetterWrapper)
+ * This used to be a Session Manager For GoNexus (Codename: BetterWrapper) but has changed to a manager for browser cookies.
  * 
- * if you see any bugs happening here. please contact @_sleepyguy on discord to get those bugs fixed although he might just be asking the devs to help him fix it.
+ * if you see any bugs happening here. please contact one of our developers on discord to get those bugs fixed.
  */
-const userSessions = [];
-
 module.exports = {
-    getIp(req) {
-		return req.headers['x-forwarded-for'];
-	},
-    set(req, data) {
+    cookieData: 'HttpOnly; path=/',
+    set(res, data) { // sets a cookie for the user
         try {
-            const ip = this.getIp(req);
-            const currentSession = this.get(req);
-            if (!currentSession.data && !currentSession.ip) {
-                userSessions.unshift({
-                    ip,
-                    data
-                });
-            } else for (const i in data) {
-                currentSession.data[i] = data[i];
-            }
+            const array = [];
+            for (const i in data) array.push(`${i}=${data[i]}; max-age=${Math.round(31619000 * 31619000)}; ${this.cookieData}`);
+            res.setHeader("Set-Cookie", array);
             return true;
         } catch (e) {
             console.log(e);
             return false;
         }
     },
-    get(req) {
-        const ip = this.getIp(req);
-        const currentSession = userSessions.find(i => i.ip == ip);
-        if (currentSession) return currentSession;
-        else return {};
-    },
-    remove(req, data) {
-        try {
-            const currentSession = this.get(req);
-            if (currentSession.data) {
-                for (const i in data) {
-                    currentSession.data[i] = "";
-                }
-                return true;
+    get(req) { // parses a user's cookies for the server
+        const data = {};
+        if (req.headers.cookie) {
+            const array = req.headers.cookie.split("; ");
+            for (const i of array) {
+                data[i.split("=")[0]] = i.split("=")[1];
             }
+        }
+        return { data };
+    },
+    remove(res, data) { // removes a user cookie from the server.
+        try {
+            const array = [];
+            for (const i in data) array.push(`${i}=${data[i]}; expires=Thu, 01 Jan 1970 00:00:00 GMT; ${this.cookieData}`);
+            res.setHeader("Set-Cookie", array);
+            return true;
         } catch (e) {
             console.log(e);
             return false;

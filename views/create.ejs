@@ -277,14 +277,15 @@
             <div class="create-header">
                 <h1 class="h3">Select a Theme</h1>
             </div>
-            <% let rowCount = 1; %>
-            <% const rowsDisplayed = []; %>
-            <% for (let i = 0; i < params.themes.length; i++) { %>
+            <% let rowCount = 1, themesCount = 0; %>
+            <% const rowsDisplayed = {}; %>
+            <% for (const i in params.themes) { %>
                 <% if (!rowsDisplayed[rowCount]) { %>
                     <div class="themes row" id="themes_row_<%= rowCount %>"></div>
                     <% rowsDisplayed[rowCount] = true; %>
                 <% } %>
-                <% if (i == 3) rowCount++ %>
+                <% if ((i & 1) == 0) themesCount++; %>
+                <% if (themesCount == 2) rowCount++, themesCount = 0 %>
             <% } %>
         </div>
         <% if (!isLocalhost) { %>
@@ -312,7 +313,7 @@
 			    tlang: "en_US",
 			    isEmbed: 1,
 			    isWide: "0",
-			    nextUrl: "javascript:parent.closeStudio2()",
+                nextUrl: "/api/redirect",
                 siteId: window.location.host.startsWith("localhost") ? 7 : "go",
                 lid: window.location.host.startsWith("localhost") ? 7 : 13,
 			    ut: "50",
@@ -587,21 +588,25 @@
                         <div class="theme" id="thm-${theme.attr.id}">
                             <div class="theme-cell">
                                 <div class="theme-cover launch">
-                                    <img src="${githubUrl}${theme.attr.id}.${theme.attr.ext}" alt="${theme.attr.name}">
+                                    <img src="${
+                                        theme.attr.imageUrl ? theme.attr.imageUrl : `${githubUrl}${theme.attr.id}.${theme.attr.ext}`
+                                    }" alt="${theme.attr.name}">
                                 </div>
                                 <div class="theme-meat">
                                     <div class="apps">
                                         <h3>${theme.attr.name}</h3>
-                                        <a class="btn btn-orange" href="/go_full?tray=${
+                                        ${!theme.attr.only_show_options || theme.attr.only_show_options.includes("studio") ? `<a class="btn btn-orange" href="/go_full?tray=${
                                             theme.attr.id
-                                        }" title="" data-original-title="LVM">Make A Video</a>
+                                        }" title="" data-original-title="LVM">Make a Video</a>
                                         <a class="btn btn-default" title="" data-original-title="Custom LVM" 
                                             data-toggle="modal" data-target="#customLVM" onclick="tId = '${
                                                 theme.attr.id
                                             }'">Custom LVM
-                                        </a>
+                                        </a>` : ''}
                                         ${
-                                            theme.attr.cc_theme_id ? `<a class="btn btn-default" 
+                                            (
+                                                !theme.attr.only_show_options || theme.attr.only_show_options.includes("charCreator")
+                                            ) && theme.attr.cc_theme_id ? `<a class="btn btn-default" 
                                                 href="/cc_browser?themeId=${
                                                     theme.attr.cc_theme_id
                                                 }" title="" data-original-title="Character Creator">
@@ -609,8 +614,12 @@
                                             </a>` : ''
                                         }
                                         ${
-                                            theme.attr.qvm ? !theme.attr.qvm.includes(",") ? `<a class="btn btn-default" 
-                                                href="/quickvideo?filename=${theme.attr.qvm}" title="" 
+                                            (
+                                                !theme.attr.only_show_options || theme.attr.only_show_options.includes("qvm")
+                                            ) && typeof theme.attr.qvm != undefined ? !theme.attr.qvm?.includes(",") ? `<a class="btn btn-default" 
+                                                href="${
+                                                    theme.attr.qvm_url ? theme.attr.qvm_url : `/quickvideo?filename=${theme.attr.qvm}`
+                                                }" title="" 
                                                 data-original-title="QVM Template"><i class="i-qvm"></i>
                                             </a>` : `<button class="btn btn-default" onclick="showTemplates(\`${
                                                 theme.attr.name
@@ -663,7 +672,9 @@
                         chars = [];
                         $("#tutorial-chars").html('');
                         for (const cc of data) {
-                            $("#tutorial-chars").append(`<a href="javascript:;" id="char${cc.id}" onclick="selectTutChar('${cc.id}')" class="tutorial-char"><img src="${cc.head_url}"><h2>${
+                            $("#tutorial-chars").append(`<a href="javascript:;" id="char${cc.id}" onclick="selectTutChar('${
+                                cc.id
+                            }')" class="tutorial-char"><img src="${cc.head_url}"><h2>${
                                 cc.title
                             }</h2></a>`);
                             chars.unshift(cc);

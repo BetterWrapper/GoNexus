@@ -1,4 +1,5 @@
 const exFolder = process.env.EXAMPLE_FOLDER;
+const header = process.env.XML_HEADER;
 const fUtil = require("../misc/file");
 const nodezip = require("node-zip");
 const parse = require("./parse");
@@ -6,13 +7,20 @@ const fs = require("fs");
 const https = require("https");
 const request = require("request");
 const xmldoc = require("xmldoc");
+const xml2js = require('xml2js');
+const char = require("../character/main");
 let settings, moviearray = [], scenecache = [], cachedmovie = [];
+function stream2buffer(r) {
+	return new Promise((res, rej) => {
+		const buffers = [];
+		r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
+	})
+}
 module.exports = {
 	genxml(theme, c1, c2, textarray, charorders, cam, micids, times, id) {
 		console.log(c1, c2);
 		return new Promise((resolve, reject) => {
 			moviearray = [];
-			const xml2js = require('xml2js');
 
 			function xmlToJson(xmlString) {
 				return new Promise((resolve, reject) => {
@@ -413,7 +421,7 @@ module.exports = {
 					const zip = nodezip.unzip(fs.readFileSync(`${folder}/${file}`));
 					if (!zip["movie.xml"]) rej("movie.xml does not exist.");
 					else {
-						const json = new xmldoc.XmlDocument(await this.stream2buffer(zip["movie.xml"].toReadStream()));
+						const json = new xmldoc.XmlDocument(await stream2buffer(zip["movie.xml"].toReadStream()));
 						const info = json.attr;
 						info.path = file.slice(0, -3) + "png",
 						info.id = `${prefix}-${file.slice(0, -4)}`;
@@ -440,33 +448,16 @@ module.exports = {
 			} 
 		})
 	},
-	stream2buffer(r) {
-		return new Promise((res, rej) => {
-			const buffers = [];
-			r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
-		})
+	async stream2buffer(r) {
+		return await stream2buffer(r);
 	},
 	getBuffersOnline(options, data) {
 		return new Promise((res, rej) => {
 			try {
-				if (options.method == "POST") {
-					const req = https.request(options, r => {
-						try {
-							const buffers = [];
-							r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
-						} catch (e) {
-							rej(e);
-						}
-					}).on("error", rej);
-					if (data) req.end(data);
-				} else if (!options.method) https.get(options, r => {
-					try {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => res(Buffer.concat(buffers))).on("error", rej);
-					} catch (e) {
-						rej(e);
-					}
-				}).on("error", rej);
+				if (options.method) {
+					const req = https.request(options, r => stream2buffer(r).then(res).catch(rej)).on("error", rej);
+					data ? req.end(data) : req.end();
+				} else https.get(options, r => stream2buffer(r).then(res).catch(rej)).on("error", rej);
 			} catch (e) {
 				rej(e);
 			}
@@ -476,9 +467,7 @@ module.exports = {
 		return new Promise((res, rej) => {
 			try {
 				request[options.method](options.url, data, (e, r, b) => {
-					if (e) rej(e);
-					else if (!loadStream) res(b);
-					else res(r);
+					e ? rej(e) : !loadStream ? res(b) : res(r);
 				});
 			} catch (e) {
 				rej(e);
@@ -580,20 +569,18 @@ module.exports = {
 							if (fs.existsSync(`./ftContent/${data.movieId.split("ft-")[1]}.zip`)) {
 								fs.unlinkSync(`./ftContent/${data.movieId.split("ft-")[1]}.zip`);
 								res(m.id);
-							} else rej(`Your movie has been saved, but the File: ${
+							} else rej(`Your movie has been saved, but a file called ${
 								data.movieId.split("ft-")[1]
-							}.zip does not exist in the ftContent folder within the Nexus LVM Project meaning that the movie id: ${
+							}.zip does not exist in the ftContent folder within the GoNexus LVM Project meaning that the movie id ${
 								data.movieId.split("ft-")[1]
-							} will be inaccessable until you import a FlashThemes video similar to the movie id: ${
+							} will be inaccessable until you import a FlashThemes video similar to the movie id ${
 								data.movieId.split("ft-")[1]
-							} using the FlashThemes Video Converter tool. `/*Please go to ${req.headers.origin}/movie/${
-								m.id
-							} in another browser window.*/``);
+							} using the FlashThemes Video Converter tool.`);
 						});
 					})
 					break;
 				} case "m": {
-					if (fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix))) fs.unlinkSync(
+					if (fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix)) && !data.is_triggered_by_autosave) fs.unlinkSync(
 						fUtil.getFileIndex("movie-autosaved-", ".xml", suffix)
 					);
 					var path;
@@ -649,13 +636,122 @@ module.exports = {
 			}
 		});
 	},
+	uploadMovieAssets2Flashthemes(ftsession, xmlPath) { 
+		// Uploads assets from a movie xml to flashthemes in an attempt to fix some videos not loading.
+		return new Promise(async (res, rej) => {
+			try {
+				let hasChars = false, charCounter = 0;
+				const buffer = fs.readFileSync(xmlPath);
+				const parser = new xml2js.Parser();
+				const charFtInfo = JSON.parse((await this.getBuffersOnline({
+					hostname: "flashthemes.net",
+					path: "/character/creator/family/adam",
+					headers: {
+						cookie: ftsession
+					}
+				})).toString().split(".flash(")[1].split(");")[0]);
+				parser.parseString(buffer, async (err, json) => {
+					try {
+						if (err) res(false);
+						else {
+							if (
+								!json.film || (!json.film.scene && !json.film.sound)
+							) res(false);
+							for (const i in json.film) {
+								if (i.startsWith("_") || i == "meta") continue;
+								for (const info of json.film[i]) {
+									/*if (i == "sound") {
+										if (!info.sfile[0]) continue;
+										await basicParse(info.sfile[0], i, info);
+									} else*/ 
+									for (const i in info) {
+										const altNames = {
+											effectAsset: "effect"
+										}
+										if (i.startsWith("_")) continue;
+										for (const info1 of info[i]) {
+											switch (i) {
+												case "char": {
+													if (!info1.action[0]._text) continue;
+													const filearray = info1.action[0]._text.split(".")
+													const themeId = filearray[0];
+													const charId = filearray[1];
+													if (themeId == "ugc" && charId.startsWith("c-")) {
+														hasChars = true;
+														const thumb = fs.readFileSync(fUtil.getFileIndex("char-", ".png", charId.substr(2)));
+														//const head = fs.readFileSync(fUtil.getFileIndex("head-", ".png", charId.substr(2)));
+														const json = new xmldoc.XmlDocument(await char.load(charId));
+														charFtInfo.flashvars.body = `${header}<${json.name} ${
+															Object.keys(json.attr).map(v => `${v}="${json.attr[v]}"`).join(" ")
+														}>`;
+														for (const info of json.children) {
+															if (info.text) continue;
+															charFtInfo.flashvars.body += `<${info.name} ${
+																Object.keys(info.attr).map(v => `${v}="${info.attr[v]}"`).join(" ")
+															}${!info.val ? `/` : ''}>${info.val ? `</${info.name}>` : ''}`;
+														}
+														charFtInfo.flashvars.body += `</${json.name}>`
+														charFtInfo.flashvars.bs = await char.getCharTypeViaBuff(charFtInfo.flashvars.body);
+														charFtInfo.flashvars.themeId = char.getTheme(charFtInfo.flashvars.body);
+														charFtInfo.flashvars.thumbdata = thumb.toString("base64");
+														//charFtInfo.flashvars.imagedata = head.toString("base64");
+														const params = new URLSearchParams(charFtInfo.flashvars).toString();
+														const code = (await this.getBuffersOnline({
+															method: "POST",
+															hostname: "flashthemes.net",
+															path: "/goapi/saveCCCharacter/",
+															headers: {
+																Host: "flashthemes.net",
+																"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0",
+																Accept: "*/*",
+																"Accept-Language": "en-US,en;q=0.5",
+																"Accept-Encoding": "gzip, deflate, br",
+																Origin: "https://flashthemes.net",
+																Connection: "keep-alive",
+																Cookie: ftsession,
+																TE: "Trailers",
+																"Content-Type": "application/x-www-form-urlencoded",
+																"Content-Length": params.length
+															}
+														}, params)).toString();
+														console.log(code);
+														if (!code.startsWith("0")) continue;
+														charCounter++
+													}
+													break;
+												} /*default: {
+													if (!info1.file) continue;
+													await basicParse(info1.file[0], altNames[i] || i);
+													break;
+												}*/
+											}
+										}
+									}
+								}
+							}
+							if (
+								hasChars && charCounter > 0
+							) res(true);
+							else res(false);
+						}
+					} catch (e) {
+						console.log(e);
+						res(false);
+					}
+				});
+			} catch (e) {
+				console.log(e);
+				res(false);
+			}
+		})
+	},
 	loadZip(query, data, packThumb = false) {
 		return new Promise(async (res, rej) => {
 			try {
 				const mId = query.movieId;
-				const i = mId.indexOf("-");
-				const prefix = mId.substr(0, i);
-				const suffix = mId.substr(i + 1);
+				const suffix = mId.substr(mId.split("-")[0].length + 1);
+				const prefix = mId.split(suffix)[0].slice(0, -1);
+				console.log(suffix, prefix);
 				switch (prefix) {
 					case "s":
 					case "m": {
@@ -672,8 +768,7 @@ module.exports = {
 							}
 						}
 						const buffer = fs.readFileSync(filePath);
-						const pack = await parse.packMovie(buffer, data, packThumb, query.movieId);
-						res(pack);
+						parse.packMovie(buffer, data, packThumb).then(res).catch(rej);
 						break;
 					} case "ft": {
 						res(fs.readFileSync(`./ftContent/${suffix}.zip`));
@@ -681,6 +776,9 @@ module.exports = {
 					} case "e": {
 						let data = fs.readFileSync(`${exFolder}/${suffix}.zip`);
 						res(data.subarray(data.indexOf(80)));
+						break;
+					} case "url": {
+						res(await parse.packMovieFromUrl(suffix));
 						break;
 					}
 				}
@@ -731,14 +829,7 @@ module.exports = {
 				let fn;
 				if (movieId.startsWith("m-")) fn = fUtil.getFileIndex("thumb-", ".png", n);
 				else if (movieId.startsWith("s-")) fn = fUtil.getFileIndex("starter-", ".png", n);
-				if (!movieId.startsWith("ft-")) res(fs.readFileSync(fn)); 
-				else res(await this.getBuffersOnline({
-					hostname: "flashthemes.net",
-					path: `/movie_thumbs/thumb-${movieId.split("ft-")[1]}.png`,
-					headers: { 
-						"Content-type": "image/png"
-					}
-				}));
+				res(fs.readFileSync(fn)); 
 			} catch (e) {
 				rej(e);
 			}

@@ -57,37 +57,24 @@ module.exports = {
 				info = userInfo.assets.find(i => i.id == data.assetId);
 				index = userInfo.assets.findIndex(i => i.id == data.assetId);
 			}
-			if (info.id.startsWith("s-")) {
-				const paths = [
-					fUtil.getFileIndex("starter-", ".xml", info.id.substr(2)),
-					fUtil.getFileIndex("starter-", ".png", info.id.substr(2))
-				];
-				for (const path of paths) if (fs.existsSync(path)) fs.unlinkSync(path);
-			} else if (info.id.startsWith("c-")) {
-				const paths = [
-					fUtil.getFileIndex("char-", ".xml", info.id.substr(2)),
-					fUtil.getFileIndex("char-", ".png", info.id.substr(2)),
-					fUtil.getFileIndex("head-", ".png", info.id.substr(2))
-				];
-				for (const path of paths) if (fs.existsSync(path)) fs.unlinkSync(path);
-			} else fs.unlinkSync(`${this.folder}/${info.id}`);
+			deleteFiles(info)
 			userInfo.assets.splice(index, 1);
 			fs.writeFileSync(`${this.folder}/users.json`, JSON.stringify(json, null, "\t"));
-		} else {
-			if (data.id.startsWith("s-")) {
-				const paths = [
-					fUtil.getFileIndex("starter-", ".xml", data.id.substr(2)),
-					fUtil.getFileIndex("starter-", ".png", data.id.substr(2))
-				];
-				for (const path of paths) if (fs.existsSync(path)) fs.unlinkSync(path);
-			} if (data.id.startsWith("c-")) {
-				const paths = [
-					fUtil.getFileIndex("char-", ".xml", data.id.substr(2)),
-					fUtil.getFileIndex("char-", ".png", data.id.substr(2)),
-					fUtil.getFileIndex("head-", ".png", data.id.substr(2))
-				];
-				for (const path of paths) if (fs.existsSync(path)) fs.unlinkSync(path);
-			} else fs.unlinkSync(`${this.folder}/${data.id}`);
+		} else deleteFiles();
+		function deleteFiles(info = data) {
+			if (info.id.startsWith("s-")) for (const path of [
+				fUtil.getFileIndex("starter-", ".xml", info.id.substr(2)),
+				fUtil.getFileIndex("starter-", ".png", info.id.substr(2))
+			]) if (fs.existsSync(path)) fs.unlinkSync(path);
+			else if (info.id.startsWith("c-")) for (const path of [
+				fUtil.getFileIndex("char-", ".xml", info.id.substr(2)),
+				fUtil.getFileIndex("char-", ".png", info.id.substr(2)),
+				fUtil.getFileIndex("head-", ".png", info.id.substr(2))
+			]) if (fs.existsSync(path)) fs.unlinkSync(path);
+			else for (const path of [
+				`${this.folder}/${info.id}`,
+				`${this.folder}/${info.id}.txt`
+			]) if (fs.existsSync(path)) fs.unlinkSync(path);
 		}
 	},
 	generateId() {
@@ -159,7 +146,7 @@ module.exports = {
 				xml = `<background subtype="0" id="${v.id}" name="${v.title}" enable="Y"/>`;
 				break;
 			} case "sound": {
-				xml = `<sound subtype="${v.subtype}" id="${v.id}" name="${v.title}" enable="Y" duration="${
+				xml = `<sound subtype="${v.subtype}" id="${v.id}" name="${v.title || "Untitled"}" enable="Y" duration="${
 					v.duration
 				}" downloadtype="progressive"><tags>${v.tags || ""}</tags></sound>`;
 				break;

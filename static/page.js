@@ -68,11 +68,11 @@ module.exports = function (req, res, url) {
 		userSession 
 		&& userSession.data 
 		&& userSession.data.current_uid
-	) uInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == userSession.data.current_uid);
+	) uInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == userSession.data.current_uid) || {};
 	if (
 		req.headers.host == "localhost" 
 		|| req.headers.host == `localhost:${process.env.SERVER_PORT}` 
-		|| userSession && userSession.data && userSession.data.site_access_key_is_correct
+		|| userSession && userSession.data && userSession.data.site_access_key_is_correct != undefined
 	) switch (url.pathname) {
 		case "/cc/embed": {
 			title = "Character Creator";
@@ -241,6 +241,10 @@ module.exports = function (req, res, url) {
 				customCharInfo: new URLSearchParams(template.customChars_info).toString()
 			}
 			break;
+		} case "/studioHtml5": {
+			filename = "studioHtml5";
+			params = query;
+			break;
 		} case "/login": {
 			filename = "login";
 			break;
@@ -264,7 +268,7 @@ module.exports = function (req, res, url) {
 			};
 			params = {
 				flashvars: {
-					apiserver: req.headers.host + "/",
+					apiserver: "/",
 					storePath: process.env.STORE_URL + "/<store>",
 					clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
 					themeId: "family",
@@ -369,6 +373,20 @@ module.exports = function (req, res, url) {
 					initcb: "flashPlayerLoaded"
 				},
 			};
+			for (const userInfo of JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users) {
+				const movieInfo = userInfo.movies.find(i => i.id == query.movieId);
+				if (!movieInfo) continue;
+				params.movieInfo = movieInfo;
+				params.flashvars.movieTitle = params.movieInfo.title;
+				params.flashvars.movieDesc = params.movieInfo.desc;
+				params.flashvars.duration = params.movieInfo.duration;
+				params.flashvars.isPublished = params.movieInfo.published;
+				params.flashvars.is_private_shared = params.movieInfo.pshare;
+				params.flashvars.isWide = params.movieInfo.isWide;
+				params.flashvars.copyable = params.movieInfo.copyable;
+				params.flashvars.movieOwner = userInfo.name;
+				params.flashvars.movieOwnerId = userInfo.id;
+			}
 			break;
 		} case "/public_movie": {
 			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(
@@ -459,13 +477,34 @@ module.exports = function (req, res, url) {
 				allowScriptAccess: "always",
 				allowFullScreen: "true",
 			};
+			for (const userInfo of JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users) {
+				const movieInfo = userInfo.movies.find(i => i.id == query.movieId);
+				if (!movieInfo) continue;
+				params.movieInfo = movieInfo;
+				params.flashvars.movieTitle = params.movieInfo.title;
+				params.flashvars.movieDesc = params.movieInfo.desc;
+				params.flashvars.duration = params.movieInfo.duration;
+				params.flashvars.isPublished = params.movieInfo.published;
+				params.flashvars.is_private_shared = params.movieInfo.pshare;
+				params.flashvars.isWide = params.movieInfo.isWide;
+				params.flashvars.copyable = params.movieInfo.copyable;
+				params.flashvars.movieOwner = userInfo.name;
+				params.flashvars.movieOwnerId = userInfo.id;
+			}
 			break;
 		} default: return;
 	} else switch (url.pathname) {
-		default: {
+		case "/formApplication": {
+			filename = "developer";
+			params = {
+				noAccess: true
+			}
+			break;
+		} default: {
+			if (url.pathname.startsWith("/ui") || url.pathname.startsWith("/js") || url.pathname.startsWith("/static")) return;
 			if (url.pathname != "/") {
 				res.statusCode = 302;
-				res.setHeader("Location", `/?returnto=${url.path}`);
+				res.setHeader("Location", `/?returnto=${encodeURIComponent(req.url)}`);
 				return res.end();
 			}
 			filename = "closed";

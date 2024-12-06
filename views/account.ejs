@@ -290,11 +290,38 @@
                                     <div id="linkFTAcc">
                                         <div class="form-group">
                                             <label class="d-block">Link FlashThemes Account</label>
-                                            <p class="text-muted font-size-sm">
-                                                By linking your flashthemes account, you will have two ways to sign in to your account. 
-                                                this method is recomeneded for anyone who wants to sign in using their flashthemes account
-                                                because sometimes signing in with a flashthemes account without it linked can take a while.
-                                            </p>
+                                            <div id="ftAccNotLinked" style="display: none;">
+                                                <p class="text-muted font-size-sm">
+                                                    By linking your flashthemes account, you will have two ways to sign in to your account. 
+                                                    this method is recomeneded for anyone who wants to sign in using their flashthemes account
+                                                    because sometimes signing in with a flashthemes account without it linked can take a while.
+                                                </p>
+                                            </div>
+                                            <div id="ftAccLinked" style="display: none;">
+                                                <p class="text-muted font-size-sm">
+                                                    Your flashthemes account has already been linked to your GoNexus account. 
+                                                    if for whatever reason GoNexus still requires you to have a flashthemes account, 
+                                                    you may click on the Relink FlashThemes Account button below which will add a cookie to 
+                                                    your browser which will tell GoNexus that you have a flashthemes session that 
+                                                    it needs to use. 
+                                                    You do not need to do any action during this process thankfully because your 
+                                                    flashthemes account password and email are all saved in the database.
+                                                </p>
+                                                <a class="btn btn-red" id="unlinkFTAccBtn">Unlink FlashThemes Account</a>
+                                            </div>
+                                            <div id="userHasFtAccButUnlinked" style="display: none;">
+                                                <p class="text-muted font-size-sm">
+                                                    When you created your account, 
+                                                    you decided to create your account using the 
+                                                    Sign In With Flashthemes button on the login page first 
+                                                    instead of maunally inputting your infomation onto the signup form.
+                                                    Because of this, 
+                                                    you cannot link your flashthemes account to this account because there 
+                                                    is just no point in doing so. 
+                                                    however though, if GoNexus is still asking for a flashthemes account despite you having it, 
+                                                    you may click <a href="javascript:fixFtLoginCookie()">here</a> to fix this problem.
+                                                </p>
+                                            </div>
                                         </div>
                                         <a class="btn btn-green" id="linkFTAccBtn">Link FlashThemes Account</a>
                                     </div>
@@ -330,7 +357,7 @@
                                 <form action="javascript:;" id="customcss">
                                     <div class="form-group">
                                         <p class="d-block">Custom CSS</p>
-                                        <textarea style="height: 360px; width: 640px;" id="customcsstext"></textarea>
+                                        <textarea id="customcsstext"></textarea>
                                         <div id="customCssDisabled" class="alert" style="display: none;">
                                             Custom CSS has been disabled by your admin.
                                         </div>
@@ -384,6 +411,34 @@
                     })
                 }
             }
+            function disableButton(text = "Already Linked") {
+                $("#linkFTAccBtn").removeClass("btn-green");
+                $("#linkFTAccBtn").addClass("disabled");
+                $("#linkFTAccBtn").click(() => location.href = 'javascript:;');
+                $("#linkFTAccBtn").text(text);
+            }
+            function checkFtLoginSession() {
+                $("#ftAccLinked").show();
+                $.post("/api/checkFlashthemesLogin", d => {
+                    if (d.loginExists) disableButton()
+                    else {
+                        $("#linkFTAccBtn").click(() => {
+                            jQuery.blockUI();
+                            $.post("/api/fixFlashThemesLoginCookie", d => {
+                                jQuery.unblockUI();
+                                const jsonString = d.substr(1);
+                                const code = d.split(jsonString)[0];
+                                if (code == '0') {
+                                    disableButton();
+                                    displayFeedback(code + "SUCCESS!");
+                                }
+                                else displayFeedback(code + JSON.parse(jsonString).errmsg);
+                            })
+                        });
+                        $("#linkFTAccBtn").text("Relink Account");
+                    }
+                });
+            }
             $("#ftacclinkageform").submit(() => {
                 if (processing) return;
                 $("#ftacclinkageerror").text("");
@@ -410,10 +465,7 @@
                                 if (d.success) {
                                     $("#FTAccLinkage").modal('hide');
                                     displayFeedback(0 + "Success!");
-                                    $("#linkFTAccBtn").removeClass("btn-green");
-                                    $("#linkFTAccBtn").addClass("disabled");
-                                    $("#linkFTAccBtn").click(() => location.href = 'javascript:;');
-                                    $("#linkFTAccBtn").text("Already Linked");
+                                    checkFtLoginSession();
                                 } else {
                                     processing = false;
                                     $("#ftacclinkagebutton").val(origText);
@@ -440,7 +492,11 @@
                 backdrop: "static"
             });
             function loadSettings(user) {
-                if (window.location.host.includes("localhost")) {
+                $("#customcsstext").css("height", screen.height - 360);
+                $("#customcsstext").css("width", screen.width - 640)
+                if (
+                    window.location.host.includes("localhost") || window.location.host.includes("127.0.0.1")
+                ) {
                     getLocalDatabase().then(userInfo => {
                         const ttstypelem = $("#ttsapitype").find(`option[value='${userInfo.settings.api.ttstype.value}']`);
                         ttstypelem.prop("selected", true);
@@ -502,16 +558,18 @@
                             } 
                         }
                         const userInfo = d.find(i => i.id == user.uid || user.id);
-                        if (userInfo.linkedFTAcc) {
-                            $("#linkFTAccBtn").removeClass("btn-green");
-                            $("#linkFTAccBtn").addClass("disabled");
-                            $("#linkFTAccBtn").click(() => location.href = 'javascript:;');
-                            $("#linkFTAccBtn").text("Already Linked");
-                        } else if (userInfo.isFTAcc && !userInfo.linkedFTAcc) $("#linkFTAcc").hide();
-                        else $("#linkFTAccBtn").click(() => $("#FTAccLinkage").modal({
-                            keyboard: false,
-                            backdrop: "static"
-                        }));
+                        if (userInfo.linkedFTAcc) checkFtLoginSession();
+                        else if (userInfo.isFTAcc && !userInfo.linkedFTAcc) {
+                            $("#userHasFtAccButUnlinked").show();
+                            disableButton("Sorry, you cannot link a flashthemes account at this time.");
+                        }
+                        else {
+                            $("#ftAccNotLinked").show();
+                            $("#linkFTAccBtn").click(() => $("#FTAccLinkage").modal({
+                                keyboard: false,
+                                backdrop: "static"
+                            }));
+                        }
                         const ttstypelem = $("#ttsapitype").find(`option[value='${userInfo.settings.api.ttstype.value}']`);
                         ttstypelem.prop("selected", true);
                         if (ttstypelem.data("has-test-page")) $("#voice-test-url").html(`Test Voices <a href="/api/local_voices/${

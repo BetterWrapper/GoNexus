@@ -8,16 +8,24 @@
 	"main": "./main.js",
 	"dependencies": {
 		"@ffmpeg-installer/ffmpeg": "^1.1.0",
+		"@ffprobe-installer/ffprobe": "^2.1.2",
+		"@zip.js/zip.js": "^2.7.48",
+		"axios": "*",
 		"bcrypt": "^5.1.1",
-		"brotli": "1.3.2",
+		"brotli": "^1.3.2",
+		"cloudinary": "^2.4.0",
+		"cookie": "^0.6.0",
 		"crypto": "^1.0.1",
 		"crypto-js": "^4.2.0",
+		"discord.js": "^14.15.3",
 		"ejs": "^3.1.9",
+		"electron": "^11.5.0",
 		"fluent-ffmpeg": "^2.1.2",
 		"form-data": "^4.0.0",
 		"formidable": "^2.1.2",
 		"js-md5": "0.7.3",
 		"jsdom": "^24.0.0",
+		"jszip": "^3.10.1",
 		"mp3-duration": "^1.1.0",
 		"node-fetch": "^2.6.7",
 		"node-zip": "github:kyriosli/node-zip",
@@ -27,8 +35,6 @@
 		"xml-js": "^1.6.11",
 		"xml2js": "github:josephanimate2021/jyvee-xml2js",
 		"xmlbuilder": "~11.0.0",
-		"xmldoc": "^1.1.2",
-		"electron": "^11.5.0",
-		"axios": "*"
+		"xmldoc": "^1.1.2"
 	}
 }

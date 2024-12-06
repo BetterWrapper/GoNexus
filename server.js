@@ -4,6 +4,8 @@ const apiKeys = {
 	FreeConvert: env.API_KEYS.FreeConvert,
 	Typesense: env.API_KEYS.Typesense
 }
+const xmldoc = require("xmldoc");
+const JSZip = require("jszip");
 const http = require("http");
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
@@ -51,7 +53,7 @@ const sdb = require("./school/db");
 const slg = require("./school/login");
 const gsd = require("./school/getting_started");
 const url = require("url");
-const fetch = require("node-fetch");
+const discord = require("discord.js");
 const formidable = require("formidable");
 const session = require("./misc/session");
 const functions = [
@@ -103,10 +105,28 @@ function stream2Buffer(readStream) {
 const {
 	getBuffersOnline
 } = require("./movie/main");
-let buffer = '', json = '';
+let json = {};
 http
 	.createServer(async (req, res) => {
 		try {
+			function checkFtAcc(data) {
+				https.request({
+					hostname: "flashthemes.net",
+					path: "/ajax/doLogin",
+					method: "POST",
+					headers: { 
+						"Content-Type": "application/json"
+					}
+				}, r => {
+					console.log(data);
+					if (session.set(res, {
+						flashThemesLogin: Buffer.from(r.headers['set-cookie'][1]).toString("base64")
+					})) {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers).toString("utf8")));
+					}
+				}).end(JSON.stringify(data));
+			}
 			if (!fs.existsSync('./_ASSETS')) fs.mkdirSync('./_ASSETS');
 			if (!fs.existsSync('./_ASSETS/users.json')) fs.writeFileSync('./_ASSETS/users.json', JSON.stringify({
 				users: []
@@ -125,7 +145,7 @@ http
 					error: "Some of your files have ids that are already in this server. please upload a different zip file that contains the profile.json file and files with different ids."
 				}));
 			}
-			//pages
+			// pages
 			switch (req.method) {
 				case "GET": {
 					switch (parsedUrl.pathname) {
@@ -169,8 +189,17 @@ http
 							res.end(JSON.stringify(JSON.parse(fs.readFileSync('./templates.json'))));
 							break;
 						} case "/api/themes/get": { // list's all themes from the themelist.xml file
-							res.setHeader("Content-Type", "application/json");
-							res.end(JSON.stringify(pse.getThemes()));
+							const themes = pse.getThemes(parsedUrl.query);
+							res.setHeader("Content-Type", parsedUrl.query.get_theme_xml ? "text/xml" : "application/json");
+							res.end(parsedUrl.query.get_theme_xml ? themes : JSON.stringify(themes));
+							break;
+						} case "/api/theme/get": {
+							const themes = pse.getThemes({
+								get_theme_xml: true,
+								value: parsedUrl.query.tId
+							});
+							const json = new xmldoc.XmlDocument(themes);
+							res.end(JSON.stringify(json.children.filter(i => i.name == parsedUrl.query.tag)));
 							break;
 						} case "/api/convertUrlQuery2JSON": { // idk
 							try {
@@ -213,9 +242,7 @@ http
 								r.on("data", b => buffers.push(b)).on("end", () => {
 									console.log(Buffer.concat(buffers).toString())
 								})
-							}).end(
-								JSON.stringify(Object.fromEntries(new URLSearchParams(new URLSearchParams(discord.tokenGrantParams).toString())))
-							)
+							}).end(JSON.stringify(discord.tokenGrantParams));
 						} default: break;
 					}
 					break;
@@ -484,9 +511,16 @@ http
 								let page = parsedUrl.query.page;
 								const currentSession = session.get(req);
 								console.log(currentSession);
-								if (currentSession && currentSession.data && currentSession.data.loggedIn && currentSession.data.sessionCookies && currentSession.data.current_uid) {
-									const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == currentSession.data.current_uid);
-									console.log(userInfo, req.headers);
+								if (
+									currentSession 
+									&& currentSession.data 
+									&& currentSession.data.loggedIn != undefined 
+									&& currentSession.data.flashThemesLogin 
+									&& currentSession.data.current_uid
+								) {
+									const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(
+										i => i.id == currentSession.data.current_uid
+									);
 									if (userInfo && userInfo.isFTAcc) {
 										async function getAllFTUserFeeds(count) {
 											console.log(count);
@@ -494,7 +528,7 @@ http
 												hostname: "flashthemes.net",
 												path: `/ajax/getUserFeed/idols/owner/10/${count}/all/0`,
 												headers: {
-													cookie: currentSession.data.sessionCookies[1]
+													cookie: Buffer.from(currentSession.data.flashThemesLogin, "base64")
 												}
 											})).toString("utf8").split("}")[1];
 										}
@@ -507,26 +541,157 @@ http
 							break;
 						} case "/api/getFTUserFeeds": {
 							res.setHeader("Content-Type", "text/html; charset=UTF-8");
-							console.log(parsedUrl.query);
 							if (parsedUrl.query.page) {
 								const currentSession = session.get(req);
 								console.log(currentSession);
-								if (currentSession && currentSession.data && currentSession.data.loggedIn && currentSession.data.sessionCookies && currentSession.data.current_uid) {
+								if (
+									currentSession 
+									&& currentSession.data 
+									&& currentSession.data.loggedIn != undefined
+									&& currentSession.data.flashThemesLogin 
+									&& currentSession.data.current_uid
+								) {
 									const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == currentSession.data.current_uid);
-									console.log(userInfo, req.headers);
 									if (userInfo && userInfo.isFTAcc) res.end((await getBuffersOnline({
 										hostname: "flashthemes.net",
 										path: `/ajax/getUserFeed/idols/owner/10/${parsedUrl.query.page}/all/0`,
 										headers: {
-											cookie: currentSession.data.sessionCookies[1]
+											cookie: Buffer.from(currentSession.data?.flashThemesLogin || "iufhvsbuif", "base64")
 										}
 									})).toString("utf8"));
 								} else res.end('Please login to GoNexus with your FlashThemes account in order to see your FlashThemes user feed');
 							}
 							break;
+						} case "/api/formApplication/submit": {
+							loadPost(req, res).then(data => {
+								const roleTitles = {
+									tester: "Beta Tester",
+									developer: "Project Developer"
+								};
+								const fields = [
+									{
+										name: "Name",
+										value: data.user_name
+									},
+									{
+										name: "Discord Username",
+										value: data.user_discordUsername,
+									},
+									{
+										name: "Date Of Birth",
+										value: data.user_dob,
+									},
+									{
+										name: "Country",
+										value: data.user_country,
+									},
+									{
+										name: "Role",
+										value: roleTitles[data.user_role],
+									},
+									{
+										name: `Does ${data.user_name} Know How To Use DevTools?`,
+										value: data.user_devToolsUsage,
+									}
+								]
+								switch (data.user_role) {
+									case "tester": {
+										const array = [
+											{
+												name: `Role Experience`,
+												value: data.tester_experience,
+											},
+											{
+												name: `What ${data.user_name} Will Do With His Role`,
+												value: data.tester_plan,
+											}
+										];
+										if (data.tester_formQuestions) array.unshift({
+											name: `${data.user_name}'s Application Question`,
+											value: data.tester_formQuestions
+										});
+										for (const stuff of array) fields.unshift(stuff);
+										break;
+									} case "developer": {
+										const array = [
+											{
+												name: `Does ${data.user_name} Know How A Server Computer Works?`,
+												value: data.developer_serverComputerKnowledge,
+											},
+											{
+												name: `Does ${data.user_name} Know How Computer Coding Works?`,
+												value: data.developer_codingKnowledge,
+											},
+											{
+												name: `Does ${data.user_name} Know How Localhost Works?`,
+												value: data.developer_localhostKnowledge,
+											},
+											{
+												name: `Coding languages that ${data.user_name} knows`,
+												value: data.developer_codingLanguageKnowledge,
+											},
+											{
+												name: `The side that ${data.user_name} plans to code on in GoNexus`,
+												value: data.developer_coderType,
+											}
+										];
+										if (data.developer_formQuestions) array.unshift({
+											name: `${data.user_name}'s Application Question`,
+											value: data.developer_formQuestions
+										});
+										for (const stuff of array) fields.unshift(stuff);
+										break;
+									}
+								}
+								const rest = new discord.REST({
+									version: process.env.DISCORD_API_VERSION
+								}).setToken(process.env.DISCORD_BOT_TOKEN);
+								if (data.fieldsMissing == undefined) rest.post(discord.Routes.channelMessages("1276358369304776767"), {
+									body: {
+										content: `Hello @everyone, a user named ${
+											data.user_name
+										} has posted their form application for GoNexus. below is the application info:`,
+										tts: false,
+										embeds: [
+											{
+												title: `${data.user_name}'s Application`,
+												description: `This is an Application by ${data.user_name} that is ready for review. 
+												After you review the application, you may choose to either approve or reject this application.
+												In order to tell ${data.user_name} that you approve or reject this application,
+												you are required to DM the discord username that ${
+													data.user_name
+												} has provided which is ${data.user_discordUsername}. 
+												Just in case you need to know what the site access key is, it's ${
+													process.env.PROJECT_ACCESS_KEY
+												}.`,
+												fields: fields.reverse()
+											}
+										],
+										allowed_mentions: {
+											parse: ["everyone"]
+										}
+									}
+								}).then(json => {
+									console.log(json);
+									res.end(
+										`0Your application was successfully sent to the GoNexus staff members. 
+										One of our staff members should DM you about your application being approved or rejected pretty soon.
+										In the meantime, why don't you head back to the <a href="/">
+											homepage
+										</a> and wait to see what happens with us on discord.`
+									);
+								}).catch(e => {
+									console.log(e);
+									res.end(1 + e.toString());
+								})
+								else res.end("1You need to fill in some missing fields");
+							})
+							break;
 						} case "/api/getUserSWFFiles": {
 							res.setHeader("Content-Type", "application/json");
-							const userData = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == parsedUrl.query.userId);
+							const userData = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(
+								i => i.id == parsedUrl.query.userId
+							);
 							const table = [];
 							if (userData && userData.assets) for (const assetInfo of userData.assets) {
 								if (assetInfo.file.endsWith(".swf")) table.unshift({
@@ -542,123 +707,186 @@ http
 								const params = new URLSearchParams(data.body);
 								const data2 = Object.fromEntries(params);
 								if (data.converting == 'true') {
-									if (!data2.url) return res.end(JSON.stringify({
+									let d2url = data2.url;
+									if (!d2url) return res.end(JSON.stringify({
 										success: false,
 										error: 'Please enter in a URL'
 									}))
-									if (buffer) buffer = '';
-									if (json) json = '';
-									console.log(buffer, json);
-									if (data.for == 'flashthemes') {
-										const currentSession = session.get(req);
-										if (!data2.url.startsWith("https://flashthemes.net/movie/")) return res.end(JSON.stringify({
-											success: false,
-											error: 'Please enter in a valid FlashThemes Video URL'
-										}))
-										const movieData = await getBuffersOnline({
-											hostname: "flashthemes.net",
-											path: data2.url.split("flashthemes.net")[1],
-											headers: { 
-												"Content-type": "text/html; charset=UTF-8",
-												cookie: currentSession.data.sessionCookies ? currentSession.data.sessionCookies[1] : ''
+									if (json) json = {
+										videoConvertedOn: data.for
+									};
+									switch (json.videoConvertedOn) {
+										case "flashthemes": {
+											json.videoConvertedOnTitle = "FlashThemes";
+											const currentSession = session.get(req);
+											if (!d2url.startsWith("https://flashthemes.net/movie/")) return res.end(JSON.stringify({
+												success: false,
+												error: 'Please enter in a valid FlashThemes Video URL'
+											}))
+											else if (d2url.includes("?id=")) {
+												const urlStuff = url.parse(d2url, true);
+												d2url = `${urlStuff.protocol}//${urlStuff.host}${urlStuff.pathname}${urlStuff.query.id}`;
 											}
-										});
-										const htmldata = movieData.toString();
-										console.log(movieData, htmldata);
-										if (htmldata.includes("502 Bad Gateway")) {
-											return res.end(JSON.stringify({
-												success: false,
-												error: "FlashThemes is currently having gateway issues right now. please check back later."
-											}));
-										}
-										if (htmldata.includes("302 Found")) {
-											if (htmldata.includes("https://flashthemes.net/maintenance/")) return res.end(JSON.stringify({
-												success: false,
-												error: "FlashThemes is currently undergoing maintenance right now. please check back later."
-											}));
-										}
-										if (currentSession.data.sessionCookies) {
-											const plainText = await getBuffersOnline({
+											const movieData = await getBuffersOnline({
 												hostname: "flashthemes.net",
-												method: "POST",
-												path: `/goapi/getMovie/?movieId=${data2.url.split("https://flashthemes.net/movie/")[1]}&userId=&ut=`,
+												path: d2url.split("flashthemes.net")[1],
 												headers: { 
-													"Content-type": "text/plain",
-													cookie: currentSession.data.sessionCookies ? currentSession.data.sessionCookies[1] : ''
+													"Content-type": "text/html; charset=UTF-8",
+													cookie: Buffer.from(currentSession.data?.flashThemesLogin || 'ejivfniusbfv', 'base64')
 												}
-											}, JSON.stringify({movieId: data2.url.split("https://flashthemes.net/movie/")[1]}));
-											const fileUrl = plainText.toString();
-											console.log(plainText, fileUrl);
-											if (fileUrl.startsWith("Found. Redirecting to https://flashthemes.net/ajax/getMovieCache/") && fileUrl.endsWith(`-${data2.url.split("https://flashthemes.net/movie/")[1]}.zip`)) {
-												const movieZip = await getBuffersOnline({
-													hostname: "flashthemes.net",
-													path: `${fileUrl.split("Found. Redirecting to https://flashthemes.net")[1]}`,
-													headers: { 
-														"Content-type": "application/zip",
-														cookie: currentSession.data.sessionCookies ? currentSession.data.sessionCookies[1] : ''
-													}
-												});
-												console.log(movieZip)
-												buffer = movieZip;
-												json.videoTitle = htmldata.split(`</h1><span class="views">`)[0].split("<h1>")[1];
+											});
+											const htmldata = movieData.toString();
+											//console.log(htmldata);
+											if (htmldata.includes("502 Bad Gateway")) {
 												return res.end(JSON.stringify({
-													success: true,
-													thumbnailUrl: `https://flashthemes.net/movie_thumbs/thumb-${data2.url.split("https://flashthemes.net/movie/")[1]}.png`,
-													videoTitle: `${htmldata.split(`</h1><span class="views">`)[0].split("<h1>")[1].split("&amp;").join("&")}`
-												}))
+													success: false,
+													error: "FlashThemes is currently having gateway issues right now. please check back later."
+												}));
 											}
-										} else return res.end(JSON.stringify({
-											success: false,
-											error: "You don't seem to have access to this video. Maybe try logging in with your flashthemes account or linking your flashthemes account to solve this problem."
-										}));
+											if (htmldata.includes("302 Found")) {
+												if (htmldata.includes("https://flashthemes.net/maintenance/")) return res.end(JSON.stringify({
+													success: false,
+													error: "FlashThemes is currently undergoing maintenance right now. please check back later."
+												}));
+											}
+											if (htmldata.includes(".flash({")) {
+												const flashvars = JSON.parse(
+													htmldata.split(".flash({")[1].split("flashvars: ")[1].split("});")[0].split("\\").join("")
+												);
+												for (const i in flashvars) json[i] = flashvars[i];
+												if (json.movieDesc) json.movieDesc = decodeURIComponent(json.movieDesc);
+												const plainText = await getBuffersOnline({
+													hostname: "flashthemes.net",
+													method: "POST",
+													path: `/goapi/getMovie/?movieId=${flashvars.movieId}&userId=&ut=`,
+													headers: { 
+														"Content-type": "text/plain",
+														cookie: Buffer.from(currentSession.data?.flashThemesLogin || 'usvidawrsg', 'base64')
+													}
+												}, JSON.stringify({movieId: flashvars.movieId}));
+												const fileUrl = plainText.toString();
+												console.log(fileUrl);
+												if (
+													fileUrl.startsWith("Found. Redirecting to https://flashthemes.net/ajax/getMovieCache/") 
+													&& fileUrl.endsWith(`-${flashvars.movieId}.zip`)
+												) {
+													json.movieZipUrl = fileUrl.split("Found. Redirecting to ")[1];
+													json.videoTitle = decodeURIComponent(htmldata.split(
+														`</h1><span class="views">`
+													)[0].split("<h1>")[1].split("&#39;").join("'"));
+													json.success = true;
+													return res.end(JSON.stringify(json));
+												}
+											} else return res.end(JSON.stringify({
+												success: false,
+												error: htmldata.split('<div id="movie-unavailable-message">')[1].split("</div>")[0]
+											}));
+											break;
+										}
 									}
-								} else if (buffer) {
+								} else if (json.movieZipUrl) {
+									json.data = data2;
 									switch (data2.videoType) {
-										case "zip": return res.end(JSON.stringify({
-											success: true,
-											downloadUrl: `data:@file/zip;base64,${buffer.toString("base64")}`,
-											fileExt: "zip",
-											data: data2
-										}));
-										case "import": {
+										case "zip": {
+											if (json.movieZipUrl.includes(".zip")) {
+												const buffer = await getBuffersOnline(json.movieZipUrl)
+												json.base64 = `data:@file/zip;base64,${buffer.toString("base64")}`
+												json.fileExt = "zip";
+												return res.end(JSON.stringify(json));
+											}
+											res.end(JSON.stringify({
+												success: false,
+												error: "Becuase of the requested videotype, the url needs to go to a zip file."
+											}));
+											break;
+										} case "preview": {
+											json.flashfata =  {
+												swf: process.env.SWF_URL + "/player.swf",
+												type: "application/x-shockwave-flash",
+												width: "640",
+												height: "360",
+												flashvars: {
+													apiserver: "/",
+													storePath: process.env.STORE_URL + "/<store>",
+													ut: 60,
+													autostart: 1,
+													isWide: 1,
+													clientThemePath: process.env.CLIENT_URL + "/<client_theme>",
+													movieId: `url-${json.movieZipUrl}`
+												},
+												allowScriptAccess: "always",
+												allowFullScreen: "true",
+											};
+											res.end(JSON.stringify(json));
+											break;
+										} case "import": {
 											if (data.loggedIn == 'true' && data.userParams) {
+												const buffer = await getBuffersOnline(json.movieZipUrl)
+												function movieMeta(desc, prefix) {
+													return {
+														desc,
+														hiddenTag: "NAN",
+														date: new Date().toDateString(),
+														durationString: json.duration ? (() => {
+															const min = ("" + ~~(json.duration / 60)).padStart(2, "0");
+															const sec = ("" + ~~(json.duration % 60)).padStart(2, "0");
+															return `${min}:${sec}`;
+														})() : `<small style="color: red;">Could not retrieve movie duration</small>`,
+														duration: json.duration || "NAN",
+														title: json.videoTitle,
+														published: 0,
+														tags: "",
+														publishStatus: "draft",
+														id: `${prefix}-${json.movieId}`,
+														enc_asset_id: json.movieId,
+														type: "movie",
+														file: `${json.movieId}.zip`,
+														thumbUrl: `${json.apiserver}${json.thumbnailURL}`
+													}
+												}
 												const params = new URLSearchParams(data.userParams);
 												const userData = Object.fromEntries(params);
 												const usersData = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 												const userInfo = usersData.users.find(i => i.id == (userData.uid || userData.id))
-												const min = ("" + ~~(json.duration / 60)).padStart(2, "0");
-												const sec = ("" + ~~(json.duration % 60)).padStart(2, "0");
-												userInfo.movies.unshift({
-													desc: "This video has been imported from FlashThemes. because of that, all of the assets and waveforms you see in the video will be fetched via the FlashThemes server causing some functions to not work correctly for this video in the LVM. to fix this issue, please save this video normally.",
-													hiddenTag: "NAN",
-													date: "NAN",
-													durationString: `${min}:${sec}`,
-													duration: "NAN",
-													title: json.videoTitle,
-													published: 1,
-													tags: "",
-													publishStatus: "public",
-													id: `ft-${json.movieId}`,
-													enc_asset_id: json.movieId,
-													type: "movie",
-													file: `${json.movieId}.zip`
-												});
-												fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(usersData, null, "\t"));
-												console.log(params, userData);
-												if (!fs.existsSync('./ftContent')) fs.mkdirSync('./ftContent');
-												fs.writeFileSync(`./ftContent/${json.movieId}.zip`, buffer);
-												return res.end(JSON.stringify({
-													success: true,
-													redirect: `/go_full?movieId=ft-${json.movieId}`,
-													data: data2
-												}));
+												function writeContent(folderName, prefix) {
+													if (!fs.existsSync(folderName)) fs.mkdirSync(folderName);
+													fs.writeFileSync(`${folderName}/${json.movieId}.zip`, buffer);
+													fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(usersData, null, "\t"));
+													res.end(JSON.stringify({
+														success: true,
+														redirect: `/go_full?movieId=${prefix}-${json.movieId}`,
+														data: data2
+													}));
+												}
+												switch (json.videoConvertedOn) {
+													case "flashthemes": {
+														userInfo.movies.unshift(
+															movieMeta(
+																`${
+																	json.movieDesc ? json.movieDesc + " In other words," : ''
+																} This video has been imported from FlashThemes. 
+																because of that, all of the assets and waveforms you see in the video will be
+																fetched via the FlashThemes server causing some functions to not work correctly
+																for this video in the LVM. 
+																to fix this issue, please save this video normally.`, "ft"
+															)
+														);
+														writeContent('./ftContent', 'ft');
+														break;
+													}
+												}
 											} else return res.end(JSON.stringify({
 												success: false,
-												error: "Please login to your account in order to import a FlashThemes converted video into GoNexus"
+												error: `Please login to your account in order to import a ${
+													json.videoConvertedOnTitle
+												} converted video into GoNexus`
 											}));
 										}
 									}
-								}
+								} else res.end(JSON.stringify({
+									success: false,
+									error: "Please restart the converter in order to continue."
+								}))
 							});
 							break;
 						} case "/api/linkAccount": {
@@ -683,7 +911,7 @@ http
 											console.log(e);
 											res.end(JSON.stringify({
 												success: false,
-												error: e
+												error: e.toString()
 											}));
 										}
 										break;		
@@ -693,7 +921,6 @@ http
 							break;
 						} case "/api/deleteAccount": {
 							loadPost(req, res).then(data => {
-								console.log(data);
 								res.setHeader("Content-Type", "application/json");
 								const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 								const userInfo = json.users.find(i => i.id == data.uid);
@@ -707,7 +934,7 @@ http
 									console.log(e);
 									return res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 								for (const movieInfo of userInfo.movies) try {
@@ -733,25 +960,24 @@ http
 									console.log(e);
 									return res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 								json.users.splice(userInfoIndex, 1);
 								fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 								res.end(JSON.stringify({
-									success: true
+									success: session.remove(res, session.get(req)),
+									error: "Your account was deleted successfully, but an error occured while removing your session."
 								}));
 							});
 							break;
 						} case "/api/updateCustomCSS": {
 							loadPost(req, res).then(data => {
-								console.log(data);
 								res.setHeader("Content-Type", "application/json");
 								try {
 									const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 									const userInfo = json.users.find(i => i.id == data.uid);
 									userInfo.settings.api.customcss = data.newcss;
-									fs.writeFileSync("./views/includes/usercss.ejs", `<style id="usercss">${data.newcss}</style>`);
 									fs.writeFileSync("./_ASSETS/users.json", JSON.stringify(json, null, "\t"));
 									res.end(JSON.stringify({
 										success: true
@@ -760,7 +986,7 @@ http
 									console.log(e);
 									res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 							});
@@ -781,7 +1007,7 @@ http
 									console.log(e);
 									res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 							});
@@ -791,8 +1017,8 @@ http
 								res.setHeader("Content-Type", "application/json");
 								const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.filter(i => i.email == data.email);
 								res.end(JSON.stringify({
-									success: userInfo.length == 1,
-									error: `This email address already exists inside of Nexus's database. 
+									success: userInfo.length <= 1,
+									error: `This email address already exists inside of GoNexus's database. 
 									Please use a different email address`
 								}));
 							});
@@ -800,7 +1026,7 @@ http
 						}
 						case "/api/removeSession": {
 							loadPost(req, res).then(data => {
-								if (session.remove(req, data)) res.end(JSON.stringify({
+								if (session.remove(res, data)) res.end(JSON.stringify({
 									success: true
 								}));
 							});
@@ -808,8 +1034,10 @@ http
 						} case "/api/getUserInfoFromSession": { // sends user info from the current session
 							res.setHeader("Content-Type", "application/json");
 							const currentSession = session.get(req);
-							if (currentSession.data.loggedIn && currentSession.data.current_uid) {
-								res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == currentSession.data.current_uid)));
+							if (currentSession.data.loggedIn != undefined && currentSession.data.current_uid) {
+								res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(
+									i => i.id == currentSession.data.current_uid
+								)));
 							} else res.end(JSON.stringify({}));
 							break;
 						} case "/api/getUserInfoFromDB": {
@@ -817,7 +1045,7 @@ http
 								JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid))
 							));
 							break;
-						} case "/api/getSession": { // gets a user's session using their public IP address.
+						} case "/api/getSession": { // i'm not sure why this is stil here if you can make browser cookies accessable to the browser's javascript.
 							res.end(JSON.stringify(session.get(req)));
 							break;
 						} case "/api/addFTAcc": { // add the flashthemes account to the server after all checks are complete.
@@ -829,18 +1057,15 @@ http
 										success: true
 									}));
 								} else if (data.code == '0') try {
+									const base64c = Buffer.from(data.password).toString("base64");
 									function findUserInfo() {
 										return new Promise((res, rej) => {
 											const json = JSON.parse(fs.readFileSync(
 												'./_ASSETS/users.json'
 											));
-											var info = {};
-											const users = json.users.filter(
-												i => i.isFTAcc == true
-											);
-											const userInfo = users.find(
-												i => i.base64 == data.password
-											) 
+											const info = {};
+											const users = json.users.filter(i => i.isFTAcc == true);
+											const userInfo = users.find(i => i.base64 == base64c);
 											if (userInfo) {
 												hasSomeLevelOfSuccess = true;
 												info.success = true;
@@ -863,7 +1088,6 @@ http
 										switch (json.info) {
 											case "ft_acc_not_found": {
 												if (!data.displayName) {
-													console.warn("Your Display Name is required in order to finish setting up your flashthemes account for GoNexus.");
 													res.end(JSON.stringify({
 														displayNameRequired: true
 													}));
@@ -874,16 +1098,15 @@ http
 													const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 													const meta = json.users.find(i => i.email == data.email);
 													if (meta && !meta.linkedFTAcc) {
-														console.error("Your email address has already been taken by someone who created their account on GoNexus.");
 														res.end(JSON.stringify({
 															success: false,
-															error: "Your email address has already been taken by someone who created their account on GoNexus."
+															error: "Your email address has already been taken by someone who has created their account on GoNexus. If this is your email address and you are trying to link your flashthemes account to GoNexus, please contact one of our developers on the GoNexus Discord Server for some help."
 														}))
 													} else {
 														json.users.unshift({
 															name: data.displayName,
 															isFTAcc: true,
-															password: data.password,
+															base64: base64c,
 															id: uid,
 															email: data.email,
 															movies: [],
@@ -903,8 +1126,8 @@ http
 															}
 														});
 														fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
-														if (session.set(req, {
-															loggedIn: true,
+														if (session.set(res, {
+															loggedIn: '',
 															current_uid: uid,
 															displayName: data.displayName,
 															email: data.email
@@ -918,8 +1141,8 @@ http
 												break;
 											}
 										}
-									} else if (session.set(req, {
-										loggedIn: true,
+									} else if (session.set(res, {
+										loggedIn: '',
 										current_uid: json.data.id,
 										displayName: json.data.name,
 										email: json.data.email
@@ -934,23 +1157,31 @@ http
 							});
 							break; // checks flashthemes's server to see if the account info the user entered in exists in their servers. if something went wrong, an error spits out.
 						} case "/api/checkFTAcc": {
-							loadPost(req, res).then(data => {
-								https.request({
-									hostname: "flashthemes.net",
-									path: "/ajax/doLogin",
-									method: "POST",
-									headers: { 
-										"Content-Type": "application/json"
-									}
-								}, r => {
-									if (session.set(req, {
-										sessionCookies: r.headers['set-cookie']
-									})) {
-										const buffers = [];
-										r.on("data", b => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers).toString("utf8")));
-									}
-								}).end(JSON.stringify(data));
-							});
+							loadPost(req, res).then(checkFtAcc);
+							break;
+						} case "/api/fixFlashThemesLoginCookie": {
+							const currentSession = session.get(req);
+							if (!currentSession.data?.flashThemesLogin) {
+								const userInfo = JSON.parse(
+									fs.readFileSync(`${asset.folder}/users.json`)
+								).users.find(i => i.id == currentSession.data.current_uid);
+								checkFtAcc({
+									lc: "en_US",
+									returnto: "/",
+									email: userInfo.email,
+									password: Buffer.from(userInfo.base64, "base64").toString()
+								});
+							} else res.end(1 + JSON.stringify({
+								errmsg: "You already have an existing flashthemes session."
+							}));
+							break;
+						} case "/api/checkFlashthemesLogin": {
+							res.setHeader("Content-Type", "application/json");
+							const currentSession = session.get(req);
+							console.log(currentSession);
+							res.end(JSON.stringify({
+								loginExists: currentSession.data?.flashThemesLogin ? true : false
+							}));
 							break;
 						} case "/api/submitAPIKeys": { // sends both the Topmediai and FreeConvert API Keys To The Server
 							loadPost(req, res).then(data => {
@@ -1051,14 +1282,14 @@ http
 										console.log(e);
 										res.end(JSON.stringify({
 											success: false,
-											message: e
+											message: e.toString()
 										}));
 									});
 								}).catch(e => {
 									console.log(e);
 									res.end(JSON.stringify({
 										success: false,
-										message: e
+										message: e.toString()
 									}));
 								});
 							})
@@ -1084,7 +1315,7 @@ http
 									console.log(e);
 									return res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 								console.log(f, files);
@@ -1161,7 +1392,7 @@ http
 									console.log(e);
 									res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 								else res.end(JSON.stringify({
@@ -1174,21 +1405,25 @@ http
 							loadPost(req, res).then(async data => {
 								try {
 									const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid);
-									const zip = nodezip.create();
-									fUtil.addToZip(zip, 'profile.json', JSON.stringify(userInfo, null, "\t"));
+									const zip = new JSZip();
+									zip.file('profile.json', JSON.stringify(userInfo, null, "\t"));
 									for (const assetInfo of userInfo.assets) {
 										if (assetInfo.id.startsWith("s-")) {
-											fUtil.addToZip(zip, assetInfo.id + '.xml', fs.readFileSync(fUtil.getFileIndex("starter-", ".xml", assetInfo.id.substr(2))));
-											fUtil.addToZip(zip, assetInfo.id + '.png', fs.readFileSync(fUtil.getFileIndex("starter-", ".png", assetInfo.id.substr(2))));
-										} else fUtil.addToZip(zip, assetInfo.file, fs.readFileSync(`./_ASSETS/${assetInfo.file}`));
+											zip.file(assetInfo.id + '.xml', fs.readFileSync(fUtil.getFileIndex(
+												"starter-", ".xml", assetInfo.id.substr(2)
+											)));
+											zip.file(assetInfo.id + '.png', fs.readFileSync(fUtil.getFileIndex(
+												"starter-", ".png", assetInfo.id.substr(2)
+											)));
+										} else zip.file(assetInfo.file, fs.readFileSync(`./_ASSETS/${assetInfo.file}`));
 									}
 									for (const movieInfo of userInfo.movies) {
 										if (movieInfo.id.startsWith("m-")) {
-											fUtil.addToZip(zip, movieInfo.id + '.xml', fs.readFileSync(fUtil.getFileIndex("movie-", ".xml", movieInfo.id.substr(2))));
-											fUtil.addToZip(zip, movieInfo.id + '.png', fs.readFileSync(fUtil.getFileIndex("thumb-", ".png", movieInfo.id.substr(2))));
+											zip.file(movieInfo.id + '.xml', fs.readFileSync(fUtil.getFileIndex("movie-", ".xml", movieInfo.id.substr(2))));
+											zip.file(movieInfo.id + '.png', fs.readFileSync(fUtil.getFileIndex("thumb-", ".png", movieInfo.id.substr(2))));
 										}
 									}
-									fs.writeFileSync(`${env.CACHÉ_FOLDER}/myStuff.zip`, await zip.zip());
+									fs.writeFileSync(`${env.CACHÉ_FOLDER}/myStuff.zip`, await zip.generateAsync({type: "string"}));
 									res.end(JSON.stringify({
 										success: true,
 										fileUrl: '/tmp/myStuff.zip'
@@ -1197,7 +1432,7 @@ http
 									console.log(e);
 									res.end(JSON.stringify({
 										success: false,
-										error: e
+										error: e.toString()
 									}));
 								}
 							});
@@ -1224,12 +1459,12 @@ http
 								else if (data.access_key != env.PROJECT_ACCESS_KEY) res.end(JSON.stringify({error: "Invaild Access Key"}));
 								else if (
 									session.set(
-										req, {
-											site_access_key_is_correct: true
+										res, {
+											site_access_key_is_correct: ''
 										}
 									)
 								) {
-									if (data.returnto) res.end(JSON.stringify({success: true, url: data.returnto}));
+									if (data.returnto) res.end(JSON.stringify({success: true, url: decodeURIComponent(data.returnto)}));
 									else res.end(JSON.stringify({success: true}));
 								}
 							});
@@ -1298,7 +1533,7 @@ http
 										}
 									}
 									fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
-									session.set(req, {
+									session.set(res, {
 										current_uid: data.uid
 									});
 								} catch (e) {
@@ -1324,5 +1559,5 @@ http
 	}).listen(process.env.PORT || env.SERVER_PORT, '127.0.0.1', async () => {
 		if (!fs.existsSync('./_CACHÉ')) fs.mkdirSync('./_CACHÉ');
 		fs.readdirSync(env.CACHÉ_FOLDER).forEach(file => fs.unlinkSync(`${env.CACHÉ_FOLDER}/${file}`));
-		console.log("Nexus has started.");
+		console.log("GoNexus has started.");
 	});

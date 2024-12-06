@@ -265,8 +265,8 @@ var videoCounts = {
     all: "0",
     trash: "0"
 };
-function refreshMovieList(customPath) {
-    jQuery.getJSON(customPath || `/movieList?uid=${userData.uid || userData.id}`, (meta) => {
+function refreshMovieList(customPath = `/movieList?uid=${userData.uid || userData.id}`) {
+    jQuery.getJSON(customPath, (meta) => {
         document.getElementsByClassName("count-all")[0].innerHTML = meta.length;
         if (meta.length < 1) {
             jQuery("#myvideos").hide();
@@ -284,7 +284,7 @@ function refreshMovieList(customPath) {
                         <input type="checkbox" name="${tbl.id}" id="movieSelect_${tbl.id}"/>
                     </td>
                     <td>
-                        <img src="/movie_thumbs/${tbl.id}.png" width="50" height="30"/>
+                        <img src="${tbl.thumbUrl ? tbl.thumbUrl : `/movie_thumbs/${tbl.id}.png`}" width="50" height="30"/>
                         <a href="javascript:movieRedirect('/player?movieId=${tbl.id}', '${tbl.id}')">${tbl.title}</a><br>Modified on ${
                             date
                         }
@@ -330,6 +330,7 @@ function movieRedirect(url, mId) { // movie version of a redirect. i don't know 
                 window.location.href = url;
                 break;
             } case "error": {
+                jQuery.unblockUI();
                 alert(json.msg);
                 break;
             }

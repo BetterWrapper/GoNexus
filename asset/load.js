@@ -9,6 +9,7 @@ const http = require("http");
 const base = Buffer.alloc(1, 0);
 const fs = require("fs");
 const fUtil = require("../misc/file");
+const parse = require("../movie/parse");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -25,7 +26,7 @@ module.exports = function (req, res, url) {
 					console.log(match);
 					const aId = match[3];
 					try {
-						const b = asset.load(aId);
+						const b = parse.retrieveTTSBuffer(aId) || asset.load(aId);
 						res.statusCode = 200;
 						res.end(b);
 					} catch (e) {
@@ -51,7 +52,7 @@ module.exports = function (req, res, url) {
 								hostname: "flashthemes.net",
 								path: `/goapi/getAsset/${aId}`
 							});
-							else b = asset.load(aId);
+							else b = parse.retrieveTTSBuffer(aId) || asset.load(aId);
 							if (data.file == "old_full_2013.swf" || parseInt(data.v) <= 2012) res.end(Buffer.concat([base, b]));
 							else res.end(b);
 						} catch (e) {
@@ -88,7 +89,7 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/goapi/getWaveform/": {
 					loadPost(req, res).then(async data => {
-						if (data.movieId) {
+						if (data.movieId) try {
 							switch (data.movieId.substr(0, data.movieId.lastIndexOf("-"))) {
 								case "ft": return res.end(await getBuffersOnlineViaRequestModule({
 									method: "post",
@@ -98,15 +99,23 @@ module.exports = function (req, res, url) {
 										wfid: data.wfid
 									}
 								}))
-								default: if (fs.existsSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`)) return res.end(fs.readFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`));
+								default: if (fs.existsSync(`${asset.folder}/${data.wfid}.txt`)) return res.end(
+									fs.readFileSync(`${asset.folder}/${data.wfid}.txt`)
+								);
 							}
-						} else if (fs.existsSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`)) res.end(fs.readFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`));
-						else console.log(data);
+						} catch (e) {
+							console.log(e);
+							res.end("1");
+						} else if (fs.existsSync(`${asset.folder}/${data.wfid}.txt`)) res.end(fs.readFileSync(`${
+							asset.folder
+						}/${data.wfid}.txt`))
+						else res.end("0");
 					});
 					break;
 				} case "/goapi/saveWaveform/": {
 					loadPost(req, res).then(data => {
-						fs.writeFileSync(`${process.env.CACHÉ_FOLDER}/${data.wfid}.txt`, data.waveform);
+						if (data.movieId && data.movieId.startsWith("ft-")) return res.end("1");
+						fs.writeFileSync(`${asset.folder}/${data.wfid}.txt`, data.waveform);
 						res.end("0");
 					});
 					break;

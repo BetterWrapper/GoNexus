@@ -1,0 +1,13 @@
+[
+	{
+		"name": "theme",
+		"attr": {
+			"id": "zimmertwins",
+			"name": "Zimmer Twins",
+			"imageUrl": "/static/qvm/themeImages/Zimmer_Twins.jpg",
+			"only_show_options": "qvm",
+			"qvm_url": "/studioHtml5?template=zimmertwins",
+			"qvm": ""
+		}
+	}
+]

@@ -1,8 +1,10 @@
 const fs = require("fs");
 const nodezip = require("node-zip");
+const JSZip = require("jszip");
 const mp3Duration = require("mp3-duration");
 const https = require("https");
 const request = require("request");
+const ttsbuffers = {};
 function getBuffersOnline(options, data) {
 	return new Promise((res, rej) => {
 		try {
@@ -49,7 +51,9 @@ function getMP3Duration(buffer) {
 		});
 	})
 }
-const xmldoc = require("xmldoc");
+const {
+	XmlDocument
+} = require("xmldoc");
 const char = require("../character/main");
 const fUtil = require("../misc/file");
 const asset = require("../asset/main");
@@ -61,6 +65,8 @@ const {
 	STORE_URL2: store1
 } = process.env;
 
+const xml2js = require('xml2js');
+const tts = require("../tts/main");
 /**
  * @param {ReadableStream} readStream 
  * @returns {Promise<Buffer>}
@@ -194,15 +200,19 @@ function name2Font(font) {
 }
 
 module.exports = {
+	/**
+	 * @param {Buffer} xmlBuffer 
+	 * @returns 
+	 */
 	async extractAudioTimes(xmlBuffer) {
-		const film = new xmldoc.XmlDocument(xmlBuffer);
+		const film = new XmlDocument(xmlBuffer);
 		let audios = [];
-
 		for (const eI in film.children) {
 			const elem = film.children[eI];
-
-			if (elem.name !== "sound") continue;
-			audios.push(elem);
+			if (elem.name == "sound") {
+				const file = elem.childNamed("sfile")?.val;
+				if (file) audios.push(elem);
+			}
 		}
 		return audios.map((v) => {
 			const pieces = v.childNamed("sfile").val.split(".");
@@ -213,11 +223,9 @@ module.exports = {
 			pieces[pieces.length - 1] += "." + ext;
 			// add the type to the filename
 			pieces.splice(1, 0, "sound");
-
 			let filepath;
 			if (themeId == "ugc") filepath = `${asset.folder}/${pieces[pieces.length - 1]}`;
-			else filepath = `${store1}/${pieces.join("/")}`;
-
+			else filepath = `./static/2010/store/${pieces.join("/")}`;
 			return {
 				filepath,
 				start: +v.childNamed("start").val,
@@ -235,6 +243,216 @@ module.exports = {
 			}
 		});
 	},
+	retrieveTTSBuffer(assetId) {
+		return ttsbuffers[assetId];
+	},
+	packMovieFromUrl(url) { // Reads an XML buffer from a url, decodes the elements, and returns a PK stream the LVM can parse.
+		return new Promise(async (res, rej) => {
+			const ext = url.split("?")[0].substr(url.lastIndexOf(".") + 1);
+			function parseXml(buffer) {
+				const parser = new xml2js.Parser();
+				const zip = nodezip.create();
+				const themes = [];
+				let ugc = `${header}<theme id="ugc">`;
+				fUtil.addToZip(zip, 'movie.xml', buffer);
+				const store = "https://raw.githubusercontent.com/octanuary/GoAnimate-Archive/main/store/3a981f5cb2739137";
+				function addType2Filearray(file, type) {
+					const pieces = file.split(".");
+					const themeId = pieces[0];
+					if (!themes.find(i => i == themeId)) themes.push(themeId);
+					pieces.splice(1, 0, type);
+					const ext = pieces[pieces.length - 1];
+					pieces.splice(pieces.length - 1, 1);
+					pieces[pieces.length - 1] += `.${ext}`;
+					return pieces;
+				}
+				async function basicParse(file, type, info = {}) {
+					try {
+						let filearray = addType2Filearray(file, type);
+						if (type == "sound" && filearray[0] == "ugc" && info._attributes.tts == "1") {
+							const ttsdata = info.ttsdata[0];
+							filearray = addType2Filearray(file, ttsdata.type[0]);
+							const buffer = await tts.genVoice4Qvm(ttsdata.voice[0].split("_")[0], ttsdata.text[0], true);
+							ttsbuffers[filearray[2]] = buffer;
+							ugc += asset.meta2Xml({
+								type: "sound",
+								subtype: ttsdata.type[0],
+								id: filearray[2],
+								duration: await getMP3Duration(buffer)
+							})
+						} else {
+							let filename = filearray.join(".");
+							if (type == "char" && info.geartype) switch (info.geartype) {
+								case "head": {
+									filename = filename.split(type).join("prop");
+									break;
+								} default: {
+									filearray[1] = info.geartype;
+									filename = filearray.join(".");
+									break;
+								}
+							}
+							if (!zip[filename]) {
+								console.log(filename);
+								fUtil.addToZip(zip, filename, await getBuffersOnline(`${store}/${filearray.join("/")}`));
+							}
+						}
+					} catch (e) {
+						rej(e);
+					}
+				}
+				parser.parseString(buffer, async (err, json) => {
+					try {
+						if (err) rej(err);
+						else {
+							if (
+								!json.film || (!json.film.scene && !json.film.sound)
+							) rej("The link to the xml you provided does not support the Legacy Video Player");
+							for (const i in json.film) {
+								if (i.startsWith("_") || i == "meta") continue;
+								for (const info of json.film[i]) {
+									if (i == "sound") {
+										if (!info.sfile[0]) continue;
+										await basicParse(info.sfile[0], i, info);
+									} else for (const i in info) {
+										const altNames = {
+											effectAsset: "effect"
+										}
+										if (i.startsWith("_")) continue;
+										for (const info1 of info[i]) {
+											switch (i) {
+												case "char": {
+													if (!info1.action[0]._text) continue;
+													const filearray = addType2Filearray(info1.action[0]._text, i);
+													const themeId = filearray[0];
+													const charId = filearray[2];
+													if (themeId == "ugc") {
+														filearray.splice(3, 1);
+														if (!zip[filearray.join(".") + ".xml"]) {
+															const buffer = await char.load(charId);
+															ugc += asset.meta2Xml({
+																type: "char",
+																id: charId,
+																themeId: char.getTheme(buffer)
+															});
+															fUtil.addToZip(zip, filearray.join(".") + ".xml", buffer);
+														}
+													} else {
+														await basicParse(info1.action[0]._text, i);
+														for (const type of ["head", "prop"]) {
+															if (info1[type]) {
+																if (info1[type][0].file) await basicParse(info1[type][0].file[0], i, {
+																	geartype: type
+																})
+															}
+														}
+													}
+													break;
+												} default: {
+													if (!info1.file) continue;
+													await basicParse(info1.file[0], altNames[i] || i);
+													break;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						for (const t of themes) {
+							if (t == "ugc" || zip[`${t}.xml`]) continue;
+							const file = await getBuffersOnline(
+								`https://raw.githubusercontent.com/GoAnimate-Wrapper/GoAnimate-Wrapper/master/_THEMES/${t}.xml`
+							);
+							fUtil.addToZip(zip, `${t}.xml`, file);
+						}
+						fUtil.addToZip(zip, "themelist.xml", Buffer.from(`${header}<themes>${
+							themes.map((t) => `<theme>${t}</theme>`).join("")
+						}</themes>`));
+						fUtil.addToZip(zip, "ugc.xml", Buffer.from(ugc + "</theme>"));
+						//console.log(zip);
+						res(await zip.zip());
+					} catch (e) {
+						rej(e);
+					}
+				});
+			}
+			switch (ext) {
+				case "xml": {
+					parseXml(await getBuffersOnline(url));
+					break;
+				} case "zip": {
+					async function attemptFileUnzip(buffer) {
+						async function ttsBufferDump(json) {
+							for (const elem of json.childrenNamed("sound")) {
+								if (elem.attr.tts == "1") try {
+									const file = elem.childNamed("sfile")?.val;
+									if (!file || ttsbuffers[file.substr(4)]) continue;
+									const ttsdata = elem.lastChild;
+   									if (ttsdata.childNamed("voice") && ttsdata.childNamed("text")) {
+										ttsbuffers[file.substr(4)] = await tts.genVoice4Qvm(
+											ttsdata.childNamed("voice").val.split("_")[0], ttsdata.childNamed("text").val, true
+										);
+									}
+								} catch (e) {
+									console.log(e);
+								}
+							}
+						}
+						async function movieXmlExists(zip, callback) {
+							if (zip['movie.xml']) await callback();
+							else rej(
+								`The url to the zip file you typed in does not not contain the movie.xml 
+								file which is needed to play the video.`
+							)
+						}
+						async function mutipleFileExist(zip, buffer, callback) {
+							if (zip['movie.xml'] && Object.keys(zip).length == 1) parseXml(buffer);
+							else {
+								const json = new XmlDocument(buffer);
+								await ttsBufferDump(json);
+								await callback();
+							}
+						}
+						try {
+							const zip = nodezip.unzip(buffer);
+							await movieXmlExists(zip, async () => {
+								await mutipleFileExist(zip, await stream2Buffer(zip['movie.xml'].toReadStream()), async () => {
+									res(await zip.zip());
+								})
+							});
+						} catch (e) {
+							console.log(e);
+							const zip = nodezip.create();
+							const zip1 = await JSZip.loadAsync(buffer);
+							await movieXmlExists(zip1.files, async () => {
+								await mutipleFileExist(zip1.files, await zip1.file("movie.xml").async("nodebuffer"), async () => {
+									for (const i in zip1.files) fUtil.addToZip(zip, i, await zip1.file(i).async("nodebuffer"));
+									res(await zip.zip());
+								});
+							})
+						}
+					}
+					try {
+						await attemptFileUnzip(await getBuffersOnline(url));
+					} catch (e) {
+						console.log(e);
+						try {
+							fs.writeFileSync(`${asset.tempFolder}/zip.zip`, await getBuffersOnlineViaRequestModule({
+								method: "get",
+								url
+							}));
+							const data = fs.readFileSync(`${asset.tempFolder}/zip.zip`);
+							res(data.subarray(data.indexOf(80)));
+						} catch (e) {
+							rej(e);
+						}
+					}
+					break;
+				} default: return rej("Please enter in a valid url to a xml or zip file.");
+			}
+		})
+	},
 	/**
 	 * @summary Reads an XML buffer, decodes the elements, and returns a PK stream the LVM can parse.
 	 * @param {Buffer} xmlBuffer
@@ -244,7 +462,7 @@ module.exports = {
 	 * @param {Array} ownAssets
 	 * @returns {Buffer}
 	 */
-	async packMovie(xmlBuffer, data, packThumb, mId, ownAssets) {
+	async packMovie(xmlBuffer, data, packThumb, ownAssets) {
 		if (xmlBuffer.length == 0) throw null;
 		const uid = data.movieOwnerId || data.userId;
 		const zip = nodezip.create();
@@ -273,35 +491,27 @@ module.exports = {
 				const id = pieces[2];
 				try {
 					const buffer = asset.load(id);
-	
 					// add asset meta
 					const assetMeta = (ownAssets || user.assets).find(i => i.id == id);
-					if (!assetMeta) {
-						throw new Error(`Asset #${id} is in the XML, but it does not exist.`);
-					}
-					ugc += asset.meta2Xml(assetMeta);
+					if (!assetMeta) console.error(`Asset #${id} is in the XML, but it does not exist.`);
+					else ugc += asset.meta2Xml(assetMeta);
 					// and add the file
 					fUtil.addToZip(zip, filename, buffer);
-	
 				} catch (e) {
 					console.error(`WARNING: ${id}:`, e);
 					return;
 				}
 			} else {
-				if (type == "prop" && pieces.indexOf("head") > -1) {
-					pieces[1] = "char";
-				}	
+				if (type == "prop" && pieces.indexOf("head") > -1) pieces[1] = "char";
 				const filepath = `${store}/${pieces.join("/")}`;
-	
 				// add the file to the zip
 				fUtil.addToZip(zip, filename, await get(filepath));
 			}
-	
 			themes[themeId] = true;
 		}
 	
 		// begin parsing the movie xml
-		const film = new xmldoc.XmlDocument(xmlBuffer);
+		const film = new XmlDocument(xmlBuffer);
 		for (const eI in film.children) {
 			const elem = film.children[eI];
 	
@@ -312,9 +522,7 @@ module.exports = {
 					
 					await basicParse(file, elem.name)
 					break;
-				}
-	
-				case "scene": {
+				} case "scene": {
 					for (const e2I in elem.children) {
 						const elem2 = elem.children[e2I];
 	
@@ -334,9 +542,7 @@ module.exports = {
 								
 								await basicParse(file, tag);
 								break;
-							}
-							
-							case "char": {
+							} case "char": {
 								let file = elem2.childNamed("action")?.val;
 								if (!file) continue;
 								const pieces = file.split(".");
@@ -391,7 +597,6 @@ module.exports = {
 										if (pieces2[0] == "ugc") continue;
 										pieces2.pop(), pieces2.splice(1, 0, "char");
 										const filepath = `${store}/${pieces2.join("/")}.swf`;
-	
 										pieces2.splice(1, 1, "prop");
 										const filename = `${pieces2.join(".")}.swf`;
 										fUtil.addToZip(zip, filename, await get(filepath));
@@ -407,10 +612,6 @@ module.exports = {
 							case 'bubbleAsset': {
 								const bubble = elem2.childNamed("bubble");
 								const text = bubble.childNamed("text");
-	
-								// arial doesn't need to be added
-								if (text.attr.font == "Arial") continue;
-	
 								const filename = `${name2Font(text.attr.font)}.swf`;
 								const filepath = `${source}/go/font/${filename}`;
 								fUtil.addToZip(zip, filename, await get(filepath));
@@ -466,7 +667,7 @@ module.exports = {
 		const readStream = zip["movie.xml"].toReadStream();
 		const buffer = await stream2Buffer(readStream);
 		if (buffer.length == 0) throw null;
-		const film = new xmldoc.XmlDocument(buffer);
+		const film = new XmlDocument(buffer);
 		const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 		const userInfo = json.users.find(i => i.id == uId);
 		const onlineMoviePrefixes = {
@@ -477,7 +678,7 @@ module.exports = {
 				case "sound": {
 					for (const e2I of eI.children.filter(i => i.name == "sfile")) {
 						if (e2I.val.startsWith("ugc.") && !fs.existsSync(`./_ASSETS/${e2I.val.split("ugc.")[1]}`)) {
-							console.log(`Saving Sound: ${e2I.val.split("ugc.")[1]}.`)
+							console.log(`Saving Sound ${e2I.val.split("ugc.")[1]}.`)
 							let buffer;
 							if (mId.startsWith("ft-")) buffer = await getBuffersOnline({
 								hostname: "flashthemes.net",
@@ -491,7 +692,7 @@ module.exports = {
 								id: e2I.val.split("ugc.")[1],
 								enc_asset_id: e2I.val.split("ugc.")[1].split(".")[0],
 								type: "sound",
-								subtype: eI.attr.tts != "0" ? "voiceover" : "bgmusic",
+								subtype: eI.attr.tts == "1" ? "voiceover" : eI.attr.track == "1" ? "bgmusic" : "soundeffect",
 								title: e2I.val.split("ugc.")[1],
 								published: 0,
 								tags: "",
@@ -499,7 +700,7 @@ module.exports = {
 								downloadtype: "progressive",
 								file: e2I.val.split("ugc.")[1]
 							})
-							console.log(`Saved Sound: ${e2I.val.split("ugc.")[1]} successfully!`)
+							console.log(`Saved Sound ${e2I.val.split("ugc.")[1]} successfully!`)
 						}
 					}
 					break;
@@ -510,15 +711,11 @@ module.exports = {
 							case "prop": {
 								for (const e3I of e2I.children.filter(i => i.name == "file")) {
 									if (e3I.val.startsWith("ugc.") && !fs.existsSync(`./_ASSETS/${e3I.val.split("ugc.")[1]}`)) {
-										console.log(`Saving ${e2I.name}: ${e3I.val.split("ugc.")[1]}.`)
+										console.log(`Saving ${e2I.name} ${e3I.val.split("ugc.")[1]}.`)
 										let buffer;
-										if (mId.startsWith("ft-")) buffer = await getBuffersOnline({
-											hostname: "flashthemes.net",
-											path: `/goapi/getAsset/${e3I.val.split("ugc.")[1]}`,
-											headers: {
-												"Content-Type": "audio/mp3"
-											}
-										});
+										if (mId.startsWith("ft-")) buffer = await getBuffersOnline(`https://flashthemes.net/goapi/getAsset/${
+											e3I.val.split("ugc.")[1]
+										}`);
 										fs.writeFileSync(`./_ASSETS/${e3I.val.split("ugc.")[1]}`, buffer);
 										userInfo.assets.unshift({
 											id: e3I.val.split("ugc.")[1],
@@ -530,16 +727,16 @@ module.exports = {
 											tags: "",
 											file: e3I.val.split("ugc.")[1]
 										})
-										console.log(`Saved ${e2I.name}: ${e3I.val.split("ugc.")[1]} successfully!`)
+										console.log(`Saved ${e2I.name} ${e3I.val.split("ugc.")[1]} successfully!`)
 									}
 								}
 								break;
 							} case "char": {
 								for (const e3I of e2I.children.filter(i => i.name == "action")) {
-									const charId = e3I.val.split("ugc.")[1].split(".")[0]
-									if (e3I.val.startsWith("ugc.c-")) {
+									if (e3I.val.startsWith("ugc.c-")) try {
+										const charId = e3I.val.split("ugc.")[1].split(".")[0]
 										if (!fs.existsSync(fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]))) {
-											console.log(`Saving Character: ${charId}.`)
+											console.log(`Saving Character ${charId}.`)
 											let buffer;
 											if (mId.startsWith("ft-")) {
 												function getFlashThemesCharThumb() {
@@ -550,7 +747,9 @@ module.exports = {
 														})
 													})
 												}
-												fs.writeFileSync(fUtil.getFileIndex("char-", ".png", charId.split("-")[1]), await getFlashThemesCharThumb());
+												fs.writeFileSync(
+													fUtil.getFileIndex("char-", ".png", charId.split("-")[1]), await getFlashThemesCharThumb()
+												);
 												buffer = (await getBuffersOnlineViaRequestModule({
 													method: "post",
 													url: "https://flashthemes.net/goapi/getCcCharCompositionXml/"
@@ -558,7 +757,7 @@ module.exports = {
 													formData: { 
 														assetId: charId
 													} 
-												})).split('0<?xml version="1.').join('<?xml version="1.');
+												})).toString().substr(1)
 											}
 											fs.writeFileSync(fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]), buffer);
 											userInfo.assets.unshift({
@@ -567,18 +766,17 @@ module.exports = {
 												type: "char",
 												subtype: 0,
 												title: "Untitled",
-												themeId: char.getTheme(Buffer.from(buffer)),
+												themeId: char.getTheme(buffer),
 												published: 0,
 												tags: "",
 												file: fUtil.getFileIndex("char-", ".xml", charId.split("-")[1]).split("./_SAVED/")[1]
 											})
-											console.log(`Saved Character: ${charId} successfully!`)
+											console.log(`Saved Character ${charId} successfully!`)
 										}
-									} else if (e3I.val.startsWith("ugc.") && e3I.val.endsWith(".swf")) {
-										console.error("Your video cannot be saved correctly because it includes a char from the FlashThemes Community Library that GoNexus can't put onto the database. Please try converting a FlashThemes video that does not include chars from FlashThemes's Community Library.")
-										return {
-											error: "Your video cannot be saved correctly because it includes a char from the FlashThemes Community Library that GoNexus can't put onto the database. Please try converting a video that does not include chars from FlashThemes's Community Library."
-										}
+									} catch (e) {
+										console.log(e);
+									} else if (e3I.val.startsWith("ugc.") && e3I.val.endsWith(".swf")) return {
+										error: "Your video cannot be saved correctly because it includes a char from the FlashThemes Community Library that GoNexus can't put onto the database. Please try converting a video that does not include chars from FlashThemes's Community Library."
 									}
 								}
 								break;
@@ -588,6 +786,7 @@ module.exports = {
 					break;
 				}
 			}
+			console.log("All FlashThemes assets that were in the XML were successfully saved!")
 		}
 		fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 		return buffer;
@@ -600,7 +799,7 @@ module.exports = {
 				defaults: ''
 			};
 			let groupEmotionXml = '<category name="emotion">';
-			const xml = new xmldoc.XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${tId}/cc_theme.xml`));
+			const xml = new XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${tId}/cc_theme.xml`));
 			for (const info of xml.children.filter(i => i.name == "bodyshape")) {
 				if (info.attr.id == char.getCharTypeViaBuff(buf)) {
 					charJSON.defaults = `default="${info.attr.action_thumb + ziporxml}" motion="${
@@ -640,7 +839,7 @@ module.exports = {
 	check4XmlAudio(xmlBuffer) {
 		if (xmlBuffer.length == 0) throw null;
 
-		const xml = new xmldoc.XmlDocument(xmlBuffer);
+		const xml = new XmlDocument(xmlBuffer);
 
 		for (const eI in xml.children) {
 			const elem = xml.children[eI];
@@ -648,12 +847,22 @@ module.exports = {
 		}
 		return false;
 	},
-	getThemes() {
-		const xml = new xmldoc.XmlDocument(fs.readFileSync(`${themeFolder}/themelist.xml`));
-		const themes = [];
-		for (const elem of xml.children) {
+	getThemes(options = {}) {
+		const xml = fs.readFileSync(`${themeFolder}/themelist.xml`);
+		if (options.get_theme_xml) {
+			if (options.value) {
+				const path = `${themeFolder}/${options.value}.xml`
+				if (fs.existsSync(path)) return fs.readFileSync(path);
+				return `Sorry, the theme xml for ${options.value} does not exist.`;
+			}
+			return xml;
+		}
+		const json = new XmlDocument(xml);
+		const themes = !options.no_extras ? JSON.parse(fs.readFileSync(`${themeFolder}/themelist-extras.json`)) : [];
+		if (!options.only_include_extras) for (const elem of json.children) {
 			if (elem.name == "theme") themes.push(elem);
 		}
+		if (options.arrayAction && options.by && options.value) return themes[options.arrayAction](i => i.attr[options.by] == options.value);
 		return themes;
 	},
 	async deleteTTSFiles(xmlBuffer, uId, xmlBuffer2) {
@@ -702,8 +911,8 @@ module.exports = {
 			}
 		}
 		for (const stuff of [
-			new xmldoc.XmlDocument(xmlBuffer),
-			xmlBuffer2 != "1" ? new xmldoc.XmlDocument(xmlBuffer2) : undefined
+			new XmlDocument(xmlBuffer),
+			xmlBuffer2 != "1" ? new XmlDocument(xmlBuffer2) : undefined
 		]) await del(stuff)
 	},
 };
