@@ -10,7 +10,7 @@ Codenames for the project are BetterWrapper and OrangeAura.
 
 ## Developers
 * BluePeacocks
-* Itinerary Jyvee
+* ~~Itinerary Jyvee~~
 * JosephAnimate
 * MysteriousOwen
 * Revolution909
