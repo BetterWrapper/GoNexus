@@ -3,7 +3,9 @@
  * Firebase is required in order to run this file.
  * This JS file uses firebase. you may learn more at https://firebase.google.com/
  */
-if (window.location.pathname != "/cc" && window.location.pathname != "/cc_browser") localStorage.removeItem("charcreatoryear");
+if (
+    window.location.pathname != "/cc" && window.location.pathname != "/cc_browser"
+) localStorage.removeItem("charcreatoryear");
 const params = new URLSearchParams(window.location.search);
 const auth = firebase.auth();
 let signupComplete = false;
@@ -44,7 +46,7 @@ function getSchoolInfo () {
                 jQuery(`<input type="hidden" id="schoolUrl" value="${
                     window.location.origin
                 }/school/${d.id}"/>`).appendTo('body');
-                document.getElementById('schoolId').title = d.id;
+                add2Element('schoolId', d.id, 'title');
                 jQuery("#schoolId").text(d.id);
                 const texts = {
                     groups: `${d.groups.length} Groups`,
@@ -210,8 +212,8 @@ auth.onAuthStateChanged(user => {
         if (!user.emailVerified) {
             jQuery.post(`/api/fetchAPIKeys`, (d) => {
                 const json = JSON.parse(d);
-                addVal2Element('freeconvert-key', json.freeConvertKey);
-                addVal2Element('topmediaai-key', json.topMediaAIKey);
+                add2Element('freeconvert-key', json.freeConvertKey, 'value');
+                add2Element('topmediaai-key', json.topMediaAIKey, 'value');
             });
             jQuery("#signup-processing").modal('hide');
             showElement('email-verification-signup');
@@ -272,8 +274,8 @@ function logout(t) {
                 if (JSON.parse(d).success) {
                     jQuery.post(`/api/fetchAPIKeys`, (d) => {
                         const json = JSON.parse(d);
-                        addVal2Element('freeconvert-key', json.freeConvertKey);
-                        addVal2Element('topmediaai-key', json.topMediaAIKey);
+                        add2Element('freeconvert-key', json.freeConvertKey, 'value');
+                        add2Element('topmediaai-key', json.topMediaAIKey, 'value');
                     });
                     hideElement('isAccountAdmin');
                     hideElement('isLogin');
@@ -302,8 +304,8 @@ function logout(t) {
         } else {
             jQuery.post(`/api/fetchAPIKeys`, (d) => {
                 const json = JSON.parse(d);
-                addVal2Element('freeconvert-key', json.freeConvertKey);
-                addVal2Element('topmediaai-key', json.topMediaAIKey);
+                add2Element('freeconvert-key', json.freeConvertKey, 'value');
+                add2Element('topmediaai-key', json.topMediaAIKey, 'value');
             });
             hideElement('isLogin');
             showElement('signup-button');
@@ -361,7 +363,7 @@ function loggedIn(user) {
             reloadCCListForTut();
             break;
         } case "/public_index": {
-            addLink2Element("banner_btn", '/create')
+            add2Element("banner_btn", '/create', 'href')
             jQuery("#banner_btn").text("Make A Video");
             break;
         } case "/account": {
@@ -469,8 +471,8 @@ function loggedIn(user) {
     }, () => {
         jQuery.post(`/api/fetchAPIKeys?uid=${user.uid || user.id}`, (d) => {
             const json = JSON.parse(d);
-            addVal2Element('freeconvert-key', json.freeConvertKey);
-            addVal2Element('topmediaai-key', json.topMediaAIKey);
+            add2Element('freeconvert-key', json.freeConvertKey, 'value');
+            add2Element('topmediaai-key', json.topMediaAIKey, 'value');
             if (!user.role || user.role == "teacher") showElement('isAccountAdmin');
         })
     });
@@ -496,7 +498,7 @@ function userLogin(email, password) {
 function userLogout() {
     switch (window.location.pathname) {
         case "/public_index": {
-            addLink2Element("banner_btn", "/public_signup");
+            add2Element("banner_btn", "/public_signup", 'href');
             jQuery("#banner_btn").text("Sign Up Now");
             break;
         }
@@ -523,20 +525,12 @@ function hideElement(id) {
 function showElement(id) {
     if (document.getElementById(id)) document.getElementById(id).style.display='block';
 }
-function addText2Element(id, text) {
-    if (document.getElementById(id)) document.getElementById(id).innerHTML = text;
-}
-function addVal2Element(id, text) {
-    if (document.getElementById(id)) document.getElementById(id).value = text;
-}
-function addLink2Element(id, url) {
-    if (document.getElementById(id)) document.getElementById(id).href = url;
+function add2Element(id, text, type) {
+    if (document.getElementById(id)) document.getElementById(id)[type] = text;
 }
 function createImgElement(id, url, text) {
-    if (document.getElementById(id)) {
-        document.getElementById(id).src = url;
-        document.getElementById(id).alt = text;
-    }
+    add2Element(id, url, "src");
+    add2Element(id, text, "alt");
 }
 function loadUserContent(userData) {
     if (window.location.pathname == "/user") {
@@ -544,9 +538,9 @@ function loadUserContent(userData) {
             const json = JSON.parse(d);
             const meta = json.find(i => i.id == params.get("id"));
             if (meta) {
-                addText2Element('user-name', meta.name);
-                addText2Element('user-link', meta.name);
-                addLink2Element('user-link', `/user?id=${params.get("id")}`)
+                add2Element('user-name', meta.name, 'innerHTML');
+                add2Element('user-link', meta.name, 'innerHTML');
+                add2Element('user-link', `/user?id=${params.get("id")}`, 'href')
                 document.title = `${meta.name} On Nexus`;
                 $.getJSON(`/movieList?uid=${params.get("id")}`, (d) => {
                     let json;
@@ -567,12 +561,12 @@ function loadUserContent(userData) {
                                 </span>
                             </div></div></div></div>`;
                             else if (i == 7) {
-                                addLink2Element('more', `${window.location.origin}/user?id=${params.get("id")}&filename=user-videos`);
+                                add2Element('more', `${window.location.origin}/user?id=${params.get("id")}&filename=user-videos`, 'href');
                                 jQuery("#more").show();
                             }
                         }
                         jQuery("#profileVideos").html(htmls);
-                        if (json.length == 0) addText2Element('profileVideos', '<center>No Videos</center>');
+                        if (json.length == 0) add2Element('profileVideos', '<center>No Videos</center>', 'innerHTML');
                     } else {
                         var C = 0;
                         function loadRows() {
@@ -598,7 +592,7 @@ function loadUserContent(userData) {
                         }
                         jQuery("#load_more").click(() => loadRows());
                         loadRows();
-                        addText2Element('video-count', json.length);
+                        add2Element('video-count', json.length, 'innerHTML');
                     }
                 });
             }

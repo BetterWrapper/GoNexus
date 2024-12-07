@@ -24,7 +24,7 @@ function searchStuff(tId, data) {
 		}
 	}
 }
-async function listAssets(data, makeZip) {
+async function listAssets(data, makeZip, makeJson) {
 	var files, xmlString;
 	const id = data.assetId ? data.assetId == 'null' ? data.include_ids_only : data.assetId : data.include_ids_only;
 	switch (data.type) {
@@ -242,7 +242,6 @@ async function listAssets(data, makeZip) {
 	if (!xmlString) xmlString = `${header}<theme id="ugc"${
 		parseInt(data.v) <= 2015 ? stuff() : stuff2()
 	}>${files.map(asset.meta2Xml).join("")}</theme>`;
-	console.log(stuff());
 	if (makeZip) {
 		const zip = nodezip.create();
 		fUtil.addToZip(zip, "desc.xml", Buffer.from(xmlString));
@@ -265,7 +264,8 @@ async function listAssets(data, makeZip) {
 			}
 		}
 		return await zip.zip();
-	} else return Buffer.from(xmlString);
+	} else if (!makeJson) return Buffer.from(xmlString);
+	return files;
 }
 /**
  * @param {http.IncomingMessage} req
@@ -274,41 +274,49 @@ async function listAssets(data, makeZip) {
  * @returns {boolean}
  */
 module.exports = function (req, res, url) {
-	var makeZip = false;
+	var makeZip = false, makeJson = false;
 	switch (url.pathname) {
 		case "/goapi/getUserAssets/":
 			makeZip = true;
 			break;
-		case "/goapi/getUserAssetsXml/":
+		case "/api/assets/get/theme/ugc":
+			makeJson = true;
 			break;
-		default:
-			return;
+		case "/goapi/getUserAssetsXml/": break;
+		default: return;
 	}
 
 	switch (req.method) {
 		case "GET": {
 			var q = url.query;
 			if (q.userId && q.type) {
-				listAssets(q, makeZip).then((buff) => {
-					const type = makeZip ? "application/zip" : "text/xml";
+				listAssets(q, makeZip, makeJson).then((buff) => {
+					const type = makeZip ? "application/zip" : makeJson ? "application/json" : "text/xml";
 					res.setHeader("Content-Type", type);
-					res.end(buff);
+					res.end(makeJson ? JSON.stringify(buff) : buff);
 				});
 				return true;
 			} else return;
 		}
 		case "POST": {
 			loadPost(req, res).then(async data => {
-				if (data.movieId && data.movieId.startsWith("ft-") && data.type == "sound") res.end(1 + '<error><code>Because you are using a video that has been imported from FlashThemes, you cannot use your sounds in this video at the moment as this video is right now using the FlashThemes servers to get all of the assets provided in this video. Please save your video as a normal one in order to get some LVM features back.</code></error>');
+				if (data.movieId && data.movieId.startsWith("ft-") && data.type == "sound") res.end(1 + `<error>
+					<code>
+						Because you are using a video that has been imported from FlashThemes, 
+						you cannot use your sounds in this video at the moment as this video is right now using the FlashThemes servers 
+						to get all of the assets provided in this video.
+						Please save your video as a normal one in order to get some LVM features back.
+					</code>
+				</error>`);
 				else {
-					const buff = await listAssets(data, makeZip);
-					const type = makeZip ? "application/zip" : "text/xml";
+					const buff = await listAssets(data, makeZip, makeJson);
+					const type = makeZip ? "application/zip" : makeJson ? "application/json" : "text/xml";
 					res.setHeader("Content-Type", type);
 					if (makeZip) {
 						if (!data.v) res.write(base);
 						else return res.end(Buffer.concat([base2, buff]));
 					}
-					res.end(buff);
+					res.end(makeJson ? JSON.stringify(buff) : buff);
 				}
 			});
 			return true;

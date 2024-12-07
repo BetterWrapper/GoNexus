@@ -595,7 +595,9 @@ module.exports = {
 					else buffer = await parse.unpackMovie(movieZip, mId, data.userId);
 					writeStream.write(buffer, () => {
 						writeStream.close();
-						this[data.v == "2010" ? 'oldMeta' : 'meta'](mId, data.is_triggered_by_autosave == '1').then(m => {
+						this[data.v == "2010" ? 'oldMeta' : 'meta'](
+							mId, data.is_triggered_by_autosave == '1' && fs.existsSync(fUtil.getFileIndex("movie-autosaved-", ".xml", suffix))
+						).then(m => {
 							const json = JSON.parse(fs.readFileSync("./_ASSETS/users.json"));
 							const meta = json.users.find(i => i.id == data.userId);
 							const mMeta = meta.movies.find(i => i.id == m.id);

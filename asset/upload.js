@@ -6,6 +6,7 @@ var ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const http = require("http");
 const fs = require("fs");
+const session = require("../misc/session");
 function stream2Buffer(stream) {
 	return new Promise((res, rej) => {
 		try {
@@ -27,6 +28,7 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST" || url.pathname != "/ajax/saveUserProp") return;
 	new formidable.IncomingForm().parse(req, async (e, f, files) => {
 		try {
+			const currentSession = session.get(req);
 			if (req.headers.referer.includes("?movieId=ft-")) {
 				return res.end(JSON.stringify({
 					suc: false,
@@ -47,7 +49,7 @@ module.exports = function (req, res, url) {
 					suc: false,
 					msg: "Please choose a file to upload"
 				}));
-			} else if (f.userId) {
+			} else if (currentSession.data.current_uid) {
 				const type = f.subtype == "soundeffect" || f.subtype == "voiceover" || f.subtype == "bgmusic" ? "sound" : f.subtype;
 				const {
 					path, 
@@ -57,8 +59,7 @@ module.exports = function (req, res, url) {
 				} = files.file;
 				const name = originalFilename || fiieName;
 				const filePath = filepath || path;
-				const dot = name.lastIndexOf(".");
-				const ext = name.substr(dot + 1);
+				const ext = name.substr(name.lastIndexOf(".") + 1);
 				let buffer;
 				if (type == "sound" && ext != "mp3") {
 					const stream = ffmpeg(
@@ -86,7 +87,7 @@ module.exports = function (req, res, url) {
 				};
 				switch (type) {
 					case "prop": {
-						meta.ptype = f.ptype || "placeable";
+						meta.ptype = "placeable";
 						break;
 					} case "sound": {
 						await new Promise(resolve => {
@@ -103,9 +104,10 @@ module.exports = function (req, res, url) {
 						break;
 					}
 				}
-				const id = asset.save(buffer, meta, f);
-				if (type != "sound") info.thumbnail = `/goapi/getAsset/${id}`;
-				info.id = id;
+				info.id = asset.save(buffer, meta, {
+					userId: currentSession.data.current_uid
+				});
+				if (type != "sound") info.thumbnail = `/goapi/getAsset/${info.id}`;
 				info.asset_data = meta;
 				res.end(JSON.stringify(info));
 			} else {
