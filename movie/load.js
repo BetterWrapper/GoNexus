@@ -117,7 +117,13 @@ module.exports = function (req, res, url) {
 			break;
 		} case "POST": {
 			switch (url.pathname) {
-				case "/api/initTemplatePreview": {
+				case "/api/movie/preview": {
+					loadPost(req, res).then(data => {
+						if (data.xml) fs.writeFileSync(`./previews/template.xml`, data.xml)
+						res.end();
+					})
+					break;
+				} case "/api/initTemplatePreview": {
 					function err(text, data) {
 						data.msg = text;
 						res.end(JSON.stringify(data));
@@ -1092,7 +1098,7 @@ module.exports = function (req, res, url) {
 								else res.end(b);
 							} else res.end(Buffer.concat([
 								base, 
-								await parse.packMovie(fs.readFileSync("./previews/template.xml"), false, templateAssets)
+								await parse.packMovie(fs.readFileSync("./previews/template.xml"), {}, false, templateAssets)
 							]));
 						} catch (e) {
 							res.setHeader("Content-Type", "text/xml");

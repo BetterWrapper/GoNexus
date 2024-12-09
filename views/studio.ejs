@@ -274,6 +274,7 @@ if (self !== top) {
     jQuery("#previewPlayerContainer, #video-tutorial, #charCreatorContainer").hide();
 
     function initPreviewPlayer(dataXmlStr, startFrame) {
+        console.log(decodeURIComponent(dataXmlStr));
         savePreviewData(dataXmlStr);
         const paths = {
             storePath: ('<%= params.flashvars.storePath %>').split("&lt;").join("<").split("&gt;").join(">"),

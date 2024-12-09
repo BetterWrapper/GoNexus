@@ -6,7 +6,7 @@ module.exports = (req, res, url) => {
     if (mId.startsWith("m-")) {
         ejs.renderFile(`./views/modals/embedModal.ejs`, {
             videoUrl: `${req.headers.referer}&isEmbed=true`
-        }, function(err, str){
+        }, function(err, str) {
             if (err) {
                 console.log(err);
                 res.end('Not Found');

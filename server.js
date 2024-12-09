@@ -5,6 +5,7 @@ const apiKeys = {
 	Typesense: env.API_KEYS.Typesense
 }
 const xmldoc = require("xmldoc");
+const xml2js = require("xml2js");
 const JSZip = require("jszip");
 const http = require("http");
 const crypto = require("crypto");
@@ -248,7 +249,30 @@ http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/localDatabase/get": {
+						case "/api/url/convert2base64": {
+							const headers = {};
+							if (parsedUrl.query.header) {
+								const split = parsedUrl.query.header.split(",");
+								headers[split[0]] = split[1];
+							}
+							https.get(parsedUrl.query.url, {headers}, r => {
+								const buffers = [];
+								r.on("data", b => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers).toString("base64")))
+							});
+							break;
+						} case "/api/templateStuff/get": {
+							fs.readFile(`./_TEMPLATES/${parsedUrl.query.filename}`, (err, data) => {
+								if (err) res.end(JSON.stringify(err));
+								else {
+									if (parsedUrl.query.header) {
+										const split = parsedUrl.query.header.split(",");
+										res.setHeader(split[0], split[1]);
+									}
+									res.end(data);
+								}
+							})
+							break;
+						} case "/api/localDatabase/get": {
 							res.setHeader("Content-Type", "application/json");
 							res.end(fs.readFileSync("./_ASSETS/local.json"));
 							break;
