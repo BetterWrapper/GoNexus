@@ -3,6 +3,7 @@ const mp3Duration = require("mp3-duration");
 const asset = require("../asset/main");
 const tts = require("./main");
 const http = require("http");
+const https = require("https");
 const oldvoices = require("./oldvoices");
 const parse = require("../movie/parse");
 /**
@@ -14,7 +15,22 @@ const parse = require("../movie/parse");
 module.exports = function (req, res, url) {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
-		case "/goapi/rebuildTTS/": {
+		case "/api/retreiveMp3DurationFromURL": {
+			https.get(url.query.url, r => {
+				const buffers = [];
+				r.on("data", b => buffers.push(b)).on("end", () => {
+					mp3Duration(Buffer.concat(buffers), (e, d) => {
+						res.setHeader("Content-Type", "application/json");
+						res.end(JSON.stringify({
+							e,
+							d,
+							lvmDur: d * 1e3
+						}));
+					});
+				})
+			})
+			break;
+		} case "/goapi/rebuildTTS/": {
 			loadPost(req, res).then(data => { 
 				/**
 				 * I am pretty sure that this api path works the same way as both the /goapi/getAsset/ and /goapi/getAssetEx/ paths. 

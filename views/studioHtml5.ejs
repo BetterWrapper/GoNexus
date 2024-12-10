@@ -102,29 +102,37 @@
       </div>
     </header>
     <input type="file" style="display: none;" id="importerFile" onchange="studioHtml5.loadImporterQuene(this)" multiple/>
-    <div id="previewPlayer" style="display: none;"></div>
+    <div style="display: none;">
+      <div id="previewPlayer"></div>
+      <div id="sceneSettings">
+        <h2>Scene Settings</h2>
+        <hr>
+        <form onsubmit="studioHtml5.updateSceneSettings(this)"></form>
+        <hr>
+        <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
+      </div>
+    </div>
     <div class="container-fluid">
       <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
           <div class="position-sticky pt-3 sidebar-sticky container">
-            <ul class="nav flex-column mb-2" id="importer_quene">
-              <li class="nav-item" id="importer_quene_item_example" style="display: none;">
-                <label>File: <select id="fileName" onchange="studioHtml5.changeFiles(this)"></select></label>
-                <select name="subtype" required>
-                  <optgroup data-importType="images" style="display: none;">
-                    <option value="prop">Prop</option>
-                    <option value="bg">Background</a>
-                  </optgroup>
-                  <optgroup data-importType="sounds" style="display: none;">
-                    <option value="bgmusic">Music</option>
-                    <option value="soundeffect">Sound Effect</option>
-                    <option value="voiceover">Voice Over</option>
-                  </optgroup>
-                </select>
-                <button class="nav-link btn btn-primary" type="submit">Import Asset</button> 
-                <button class="nav-link btn btn-secondary" onclick="studioHtml5.closeQuene()">Close</button>
-              </li>
-            </ul>
+            <div id="importer_quene_item_example" style="display: none;">
+              <label>File: <select id="fileName" onchange="studioHtml5.changeFiles(this)"></select></label>
+              <select name="subtype" required>
+                <optgroup data-importType="images" style="display: none;">
+                  <option value="prop">Prop</option>
+                  <option value="bg">Background</a>
+                </optgroup>
+                <optgroup data-importType="sounds" style="display: none;">
+                  <option value="bgmusic">Music</option>
+                  <option value="soundeffect">Sound Effect</option>
+                  <option value="voiceover">Voice Over</option>
+                </optgroup>
+              </select>
+              <button class="nav-link btn btn-primary" type="submit">Import Asset</button> 
+              <button class="nav-link btn btn-secondary" onclick="studioHtml5.closeQuene()">Close</button>
+            </div>
+            <ul class="nav flex-column mb-2" id="importer_quene"></ul>
             <div class="row" id="stuff"></div>
           </div>
         </nav>
@@ -152,7 +160,7 @@
               <a id="currentSceneNum" onclick="studioHtml5.loadScenes()" href="javascript:;"></a>.
             </p>
             <div id="studio_html5"></div>
-            <button onclick="studioHtml5.sceneSettings()" class="btn disabled">
+            <button onclick="studioHtml5.showModal($('#sceneSettings'))" class="btn disabled">
               Scene Settings
             </button>
           </div>
@@ -184,52 +192,11 @@
           this.x2js = new X2JS();
           this.xmlSerializer = new XMLSerializer();
           this.domParser = new DOMParser();
-          this.previewPlayer.xmlHeader = '<?xml version="1.0" encoding="utf-8"?>';
-          this.previewPlayer.imageData = {
-            imagedata: {}
-          }
-          this.previewPlayer.imageDataItemsPreload = [
-            {
-              _type: 0,
-              _id: "common.effect.cut"
-            },
-            {
-              _type: 2,
-              _id: "custom_font.json"
-            },
-            {
-              _type: 6,
-              _id: "watermarkUrl",
-              __text: "g4s"
-            }
-          ]
-          this.ugc = {
-            theme: {
-              _id: "ugc",
-              _name: "ugc"
-            }
-          }
-          this.previewPlayer.xmlTheme = {
-            themexml: {
-              item: [
-                {
-                  _id: "ugc",
-                  __text: encodeURIComponent(this.json2xml(this.ugc))
-                }
-              ]
-            }
-          }
           this.params = new URLSearchParams(window.location.search);
           this.fallbackTheme = "common";
           this.githubBranch = '9c07584ec95b766aea3509ef8d2f81dcc9d86ce2';
           this.githubServerUrl = `https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/${this.githubBranch}/server`;
           this.storeUrl = `${this.githubServerUrl}/store/3a981f5cb2739137`;
-          jQuery.get(`${this.storeUrl}/${this.fallbackTheme}/theme.xml`, d => {
-            this.previewPlayer.xmlTheme.themexml.item[2] = {
-              _id: this.fallbackTheme,
-              __text: encodeURIComponent(d.split("\n").join("").substr(this.previewPlayer.xmlHeader.length))
-            }
-          })
           jQuery.getJSON("/api/themes/get?only_include_extras=true", d => {
             this.extraThemes = d;
           });
@@ -267,28 +234,22 @@
           return this.xmlSerializer.serializeToString(this.x2js.json2xml(j));
         }
         setupMoviePreview() {
-          if (!this.assetManagerData?.init) jQuery.post("/api/movie/preview", {
+          this.showPleasewait();
+          jQuery.post("/api/movie/preview", {
             xml: this.json2xml(this.movieBase)
           }, () => this.initPreviewPlayer({
             movieId: "templatePreview",
             userId: userData.uid || userData.id
           }))
-          else {
-            this.previewXml = `${this.previewPlayer.xmlHeader}<data><filmxml>${
-              encodeURIComponent(this.json2xml(this.movieBase))
-            }</filmxml>${this.json2xml(this.previewPlayer.imageData)}${this.json2xml(this.previewPlayer.xmlTheme)}</data>`;
-            this.initPreviewPlayer({
-              isInitFromExternal: 1
-            })
-          }
         }
         initPreviewPlayer(flashvars = {}) {
           Object.assign(flashvars, {
-            apiserver: "/",
-            storePath: "/static/store/<store>",
-            autostart: 1,
-            isWide: this.wideScreen,
+            apiserver: "/", 
+            autostart: "1", 
+            movieId: "templatePreview",
+            storePath: "/static/store/<store>", 
             clientThemePath: "/static/<client_theme>",
+            userId: userData.uid || userData.id
           });
           this.previewPlayer.flash({
             swf: "/static/animation/player.swf",
@@ -302,8 +263,11 @@
           this.previewPlayer.html(`<h2>Preview Video</h2><hr>${
             this.previewPlayer.html()
           }<hr><center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>`)
+          this.showModal(this.previewPlayer);
+        }
+        showModal(message) {
           this.showPleasewait({
-            message: this.previewPlayer,
+            message,
             css: {
               cursor: '',
               right: '66%',
@@ -316,37 +280,14 @@
           })
         }
         changeFiles(obj) {
-          this.importerFile = this.files[$(obj).val()];
+          this.importerFileNum = $(obj).val();
+          this.importerFile = this.files[this.importerFileNum];
         }
         loadImporterQuene(obj) {
-          const supportedFiles = {
-            "images": [
-              "gif",
-              "png",
-              "jpg"
-            ],
-            "sounds": [
-              "mp3",
-              "ogg",
-              "wav",
-              "asf"
-            ]
-          }
-          this.importerStarted = true;
+          if (!obj.files[0]) return this.displayFeedback("Importer Notice", "Please select a file to upload")
           this.files = obj.files;
-          for (var i = 0; i < this.files.length; i++) $("#fileName").append(`<option value="${i}">${this.files[i].name}</option>`)
-          this.importerFile = this.files[0];
-          for (const i in supportedFiles) {
-            for (const fileType of suppmortedFiles[i]) {
-              if (!this.importerFile.name.endsWith(fileType)) continue;
-              return this.loadImporter(i)
-            }
-          }
-          delete this.importerStarted;
-          delete this.importerFile;
-          this.displayFeedback("Importer Notice", `Your file with the ${this.importerFile.name.substr(
-            this.importerFile.name.lastIndexOf(".")
-          )} extension is not supported.`)
+          this.importerStarted = true;
+          this.loadImporter();
         }
         displayScene(i) {
           this.currentSceneNum = i;
@@ -363,9 +304,6 @@
               Scene ${i + 1}
             </button>`
           }
-          html += `<button class="col-sm btn btn-sm btn-outline-secondary" onclick="studioHtml5.showBeforeScene()">
-            Scene ${this.movieBase.film.scene.length + 1}
-          </button>`;
           this.showPleasewait({ 
             message: `<h1>All Scenes</h1><div class="row">${
               html
@@ -417,6 +355,7 @@
           } else $("#assetManagerContent").html(content);
         }
         displayFeedback(header, text) {
+          this.hidePleasewait();
           $.jGrowl(text, { 
             header,
             life: text.length * text.length
@@ -436,17 +375,7 @@
         }
         themeSelect(newTheme, action, className) {
           this.showPleasewait();
-          if (newTheme) {
-            this.currentTheme = newTheme;
-            if (
-              this.previewPlayer.xmlTheme.themexml.item[2]?._id != this.currentTheme
-            ) jQuery.get(`${this.storeUrl}/${this.currentTheme}/theme.xml`, d => {
-              this.previewPlayer.xmlTheme.themexml.item[1] = {
-                _id: this.currentTheme,
-                __text: encodeURIComponent(d.split("\n").join("").substr(this.previewPlayer.xmlHeader.length))
-              }
-            })
-          }
+          if (newTheme) this.currentTheme = newTheme;
           this.changeAction(action, className);
           this.swap();
           if (this.studioLoaded) this.hidePleasewait();
@@ -469,12 +398,39 @@
           if (!$(obj).hasClass("antiDisable")) this.swap(oldElem);
           this.hidePleasewait();
         }
-        loadImporter(importType) {
-          if (this.files.length > 0) {
-            this.importerStarted = true;
-            this.importerFile = this.files[0];
+        loadImporter(importType, importerLoaded = false) {
+          if (!this.importerStarted) return document.getElementById("importerFile").click();
+          if (!importerLoaded && (this.files || []).length > 0) {
+            const supportedFiles = {
+              "images": [
+                "gif",
+                "png",
+                "jpg"
+              ],
+              "sounds": [
+                "mp3",
+                "ogg",
+                "wav",
+                "asf"
+              ]
+            }
+            for (var i = 0; i < this.files.length; i++) $("#fileName").append(`<option value="${i}">${this.files[i].name}</option>`)
+            this.importerFileNum = 0;
+            this.importerFile = this.files[this.importerFileNum];
+            for (const i in supportedFiles) {
+              for (const fileType of supportedFiles[i]) {
+                if (!this.importerFile.name.endsWith(fileType)) continue;
+                return this.loadImporter(i, true)
+              }
+            }
+            delete this.importerStarted;
+            const old = this.importerFile;
+            delete this.importerFile;
+            delete this.importerFileNum
+            return this.displayFeedback("Importer Notice", `Your file with the ${old.name.substr(
+              old.name.lastIndexOf(".")
+            )} extension is not supported.`)
           }
-          if (!this.importerStarted) return document.getElementById('importerFile').click();
           if (!this.importerHTML) {
             this.importerHTML = `<li class="nav-item" data-type="fileImport">
               <form action="javascript:;" onsubmit="studioHtml5.uploadFile(this);">
@@ -508,15 +464,22 @@
           }).done((d) => {
             if (d.suc) {
               delete this.importerFile;
-              delete this.importerStarted;
               delete this.importerHTML;
-              this.fileImportElem.find(`optgroup[data-importType="${this.importType}"]`).hide();
               delete this.fileImportElem;
               delete this.importType;
               this.closeQuene();
               $("#fileName").html('');
-              this.files.splice(0, 1);
-              for (var i = 0; i < this.files.length; i++) $("#fileName").append(`<option value="${i}">${this.files[i].name}</option>`);
+              const array = [];
+              for (var i = 0; i < this.files.length; i++) {
+                if (i == this.importerFileNum) continue;
+                array.unshift(this.files[i]);
+              }
+              delete this.importerFileNum
+              this.files = array;
+              if (this.files.length == 0) {
+                delete this.files;
+                delete this.importerStarted;
+              }
               this.displayFeedback("Importer Message", "Your asset has been imported successfuly.");
             } else this.displayFeedback("Importer Message", d.msg)
           });
@@ -620,7 +583,6 @@
         }
         selectBackground(info) {
           console.log(info);
-          this.previewPlayer.imageData.imagedata.item = [];
           if (!this.assetManagerData?.init) {
             if (this.movieBase.film.scene[this.currentSceneNum].prop) delete this.movieBase.film.scene[this.currentSceneNum].prop
             this.movieBase.film.scene[this.currentSceneNum]._combgId = `${this.currentTheme}.${info.attr.id}`
@@ -637,15 +599,6 @@
               piecex.splice(1, 0, type);
               return piecex;
             }
-            jQuery.post(`/api/url/convert2base64?url=${this.storeUrl}/${
-              getAllPieces(this.movieBase.film.scene[this.currentSceneNum].bg.file, "bg").join("/")
-            }&header=Content-Type,application/shockwave-flash`, d => {
-              this.previewPlayer.imageData.imagedata.item.unshift({
-                _type: 1,
-                _id: getAllPieces(this.movieBase.film.scene[this.currentSceneNum].bg.file, "bg").join("."),
-                __text: d
-              })
-            })
             if (info.children.filter(i => i.name == "prop")[0]) this.movieBase.film.scene[this.currentSceneNum].prop = [];
             for (var c = 0; c < info.children.filter(i => i.name == "prop").length; c++) {
               const i = info.children.filter(i => i.name == "prop").reverse()[c];
@@ -660,36 +613,16 @@
               for (const info of i.children) {
                 if (!info.name) continue;
                 this.movieBase.film.scene[this.currentSceneNum].prop[c][info.name] = info.val;
-                if (info.name != "file") continue;
-                jQuery.post(`/api/url/convert2base64?url=${this.storeUrl}/${
-                  getAllPieces(info.val, "prop").join("/")
-                }&header=Content-Type,application/shockwave-flash`, d => {
-                  this.previewPlayer.imageData.imagedata.item.unshift({
-                    _type: 1,
-                    _id: getAllPieces(info.val, "prop").join("."),
-                    __text: d
-                  })
-                })
               }
             }
           } else {
             delete this.movieBase.film.scene[this.currentSceneNum].prop
-            this.ugc.theme.background = {};
-            for (const i in info) this.ugc.theme.background[`_${i}`] = info[i];
             this.movieBase.film.scene[this.currentSceneNum].bg = {
               _id: `BG0`,
               _index: 0,
               file: `ugc.${info.id}`
             }
-            jQuery.post(`/api/url/convert2base64?url=${window.location.origin}/goapi/getAsset/${info.id}`, d => {
-              this.previewPlayer.imageData.imagedata.item.unshift({
-                _type: 1,
-                _id: `ugc.bg.${info.id}`,
-                __text: d
-              })
-            })
           }
-          this.previewPlayer.imageData.imagedata.item = Object.assign(this.previewPlayer.imageData.imagedata.item.reverse(), this.previewPlayer.imageDataItemsPreload)
           const imgUrl = !this.assetManagerData?.init ? `${this.storeUrl}/${this.currentTheme}/bg/${
             info.attr.thumb
           }` :  `/goapi/getAsset/${info.id}`;
@@ -729,6 +662,37 @@
             delete this.audioId;
           }
         }
+        loadSound(info, obj) {
+          this.showPleasewait();
+          this.movieBase.film.sound = this.movieBase.film.sound || [];
+          const l = this.movieBase.film.sound.length;
+          const infoPrev = this.movieBase.film.sound[l - 1];
+          const start = (infoPrev?.stop || 0) + 1; 
+          jQuery.post(`/api/retreiveMp3DurationFromURL?url=${this.storeUrl}/${$(obj).data("theme")}/sound/${info.attr.id}`, d => {
+            const split = d.d.toString().split(".");
+            // the math for stop isn't quite accurate, but i was somewhat able to get it close.
+            const stop = Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 7);
+            this.movieBase.film.sound.unshift({
+              _id: `SOUND${l}`,
+              _index: l,
+              _track: 0, 
+              _vol: "1",
+              _tts: "0",
+              sfile: `common.${info.attr.id}`,
+              start,
+              stop,
+              fadein: {
+                _duration: 0,
+                _vol: 0
+              },
+              fadeout: {
+                _duration: 0,
+                _vol: 0
+              }
+            });
+            this.displayFeedback("Studio Message", "Your soundtrack has been added successfuly");
+          })
+        }
         loadSounds(thisTheme) {
           if (this.assetManagerData?.init) {
             const d = this.assetManagerData.array;
@@ -745,7 +709,7 @@
             jQuery.getJSON(`/api/theme/get?tId=${theme}&tag=sound`, d => {
               if (d[0]) $("#stuff").html(d.filter(i => i.attr.id.endsWith(".mp3")).map(v => `<div>
                 <p class="nav-link">
-                  <a href="javascript:;" onclick='studioHtml5.loadSound(${JSON.stringify(v)})' title="${v.attr.name}">${v.attr.name}</a>
+                  <a href="javascript:;" onclick='studioHtml5.loadSound(${JSON.stringify(v)}, this)' data-theme="${theme}" title="${v.attr.name}">${v.attr.name}</a>
                   <a href="javascript:;" onclick="studioHtml5.soundPreview(
                     this, '${v.attr.id}'
                   )" id="${this.storeUrl}/${theme}/sound/${v.attr.id}">
