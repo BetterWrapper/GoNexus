@@ -5,7 +5,7 @@ const apiKeys = {
 	Typesense: env.API_KEYS.Typesense
 }
 const xmldoc = require("xmldoc");
-const xml2js = require("xml2js");
+const exec = require("child_process");
 const JSZip = require("jszip");
 const http = require("http");
 const crypto = require("crypto");
@@ -54,6 +54,7 @@ const sdb = require("./school/db");
 const slg = require("./school/login");
 const gsd = require("./school/getting_started");
 const url = require("url");
+const path = require("path");
 const discord = require("discord.js");
 const formidable = require("formidable");
 const session = require("./misc/session");
@@ -106,6 +107,7 @@ function stream2Buffer(readStream) {
 const {
 	getBuffersOnline
 } = require("./movie/main");
+const { stdout, stderr } = require("process");
 let json = {};
 http
 	.createServer(async (req, res) => {
@@ -249,18 +251,7 @@ http
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/url/convert2base64": {
-							const headers = {};
-							if (parsedUrl.query.header) {
-								const split = parsedUrl.query.header.split(",");
-								headers[split[0]] = split[1];
-							}
-							https.get(parsedUrl.query.url, {headers}, r => {
-								const buffers = [];
-								r.on("data", b => buffers.push(b)).on("end", () => res.end(Buffer.concat(buffers).toString("base64")))
-							});
-							break;
-						} case "/api/templateStuff/get": {
+						case "/api/templateStuff/get": {
 							fs.readFile(`./_TEMPLATES/${parsedUrl.query.filename}`, (err, data) => {
 								if (err) res.end(JSON.stringify(err));
 								else {

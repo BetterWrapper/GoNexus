@@ -107,7 +107,7 @@
       <div id="sceneSettings">
         <h2>Scene Settings</h2>
         <hr>
-        <form onsubmit="studioHtml5.updateSceneSettings(this)"></form>
+        <form onsubmit="studioHtml5.updateSceneSettings(this)" id="sceneSettings_form" action="javascript:;"></form>
         <hr>
         <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
       </div>
@@ -160,7 +160,7 @@
               <a id="currentSceneNum" onclick="studioHtml5.loadScenes()" href="javascript:;"></a>.
             </p>
             <div id="studio_html5"></div>
-            <button onclick="studioHtml5.showModal($('#sceneSettings'))" class="btn disabled">
+            <button onclick="studioHtml5.sceneSettings()" class="btn disabled">
               Scene Settings
             </button>
           </div>
@@ -185,7 +185,7 @@
       class Studio {
         constructor() {
           this.showPleasewait();
-          this.wideScreen = 1;
+          this.wideScreen = 0;
           this.previewPlayer = $("#previewPlayer");
           this.managerBtn = '<button type="button" class="btn btn-sm btn-outline-secondary" data-studiohtml5function-call="assetManager">Open Asset Manager</button>';
           this.studio = $("#studio_html5");
@@ -230,6 +230,81 @@
             }
           }, 1)
         }
+        sceneSettings() {
+          let soundHyml = '';
+          if (this.movieBase.film.sound && this.movieBase.film.sound[0]) for (var a = 0; a < this.movieBase.film.sound.length; a++) {
+            const v = this.movieBase.film.sound[a];
+            function c(k = Object.keys(v), d = []) {
+              console.log(k, d);
+              let html = '';
+              for (var i = 0; i < k.length; i++) {
+                const key = k[i];
+                const info = v[key];
+                switch (typeof info) {
+                  case "object": {
+                    html += `<h6>${key}:</h6><br><ul>${c(Object.keys(info), Object.assign(d, [key]))}</ul>`
+                    break;
+                  } case "string": {
+                    html += `<label for="${d.join("_")}${key}_${a}">${key}:</label>\t\t\t\t<input id="${
+                      d.join("_")
+                    }${key}_${a}" type="text" name="sound[${a}]${
+                      d.map(v => `[${v}]`).join('')
+                    }[${key}]" value="${info}"/><br>`;
+                    break;
+                  }
+                }
+              }
+              return `<li>${html}</li>`
+            }
+            soundHyml += `<div id="soundTrackSetting_${a}"${a > 0 ? ' style="display: none;"' : ''}>${c()}</div>`;
+          } else soundHyml = 'There are no soundtracks to manage. Try adding a soundtrack to this movie to see what happens.';
+          $(`#sceneSettings_form`).html(`<div id="sceneSettings_soundtracks">
+            <h6>Soundtracks Manager</h6>
+            <input type="button" style="display: left;" onclick="studioHtml5.soundTrackManagerSlideshowMove('left')" disabled value="<-"/>
+            <input type="button" style="display: right;" onclick="studioHtml5.soundTrackManagerSlideshowMove('right')"${
+              this.movieBase.film.sound?.length > 1 ? '' : ' disabled'
+            } value="->"/>
+            <ol>${soundHyml}</ol>
+          </div><input type="submit" class="btn btn-primary" value="Update Settings"/>`)
+          this.showModal($('#sceneSettings'));
+        }
+        updateSceneSettings(obj) {
+          jQuery.post(`/api/attempt2ParseQueryWithExpress`, {
+            form: $(obj).serialize()
+          }, de => {
+            console.log(de);
+          })
+        }
+        soundTrackManagerSlideshowMove(c) {
+          this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0;
+          let expression, conditionals;
+          switch (c) {
+            case "left": {
+              expression = this.slideNum4SoundtrackSettings - 1;
+              conditionals = {
+                past: this.movieBase.film.sound[expression] ? true : false,
+                future: this.movieBase.film.sound[expression - 1] ? true : false
+              }
+              break;
+            } case "right": {
+              expression = this.slideNum4SoundtrackSettings + 1;
+              conditionals = {
+                past: this.movieBase.film.sound[expression] ? true : false,
+                future: this.movieBase.film.sound[expression + 1] ? true : false
+              }
+              break;
+            }
+          }
+          console.log(expression, conditionals);
+          $("#sceneSettings_soundtracks").find(`input[style="display: right;"]`)[0].disabled = false;
+          $("#sceneSettings_soundtracks").find(`input[style="display: left;"]`)[0].disabled = false;
+          if (!conditionals.future) $("#sceneSettings_soundtracks").find(`input[style="display: ${c};"]`)[0].disabled = true;
+          if (conditionals.past) {
+            $(`#soundTrackSetting_${this.slideNum4SoundtrackSettings}`).hide();
+            $(`#soundTrackSetting_${expression}`).show();
+            this.slideNum4SoundtrackSettings = expression;
+          }
+        }
         json2xml(j) {
           return this.xmlSerializer.serializeToString(this.x2js.json2xml(j));
         }
@@ -271,7 +346,8 @@
             css: {
               cursor: '',
               right: '66%',
-              'margin-top':  '-66px',
+              top: '16%',
+              left: '30%',
               width: '558px'
             },
             overlayCSS: {
@@ -667,27 +743,27 @@
           this.movieBase.film.sound = this.movieBase.film.sound || [];
           const l = this.movieBase.film.sound.length;
           const infoPrev = this.movieBase.film.sound[l - 1];
-          const start = (infoPrev?.stop || 0) + 1; 
+          const a = (Number(infoPrev?.stop || '0') + 1); 
           jQuery.post(`/api/retreiveMp3DurationFromURL?url=${this.storeUrl}/${$(obj).data("theme")}/sound/${info.attr.id}`, d => {
             const split = d.d.toString().split(".");
             // the math for stop isn't quite accurate, but i was somewhat able to get it close.
-            const stop = Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 7);
+            const b = (Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 8) + a);
             this.movieBase.film.sound.unshift({
               _id: `SOUND${l}`,
-              _index: l,
-              _track: 0, 
+              _index: l.toString(),
+              _track: '0', 
               _vol: "1",
               _tts: "0",
               sfile: `common.${info.attr.id}`,
-              start,
-              stop,
+              start: a.toString(),
+              stop: b.toString(),
               fadein: {
-                _duration: 0,
-                _vol: 0
+                _duration: '0',
+                _vol: '0'
               },
               fadeout: {
-                _duration: 0,
-                _vol: 0
+                _duration: '0',
+                _vol: '0'
               }
             });
             this.displayFeedback("Studio Message", "Your soundtrack has been added successfuly");
