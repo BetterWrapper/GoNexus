@@ -269,11 +269,27 @@
           this.showModal($('#sceneSettings'));
         }
         updateSceneSettings(obj) {
-          jQuery.post(`/api/attempt2ParseQueryWithExpress`, {
-            form: $(obj).serialize()
-          }, de => {
-            console.log(de);
-          })
+          this.showPleasewait();
+          const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
+          const keys = Object.keys(json);
+          const a = [];
+          for (const key of keys) {
+            let k = key.split("][").join(".").split("[").join(".").split("]")
+            k = k[0].split(".");
+            function c(e = 0) {
+              if (e == k.length) return json[key];
+              const a = {};
+              a[k[e]] = c(e + 1);
+              return a;
+            }
+            a.unshift(c())
+          }
+          for (const f of a) {
+            if (f.sound) Object.assign(this.movieBase.film.sound[this.slideNum4SoundtrackSettings || 0], f.sound[
+              this.slideNum4SoundtrackSettings || 0
+            ]);
+          }
+          this.displayFeedback("Scene Settings Message", "Your Scene Settings were updated successfuly");
         }
         soundTrackManagerSlideshowMove(c) {
           this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0;
