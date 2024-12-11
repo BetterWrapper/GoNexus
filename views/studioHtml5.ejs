@@ -329,6 +329,7 @@
           this.displayFeedback("Scene Settings Message", "Your Scene Settings were updated successfuly");
         }
         soundTrackManagerSlideshowMove(c) {
+          this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0
           let expression, conditionals;
           switch (c) {
             case "left": {
@@ -352,8 +353,8 @@
           $("#sceneSettings_soundtracks").find(`input[style="display: left;"]`)[0].disabled = false;
           if (!conditionals.future) $("#sceneSettings_soundtracks").find(`input[style="display: ${c};"]`)[0].disabled = true;
           if (conditionals.past) {
-            $(`#soundTrackSetting_${this.slideNum4SoundtrackSettings}`).hide();
-            $(`#soundTrackSetting_${expression}`).show();
+            $(`#setting${this.slideNum4SoundtrackSettings}`).hide();
+            $(`#setting${expression}`).show();
             this.slideNum4SoundtrackSettings = expression;
             $("#sceneSettings_soundtracks").find(`input[name="num"]`).val(expression);
           }
@@ -816,7 +817,7 @@
         }
         loadSound(info, obj) {
           this.showPleasewait();
-          this.movieBase.film.sound = this.movieBase.film.sound || [];
+          this.movieBase.film.sound = this.movieBase.film.sound?.reverse() || [];
           const l = this.movieBase.film.sound.length;
           const infoPrev = this.movieBase.film.sound[l - 1];
           const a = (Number(infoPrev?.stop || '0') + 1); 
