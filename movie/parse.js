@@ -853,7 +853,7 @@ module.exports = {
 			if (options.value) {
 				const path = `${themeFolder}/${options.value}.xml`
 				if (fs.existsSync(path)) return fs.readFileSync(path);
-				return `Sorry, the theme xml for ${options.value} does not exist.`;
+				return `Sorry, the theme xml file for ${options.value} does not exist.`;
 			}
 			return xml;
 		}

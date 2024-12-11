@@ -106,6 +106,10 @@
       <div id="previewPlayer"></div>
       <div id="sceneSettings">
         <h2>Scene Settings</h2>
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-primary" id="sceneSettingsBtn" onclick="studioHtml5.sceneSettings()">Scene Manager</button>
+          <button type="button" class="btn btn-sm btn-primary" id="soundtrackSettingsBtn" onclick="studioHtml5.soundTrackSettingsLoader()">Sound Track Manager</button>
+        </div>
         <hr>
         <form onsubmit="studioHtml5.updateSceneSettings(this)" id="sceneSettings_form" action="javascript:;"></form>
         <hr>
@@ -162,6 +166,9 @@
             <div id="studio_html5"></div>
             <button onclick="studioHtml5.sceneSettings()" class="btn disabled">
               Scene Settings
+            </button>
+            <button onclick="studioHtml5.addScene(studioHtml5.currentSceneNum + 1)" class="btn disabled">
+              Add Scene
             </button>
           </div>
         </main>
@@ -231,9 +238,30 @@
           }, 1)
         }
         sceneSettings() {
+          this.showPleasewait();
+          const sceneInfo = this.movieBase.film.scene[this.currentSceneNum];
+          const thingsExcluded = {
+            _id: true,
+            _index: true,
+            _combgId: true,
+            _color: true
+          }
+          const info = {};
+          for (const i in sceneInfo) {
+            if (typeof sceneInfo[i] != "object" && !thingsExcluded[i]) info[i] = sceneInfo[i].toString();
+          }
+          $(`#sceneSettings_form`).html(`<div id="sceneSettings_manager">
+            <h5>Scene Manager</h5>
+            ${this.meta2html([info], 'scene', this.currentSceneNum)}
+          </div><input type="submit" class="btn btn-primary" value="Update Scene Settings"/>`);
+          $("#sceneSettings").find("button").prop("disabled", false);
+          $("#sceneSettingsBtn")[0].disabled = true;
+          this.showModal($("#sceneSettings"));
+        }
+        meta2html(array, type, num) {
           let soundHyml = '';
-          if (this.movieBase.film.sound && this.movieBase.film.sound[0]) for (var a = 0; a < this.movieBase.film.sound.length; a++) {
-            const v = this.movieBase.film.sound[a];
+          for (var a = 0; a < array.length; a++) {
+            const v = array[a];
             function c(k = Object.keys(v), d = []) {
               console.log(k, d);
               let html = '';
@@ -242,31 +270,44 @@
                 const info = v[key];
                 switch (typeof info) {
                   case "object": {
-                    html += `<h6>${key}:</h6><br><ul>${c(Object.keys(info), Object.assign(d, [key]))}</ul>`
+                    html += `<h6>${key}:</h6>${c(Object.keys(info), Object.assign(d, [key]))}`
                     break;
                   } case "string": {
-                    html += `<label for="${d.join("_")}${key}_${a}">${key}:</label>\t\t\t\t<input id="${
-                      d.join("_")
-                    }${key}_${a}" type="text" name="sound[${a}]${
+                    html += `<div class="input-group"><span class="input-group-text">${
+                      key.substr(key.startsWith("_") ? 1 : 0)
+                    }:</span><input class="form-control" type="text" name="${type}[${num || a}]${
                       d.map(v => `[${v}]`).join('')
-                    }[${key}]" value="${info}"/><br>`;
+                    }[${key}]" value="${info}" required/></div>`;
                     break;
                   }
                 }
               }
-              return `<li>${html}</li>`
+              return html
             }
-            soundHyml += `<div id="soundTrackSetting_${a}"${a > 0 ? ' style="display: none;"' : ''}>${c()}</div>`;
-          } else soundHyml = 'There are no soundtracks to manage. Try adding a soundtrack to this movie to see what happens.';
+            soundHyml += `<div id="setting${a}"${a > 0 ? ' style="display: none;"' : ''}>${c()}</div>`;
+          }
+          return soundHyml;
+        }
+        soundTrackSettingsLoader() {
+          this.showPleasewait();
+          $("#sceneSettings").find("button").prop("disabled", false)
+          $("#soundtrackSettingsBtn")[0].disabled = true;
+          let soundHyml = '';
+          if (this.movieBase.film.sound && this.movieBase.film.sound[0]) soundHyml = this.meta2html(this.movieBase.film.sound, 'sound');
+          else soundHyml = 'There are no soundtracks to manage. Try adding a soundtrack to this movie to see what happens.';
           $(`#sceneSettings_form`).html(`<div id="sceneSettings_soundtracks">
             <h6>Soundtracks Manager</h6>
             <input type="button" style="display: left;" onclick="studioHtml5.soundTrackManagerSlideshowMove('left')" disabled value="<-"/>
             <input type="button" style="display: right;" onclick="studioHtml5.soundTrackManagerSlideshowMove('right')"${
               this.movieBase.film.sound?.length > 1 ? '' : ' disabled'
             } value="->"/>
-            <ol>${soundHyml}</ol>
-          </div><input type="submit" class="btn btn-primary" value="Update Settings"/>`)
-          this.showModal($('#sceneSettings'));
+            ${soundHyml}
+          </div><input type="submit" class="btn btn-primary" value="Update Soundtrack Settings"/>`);
+          this.showModal($('#sceneSettings'), {
+            css: {
+              top: '6%'
+            }
+          });
         }
         updateSceneSettings(obj) {
           this.showPleasewait();
@@ -284,15 +325,10 @@
             }
             a.unshift(c())
           }
-          for (const f of a) {
-            if (f.sound) Object.assign(this.movieBase.film.sound[this.slideNum4SoundtrackSettings || 0], f.sound[
-              this.slideNum4SoundtrackSettings || 0
-            ]);
-          }
+          this.assignObjects(this.movieBase.film, a);
           this.displayFeedback("Scene Settings Message", "Your Scene Settings were updated successfuly");
         }
         soundTrackManagerSlideshowMove(c) {
-          this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0;
           let expression, conditionals;
           switch (c) {
             case "left": {
@@ -319,6 +355,7 @@
             $(`#soundTrackSetting_${this.slideNum4SoundtrackSettings}`).hide();
             $(`#soundTrackSetting_${expression}`).show();
             this.slideNum4SoundtrackSettings = expression;
+            $("#sceneSettings_soundtracks").find(`input[name="num"]`).val(expression);
           }
         }
         json2xml(j) {
@@ -329,47 +366,82 @@
           jQuery.post("/api/movie/preview", {
             xml: this.json2xml(this.movieBase)
           }, () => this.initPreviewPlayer({
-            movieId: "templatePreview",
-            userId: userData.uid || userData.id
-          }))
+            flashvars: {
+              movieId: "templatePreview",
+              userId: userData.uid || userData.id
+            }
+          }));
         }
-        initPreviewPlayer(flashvars = {}) {
-          Object.assign(flashvars, {
-            apiserver: "/", 
-            autostart: "1", 
-            movieId: "templatePreview",
-            storePath: "/static/store/<store>", 
-            clientThemePath: "/static/<client_theme>",
-            userId: userData.uid || userData.id
-          });
-          this.previewPlayer.flash({
+        assignObjects(json = {}, array = []) {
+          const $this = this;
+          function c(s) {
+            const json = {};
+            for (const i in s) {
+              if (Array.isArray(s[i])) {
+                if (!json[i]) json[i] = [];
+                Object.assign(json[i], s[i]);
+              } else if (typeof s[i] != "object") json[i] = s[i];
+              else {
+                if (!json[i]) json[i] = {};
+                $this.assignObjects(json[i], [c(s[i])]);
+              }
+            }
+            return json;
+          }
+          for (const j of array) {
+            for (const i in j) {
+              if (Array.isArray(j[i])) {
+                if (!json[i]) json[i] = [];
+                Object.assign(json[i], j[i]);
+              } else if (typeof j[i] != "object") json[i] = j[i];
+              else {
+                if (!json[i]) json[i] = {};
+                $this.assignObjects(json[i], [c(j[i])])
+              }
+            }
+          }
+          console.log(json);
+          return json;
+        }
+        initPreviewPlayer(f = {}) {
+          const options = this.assignObjects({
             swf: "/static/animation/player.swf",
             type: "application/x-shockwave-flash",
             width: "550",
             height: "354",
-            flashvars,
+            flashvars: {
+              apiserver: "/", 
+              autostart: "1", 
+              storePath: "/static/store/<store>", 
+              clientThemePath: "/static/<client_theme>"
+            },
             allowScriptAccess: "always",
             allowFullScreen: "true",
-          });
+          }, [f])
+          this.previewPlayer.flash(options);
           this.previewPlayer.html(`<h2>Preview Video</h2><hr>${
             this.previewPlayer.html()
           }<hr><center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>`)
           this.showModal(this.previewPlayer);
         }
-        showModal(message) {
-          this.showPleasewait({
-            message,
+        showModal(m, o = {}) {
+          if (!m) return this.displayFeedback(
+            "Notice", "The message paramater is required in the showModal function withn the Studio class in order to display your modal"
+          )
+          const options = this.assignObjects({
             css: {
               cursor: '',
               right: '66%',
               top: '16%',
               left: '30%',
               width: '558px'
-            },
+            }, 
             overlayCSS: {
               cursor: ''
             }
-          })
+          }, [o]);
+          options.message = m;
+          this.showPleasewait(options);
         }
         changeFiles(obj) {
           this.importerFileNum = $(obj).val();
@@ -383,33 +455,24 @@
         }
         displayScene(i) {
           this.currentSceneNum = i;
-          this.reloadSceneParts();
-        }
-        reloadSceneParts() {
           $("#currentSceneNum").html(this.currentSceneNum + 1);
+          this.selectBackground(this.selectedBackgrounds[i]);
           this.hidePleasewait();
         }
         loadScenes() {
           let html = '';
-          for (var i = 0; i < this.movieBase.film.scene.length; i++) {
+          if (this.movieBase.film.scene.length > 1) for (var i = 0; i < this.movieBase.film.scene.length; i++) {
             html += `<button class="col-sm btn btn-sm btn-outline-secondary" onclick="studioHtml5.displayScene(${i})">
               Scene ${i + 1}
             </button>`
-          }
-          this.showPleasewait({ 
-            message: `<h1>All Scenes</h1><div class="row">${
-              html
-            }</div><button class="btn btn-primary" onclick="jQuery.unblockUI()">Close</button>`,
-            overlayCSS: {
-              cursor: 'auto'
-            },
+          } else html = '<div class="col-sm">There are no scenes to load.</div>'
+          this.showModal(`<h1>All Scenes</h1><div class="row">${
+            html
+          }</div><button onclick="studioHtml5.hidePleasewait()">Close</button>`, {
             css: {
-              top: '7%',
-              left: '0px',
-              width: '100%',
-              cursor: 'auto'
+              top: '14%'
             }
-          })
+          });
         }
         assetManager(theme = "ugc") {
           this.soundStop();
@@ -632,8 +695,12 @@
           })
         }
         addScene(num) {
+          if (num == 100) return this.displayFeedback("Notice", "You cannot add more than 100 scenes.")
           $("#currentSceneNum").html((this.currentSceneNum = num) + 1);
-          const durDefault = "2.5";
+          if (
+            this.selectedBackgrounds && this.selectedBackgrounds[this.currentSceneNum - 1]
+          ) this.selectedBackgrounds[this.currentSceneNum] = this.selectedBackgrounds[this.currentSceneNum - 1];
+          const durDefault = 2.5;
           this.movieBase.film._duration = this.movieBase.film._duration ? this.movieBase.film._duration + durDefault : durDefault;
           this.movieBase.film.scene[this.currentSceneNum] = {
             _id: `SCENE${num + num}`,
@@ -645,7 +712,7 @@
               {
                 _id: `EFFECT${this.movieBase.film.scene[num != 0 ? - 1 : 0]?.effectAsset.length || 0 + num}`,
                 _themecode: "common",
-                _index: 4,
+                _index: this.movieBase.film.scene[num != 0 ? - 1 : 0]?.effectAsset.length || 0,
                 effect: {
                   _x: 0,
                   _y: 0,
@@ -674,7 +741,8 @@
           }
         }
         selectBackground(info) {
-          console.log(info);
+          this.selectedBackgrounds = this.selectedBackgrounds || [];
+          this.selectedBackgrounds[this.currentSceneNum] = info;
           if (!this.assetManagerData?.init) {
             if (this.movieBase.film.scene[this.currentSceneNum].prop) delete this.movieBase.film.scene[this.currentSceneNum].prop
             this.movieBase.film.scene[this.currentSceneNum]._combgId = `${this.currentTheme}.${info.attr.id}`
@@ -683,23 +751,15 @@
               _index: 0,
               file: info.children.find(i => i.name == "bg").children.find(i => i.name == "file").val
             }
-            function getAllPieces(array, type) {
-              const piecex = array.split(".");
-              const ext = piecex[piecex.length - 1];
-              piecex.splice(piecex.length - 1, 1);
-              piecex[piecex.length - 1] += `.${ext}`;
-              piecex.splice(1, 0, type);
-              return piecex;
-            }
             if (info.children.filter(i => i.name == "prop")[0]) this.movieBase.film.scene[this.currentSceneNum].prop = [];
-            for (var c = 0; c < info.children.filter(i => i.name == "prop").length; c++) {
-              const i = info.children.filter(i => i.name == "prop").reverse()[c];
+            for (var c = info.children.filter(i => i.name == "prop").length - 1; c >= 0; c--) {
+              const i = info.children.filter(i => i.name == "prop")[c];
               this.movieBase.film.scene[this.currentSceneNum].prop = this.movieBase.film.scene[
                 this.currentSceneNum
               ].prop || [];
               this.movieBase.film.scene[this.currentSceneNum].prop[c] = {
-                _id: `${info.attr.id}_${i.attr.id}`,
-                _index: c,
+                _id: i.attr.id,
+                _index: i.attr.index,
                 _attached: "Y"
               };
               for (const info of i.children) {
@@ -766,10 +826,10 @@
             const b = (Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 8) + a);
             this.movieBase.film.sound.unshift({
               _id: `SOUND${l}`,
-              _index: l.toString(),
-              _track: '0', 
+              _index: l,
+              _track: 0, 
               _vol: "1",
-              _tts: "0",
+              _tts: 0,
               sfile: `common.${info.attr.id}`,
               start: a.toString(),
               stop: b.toString(),
