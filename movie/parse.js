@@ -462,7 +462,7 @@ module.exports = {
 	 * @param {Array} ownAssets
 	 * @returns {Buffer}
 	 */
-	async packMovie(xmlBuffer, data, packThumb, ownAssets) {
+	async packMovie(xmlBuffer, data = {}, packThumb = false, ownAssets = []) {
 		if (xmlBuffer.length == 0) throw null;
 		const uid = data.movieOwnerId || data.userId;
 		const zip = nodezip.create();
@@ -492,14 +492,13 @@ module.exports = {
 				try {
 					const buffer = asset.load(id);
 					// add asset meta
-					const assetMeta = (ownAssets || user.assets).find(i => i.id == id);
-					if (!assetMeta) console.error(`Asset #${id} is in the XML, but it does not exist.`);
+					const assetMeta = (!ownAssets[0] ? user.assets : ownAssets).find(i => i.id == id);
+					if (!assetMeta) console.log(`Asset #${id} is in the XML, but it does not exist.`);
 					else ugc += asset.meta2Xml(assetMeta);
 					// and add the file
 					fUtil.addToZip(zip, filename, buffer);
 				} catch (e) {
-					console.error(`WARNING: ${id}:`, e);
-					return;
+					console.log(`WARNING: ${id}:`, e);
 				}
 			} else {
 				if (type == "prop" && pieces.indexOf("head") > -1) pieces[1] = "char";
@@ -569,7 +568,7 @@ module.exports = {
 										});
 										fUtil.addToZip(zip, filename + ".xml", charXml);
 									} catch (e) {
-										console.error(`WARNING: ${id}:`, e);
+										console.log(`WARNING: ${id}:`, e);
 										continue;
 									}
 								} else {
@@ -890,7 +889,7 @@ module.exports = {
 						assetId: id
 					});
 				} catch (e) {
-					console.error(`WARNING: ${id}:`, e);
+					console.log(`WARNING: ${id}:`, e);
 					return {
 						error: `WARNING: ${id}: ${e}`
 					};

@@ -742,13 +742,17 @@ http
 												const urlStuff = url.parse(d2url, true);
 												d2url = `${urlStuff.protocol}//${urlStuff.host}${urlStuff.pathname}${urlStuff.query.id}`;
 											}
+											const ftHeaders = {};
+											if (currentSession.data?.flashThemesLogin) ftHeaders.cookie = Buffer.from(
+												currentSession.data.flashThemesLogin, 'base64'
+											);
+											console.log(ftHeaders)
 											const movieData = await getBuffersOnline({
 												hostname: "flashthemes.net",
 												path: d2url.split("flashthemes.net")[1],
-												headers: { 
-													"Content-type": "text/html; charset=UTF-8",
-													cookie: Buffer.from(currentSession.data?.flashThemesLogin || 'ejivfniusbfv', 'base64')
-												}
+												headers: Object.assign({ 
+													"Content-type": "text/html; charset=UTF-8"
+												}, ftHeaders)
 											});
 											const htmldata = movieData.toString();
 											//console.log(htmldata);
@@ -774,10 +778,9 @@ http
 													hostname: "flashthemes.net",
 													method: "POST",
 													path: `/goapi/getMovie/?movieId=${flashvars.movieId}&userId=&ut=`,
-													headers: { 
-														"Content-type": "text/plain",
-														cookie: Buffer.from(currentSession.data?.flashThemesLogin || 'usvidawrsg', 'base64')
-													}
+													headers: Object.assign({ 
+														"Content-type": "text/plain"
+													}, ftHeaders)
 												}, JSON.stringify({movieId: flashvars.movieId}));
 												const fileUrl = plainText.toString();
 												console.log(fileUrl);

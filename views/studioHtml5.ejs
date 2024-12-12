@@ -200,6 +200,14 @@
           this.xmlSerializer = new XMLSerializer();
           this.domParser = new DOMParser();
           this.params = new URLSearchParams(window.location.search);
+          let movieBasePath = this.params.get("movieId") ? [
+            'get',
+            `/movies/${this.params.get("movieId")}.xml`
+          ] : [
+            'post',
+            '/api/templateStuff/get?filename=movieBase.xml&header=Content-Type,text/xml'
+          ]
+          if (this.params.get("movieBasePath")) movieBasePath = this.params.get("movieBasePath").split("@");
           this.fallbackTheme = "common";
           this.githubBranch = '9c07584ec95b766aea3509ef8d2f81dcc9d86ce2';
           this.githubServerUrl = `https://raw.githubusercontent.com/Wrapper-Offline/Wrapper-Offline/${this.githubBranch}/server`;
@@ -207,9 +215,17 @@
           jQuery.getJSON("/api/themes/get?only_include_extras=true", d => {
             this.extraThemes = d;
           });
-          jQuery.post("/api/templateStuff/get?filename=movieBase.xml&header=Content-Type,text/xml", xmlString => {
-            this.movieBase = this.x2js.xml2json(xmlString);
-          })
+          try {
+            jQuery[movieBasePath[0]](movieBasePath[1], xmlString => {
+              this.movieBase = this.x2js.xml2json(xmlString);
+            })
+          } catch (e) {
+            console.error(e);
+            this.displayFeedback(
+              `The Error Output is located in the DevTools console if you want to screenshot it (including the error message in this feedback block) in order to send info to our GoNexus devs.`, {
+              header: e.toString()
+            }, false)
+          }
           jQuery.getJSON("/api/themes/get?no_extras=true", d => {
             this.themes = d.filter(i => i.attr.cc_theme_id != undefined).filter(i => i.attr.isHidden != "1");
             $("#themes").html(this.themes.map(v => `<li>
@@ -224,7 +240,7 @@
               && this.themes 
               && this.movieBase
             ) {
-              this.movieBase.film.scene = [];
+              this.movieBase.film.scene = this.movieBase.film.scene || [];
               clearInterval(interval);
               const currentTheme = this.params.get("theme");
               const altTheme = this.themes[0]?.attr.id || "custom";
@@ -237,6 +253,12 @@
             }
           }, 1)
         }
+        deleteScene() {
+          this.movieBase.film.scene.splice(this.currentSceneNum, 1);
+          this.selectedBackgrounds.splice(this.currentSceneNum, 1);
+          this.displayFeedback(`Scene ${this.currentSceneNum} has been deleted successfuly`)
+          this.displayScene(0);
+        }
         sceneSettings() {
           this.showPleasewait();
           const sceneInfo = this.movieBase.film.scene[this.currentSceneNum];
@@ -244,7 +266,8 @@
             _id: true,
             _index: true,
             _combgId: true,
-            _color: true
+            _color: true,
+            _guid: true
           }
           const info = {};
           for (const i in sceneInfo) {
@@ -253,6 +276,7 @@
           $(`#sceneSettings_form`).html(`<div id="sceneSettings_manager">
             <h5>Scene Manager</h5>
             ${this.meta2html([info], 'scene', this.currentSceneNum)}
+            ${this.movieBase.film.scene.length > 1 ? `<input type="button" onclick="studioHtml5.deleteScene()" class="btn btn-danger" value="Delete Scene"/>` : ''}
           </div><input type="submit" class="btn btn-primary" value="Update Scene Settings"/>`);
           $("#sceneSettings").find("button").prop("disabled", false);
           $("#sceneSettingsBtn")[0].disabled = true;
@@ -262,29 +286,28 @@
           let soundHyml = '';
           for (var a = 0; a < array.length; a++) {
             const v = array[a];
-            function c(k = Object.keys(v), d = []) {
-              console.log(k, d);
+            function c(I, d = []) {
+              console.log(I);
               let html = '';
-              for (var i = 0; i < k.length; i++) {
-                const key = k[i];
-                const info = v[key];
+              for (const key in I) {
+                const info = I[key];
                 switch (typeof info) {
                   case "object": {
-                    html += `<h6>${key}:</h6>${c(Object.keys(info), Object.assign(d, [key]))}`
+                    html += `<h6>${key}</h6><ul>${c(info, Object.assign([key], d))}</ul>`
                     break;
                   } case "string": {
-                    html += `<div class="input-group"><span class="input-group-text">${
+                    html += `<li class="input-group"><span class="input-group-text">${
                       key.substr(key.startsWith("_") ? 1 : 0)
-                    }:</span><input class="form-control" type="text" name="${type}[${num || a}]${
+                    }</span><input class="form-control" type="text" name="${type}[${num || a}]${
                       d.map(v => `[${v}]`).join('')
-                    }[${key}]" value="${info}" required/></div>`;
+                    }[${key}]" value="${info}" required/></li>`;
                     break;
                   }
                 }
               }
               return html
             }
-            soundHyml += `<div id="setting${a}"${a > 0 ? ' style="display: none;"' : ''}>${c()}</div>`;
+            soundHyml += `<ul id="setting${a}"${a > 0 ? ' style="display: none;"' : ''}>${c(v)}</ul>`;
           }
           return soundHyml;
         }
@@ -293,7 +316,44 @@
           $("#sceneSettings").find("button").prop("disabled", false)
           $("#soundtrackSettingsBtn")[0].disabled = true;
           let soundHyml = '';
-          if (this.movieBase.film.sound && this.movieBase.film.sound[0]) soundHyml = this.meta2html(this.movieBase.film.sound, 'sound');
+          if (this.movieBase.film.sound && this.movieBase.film.sound[0]) {
+            const array = [];
+            const excludeThings = {
+              sfile: true,
+              ttsdata: true,
+              _id: true,
+              _index: true,
+              _track: true,
+              _tts: true
+            }
+            function x(a) {
+              const json = {};
+              for (const i in a) {
+                if (typeof a[i] != "object") json[i] = a[i].toString();
+                else {
+                  json[i] = json[i] || {};
+                  this.assignObjects(json[i], [x(a[i])]);
+                }
+              }
+              return json;
+            }
+            for (var l = 0; l < this.movieBase.film.sound.length; l++) {
+              const info = {};
+              const soundInfo = this.movieBase.film.sound[l];
+              for (const i in soundInfo) {
+                if (excludeThings[i]) continue;
+                info[i] = soundInfo[i];
+                if (typeof soundInfo[i] != "object") info[i] = soundInfo[i].toString();
+                else {
+                  info[i] = info[i] || {};
+                  this.assignObjects(info[i], [x(soundInfo[i])]);
+                }
+              }
+              array[l] = info;
+            }
+            console.log(array);
+            soundHyml = this.meta2html(array, 'sound');
+          }
           else soundHyml = 'There are no soundtracks to manage. Try adding a soundtrack to this movie to see what happens.';
           $(`#sceneSettings_form`).html(`<div id="sceneSettings_soundtracks">
             <h6>Soundtracks Manager</h6>
@@ -301,20 +361,30 @@
             <input type="button" style="display: right;" onclick="studioHtml5.soundTrackManagerSlideshowMove('right')"${
               this.movieBase.film.sound?.length > 1 ? '' : ' disabled'
             } value="->"/>
+            ${this.movieBase.film.sound?.length > 0 ? `<input type="button" onclick="studioHtml5.deleteSound(${
+              this.slideNum4SoundtrackSettings || 0
+            })" class="btn btn-danger" value="Delete Soundtrack"/>` : ''}
+            <br>
             ${soundHyml}
-          </div><input type="submit" class="btn btn-primary" value="Update Soundtrack Settings"/>`);
-          this.showModal($('#sceneSettings'), {
+          </div>${
+            this.movieBase.film.sound?.length > 0 ? `<input type="submit" class="btn btn-primary" value="Update Soundtrack Settings"/>` : ''
+          }`);
+          this.showModal($('#sceneSettings'), this.movieBase.film.sound?.length > 0 ? {
             css: {
-              top: '6%'
+              top: '13%'
             }
-          });
+          } : {});
+        }
+        deleteSound(num) {
+          this.movieBase.film.sound.splice(num, 1);
+          this.soundTrackSettingsLoader();
+          this.displayFeedback(`Soundtrack ${num} has been deleted successfully!`, false)
         }
         updateSceneSettings(obj) {
           this.showPleasewait();
           const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
-          const keys = Object.keys(json);
           const a = [];
-          for (const key of keys) {
+          for (const key in json) {
             let k = key.split("][").join(".").split("[").join(".").split("]")
             k = k[0].split(".");
             function c(e = 0) {
@@ -326,7 +396,7 @@
             a.unshift(c())
           }
           this.assignObjects(this.movieBase.film, a);
-          this.displayFeedback("Scene Settings Message", "Your Scene Settings were updated successfuly");
+          this.displayFeedback("Your Scene Settings were updated successfuly");
         }
         soundTrackManagerSlideshowMove(c) {
           this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0
@@ -373,16 +443,16 @@
             }
           }));
         }
-        assignObjects(json = {}, array = []) {
+        assignObjects(json = {}, array = [], options = {}) {
           const $this = this;
           function c(s) {
             const json = {};
             for (const i in s) {
-              if (Array.isArray(s[i])) {
+              if (Array.isArray(s[i]) && !options.noArray) {
                 if (!json[i]) json[i] = [];
                 Object.assign(json[i], s[i]);
-              } else if (typeof s[i] != "object") json[i] = s[i];
-              else {
+              } else if (typeof s[i] != "object") json[i] = !options.noString ? s[i] : json[i];
+              else if (!options.noObject) {
                 if (!json[i]) json[i] = {};
                 $this.assignObjects(json[i], [c(s[i])]);
               }
@@ -427,7 +497,7 @@
         }
         showModal(m, o = {}) {
           if (!m) return this.displayFeedback(
-            "Notice", "The message paramater is required in the showModal function withn the Studio class in order to display your modal"
+            "The message paramater is required in the showModal function withn the Studio class in order to display your modal"
           )
           const options = this.assignObjects({
             css: {
@@ -449,7 +519,9 @@
           this.importerFile = this.files[this.importerFileNum];
         }
         loadImporterQuene(obj) {
-          if (!obj.files[0]) return this.displayFeedback("Importer Notice", "Please select a file to upload")
+          if (!obj.files[0]) return this.displayFeedback("Please select a file to upload", {
+            header: "File Upload Notice"
+          })
           this.files = obj.files;
           this.importerStarted = true;
           this.loadImporter();
@@ -510,12 +582,12 @@
             this.assetManagerData.contentInserted = true;
           } else $("#assetManagerContent").html(content);
         }
-        displayFeedback(header, text) {
-          this.hidePleasewait();
-          $.jGrowl(text, { 
-            header,
+        displayFeedback(text, o = {}, hidePleaseWait = true) {
+          if (hidePleaseWait) this.hidePleasewait();
+          const options = this.assignObjects({
             life: text.length * text.length
-          });
+          }, [o]);
+          $.jGrowl(text, options);
         }
         closeQuene() {
           $("#importer_quene").find('li[data-type="fileImport"]').remove();
@@ -583,9 +655,11 @@
             const old = this.importerFile;
             delete this.importerFile;
             delete this.importerFileNum
-            return this.displayFeedback("Importer Notice", `Your file with the ${old.name.substr(
+            return this.displayFeedback(`Your file with the ${old.name.substr(
               old.name.lastIndexOf(".")
-            )} extension is not supported.`)
+            )} extension is not supported.`, {
+              header: 'File Incompatibility Warning'
+            })
           }
           if (!this.importerHTML) {
             this.importerHTML = `<li class="nav-item" data-type="fileImport">
@@ -636,8 +710,8 @@
                 delete this.files;
                 delete this.importerStarted;
               }
-              this.displayFeedback("Importer Message", "Your asset has been imported successfuly.");
-            } else this.displayFeedback("Importer Message", d.msg)
+              this.displayFeedback("Your asset has been imported successfuly.");
+            } else this.displayFeedback(d.msg)
           });
         }
         loadCharacters() {
@@ -689,21 +763,26 @@
               $("button.disabled").each((index, elem) => {
                 if (!$(elem).hasClass("form-control")) $(elem).removeClass("disabled").addClass("btn-outline-secondary");
               })
-              this.selectBackground(d.find(i => i.attr.default == "Y"));
+              this.selectBackground(
+                d.find(i => i.attr.id == this.movieBase.film.scene[0]?.bg?._id)
+                || d.find(i => i.attr.default == "Y")
+              );
               this.studioLoaded = true;
               this.hidePleasewait();
             }
           })
         }
         addScene(num) {
-          if (num == 100) return this.displayFeedback("Notice", "You cannot add more than 100 scenes.")
+          if (num == 100) return this.displayFeedback("You cannot add more than 100 scenes.", {
+            header: "Note"
+          })
           $("#currentSceneNum").html((this.currentSceneNum = num) + 1);
           if (
             this.selectedBackgrounds && this.selectedBackgrounds[this.currentSceneNum - 1]
           ) this.selectedBackgrounds[this.currentSceneNum] = this.selectedBackgrounds[this.currentSceneNum - 1];
           const durDefault = 2.5;
           this.movieBase.film._duration = this.movieBase.film._duration ? this.movieBase.film._duration + durDefault : durDefault;
-          this.movieBase.film.scene[this.currentSceneNum] = {
+          this.movieBase.film.scene[this.currentSceneNum] = this.movieBase.film.scene[this.currentSceneNum] || {
             _id: `SCENE${num + num}`,
             _adelay: 60,
             _lock: "N",
@@ -820,30 +899,31 @@
           this.movieBase.film.sound = this.movieBase.film.sound?.reverse() || [];
           const l = this.movieBase.film.sound.length;
           const infoPrev = this.movieBase.film.sound[l - 1];
-          const a = (Number(infoPrev?.stop || '0') + 1); 
+          const start = (infoPrev?.stop || 0) + 1; 
           jQuery.post(`/api/retreiveMp3DurationFromURL?url=${this.storeUrl}/${$(obj).data("theme")}/sound/${info.attr.id}`, d => {
             const split = d.d.toString().split(".");
             // the math for stop isn't quite accurate, but i was somewhat able to get it close.
-            const b = (Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 8) + a);
+            let stop = Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 8) + start;
+            if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
             this.movieBase.film.sound.unshift({
-              _id: `SOUND${l}`,
+              _id: `SOUND${l + l}`,
               _index: l,
               _track: 0, 
-              _vol: "1",
+              _vol: 1,
               _tts: 0,
-              sfile: `common.${info.attr.id}`,
-              start: a.toString(),
-              stop: b.toString(),
+              sfile: `${$(obj).data("theme")}.${info.attr.id}`,
+              start,
+              stop,
               fadein: {
-                _duration: '0',
-                _vol: '0'
+                _duration: 0,
+                _vol: 0
               },
               fadeout: {
-                _duration: '0',
-                _vol: '0'
+                _duration: 0,
+                _vol: 0
               }
             });
-            this.displayFeedback("Studio Message", "Your soundtrack has been added successfuly");
+            this.displayFeedback("Your soundtrack has been added successfully!");
           })
         }
         loadSounds(thisTheme) {

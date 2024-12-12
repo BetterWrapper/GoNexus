@@ -1098,7 +1098,7 @@ module.exports = function (req, res, url) {
 								else res.end(b);
 							} else res.end(Buffer.concat([
 								base, 
-								await parse.packMovie(fs.readFileSync("./previews/template.xml"), {}, false, templateAssets)
+								await parse.packMovie(fs.readFileSync("./previews/template.xml"), data, false, templateAssets)
 							]));
 						} catch (e) {
 							res.setHeader("Content-Type", "text/xml");
