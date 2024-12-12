@@ -255,8 +255,10 @@
         }
         deleteScene() {
           this.movieBase.film.scene.splice(this.currentSceneNum, 1);
-          this.selectedBackgrounds.splice(this.currentSceneNum, 1);
-          this.displayFeedback(`Scene ${this.currentSceneNum} has been deleted successfuly`)
+          if (
+            this.selectedBackgrounds && this.selectedBackgrounds[this.currentSceneNum]
+          ) this.selectedBackgrounds.splice(this.currentSceneNum, 1);
+          this.displayFeedback(`Scene ${this.currentSceneNum + 1} has been deleted successfuly`)
           this.displayScene(0);
         }
         sceneSettings() {
@@ -356,7 +358,9 @@
           }
           else soundHyml = 'There are no soundtracks to manage. Try adding a soundtrack to this movie to see what happens.';
           $(`#sceneSettings_form`).html(`<div id="sceneSettings_soundtracks">
-            <h6>Soundtracks Manager</h6>
+            <h6>Soundtracks Manager (Page <span id="soundtrackPages">${
+              (this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0) + 1
+            }</span>)</h6>
             <input type="button" style="display: left;" onclick="studioHtml5.soundTrackManagerSlideshowMove('left')" disabled value="<-"/>
             <input type="button" style="display: right;" onclick="studioHtml5.soundTrackManagerSlideshowMove('right')"${
               this.movieBase.film.sound?.length > 1 ? '' : ' disabled'
@@ -399,7 +403,6 @@
           this.displayFeedback("Your Scene Settings were updated successfuly");
         }
         soundTrackManagerSlideshowMove(c) {
-          this.slideNum4SoundtrackSettings = this.slideNum4SoundtrackSettings || 0
           let expression, conditionals;
           switch (c) {
             case "left": {
@@ -426,7 +429,7 @@
             $(`#setting${this.slideNum4SoundtrackSettings}`).hide();
             $(`#setting${expression}`).show();
             this.slideNum4SoundtrackSettings = expression;
-            $("#sceneSettings_soundtracks").find(`input[name="num"]`).val(expression);
+            $("#sceneSettings_soundtracks").find(`span[id="soundtrackPages"]`).text(expression + 1);
           }
         }
         json2xml(j) {
@@ -529,7 +532,8 @@
         displayScene(i) {
           this.currentSceneNum = i;
           $("#currentSceneNum").html(this.currentSceneNum + 1);
-          this.selectBackground(this.selectedBackgrounds[i]);
+          if (this.selectedBackgrounds && this.selectedBackgrounds[i]) this.selectBackground(this.selectedBackgrounds[i]);
+          else this.studio.html('');
           this.hidePleasewait();
         }
         loadScenes() {
@@ -763,10 +767,9 @@
               $("button.disabled").each((index, elem) => {
                 if (!$(elem).hasClass("form-control")) $(elem).removeClass("disabled").addClass("btn-outline-secondary");
               })
-              this.selectBackground(
-                d.find(i => i.attr.id == this.movieBase.film.scene[0]?.bg?._id)
-                || d.find(i => i.attr.default == "Y")
-              );
+              if (this.params.get("movieId") || this.params.get("movieBasePath")) {
+                if (this.movieBase.film.scene[0].bg) this.selectBackground(d.find(i => i.attr.id == this.movieBase.film.scene[0].bg._id));
+              } else this.selectBackground(d.find(i => i.attr.default == "Y"));
               this.studioLoaded = true;
               this.hidePleasewait();
             }
