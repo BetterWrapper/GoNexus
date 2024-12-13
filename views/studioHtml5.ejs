@@ -109,9 +109,11 @@
         <div class="btn-group me-2">
           <button type="button" class="btn btn-sm btn-primary" id="sceneSettingsBtn" onclick="studioHtml5.sceneSettings()">Scene Manager</button>
           <button type="button" class="btn btn-sm btn-primary" id="soundtrackSettingsBtn" onclick="studioHtml5.soundTrackSettingsLoader()">Sound Track Manager</button>
+          <button type="button" class="btn btn-sm btn-primary" id="stuffRemoverButton" onclick="studioHtml5.stuffRemover()">Remove Stuff From Scene</button>
         </div>
         <hr>
         <form onsubmit="studioHtml5.updateSceneSettings(this)" id="sceneSettings_form" action="javascript:;"></form>
+        <form onsubmit="studioHtml5.removeStuffFromScene(this)" id="stuffRemover_form" action="javascript:;"></form>
         <hr>
         <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
       </div>
@@ -263,6 +265,7 @@
         }
         sceneSettings() {
           this.showPleasewait();
+          $(`#stuffRemover_form`).html('')
           const sceneInfo = this.movieBase.film.scene[this.currentSceneNum];
           const thingsExcluded = {
             _id: true,
@@ -283,6 +286,86 @@
           $("#sceneSettings").find("button").prop("disabled", false);
           $("#sceneSettingsBtn")[0].disabled = true;
           this.showModal($("#sceneSettings"));
+        }
+        stuffRemover(o = {}) {
+          const options = this.assignObjects({
+            html: '',
+            s: 'Stuff'
+          }, [o])
+          const things2ignore = {
+            durationSetting: true,
+            effectAsset: true
+          }
+          this.showPleasewait();
+          $("#sceneSettings").find("button").prop("disabled", false);
+          $("#stuffRemoverButton")[0].disabled = true
+          this.showPleasewait();
+          const sceneInfo = this.movieBase.film.scene[this.currentSceneNum];
+          let html = options.html;
+          if (!html) for (const i in sceneInfo) {
+            if (i.startsWith("_") || things2ignore[i]) continue;
+            html += `<input type="checkbox" name="${i}"/> ${i}<br>`;
+          }
+          $("#sceneSettings_form").html('');
+          $(`#stuffRemover_form`).html(`<h5>Select The ${options.s} That You Want To Remove From The Scene</h5>
+          <input class="btn btn-sm btn-secondary" type="button" onclick="studioHtml5.selectAllCheckboxes($('#stuffRemover_form'), '${options.s}')" value="Select All Items"/><br>
+          ${html}
+          <input type="submit" class="btn btn-danger" value="Delete The ${options.s}"/>`);
+          this.showModal($("#sceneSettings"));
+        }
+        selectAllCheckboxes(jqueryObject, idc = 'jyvee') {
+          this.checkboxToogle = this.checkboxToogle || {};
+          this.checkboxToogle[idc] = this.checkboxToogle[idc] || false;
+          if (this.checkboxToogle[idc]) this.checkboxToogle[idc] = false;
+          else this.checkboxToogle[idc] = true;
+          jqueryObject.find('input[type="checkbox"]').prop("checked", this.checkboxToogle[idc])
+        }
+        removeStuffFromScene(obj) {
+          this.showPleasewait();
+          const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
+          const keys = Object.keys(json);
+          if (!keys[0]) {
+            this.displayFeedback("Please select at least one item to remove from the scene.");
+            this.showModal($("#sceneSettings"))
+          } else if (!json.isDeletingThingsFromScene) {
+            for (const key of keys) {
+              const sceneInfo = this.movieBase.film.scene[this.currentSceneNum][key];
+              console.log(sceneInfo);
+              if (Array.isArray(sceneInfo) && sceneInfo.length > 0) {
+                let html = `<input type="hidden" name="isDeletingThingsFromScene" value="true"/><input type="hidden" name="assets2remove" value="${key}"/>`;
+                for (var i = 0; i < sceneInfo.length; i++) html += `<input type="checkbox" name="${key}[${i}]"/>${key} #${i}<br>`;
+                this.stuffRemover({
+                  html,
+                  s: key
+                });
+                return;
+              } else {
+                if (key == "bg") this.studio.html('');
+                delete this.movieBase.film.scene[this.currentSceneNum][key];
+              }
+            }
+            this.displayFeedback(`Successfully removed ${keys.join(", ")} from the scene`)
+          } else {
+            const array = this.stringArray2Array(json).filter(i => i[json.assets2remove] ? true : false);
+            if (array) {
+              if (
+                this.movieBase.film.scene[this.currentSceneNum][json.assets2remove].length == 0
+                || array.length == this.movieBase.film.scene[this.currentSceneNum][json.assets2remove].length
+              ) delete this.movieBase.film.scene[this.currentSceneNum][json.assets2remove];
+              else for (const info of array) {
+                for (const i in info) {
+                  const key = Object.keys(info[i])[0];
+                  this.movieBase.film.scene[this.currentSceneNum][json.assets2remove].splice(key, 1);
+                }
+              }
+              this.displayFeedback(`Successfully removed the selected items from the scene`, {
+                header: `${json.assets2remove} deletion message`
+              });
+            } else {
+              this.displayFeedback(`Please select at least 1 ${json.assets2remove} in order to continue with the deletion`);
+              this.showModal($("#sceneSettings"));
+            }
+          }
         }
         meta2html(array, type, num) {
           let soundHyml = '';
@@ -315,6 +398,7 @@
         }
         soundTrackSettingsLoader() {
           this.showPleasewait();
+          $(`#stuffRemover_form`).html('')
           $("#sceneSettings").find("button").prop("disabled", false)
           $("#soundtrackSettingsBtn")[0].disabled = true;
           let soundHyml = '';
@@ -387,6 +471,10 @@
         updateSceneSettings(obj) {
           this.showPleasewait();
           const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
+          this.assignObjects(this.movieBase.film, this.stringArray2Array(json));
+          this.displayFeedback("Your Scene Settings were updated successfuly");
+        }
+        stringArray2Array(json) {
           const a = [];
           for (const key in json) {
             let k = key.split("][").join(".").split("[").join(".").split("]")
@@ -399,8 +487,7 @@
             }
             a.unshift(c())
           }
-          this.assignObjects(this.movieBase.film, a);
-          this.displayFeedback("Your Scene Settings were updated successfuly");
+          return a;
         }
         soundTrackManagerSlideshowMove(c) {
           let expression, conditionals;
@@ -452,10 +539,15 @@
             const json = {};
             for (const i in s) {
               if (Array.isArray(s[i]) && !options.noArray) {
+                if (json[i] && options.onlyAssignNewArrays) continue; 
                 if (!json[i]) json[i] = [];
                 Object.assign(json[i], s[i]);
-              } else if (typeof s[i] != "object") json[i] = !options.noString ? s[i] : json[i];
+              } else if (typeof s[i] != "object") {
+                if (json[i] && options.onlyAssignNewStrings) continue; 
+                json[i] = !options.noString ? s[i] : json[i];
+              }
               else if (!options.noObject) {
+                if (json[i] && options.onlyAssignNewObjects) continue; 
                 if (!json[i]) json[i] = {};
                 $this.assignObjects(json[i], [c(s[i])]);
               }
@@ -465,10 +557,15 @@
           for (const j of array) {
             for (const i in j) {
               if (Array.isArray(j[i])) {
+                if (json[i] && options.onlyAssignNewArrays) continue; 
                 if (!json[i]) json[i] = [];
                 Object.assign(json[i], j[i]);
-              } else if (typeof j[i] != "object") json[i] = j[i];
-              else {
+              } else if (typeof j[i] != "object") {
+                if (json[i] && options.onlyAssignNewStrings) continue; 
+                json[i] = !options.noString ? j[i] : json[i];
+              }
+              else if (!options.noObject) {
+                if (json[i] && options.onlyAssignNewObjects) continue; 
                 if (!json[i]) json[i] = {};
                 $this.assignObjects(json[i], [c(j[i])])
               }
@@ -785,43 +882,32 @@
           ) this.selectedBackgrounds[this.currentSceneNum] = this.selectedBackgrounds[this.currentSceneNum - 1];
           const durDefault = 2.5;
           this.movieBase.film._duration = this.movieBase.film._duration ? this.movieBase.film._duration + durDefault : durDefault;
-          this.movieBase.film.scene[this.currentSceneNum] = this.movieBase.film.scene[this.currentSceneNum] || {
-            _id: `SCENE${num + num}`,
+          const prevInfo = this.movieBase.film.scene[this.currentSceneNum - 1];
+          const input2newScene = {
+            _index: Number(prevInfo?._index || -1) + 1
+          };
+          input2newScene._id = `SCENE${input2newScene._index}`
+          const sceneInfo = Object.assign({
             _adelay: 60,
             _lock: "N",
-            _index: num,
-            _color: "16777215",
-            effectAsset: [
-              {
-                _id: `EFFECT${this.movieBase.film.scene[num != 0 ? - 1 : 0]?.effectAsset.length || 0 + num}`,
-                _themecode: "common",
-                _index: this.movieBase.film.scene[num != 0 ? - 1 : 0]?.effectAsset.length || 0,
-                effect: {
-                  _x: 0,
-                  _y: 0,
-                  _w: 550,
-                  _h: 310,
-                  _rotate: 0,
-                  _id: "cut",
-                  _type: "ZOOM",
-                  _isCut: true,
-                  _isPan: false
-                },
-                x: 47,
-                y: 24,
-                width: 550,
-                height: 354,
-                speech: 0
-              }
-            ],
-            durationSetting: {
-              _countMinimum: 1,
-              _countTransition: 1,
-              _countAction: 1,
-              _countBubble: 1,
-              _countSpeech: 1
+            _color: "16777215"
+          }, input2newScene);
+          if (this.params.get("movieId") && !this.studioLoaded) {
+            this.movieBase.film.scene[this.currentSceneNum] = this.movieBase.film.scene[this.currentSceneNum] || sceneInfo;
+          } else {
+            this.movieBase.film.scene.splice(this.currentSceneNum, 0, sceneInfo);
+            for (var i = this.currentSceneNum + 1; i < this.movieBase.film.scene.length; i++) {
+              const info = this.movieBase.film.scene[i];
+              const input2newScene = {
+                _index: Number(info._index) + 1
+              };
+              input2newScene._id = `SCENE${input2newScene._index}`
+              this.assignObjects(this.movieBase.film.scene[i], [input2newScene]);
             }
           }
+        }
+        newScene() {
+          this.addScene(this.movieBase.film.scene.length);
         }
         selectBackground(info) {
           this.selectedBackgrounds = this.selectedBackgrounds || [];
