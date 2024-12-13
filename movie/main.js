@@ -463,6 +463,59 @@ module.exports = {
 			}
 		});
 	},
+	assignObjects(json = {}, array = [], options = {}) {
+		function c(s) {
+			const json = {};
+			for (const i in s) {
+				if (Array.isArray(s[i]) && !options.noArray) {
+					if (json[i] && options.onlyAssignNewArrays) continue; 
+					if (!json[i]) json[i] = [];
+					Object.assign(json[i], s[i]);
+				} else if (typeof s[i] != "object") {
+					if (json[i] && options.onlyAssignNewStrings) continue; 
+					json[i] = !options.noString ? s[i] : json[i];
+				}
+				else if (!options.noObject) {
+					if (json[i] && options.onlyAssignNewObjects) continue; 
+					if (!json[i]) json[i] = {};
+					this.assignObjects(json[i], [c(s[i])]);
+				}
+			}
+			return json;
+		}
+		for (const j of array) {
+			for (const i in j) {
+				if (Array.isArray(j[i])) {
+					if (json[i] && options.onlyAssignNewArrays) continue; 
+					if (!json[i]) json[i] = [];
+					Object.assign(json[i], j[i]);
+				} else if (typeof j[i] != "object") {
+					if (json[i] && options.onlyAssignNewStrings) continue; 
+					json[i] = !options.noString ? j[i] : json[i];
+				} else if (!options.noObject) {
+					if (json[i] && options.onlyAssignNewObjects) continue; 
+					if (!json[i]) json[i] = {};
+					this.assignObjects(json[i], [c(j[i])])
+				}
+			}
+		}
+		return json;
+	},
+	stringArray2Array(json) {
+		const a = [];
+		for (const key in json) {
+			let k = key.split("][").join(".").split("[").join(".").split("]")
+			k = k[0].split(".");
+			function c(e = 0) {
+				if (e == k.length) return json[key];
+				const a = {};
+				a[k[e]] = c(e + 1);
+				return a;
+			}
+			a.unshift(c())
+		}
+		return a;
+	},
 	getBuffersOnlineViaRequestModule(options, data, loadStream = false) {
 		return new Promise((res, rej) => {
 			try {

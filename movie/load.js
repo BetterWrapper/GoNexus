@@ -25,6 +25,8 @@ function getMp3Duration(buffer) {
 		});
 	})
 }
+const OpenAI = require("openai");
+const { zodResponseFormat } = require("openai/helpers/zod");
 // parses a param in a json that most likely could reassemble an array but in a string. Example: dev[0][isJyvee]: true
 function parseStringArray(data, extras) {
 	const json = {
@@ -62,6 +64,7 @@ const frameToSec = (f) => f / framerate;
 const nodemailer = require('nodemailer');
 const xmldoc = require("xmldoc");
 const discord = require("discord.js");
+const xml2js = require('xml2js');
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -1087,6 +1090,98 @@ module.exports = function (req, res, url) {
 							}
 						}
 					});
+					break;
+				} case "/api/movie/generate": {
+					const { z } = require("zod");
+					const currentSession = session.get(req);
+					process.env.OPENAI_API_KEY = currentSession.data.OpenAIApiKey;
+					console.log(currentSession);
+					loadPost(req, res).then(async data => {
+						const openai = new OpenAI();
+						const aiResult = z.object({
+							title: z.string(),
+							description: z.string(),
+							sounds: z.array(z.object({
+								url: z.string(),
+								title: z.string()
+							})),
+							scenes: z.array(z.object({
+								background: z.object({
+									name: z.string(),
+									url: z.string(),
+									height: 350,
+									width: 554
+								}),
+								props: z.array(z.object({
+									name: z.string(),
+									url: z.string(),
+									xPos: z.number(),
+									yPos: z.number()
+								})),
+								characters: z.array(z.object({
+									name: z.string(),
+									url: z.string(),
+									xPos: z.number(),
+									yPos: z.number(),
+									action: z.string(),
+									facial_expression: z.string(),
+									dialog: z.array(z.object({
+										voice: z.string(),
+										text: z.string(),
+										url: z.string()
+									}))
+								}))
+							})),
+						});
+						try {
+							const completion = await openai.beta.chat.completions.parse({
+								model: data.OpenAIModel,
+								messages: [
+									{ 
+										role: "user", 
+										content: `Please give me a script for a new video that i'm making called ${data.title}.`
+									},
+								],
+								response_format: zodResponseFormat(aiResult),
+							});
+							const result = completion.choices[0].message;
+							console.log(result);
+							if (result.refusal) {
+								res.setHeader("Content-Type", "application/json");
+								res.end(JSON.stringify({
+									feedbackText: result.refusal,
+									feedbackData: {
+										header: `AI Vdeo Generation Error`
+									}
+								}))
+							}
+						} catch (e) {
+							console.log(e);
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify({
+								feedbackText: `<a download="error_output.json" href="data:application/json;base64,${
+									Buffer.from(JSON.stringify(e, null, "\t")).toString("base64")
+								}">Download Error Output<a>`,
+								feedbackData: {
+									header: e.toString()
+								}
+							}))
+						}
+					})
+					break;
+				} case "/api/openai/models/list": {
+					const currentSession = session.get(req);
+					https.get('https://api.openai.com/v1/models', {
+						headers: {
+							authorization: `Bearer ${currentSession.data.OpenAIApiKey}`
+						}
+					}, r => {
+						const buffers = [];
+						r.on("data", b => buffers.push(b)).on("end", () => {
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(JSON.parse(Buffer.concat(buffers))));
+						})
+					})
 					break;
 				} case "/goapi/getMovie/": { // loads a movie using the parse.js file
 					loadPost(req, res).then(async data => {

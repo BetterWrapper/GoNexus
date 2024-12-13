@@ -117,6 +117,25 @@
         <hr>
         <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
       </div>
+      <div id="aiVideoGeneration">
+        <h2>Generate A Video With AI (<strong>BETA</strong>)</h2>
+        <div class="alert alert-warning" role="alert">
+          Please note that this feature is currently in beta meaning that things may not work as expected.
+          If you run into any issues or bugs while using the feature,
+          You are advised to contact our staff on our Discord Server if you run into problems
+          and we will fix them to the best of our abilities.
+        </div>
+        <hr>
+        <form onsubmit="studioHtml5.aiVideoGeneration(this, true)" action="javascript:;">
+          <label for="aiVideoTitle">Video Title</label>
+          <input maxlength="16" class="form-control" id="aiVideoTitle" name="title" type="text" required/><br>
+          <label for="aiVideoTitle">AI Model</label>
+          <select class="form-control" id="aiModelSelection" name="OpenAIModel"></select>
+          <input type="submit" value="Generate Video" class="btn btn-warning"/>
+        </form>
+        <hr>
+        <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
+      </div>
     </div>
     <div class="container-fluid">
       <div class="row">
@@ -158,6 +177,17 @@
                 </button>
                 <ul class="dropdown-menu" id="themes"></ul>
               </div>
+              <div class="dropdown" id="newVideoOptionsBtn" style="display: none;">
+                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                  <span class="align-text-bottom"></span>
+                  New Video Creation Options
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <button class="btn btn-warning" onclick="studioHtml5.aiVideoGeneration()">Generate Video With AI (<strong>BETA</strong>)</button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
           <div class="my-4 w-100">
@@ -171,6 +201,9 @@
             </button>
             <button onclick="studioHtml5.addScene(studioHtml5.currentSceneNum + 1)" class="btn disabled">
               Add Scene
+            </button>
+            <button onclick="studioHtml5.addScene(studioHtml5.movieBase.film.scene.length)" class="btn disabled">
+              New Scene
             </button>
           </div>
         </main>
@@ -254,6 +287,49 @@
               }
             }
           }, 1)
+        }
+        aiVideoGeneration(obj, isFormSubmissionEvent = false) {
+          const openAiKey = this.getCookie("OpenAiApiKey");
+          if (openAiKey) {
+            this.showPleasewait();
+            if (isFormSubmissionEvent) jQuery.post("/api/movie/generate", $(obj).serialize(), d => {
+              switch (typeof d) {
+                case "string": {
+                  this.movieBase = this.x2js.xml2json(d);
+                  this.displayFeedback(
+                    "Your AI Video was generated successfully! Click on the Preview button to see the results.\
+                    If the video didn't turn out good as you hoped,\
+                    please feel free to either edit this video with the LVM or the HTML5 Studio if you perfer to use it."
+                  );
+                  break;
+                } case "object": {
+                  this.displayFeedback(d.feedbackText, d.feedbackData);
+                  break;
+                }
+              }
+            });
+            else jQuery.post('/api/openai/models/list', d => {
+              if (d.error) this.displayFeedback(d.error.message, {
+                header: `AI Model Listing Error`
+              });
+              else {
+                function html(v) {
+                  return `<option value="${v.id}">${v.id}</option>`
+                }
+                if (d.object == "list") $("#aiModelSelection").html(d.data.map(html));
+                else $("#aiModelSelection").html(html(d.data));
+                this.showModal($("#aiVideoGeneration"))
+              }
+            })
+          } else {
+            const promptMsg = "OpenAI Api Key (Required For Video Generation)";
+            let key = prompt(promptMsg, '');
+            if (key && key != null) {
+              console.log(key);
+              this.setCookie("OpenAIApiKey", key, 132);
+              this.aiVideoGeneration();
+            } else this.displayFeedback("Please enter in an OpenAI Api Key in order to generate a video");
+          }
         }
         deleteScene() {
           this.movieBase.film.scene.splice(this.currentSceneNum, 1);
@@ -488,6 +564,30 @@
             a.unshift(c())
           }
           return a;
+        }
+        setCookie(cname, cvalue, exdays) {
+          const d = new Date();
+          d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+          let expires = "expires="+d.toUTCString();
+          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+        getCookie(cname) {
+          let name = cname + "=";
+          let ca = document.cookie.split(';');
+          for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+            }
+            if (c.indexOf(name) == -1) {
+              return c.substring(name.length, c.length);
+            }
+          }
+          return "";
+        }
+        checkCookie(cookie) {
+          let user = getCookie(cookie);
+          return user != "";
         }
         soundTrackManagerSlideshowMove(c) {
           let expression, conditionals;
@@ -866,7 +966,10 @@
               })
               if (this.params.get("movieId") || this.params.get("movieBasePath")) {
                 if (this.movieBase.film.scene[0].bg) this.selectBackground(d.find(i => i.attr.id == this.movieBase.film.scene[0].bg._id));
-              } else this.selectBackground(d.find(i => i.attr.default == "Y"));
+              } else {
+                $("#newVideoOptionsBtn").show();
+                this.selectBackground(d.find(i => i.attr.default == "Y"));
+              }
               this.studioLoaded = true;
               this.hidePleasewait();
             }
@@ -905,9 +1008,6 @@
               this.assignObjects(this.movieBase.film.scene[i], [input2newScene]);
             }
           }
-        }
-        newScene() {
-          this.addScene(this.movieBase.film.scene.length);
         }
         selectBackground(info) {
           this.selectedBackgrounds = this.selectedBackgrounds || [];
