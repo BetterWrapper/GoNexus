@@ -121,7 +121,6 @@ http
 						"Content-Type": "application/json"
 					}
 				}, r => {
-					console.log(data);
 					if (session.set(res, {
 						flashThemesLogin: Buffer.from(r.headers['set-cookie'][1]).toString("base64")
 					})) {
@@ -529,7 +528,7 @@ http
 								if (
 									currentSession 
 									&& currentSession.data 
-									&& currentSession.data.loggedIn != undefined 
+									&& currentSession.data.loggedIn
 									&& currentSession.data.flashThemesLogin 
 									&& currentSession.data.current_uid
 								) {
@@ -562,7 +561,7 @@ http
 								if (
 									currentSession 
 									&& currentSession.data 
-									&& currentSession.data.loggedIn != undefined
+									&& currentSession.data.loggedIn
 									&& currentSession.data.flashThemesLogin 
 									&& currentSession.data.current_uid
 								) {
@@ -838,7 +837,7 @@ http
 											res.end(JSON.stringify(json));
 											break;
 										} case "import": {
-											if (data.loggedIn == 'true' && data.userParams) {
+											if (data.loggedIn && data.userParams) {
 												const buffer = await getBuffersOnline(json.movieZipUrl)
 												function movieMeta(desc, prefix) {
 													return {
@@ -1052,7 +1051,7 @@ http
 						} case "/api/getUserInfoFromSession": { // sends user info from the current session
 							res.setHeader("Content-Type", "application/json");
 							const currentSession = session.get(req);
-							if (currentSession.data.loggedIn != undefined && currentSession.data.current_uid) {
+							if (currentSession.data.loggedIn && currentSession.data.current_uid) {
 								res.end(JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(
 									i => i.id == currentSession.data.current_uid
 								)));
@@ -1063,7 +1062,7 @@ http
 								JSON.stringify(JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid))
 							));
 							break;
-						} case "/api/getSession": { // i'm not sure why this is stil here if you can make browser cookies accessable to the browser's javascript.
+						} case "/api/getSession": {
 							res.end(JSON.stringify(session.get(req)));
 							break;
 						} case "/api/addFTAcc": { // add the flashthemes account to the server after all checks are complete.
@@ -1071,7 +1070,7 @@ http
 								res.setHeader("Content-Type", "application/json");
 								if (data.uid) {
 									const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.uid);
-									if (userInfo.isFTAcc && userInfo.base64) res.end(JSON.stringify({
+									if (userInfo.isFTAcc) res.end(JSON.stringify({
 										success: true
 									}));
 								} else if (data.code == '0') try {
@@ -1085,11 +1084,9 @@ http
 											const users = json.users.filter(i => i.isFTAcc == true);
 											const userInfo = users.find(i => i.base64 == base64c);
 											if (userInfo) {
-												hasSomeLevelOfSuccess = true;
 												info.success = true;
 												info.data = userInfo;
 												info.info = "success";
-												res(info);
 											} else {
 												info.success = false;
 												info.error = "No FlashThemes Account Has Been Found In\
@@ -1112,7 +1109,6 @@ http
 												} else {
 													const num = Math.floor(Math.random() * (28 - 7 + 1) + 1);
 													const uid = crypto.randomBytes(num).toString('hex');
-													console.log(num, uid);
 													const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
 													const meta = json.users.find(i => i.email == data.email);
 													if (meta && !meta.linkedFTAcc) {
@@ -1145,7 +1141,7 @@ http
 														});
 														fs.writeFileSync('./_ASSETS/users.json', JSON.stringify(json, null, "\t"));
 														if (session.set(res, {
-															loggedIn: '',
+															loggedIn: true,
 															current_uid: uid,
 															displayName: data.displayName,
 															email: data.email
@@ -1160,7 +1156,7 @@ http
 											}
 										}
 									} else if (session.set(res, {
-										loggedIn: '',
+										loggedIn: true,
 										current_uid: json.data.id,
 										displayName: json.data.name,
 										email: json.data.email

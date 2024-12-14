@@ -131,6 +131,7 @@
           <input maxlength="16" class="form-control" id="aiVideoTitle" name="title" type="text" required/><br>
           <label for="aiVideoTitle">AI Model</label>
           <select class="form-control" id="aiModelSelection" name="OpenAIModel"></select>
+          <div id="OpenAIApiKey"></div>
           <input type="submit" value="Generate Video" class="btn btn-warning"/>
         </form>
         <hr>
@@ -184,7 +185,16 @@
                 </button>
                 <ul class="dropdown-menu">
                   <li>
-                    <button class="btn btn-warning" onclick="studioHtml5.aiVideoGeneration()">Generate Video With AI (<strong>BETA</strong>)</button>
+                    <button class="dropdown-item" onclick="studioHtml5.aiVideoGeneration()">
+                      Generate Video With AI (<strong>BETA</strong>)
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item" onclick="studioHtml5.openAiKeyinput(() => {
+                      studioHtml5.displayFeedback('OpenAI Api Key has been applied successfully!');
+                    }, true)">
+                      Input An OpenAI Api Key
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -289,7 +299,7 @@
           }, 1)
         }
         aiVideoGeneration(obj, isFormSubmissionEvent = false) {
-          const openAiKey = this.getCookie("OpenAiApiKey");
+          const openAiKey = localStorage.OpenAiApiKey;
           if (openAiKey) {
             this.showPleasewait();
             if (isFormSubmissionEvent) jQuery.post("/api/movie/generate", $(obj).serialize(), d => {
@@ -321,15 +331,20 @@
                 this.showModal($("#aiVideoGeneration"))
               }
             })
-          } else {
-            const promptMsg = "OpenAI Api Key (Required For Video Generation)";
-            let key = prompt(promptMsg, '');
-            if (key && key != null) {
-              console.log(key);
-              this.setCookie("OpenAIApiKey", key, 132);
-              this.aiVideoGeneration();
-            } else this.displayFeedback("Please enter in an OpenAI Api Key in order to generate a video");
-          }
+          } else this.openAiKeyinput(this.aiVideoGeneration);
+        }
+        stringIsArray(json) {
+          return json ? json.startsWith('"[') && json.endsWith(']"') : false;
+        }
+        openAiKeyinput(callback, putInArray = false) {
+          const key = prompt("OpenAI Api Key (Required For Video Generation)", '');
+          if (key && key != null) {
+            let cookie = localStorage.OpenAIApiKey;
+            cookie = this.stringIsArray(cookie) ? JSON.parse(cookie) : cookie;
+            const info = putInArray ? JSON.stringify(Object.assign(Array.isArray(cookie) ? cookie : [], [key])) : key;
+            localStorage.setItem("OpenAIApiKey", info);
+            if (typeof callback == "function") callback();
+          } else this.displayFeedback("Please enter in an OpenAI Api Key in order to proceed to the next screen");
         }
         deleteScene() {
           this.movieBase.film.scene.splice(this.currentSceneNum, 1);

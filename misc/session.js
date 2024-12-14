@@ -7,9 +7,9 @@ module.exports = {
     cookieData: 'HttpOnly; path=/',
     set(res, data) { // sets a cookie for the user
         try {
-            const array = [];
-            for (const i in data) array.push(`${i}=${data[i]}; max-age=${Math.round(31619000 * 31619000)}; ${this.cookieData}`);
-            res.setHeader("Set-Cookie", array);
+            res.setHeader("Set-Cookie", Object.keys(data).map(i => `${i}=${data[i]}; max-age=${
+                Math.round(31619000 * 31619000)
+            }; ${this.cookieData}`));
             return true;
         } catch (e) {
             console.log(e);
@@ -28,9 +28,21 @@ module.exports = {
     },
     remove(res, data) { // removes a user cookie from the server.
         try {
-            const array = [];
-            for (const i in data) array.push(`${i}=${data[i]}; expires=Thu, 01 Jan 1970 00:00:00 GMT; ${this.cookieData}`);
-            res.setHeader("Set-Cookie", array);
+            res.setHeader(
+                "Set-Cookie", Object.keys(data).map(i => `${i}=${data[i]}; expires=Thu, 01 Jan 1970 00:00:00 GMT; ${this.cookieData}`)
+            );
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+    removeAll(res, req) { // removes all user cookies from the server.
+        try {
+            const data = this.get(req).data;
+            res.setHeader(
+                "Set-Cookie", Object.keys(data).map(i => `${i}=${data[i]}; expires=Thu, 01 Jan 1970 00:00:00 GMT; ${this.cookieData}`)
+            );
             return true;
         } catch (e) {
             console.log(e);
