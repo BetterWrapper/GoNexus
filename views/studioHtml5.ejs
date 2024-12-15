@@ -104,6 +104,26 @@
     <input type="file" style="display: none;" id="importerFile" onchange="studioHtml5.loadImporterQuene(this)" multiple/>
     <div style="display: none;">
       <div id="previewPlayer"></div>
+      <div id="openAiKeysManager">
+        <h2>Manage Your OpenAI Api Keys</h2>
+        <form onsubmit="studioHtml5.OpenAIApiKeyManager(this)" action="javascript:;" id="openAiKeysManager">
+          <label for="OpenAIApiKeys">OpenAI Api Key</label>
+          <select id="OpenAIApiKeys" class="form-control"></select>
+          <label>Actions</label>
+          <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-primary" onclick="studioHtml5.openAiKeyinput(() => {
+              studioHtml5.displayFeedback('OpenAI Api Key has been applied successfully!');
+            }, true)">Add Another OpenAI Api Key</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="studioHtml5.deletSelectedOpenAIAPIKey(this)">
+              Delete Selected OpenAI Api Key
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="studioHtml5.openAiKeyinput('', false, $('#openAiKeysManager'), true)">
+              Edit Selected OpenAI Api Key
+            </button>
+          </div>
+        </form>
+        <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
+      </div>
       <div id="sceneSettings">
         <h2>Scene Settings</h2>
         <div class="btn-group me-2">
@@ -123,16 +143,29 @@
           Please note that this feature is currently in beta meaning that things may not work as expected.
           If you run into any issues or bugs while using the feature,
           You are advised to contact our staff on our Discord Server if you run into problems
-          and we will fix them to the best of our abilities.
+          and we will fix them to the best of our abilities. 
+          In order to properly test this feature, 
+          you are advised to be on a paid OpenAI Account as this feature may not work best for accounts on the free tier.
         </div>
         <hr>
-        <form onsubmit="studioHtml5.aiVideoGeneration(this, true)" action="javascript:;">
+        <form onsubmit="studioHtml5.aiVideoGeneration('', this, true)" action="javascript:;">
           <label for="aiVideoTitle">Video Title</label>
           <input maxlength="16" class="form-control" id="aiVideoTitle" name="title" type="text" required/><br>
-          <label for="aiVideoTitle">AI Model</label>
+          <label for="aiModelSelection">AI Model</label>
           <select class="form-control" id="aiModelSelection" name="OpenAIModel"></select>
-          <div id="OpenAIApiKey"></div>
+          <input type="hidden" name="OpenAIApiKey"/>
           <input type="submit" value="Generate Video" class="btn btn-warning"/>
+        </form>
+        <hr>
+        <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
+      </div>
+      <div id="OpenAIModelKeySelection">
+        <h2>Select An OpenAI Api Key To Use For Generating Your Video</h2>
+        <hr>
+        <form onsubmit="studioHtml5.openAiKeyinput('aiVideoGeneration', false, this)" action="javascript:;">
+          <label for="OpenAIApiKey">OpenAI Api Key</label>
+          <select id="OpenAIApiKey" class="form-control"></select><br>
+          <input type="submit" value="Select Key" class="btn btn-primary"/>
         </form>
         <hr>
         <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
@@ -190,10 +223,8 @@
                     </button>
                   </li>
                   <li>
-                    <button class="dropdown-item" onclick="studioHtml5.openAiKeyinput(() => {
-                      studioHtml5.displayFeedback('OpenAI Api Key has been applied successfully!');
-                    }, true)">
-                      Input An OpenAI Api Key
+                    <button class="dropdown-item" onclick="studioHtml5.openAiKeysManager()">
+                      OpenAI Api Keys Manager
                     </button>
                   </li>
                 </ul>
@@ -298,10 +329,21 @@
             }
           }, 1)
         }
-        aiVideoGeneration(obj, isFormSubmissionEvent = false) {
-          const openAiKey = localStorage.OpenAiApiKey;
+        openAiKeysManager() {
+          const cookie = localStorage.OpenAIApiKey;
+          if (cookie) {
+            const array = this.stringIsArray(cookie) ? JSON.parse(cookie) : [cookie];
+            $("#OpenAIApiKeys").html('');
+            for (var i = 0; i < array.length; i++) $("#OpenAIApiKeys").append(`<option value="${i}">${array[i]}</option>`);
+            this.showModal($("#openAiKeysManager"))
+          } else this.openAiKeyinput(() => this.openAiKeysManager());
+        }
+        aiVideoGeneration(key, obj, isFormSubmissionEvent = false) {
+          const openAiKey = key || localStorage.OpenAIApiKey;
+          console.log(openAiKey)
           if (openAiKey) {
             this.showPleasewait();
+            const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
             if (isFormSubmissionEvent) jQuery.post("/api/movie/generate", $(obj).serialize(), d => {
               switch (typeof d) {
                 case "string": {
@@ -318,8 +360,13 @@
                 }
               }
             });
-            else jQuery.post('/api/openai/models/list', d => {
-              if (d.error) this.displayFeedback(d.error.message, {
+            else jQuery.post('/api/openai/models/list', {
+              OpenAIApiKey: openAiKey
+            }, d => {
+              if (d.needs2selectkey) {
+                $("#OpenAIApiKey").html(JSON.parse(localStorage.OpenAIApiKey).map(v => `<option value="${v}">${v}</option>`));
+                this.showModal($("#OpenAIModelKeySelection"));
+              } else if (d.error) this.displayFeedback(d.error.message, {
                 header: `AI Model Listing Error`
               });
               else {
@@ -328,23 +375,63 @@
                 }
                 if (d.object == "list") $("#aiModelSelection").html(d.data.map(html));
                 else $("#aiModelSelection").html(html(d.data));
+                $("#aiVideoGeneration").find('input[name="OpenAIApiKey"]').val(key);
                 this.showModal($("#aiVideoGeneration"))
               }
             })
-          } else this.openAiKeyinput(this.aiVideoGeneration);
+          } else this.openAiKeyinput('aiVideoGeneration');
         }
         stringIsArray(json) {
-          return json ? json.startsWith('"[') && json.endsWith(']"') : false;
+          return json ? json.startsWith('[') && json.endsWith(']') : false;
         }
-        openAiKeyinput(callback, putInArray = false) {
-          const key = prompt("OpenAI Api Key (Required For Video Generation)", '');
+        stringIsJson(json) {
+          return json ? json.startsWith('{') && json.endsWith('}') : false;
+        }
+        getOpenAIKeyValue(k) {
+          let key;
+          if (typeof k == "string") key = k;
+          else key = $(k).find('select').val()
+          return key;
+        }
+        openAiKeyinput(callback, putInArray = false, k, isEditingKey = false) {
+          const key1 = (() => {
+            if (k && localStorage.OpenAIApiKey) {
+              const keyVal = Number(this.getOpenAIKeyValue(k));
+              if (keyVal) {
+                console.log(keyVal)
+                if (typeof keyVal == "number") {
+                  const array = this.stringIsArray(localStorage.OpenAIApiKey) ? JSON.parse(localStorage.OpenAIApiKey) : [
+                    localStorage.OpenAIApiKey
+                  ];
+                  return array[keyVal];
+                }
+                return keyVal;
+              }
+            }
+            return '';
+          })();
+          const key = k && !isEditingKey ? this.getOpenAIKeyValue(k) : prompt("OpenAI Api Key (Required For Video Generation)", key1);
           if (key && key != null) {
-            let cookie = localStorage.OpenAIApiKey;
-            cookie = this.stringIsArray(cookie) ? JSON.parse(cookie) : cookie;
-            const info = putInArray ? JSON.stringify(Object.assign(Array.isArray(cookie) ? cookie : [], [key])) : key;
+            const cookie = !isEditingKey ? (k || localStorage.OpenAIApiKey) : localStorage.OpenAIApiKey;
+            let info = key;
+            if (putInArray) {
+              const array = this.stringIsArray(cookie) ? JSON.parse(cookie) : [cookie];
+              array.push(key);
+              info = JSON.stringify(array);
+            } else if (isEditingKey && k) {
+              const keyVal = this.getOpenAIKeyValue(k);
+              if (typeof keyVal == "number") {
+                const array = this.stringIsArray(cookie) ? JSON.parse(cookie) : [cookie];
+                array[keyVal] = k;
+                info = JSON.stringify(array);
+              } else info = keyVal;
+            } 
             localStorage.setItem("OpenAIApiKey", info);
-            if (typeof callback == "function") callback();
-          } else this.displayFeedback("Please enter in an OpenAI Api Key in order to proceed to the next screen");
+            if (callback) switch (typeof callback) {
+              case "function": return callback(key);
+              case "string": return this[callback](key);
+            }
+          } else this.displayFeedback("Please enter in an OpenAI Api Key in order to proceed to the next screen", {}, !isEditingKey);
         }
         deleteScene() {
           this.movieBase.film.scene.splice(this.currentSceneNum, 1);

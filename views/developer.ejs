@@ -145,7 +145,7 @@ if (self !== top) jQuery('body').hide();
                                 <a data-topic="browserw/FlashRequirement" class="formSupportModalBtn" href="javascript:;">Why we need this</a>
                             </small></label>
                             <div class="col-sm-6">
-                                <textarea class="form-control tester_required-form" name="user_browserw/FlashAnswer" required></textarea>
+                                <textarea class="form-control tester_required-form" name="user_browser_has_flash" required></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -543,7 +543,10 @@ if (self !== top) jQuery('body').hide();
                     role: "alert"
                 }, 
                 text: `If you don't have a compataible web browser that still supports Adobe Flash Player, 
-                you may download <a href="https://www.slimjetbrowser.com/release/archive/20.0.5.0/">Slimjet</a> to resolve your issue.`
+                you may download the <a href="https://www.slimjetbrowser.com/release/archive/20.0.5.0/">
+                    Slimjet Browser Version 20.0.5.0
+                </a> to resolve your issue. Please be sure that you are downloading a file that is compatiable with your opperating system 
+                to ensure that you have no incompatibility issues with the file.`
             }
         }
     }
@@ -565,7 +568,7 @@ if (self !== top) jQuery('body').hide();
             $("#formSupportModal").modal('show');
         });
     });
-    // retreieves all of the english world countries because our staff only knows English
+    // retreieves all of the english world/speaking countries because our staff only knows English
     $.getJSON("https://restcountries.com/v3.1/all", d => {
         $("#countries").html(
             '<option value="">Please select a country</option>' + d.filter(

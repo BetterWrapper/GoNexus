@@ -1094,44 +1094,50 @@ module.exports = function (req, res, url) {
 				} case "/api/movie/generate": {
 					const { z } = require("zod");
 					const currentSession = session.get(req);
-					process.env.OPENAI_API_KEY = currentSession.data.OpenAIApiKey;
-					console.log(currentSession);
 					loadPost(req, res).then(async data => {
+						process.env.OPENAI_API_KEY = data.OpenAIApiKey;
 						const openai = new OpenAI();
+						function randomCharId() {
+							const chars = asset.list('', '', '', [], currentSession.data.current_uid, "char");
+							const l = chars.length - 1;
+							const ids = [];
+							for (const char of chars) ids.push(char.id);
+							return ids[Math.floor(Math.random() * l)];
+						}
 						const aiResult = z.object({
 							title: z.string(),
 							description: z.string(),
+							video_height: 350,
+							video_width: 554,
 							sounds: z.array(z.object({
-								url: z.string(),
-								title: z.string()
+								audio_url: z.string(),
+								name: z.string()
 							})),
 							scenes: z.array(z.object({
 								background: z.object({
 									name: z.string(),
-									url: z.string(),
-									height: 350,
-									width: 554
+									image_url: z.string(),
+									image_height: 350,
+									image_width: 554
 								}),
 								props: z.array(z.object({
 									name: z.string(),
-									url: z.string(),
-									xPos: z.number(),
-									yPos: z.number()
+									image_url: z.string(),
+									x_position: z.number(),
+									y_position: z.number()
 								})),
 								characters: z.array(z.object({
 									name: z.string(),
-									url: z.string(),
-									xPos: z.number(),
-									yPos: z.number(),
+									x_position: z.number(),
+									y_position: z.number(),
 									action: z.string(),
 									facial_expression: z.string(),
-									dialog: z.array(z.object({
+									dialog: z.object({
 										voice: z.string(),
-										text: z.string(),
-										url: z.string()
-									}))
+										text: z.string()
+									})
 								}))
-							})),
+							}))
 						});
 						try {
 							const completion = await openai.beta.chat.completions.parse({
@@ -1145,7 +1151,7 @@ module.exports = function (req, res, url) {
 								response_format: zodResponseFormat(aiResult),
 							});
 							const result = completion.choices[0].message;
-							console.log(result);
+							fs.writeFileSync("jyvee.json", JSON.stringify(completion, null, "\t"))
 							if (result.refusal) {
 								res.setHeader("Content-Type", "application/json");
 								res.end(JSON.stringify({
@@ -1170,16 +1176,25 @@ module.exports = function (req, res, url) {
 					})
 					break;
 				} case "/api/openai/models/list": {
-					const currentSession = session.get(req);
-					https.get('https://api.openai.com/v1/models', {
-						headers: {
-							authorization: `Bearer ${currentSession.data.OpenAIApiKey}`
+					loadPost(req, res).then(data => {
+						res.setHeader("Content-Type", "application/json");
+						let key = data.OpenAIApiKey;
+						if (movie.stringIsArray(key)) {
+							const array = JSON.parse(key);
+							if (array.length > 1) return res.end(JSON.stringify({
+								needs2selectkey: true
+							})); 
+							else key = array[0]
 						}
-					}, r => {
-						const buffers = [];
-						r.on("data", b => buffers.push(b)).on("end", () => {
-							res.setHeader("Content-Type", "application/json");
-							res.end(JSON.stringify(JSON.parse(Buffer.concat(buffers))));
+						https.get('https://api.openai.com/v1/models', {
+							headers: {
+								authorization: `Bearer ${key}`
+							}
+						}, r => {
+							const buffers = [];
+							r.on("data", b => buffers.push(b)).on("end", () => {
+								res.end(JSON.stringify(JSON.parse(Buffer.concat(buffers))));
+							})
 						})
 					})
 					break;

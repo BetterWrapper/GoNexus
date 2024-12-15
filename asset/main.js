@@ -107,7 +107,6 @@ module.exports = {
 		if (themeId) aList = aList.filter(i => i.themeId == themeId);
 		const table = [];
 		const e = `${count * page + count}`;
-		console.log(count * page, parseInt(e.substr(1)), id2load)
 		if (id2load) return aList.filter(i => i.id == id2load);
 		else if (page && count) for (var i = count * page; i < parseInt(e.substr(1)); i++) {
 			if (aList[i]) {

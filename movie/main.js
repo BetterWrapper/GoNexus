@@ -17,6 +17,12 @@ function stream2buffer(r) {
 	})
 }
 module.exports = {
+	stringIsArray(json) {
+		return json ? json.startsWith('[') && json.endsWith(']') : false;
+	},
+	stringIsJson(json) {
+		return json ? json.startsWith('{') && json.endsWith('}') : false;
+	},
 	genxml(theme, c1, c2, textarray, charorders, cam, micids, times, id) {
 		console.log(c1, c2);
 		return new Promise((resolve, reject) => {

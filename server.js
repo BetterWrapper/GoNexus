@@ -659,7 +659,7 @@ http
 								}
 								const rest = new discord.REST({
 									version: process.env.DISCORD_API_VERSION
-								}).setToken(process.env.DISCORD_BOT_TOKEN);
+								}).setToken(Buffer.from(process.env.DISCORD_BOT_TOKEN, "base64"));
 								if (data.fieldsMissing == undefined) rest.post(discord.Routes.channelMessages("1276358369304776767"), {
 									body: {
 										content: `Hello @everyone, a user named ${
