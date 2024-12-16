@@ -121,8 +121,18 @@ module.exports = function (req, res, url) {
 		} case "POST": {
 			switch (url.pathname) {
 				case "/api/movie/preview": {
-					loadPost(req, res).then(data => {
-						if (data.xml) fs.writeFileSync(`./previews/template.xml`, data.xml)
+					loadPost(req, res).then(async data => {
+						if (data.xml) {
+							if (data.action == "save") {
+								const mId = await movie.save(data.xml, data.thumb, JSON.parse(data.body), false, req);
+								if (data.saveAndClose) {
+									res.statusCode = 302;
+									res.setHeader("Location", `/player?movieId=${mId}`);
+									res.end()
+								} else res.end('Your movie has been saved successfully!');
+							}
+							fs.writeFileSync(`./previews/template.xml`, data.xml)
+						}
 						res.end();
 					})
 					break;
@@ -1107,8 +1117,12 @@ module.exports = function (req, res, url) {
 						const aiResult = z.object({
 							title: z.string(),
 							description: z.string(),
-							video_height: 350,
-							video_width: 554,
+							video_height: z.number({
+								description: 350
+							}),
+							video_width: z.number({
+								description: 554
+							}),
 							sounds: z.array(z.object({
 								audio_url: z.string(),
 								name: z.string()
@@ -1117,8 +1131,15 @@ module.exports = function (req, res, url) {
 								background: z.object({
 									name: z.string(),
 									image_url: z.string(),
-									image_height: 350,
-									image_width: 554
+									image_height: z.number({
+										description: 350
+									}),
+									image_width: z.number({
+										description: 554
+									}),
+									fill_image: z.boolean({
+										description: true
+									})
 								}),
 								props: z.array(z.object({
 									name: z.string(),
@@ -1139,6 +1160,7 @@ module.exports = function (req, res, url) {
 								}))
 							}))
 						});
+						fs.writeFileSync('jyvee.json', JSON.stringify(zodResponseFormat(aiResult), null, "\t"));
 						try {
 							const completion = await openai.beta.chat.completions.parse({
 								model: data.OpenAIModel,

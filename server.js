@@ -430,7 +430,7 @@ http
 						} case "/api/school/get": {
 							loadPost(req, res).then(data => {
 								const users = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-								const userInfo = users.users.find(i => i.id == (data.admin || data.uid || data.id));
+								const userInfo = users.users.find(i => i.id == data.uid);
 								res.setHeader("Content-Type", "application/json");
 								if (userInfo && userInfo.school) res.end(JSON.stringify(userInfo.school));
 								else res.end(JSON.stringify({}));
@@ -1097,7 +1097,6 @@ http
 										});
 									}
 									const json = await findUserInfo();
-									console.log(json);
 									if (!json.success) {
 										console.log(data.displayName, json.error);
 										switch (json.info) {

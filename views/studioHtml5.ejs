@@ -159,6 +159,29 @@
         <hr>
         <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
       </div>
+      <div id="saveMovie">
+        <h2>Save A Movie</h2>
+        <hr>
+        <form onsubmit="studioHtml5.saveMovie(this, true)" action="javascript:;">
+          <div style="float: right;" id="thumbnailChooser">
+            <label>Select A Thumbnail</label><br>
+            <input type="button" onclick="studioHtml5.swipeMovieThumbnailImage('left', this)" disabled value="<-"/>
+            <img alt="Thumbnail For Your Movie"/>
+            <input type="button" onclick="studioHtml5.swipeMovieThumbnailImage('right', this)" disabled value="->"/><br>
+            Page <span>1</span>
+          </div>
+          <label for="movieTitle" class="input-group">Movie Title</label>
+          <input maxlength="16" class="form-control" id="movieTitle" name="title" type="text" required/><br>
+          <label for="movieDescription" class="input-group">Movie Description</label>
+          <textarea class="form-control" id="movieDescription" name="desc"></textarea>
+          <label for="movieTags" class="input-group">Movie Tags</label>
+          <textarea class="form-control" id="movieTags" name="tag"></textarea>
+          <input type="checkbox" name="saveAndClose"/>Go To The Movie Page After The Movie Saves<br>
+          <button class="btn btn-primary">Save Movie</button>
+        </form>
+        <hr>
+        <center><button onclick="studioHtml5.hidePleasewait()">Close</button></center>
+      </div>
       <div id="OpenAIModelKeySelection">
         <h2>Select An OpenAI Api Key To Use For Generating Your Video</h2>
         <hr>
@@ -268,7 +291,6 @@
       class Studio {
         constructor() {
           this.showPleasewait();
-          this.wideScreen = 0;
           this.previewPlayer = $("#previewPlayer");
           this.managerBtn = '<button type="button" class="btn btn-sm btn-outline-secondary" data-studiohtml5function-call="assetManager">Open Asset Manager</button>';
           this.studio = $("#studio_html5");
@@ -291,6 +313,9 @@
           jQuery.getJSON("/api/themes/get?only_include_extras=true", d => {
             this.extraThemes = d;
           });
+          jQuery.post("/api/getNewMovieId", d => {
+            this.newMovieId = d;
+          })
           try {
             jQuery[movieBasePath[0]](movieBasePath[1], xmlString => {
               this.movieBase = this.x2js.xml2json(xmlString);
@@ -329,6 +354,54 @@
             }
           }, 1)
         }
+        swipeMovieThumbnailImage(direction, obj) {
+          $("#thumbnailChooser").find('input[type="button"]').prop("disabled", false);
+          const thumbIndex = Number($("#thumbnailChooser").find('span').text()) - 1;
+          let expressions = {};
+          switch (direction) {
+            case "left": {
+              expressions.current = thumbIndex - 1;
+              expressions.past = expressions.current - 1;
+              break;
+            } case "right": {
+              expressions.current = thumbIndex + 1;
+              expressions.past = expressions.current + 1;
+              break;
+            }
+          }
+          $("#thumbnailChooser").find('span').text(expressions.current + 1);
+          const backgrounds = this.selectedBackgrounds;
+          if (!backgrounds[expressions.past]) $(obj)[0].disabled = true;
+          $("#thumbnailChooser").find('img')[0].src = this.selectedBackgrounds[expressions.current].thumbnail;
+        }
+        saveMovie(obj, isFormSubmissionEvent = false) {
+          this.showPleasewait();
+          if (isFormSubmissionEvent) {
+            const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
+            const saveAndClose = json.saveAndClose;
+            delete json.saveAndClose;
+            for (const i in json) this.movieBase.film.meta[i].__cdata = json[i];
+            jQuery.get($("#thumbnailChooser").find('img')[0].src, thumb => {
+              jQuery.post(`/api/movie/preview`, {
+                action: 'save',
+                xml: this.json2xml(this.movieBase),
+                saveAndClose,
+                thumb,
+                body: JSON.stringify({
+                  userId: userData.uid || userData.id,
+                  movieId: this.params.get("movieId"),
+                  presaveId: this.newMovieId
+                })
+              }, this.displayFeedback)
+            })
+          } else {
+            if (this.selectedBackgrounds.length > 1) $("#thumbnailChooser").find('input[value="->"]')[0].disabled = false;
+            else $("#thumbnailChooser").find('input[value="->"]')[0].disabled = true;
+            $("#thumbnailChooser").find('input[name="thumbIndex"]').val(0);
+            $("#thumbnailChooser").find('img')[0].src = this.selectedBackgrounds[0].thumbnail;
+            this.showModal($("#saveMovie"));
+          }
+        }
         openAiKeysManager() {
           const cookie = localStorage.OpenAIApiKey;
           if (cookie) {
@@ -364,7 +437,7 @@
               OpenAIApiKey: openAiKey
             }, d => {
               if (d.needs2selectkey) {
-                $("#OpenAIApiKey").html(JSON.parse(localStorage.OpenAIApiKey).map(v => `<option value="${v}">${v}</option>`));
+                $("#OpenAIApiKey").html(JSON.parse(openAiKey).map(v => `<option value="${v}">${v}</option>`));
                 this.showModal($("#OpenAIModelKeySelection"));
               } else if (d.error) this.displayFeedback(d.error.message, {
                 header: `AI Model Listing Error`
@@ -375,7 +448,9 @@
                 }
                 if (d.object == "list") $("#aiModelSelection").html(d.data.map(html));
                 else $("#aiModelSelection").html(html(d.data));
-                $("#aiVideoGeneration").find('input[name="OpenAIApiKey"]').val(key);
+                $("#aiVideoGeneration").find('input[name="OpenAIApiKey"]').val(
+                  this.stringIsArray(openAiKey) ? JSON.parse(openAiKey)[0] : openAiKey
+                );
                 this.showModal($("#aiVideoGeneration"))
               }
             })
@@ -440,6 +515,7 @@
           ) this.selectedBackgrounds.splice(this.currentSceneNum, 1);
           this.displayFeedback(`Scene ${this.currentSceneNum + 1} has been deleted successfuly`)
           this.displayScene(0);
+          this.reorganizeScenes();
         }
         sceneSettings() {
           this.showPleasewait();
@@ -728,12 +804,7 @@
           this.showPleasewait();
           jQuery.post("/api/movie/preview", {
             xml: this.json2xml(this.movieBase)
-          }, () => this.initPreviewPlayer({
-            flashvars: {
-              movieId: "templatePreview",
-              userId: userData.uid || userData.id
-            }
-          }));
+          }, () => this.initPreviewPlayer());
         }
         assignObjects(json = {}, array = [], options = {}) {
           const $this = this;
@@ -783,10 +854,32 @@
             width: "550",
             height: "354",
             flashvars: {
-              apiserver: "/", 
-              autostart: "1", 
-              storePath: "/static/store/<store>", 
-              clientThemePath: "/static/<client_theme>"
+              movieOwner: userData.name,
+              movieOwnerId: userData.uid || userData.id,
+              movieId: "templatePreview",
+              movieLid: 6,
+              userId: userData.uid || userData.id,
+              username: userData.name,
+              uemail: userData.email,
+              ut: -1,
+              apiserver: "/",
+              duration: Math.round(this.movieBase.film._duration),
+              playcount: 1,
+              copyable: this.movieBase.film._copyable,
+              isPublished: this.movieBase.film._published,
+              ctc: "go",
+              tlang: "en_US",
+              is_private_shared: this.movieBase.film._pshare,
+              autostart: 1,
+              isInitFromExternal: 0,
+              isWide: this.movieBase.film._isWide,
+              appCode: "go",
+              storePath: "/static/store/<store>",
+              clientThemePath: "/static/<client_theme>",
+              animationPath: "/static/animation/",
+              isEmbed: 0,
+              showButtons: 1,
+              endStyle: 0
             },
             allowScriptAccess: "always",
             allowFullScreen: "true",
@@ -1101,14 +1194,17 @@
             this.movieBase.film.scene[this.currentSceneNum] = this.movieBase.film.scene[this.currentSceneNum] || sceneInfo;
           } else {
             this.movieBase.film.scene.splice(this.currentSceneNum, 0, sceneInfo);
-            for (var i = this.currentSceneNum + 1; i < this.movieBase.film.scene.length; i++) {
-              const info = this.movieBase.film.scene[i];
-              const input2newScene = {
-                _index: Number(info._index) + 1
-              };
-              input2newScene._id = `SCENE${input2newScene._index}`
-              this.assignObjects(this.movieBase.film.scene[i], [input2newScene]);
-            }
+            this.reorganizeScenes();
+          }
+        }
+        reorganizeScenes() {
+          for (var i = this.currentSceneNum; i < this.movieBase.film.scene.length; i++) {
+            const info = this.movieBase.film.scene[i];
+            const input2newScene = {
+              _index: i
+            };
+            input2newScene._id = `SCENE${input2newScene._index}`
+            this.assignObjects(this.movieBase.film.scene[i], [input2newScene]);
           }
         }
         selectBackground(info) {
@@ -1146,10 +1242,12 @@
               file: `ugc.${info.id}`
             }
           }
-          const imgUrl = !this.assetManagerData?.init ? `${this.storeUrl}/${this.currentTheme}/bg/${
+          this.selectedBackgrounds[this.currentSceneNum].thumbnail = !this.assetManagerData?.init ? `${
+            this.storeUrl
+          }/${this.currentTheme}/bg/${
             info.attr.thumb
           }` :  `/goapi/getAsset/${info.id}`;
-          this.studio.html(`<img src="${imgUrl}" height="354" width="550"/>`)
+          this.studio.html(`<img src="${this.selectedBackgrounds[this.currentSceneNum].thumbnail}" height="354" width="550"/>`)
         }
         soundPreview(obj, id) {
           if (id == this.audioId) {

@@ -33,7 +33,9 @@ function getSchoolInfo () {
             }
         });
         jQuery(".form_user_id").val(userData.uid || userData.id);
-        jQuery.post("/api/school/get", JSON.parse(JSON.stringify(userData)), d => {
+        jQuery.post("/api/school/get", {
+            uid: userData.admin || userData.id || userData.uid
+        }, d => {
             schoolInfo = d;
             if (d.name) {
                 if (d.admin == (userData.uid || userData.id)) jQuery(".is_school_admin").show()
