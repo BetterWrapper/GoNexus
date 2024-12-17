@@ -2,10 +2,10 @@
 <head>
     <% const char1Info = params.qvm.stockCharacters.find(i => i.char1_default == true) %>
     <meta charset="utf-8">
-    <title><%= params.qvm.themeName %> Template | <%= params.qvm.title %> | Nexus</title>
+    <title><%= params.qvm.themeName %> Template | <%= params.qvm.title %> | GoNexus</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <% const nonSelectableCharInfo = params.qvm.nonSelectableCharInfo %>
-    <meta name="description" content="With Nexus Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
+    <meta name="description" content="With GoNexus Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
     
     <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
     
@@ -29,6 +29,7 @@
     <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
     <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
     <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+    <script src="/js/user.js"></script>
     <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
@@ -48,7 +49,7 @@
     <body id="school">
     <script type="text/javascript">
     GoLite.settings.player = {
-        swf: "/static/tommy/2012/animation/player.swf",
+        swf: "/static/animation/player.swf",
         height: 384,
         width: 550
     }
@@ -109,7 +110,7 @@
                 <a href="javascript:jQuery.blockUI()" onclick="updateUserState(response => {
                     jQuery.unblockUI();
                     setTimeout(() => {
-                        if (GoLite.userData) jQuery('#login_bar').slideUp()
+                        if (userData) jQuery('#login_bar').slideUp()
                         showNotice(response)
                     }, 500);
                 });">Confirm Account</a> -
@@ -178,7 +179,7 @@
         <a class="btn_next" href="#step2" onclick="stepTo('#step2'); return false;">Next</a>
         <div class="upgrade" style="display: none;">
             <a href="javascript:popAccountModal();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
-    <div class="buttontitle">Get A Nexus Account</div>
+    <div class="buttontitle">Get A GoNexus Account</div>
     </a>
         </div>
     </div>
@@ -647,7 +648,7 @@
             <div class="loading"></div>
             <div class="preview" style="display:none">
                 <div id="player_container">
-                    You can't use Nexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                    You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                 </div>
                 <a id="btn_save" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['save']); return false;">Save Now</a>
             </div>
@@ -656,7 +657,7 @@
                 <div class="thumbnail">
                     Choose your thumbnail
                     <div id="thumb_chooser_container">
-                        You can't use Nexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                        You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                     </div>
                 </div>
     
@@ -701,7 +702,7 @@
     
     <div id="login" class="lightbox" style="display:none">
         <div class="lightbox_wrapper">
-            <h2>Login to Nexus</h2>
+            <h2>Login to GoNexus</h2>
             <form id="login_form" action="" method="post">
                 <div id="login_form_message"></div>
                 <div>
@@ -873,7 +874,7 @@
     <div id="upgrade" class="lightbox" style="display:none">
         <div class="lightbox_wrapper">
 			<h3>Make animated videos exactly the way you want!</h3>
-            <p>You need a Nexus Account in order to use all of the features in the Quick Video Maker.</p>
+            <p>You need a GoNexus Account in order to use all of the features in the Quick Video Maker.</p>
             <small id="account_message"></small>
             <a href="javascript:;" class="buttonbase buttonorange" id="account_confirm" style="margin:15px auto;float:none;display:block;">
                 <div class="buttontitle">Confirm Account</div>
@@ -904,8 +905,8 @@
         GoLite.updateUserState(function(userState) {
             if (userState == 2) {
                 reloadCCList();
-                callback("You are currently logged in to Nexus.");
-            } else callback("You are currently not logged in to Nexus.");
+                callback("You are currently logged in to GoNexus.");
+            } else callback("You are currently not logged in to GoNexus.");
         });
     }
     jQuery('#account_confirm').click(function(e) {
@@ -919,11 +920,13 @@
     const customCharInfo = Object.fromEntries(GoLite.params('<%= params.customCharInfo %>'));
     var customCC_model = [];
     var reloadCCList = function() {
-        customCharInfo.userId = GoLite.userData.uid || GoLite.userData.id;
         jQuery.ajax({
-            url: '/api/getChars',
+            url: '/api/assets/get/theme/ugc',
             type: 'POST',
-            data: customCharInfo,
+            data: Object.assign({
+                type: "char",
+                userId: userData.uid || userData.id
+            }, customCharInfo),
             dataType: 'json',
             success: function(data, dummy1, dummy2) {
                 customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });

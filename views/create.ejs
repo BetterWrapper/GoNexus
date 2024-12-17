@@ -616,9 +616,9 @@
                                         ${
                                             (
                                                 !theme.attr.only_show_options || theme.attr.only_show_options.includes("qvm")
-                                            ) && typeof theme.attr.qvm != undefined ? !theme.attr.qvm?.includes(",") ? `<a class="btn btn-default" 
+                                            ) && (theme.attr.qvm || theme.attr.qvm_url) ? !theme.attr.qvm?.includes(",") ? `<a class="btn btn-default" 
                                                 href="${
-                                                    theme.attr.qvm_url ? theme.attr.qvm_url : `/quickvideo?filename=${theme.attr.qvm}`
+                                                    theme.attr.qvm_url ? theme.attr.qvm_url : `/quickvideo?theme=${theme.attr.qvm}`
                                                 }" title="" 
                                                 data-original-title="QVM Template"><i class="i-qvm"></i>
                                             </a>` : `<button class="btn btn-default" onclick="showTemplates(\`${

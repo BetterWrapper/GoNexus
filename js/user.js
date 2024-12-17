@@ -243,9 +243,6 @@ auth.onAuthStateChanged(user => {
                 case "/movies": {
                     window.location.href = '/';
                     break;
-                } case "/quickvideo": {
-                    jQuery("#login_bar").not("[login]").show();
-                    break;
                 }
                 case "/public_signup":
                 case "/login": {
@@ -295,10 +292,7 @@ function logout(t) {
                         case "/movies": {
                             window.location.href = '/';
                             break;
-                        } case "/quickvideo": {
-                            jQuery("#login_bar").not("[email-verification]").show();
-                            break;
-                        }
+                        } 
                     }
                 }
             });
@@ -323,9 +317,6 @@ function logout(t) {
                 case "/templateManager":
                 case "/movies": {
                     window.location.href = '/';
-                    break;
-                } case "/quickvideo": {
-                    jQuery("#login_bar").not("[email-verification]").show();
                     break;
                 }
             }
@@ -356,9 +347,15 @@ function loggedIn(user) {
                 }
             }
             break;
-        }
-        case "/quickvideo": {
-            reloadCCList();
+        } case "/quickvideo": {
+            const interval = setInterval(() => {
+                if (GoLite) clearInterval(interval), GoLite.updateUserState(function(userState) {
+                    if (userState == 2) {
+                        reloadCCList();
+                        jQuery('#login_bar').remove()
+                    }
+                });
+            })
             break;
         } case "/create": {
             checkStudioLoadingStatus();

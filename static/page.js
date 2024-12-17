@@ -74,7 +74,11 @@ module.exports = function (req, res, url) {
 		|| req.headers.host == `localhost:${process.env.SERVER_PORT}` 
 		|| userSession && userSession.data && userSession.data.site_access_key_is_correct != undefined
 	) switch (url.pathname) {
-		case "/cc/embed": {
+		case "/": {
+			res.statusCode = 302;
+			res.setHeader("Location", "/public_index");
+			return res.end();
+		} case "/cc/embed": {
 			title = "Character Creator";
 			filename = 'app_embed';
 			attrs = {

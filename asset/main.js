@@ -25,7 +25,7 @@ module.exports = {
 	folder: './_ASSETS',
 	tempFolder: './_CACHÉ',
 	load(aId, isStream = false) {
-		return fs[isStream ? 'createReadStream' : 'readFileSync'](`${this.folder}/${aId}`);
+		return fs[isStream ? 'createReadStream' : 'readFileSync'](aId.startsWith('asset-') ? `./_SAVED/${aId}` : `${this.folder}/${aId}`);
 	},
 	update(data) {
 		const meta = {
@@ -83,14 +83,16 @@ module.exports = {
 	save(buffer, meta, data) {
 		if (data.isTemplate) {
 			if (data.recorderId) meta.enc_asset_id = data.recorderId;
-			else meta.enc_asset_id = `asset-${fUtil.getNextFileId("asset-", `.${meta.ext}`)}`;
+			else {
+				meta.assetPath = fUtil.getFileIndex('asset-', `.${meta.ext}`, fUtil.getNextFileId("asset-", `.${meta.ext}`));
+				meta.enc_asset_id = meta.assetPath.substr(meta.assetPath.lastIndexOf("/") + 1).split(`.${meta.ext}`)[0];
+			}
 		} else meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
 		if (data.isTemplate) {
-			fs.writeFileSync(`${this.tempFolder}/${meta.id}`, buffer);
+			fs.writeFileSync(meta.assetPath || `${this.tempFolder}/${meta.id}`, buffer);
 			return meta;
-		}
-		else {
+		} else {
 			fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);
 			const json = JSON.parse(fs.readFileSync(`${this.folder}/users.json`));
 			json.users.find(i => i.id == data.userId).assets.unshift(meta);

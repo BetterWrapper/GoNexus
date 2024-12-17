@@ -1,12 +1,5 @@
 {
 	"GET": {
-		"/$": {
-			"statusCode": 302,
-			"headers": {
-				"Location": "/public_index"
-			},
-			"content": ""
-		},
 		"/goapi/getAssetTags": {
 			"headers": {
 				"Content-Type": "application/json"
@@ -19,93 +12,25 @@
 			},
 			"content": "<cross-domain-policy><allow-access-from domain=\"*\"/></cross-domain-policy>"
 		},
-		"/cc.swf": {},
-		"/go_full.swf": {},
-		"/favicon.ico": {},
 		"/char-default.png": {
 			"headers": {
 				"Content-Type": "image/png"
 			},
 			"content": ""
 		},
-		"/html/([^?]+html).*": {
-			"contentReplace": true,
-			"regexLink": "/html/$1",
-			"headers": {
-				"Content-Type": "text/html; charset=UTF-8"
-			}
-		},
-		"/js/([^?]+js).*": {
-			"contentReplace": true,
-			"regexLink": "/js/$1",
+		"/js": {
 			"headers": {
 				"Content-Type": "text/javascript"
 			}
 		},
-		"/ui/css/([^?]+js).*": {
-			"contentReplace": true,
-			"regexLink": "/ui/css/$1",
-			"headers": {
-				"Content-Type": "text/css"
-			}
-		},
-		"/ui/img/([^?]+js).*": {
-			"contentReplace": true,
-			"regexLink": "/ui/img/$1",
-			"headers": {
-				"Content-Type": "image/png"
-			}
-		},
-		"/ui/fonts/([^?]+js).*": {
-			"contentReplace": true,
-			"regexLink": "/ui/fonts/$1",
+		"/qvm_files": {},
+		"/lvm_files": {},
+		"/ui/fonts": {
 			"headers": {
 				"Content-Type": "application/font-woff; charset=UTF-8"
 			}
 		},
-		"/ui/gifs/([^?]+js).*": {
-			"contentReplace": true,
-			"regexLink": "/ui/gifs/$1",
-			"headers": {
-				"Content-Type": "image/gif"
-			}
-		},
-		"/ui/gifs([^?]+).*": {
-			"regexLink": "/ui/gifs/$1",
-			"headers": {
-				"Content-Type": "image/gif"
-			}
-		},
-		"/ui/fonts([^?]+).*": {
-			"regexLink": "/ui/fonts/$1",
-			"headers": {
-				"Content-Type": "application/font-woff; charset=UTF-8"
-			}
-		},
-		"/ui/img/([^?]+).*": {
-			"regexLink": "/ui/img/$1",
-			"headers": {
-				"Content-Type": "image/png"
-			}
-		},
-		"/ui/css/([^?]+).*": {
-			"regexLink": "/ui/css/$1",
-			"headers": {
-				"Content-Type": "text/css"
-			}
-		},
-		"/js/([^?]+).*": {
-			"regexLink": "/js/$1",
-			"headers": {
-				"Content-Type": "text/javascript"
-			}
-		},
-		"/html/([^?]+).*": {
-			"regexLink": "/html/$1",
-			"headers": {
-				"Content-Type": "text/html; charset=UTF-8"
-			}
-		}
+		"/ui": {}
 	},
 	"POST": {
 		"/api_v2/studio_preference/get": {
@@ -131,12 +56,6 @@
 				"Content-Type": "text/html; charset=UTF-8"
 			},
 			"content": "<?xml encoding=\"UTF-8\"?><watermark>/ui/img/logo_better.png</watermark>"
-		},
-		"/goapi/rebuildTTS/": {
-			"headers": {
-				"Content-Type": "text/html; charset=UTF-8"
-			},
-			"content": "1"
 		}
 	},
 	"pages": {

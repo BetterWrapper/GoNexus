@@ -470,7 +470,7 @@ module.exports = {
 		const themes = { common: true };
 		var ugc = `${header}<theme id="ugc">`;
 		fUtil.addToZip(zip, "movie.xml", xmlBuffer);
-		const store = data.v ? `https://file.garden/ZP0Nfnn29AiCnZv5/static/2010/store` : store1;
+		const store = data.v ? `https://file.garden/ZP0Nfnn29AiCnZv5/static/2010/store` : data.storePath4Parser || store1;
 		/**
 		 * why not just merge em together they're all similar anyway
 		 * @param {string} file 

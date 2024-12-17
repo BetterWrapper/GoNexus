@@ -295,8 +295,8 @@
           this.managerBtn = '<button type="button" class="btn btn-sm btn-outline-secondary" data-studiohtml5function-call="assetManager">Open Asset Manager</button>';
           this.studio = $("#studio_html5");
           this.x2js = new X2JS();
+          this.base64 = new Base64();
           this.xmlSerializer = new XMLSerializer();
-          this.domParser = new DOMParser();
           this.params = new URLSearchParams(window.location.search);
           let movieBasePath = this.params.get("movieId") ? [
             'get',
@@ -372,7 +372,7 @@
           $("#thumbnailChooser").find('span').text(expressions.current + 1);
           const backgrounds = this.selectedBackgrounds;
           if (!backgrounds[expressions.past]) $(obj)[0].disabled = true;
-          $("#thumbnailChooser").find('img')[0].src = this.selectedBackgrounds[expressions.current].thumbnail;
+          $("#thumbnailChooser").find('img')[0].src = backgrounds[expressions.current].thumbnail;
         }
         saveMovie(obj, isFormSubmissionEvent = false) {
           this.showPleasewait();
@@ -380,24 +380,31 @@
             const json = Object.fromEntries(new URLSearchParams($(obj).serialize()));
             const saveAndClose = json.saveAndClose;
             delete json.saveAndClose;
-            for (const i in json) this.movieBase.film.meta[i].__cdata = json[i];
-            jQuery.get($("#thumbnailChooser").find('img')[0].src, thumb => {
-              jQuery.post(`/api/movie/preview`, {
-                action: 'save',
-                xml: this.json2xml(this.movieBase),
-                saveAndClose,
-                thumb,
-                body: JSON.stringify({
-                  userId: userData.uid || userData.id,
-                  movieId: this.params.get("movieId"),
-                  presaveId: this.newMovieId
-                })
-              }, this.displayFeedback)
-            })
+            for (const i in json) this.movieBase.film.meta[i] = json[i];
+            jQuery.post(`/api/movie/preview`, {
+              action: 'save',
+              xml: this.json2xml(this.movieBase),
+              saveAndClose,
+              thumbUrl: $("#thumbnailChooser").find('img')[0].src,
+              body: JSON.stringify({
+                userId: userData.uid || userData.id,
+                movieId: this.params.get("movieId"),
+                presaveId: this.newMovieId
+              })
+            }, d => {
+              if (d.substr(1)) this.displayFeedback(d)
+            });
           } else {
-            if (this.selectedBackgrounds.length > 1) $("#thumbnailChooser").find('input[value="->"]')[0].disabled = false;
-            else $("#thumbnailChooser").find('input[value="->"]')[0].disabled = true;
-            $("#thumbnailChooser").find('input[name="thumbIndex"]').val(0);
+            const thumbIndex = Number($("#thumbnailChooser").find('span').text())
+            if (
+              this.selectedBackgrounds.length > 1
+              && this.selectedBackgrounds[thumbIndex]
+            ) $("#thumbnailChooser").find('input[value="->"]')[0].disabled = false;
+            else {
+              $("#thumbnailChooser").find('span').text(1)
+              $("#thumbnailChooser").find('input[value="<-"]')[0].disabled = true;
+              $("#thumbnailChooser").find('input[value="->"]')[0].disabled = true;
+            }
             $("#thumbnailChooser").find('img')[0].src = this.selectedBackgrounds[0].thumbnail;
             this.showModal($("#saveMovie"));
           }
@@ -584,7 +591,6 @@
           } else if (!json.isDeletingThingsFromScene) {
             for (const key of keys) {
               const sceneInfo = this.movieBase.film.scene[this.currentSceneNum][key];
-              console.log(sceneInfo);
               if (Array.isArray(sceneInfo) && sceneInfo.length > 0) {
                 let html = `<input type="hidden" name="isDeletingThingsFromScene" value="true"/><input type="hidden" name="assets2remove" value="${key}"/>`;
                 for (var i = 0; i < sceneInfo.length; i++) html += `<input type="checkbox" name="${key}[${i}]"/>${key} #${i}<br>`;
@@ -854,32 +860,12 @@
             width: "550",
             height: "354",
             flashvars: {
-              movieOwner: userData.name,
               movieOwnerId: userData.uid || userData.id,
               movieId: "templatePreview",
-              movieLid: 6,
-              userId: userData.uid || userData.id,
-              username: userData.name,
-              uemail: userData.email,
-              ut: -1,
               apiserver: "/",
-              duration: Math.round(this.movieBase.film._duration),
-              playcount: 1,
-              copyable: this.movieBase.film._copyable,
-              isPublished: this.movieBase.film._published,
-              ctc: "go",
-              tlang: "en_US",
-              is_private_shared: this.movieBase.film._pshare,
               autostart: 1,
-              isInitFromExternal: 0,
-              isWide: this.movieBase.film._isWide,
-              appCode: "go",
               storePath: "/static/store/<store>",
               clientThemePath: "/static/<client_theme>",
-              animationPath: "/static/animation/",
-              isEmbed: 0,
-              showButtons: 1,
-              endStyle: 0
             },
             allowScriptAccess: "always",
             allowFullScreen: "true",
@@ -1178,27 +1164,17 @@
           if (
             this.selectedBackgrounds && this.selectedBackgrounds[this.currentSceneNum - 1]
           ) this.selectedBackgrounds[this.currentSceneNum] = this.selectedBackgrounds[this.currentSceneNum - 1];
-          const durDefault = 2.5;
-          this.movieBase.film._duration = this.movieBase.film._duration ? this.movieBase.film._duration + durDefault : durDefault;
-          const prevInfo = this.movieBase.film.scene[this.currentSceneNum - 1];
-          const input2newScene = {
-            _index: Number(prevInfo?._index || -1) + 1
-          };
-          input2newScene._id = `SCENE${input2newScene._index}`
-          const sceneInfo = Object.assign({
+          const prevInfo = this.movieBase.film.scene[this.currentSceneNum - 1] || {
             _adelay: 60,
             _lock: "N",
-            _color: "16777215"
-          }, input2newScene);
-          if (this.params.get("movieId") && !this.studioLoaded) {
-            this.movieBase.film.scene[this.currentSceneNum] = this.movieBase.film.scene[this.currentSceneNum] || sceneInfo;
-          } else {
-            this.movieBase.film.scene.splice(this.currentSceneNum, 0, sceneInfo);
+          };
+          if (!this.movieBase.film.scene[this.currentSceneNum]) {
+            this.movieBase.film.scene.splice(this.currentSceneNum, 0, this.assignObjects({}, [prevInfo]));
             this.reorganizeScenes();
           }
         }
         reorganizeScenes() {
-          for (var i = this.currentSceneNum; i < this.movieBase.film.scene.length; i++) {
+          for (var i = 0; i < this.movieBase.film.scene.length; i++) {
             const info = this.movieBase.film.scene[i];
             const input2newScene = {
               _index: i
@@ -1212,6 +1188,7 @@
           this.selectedBackgrounds[this.currentSceneNum] = info;
           if (!this.assetManagerData?.init) {
             if (this.movieBase.film.scene[this.currentSceneNum].prop) delete this.movieBase.film.scene[this.currentSceneNum].prop
+            this.movieBase.film.scene[this.currentSceneNum]._combgId = `${this.currentTheme}.${info.attr.id}`
             this.movieBase.film.scene[this.currentSceneNum]._combgId = `${this.currentTheme}.${info.attr.id}`
             this.movieBase.film.scene[this.currentSceneNum].bg = {
               _id: info.children.find(i => i.name == "bg").attr.id,
@@ -1292,8 +1269,9 @@
           jQuery.post(`/api/retreiveMp3DurationFromURL?url=${this.storeUrl}/${$(obj).data("theme")}/sound/${info.attr.id}`, d => {
             const split = d.d.toString().split(".");
             // the math for stop isn't quite accurate, but i was somewhat able to get it close.
-            let stop = Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 8) + start;
+            let stop = Math.round(((Math.round(d.lvmDur * 132) / 666) / 8.1 - 7) - 7);
             if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
+            stop = stop + start;
             this.movieBase.film.sound.unshift({
               _id: `SOUND${l + l}`,
               _index: l,
@@ -1342,6 +1320,124 @@
               else this.loadSounds(this.fallbackTheme)
             });
           }
+        }
+      }
+      /**
+      *
+      *  Base64 encode / decode
+      *  http://www.webtoolkit.info/
+      *
+      **/
+      class Base64 {
+        constructor() {
+          this._keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        }
+
+        // public method for encoding
+        encode(input) {
+          var output = "";
+          var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+          var i = 0;
+
+          input = this._utf8_encode(input);
+
+          while (i < input.length) {
+
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) enc3 = enc4 = 64;
+            else if (isNaN(chr3)) enc4 = 64;
+
+            output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+          }
+          return output;
+        }
+
+        // public method for decoding
+        decode(input) {
+          var output = "";
+          var chr1, chr2, chr3;
+          var enc1, enc2, enc3, enc4;
+          var i = 0;
+
+          input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+          while (i < input.length) {
+
+            enc1 = this._keyStr.indexOf(input.charAt(i++));
+            enc2 = this._keyStr.indexOf(input.charAt(i++));
+            enc3 = this._keyStr.indexOf(input.charAt(i++));
+            enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+
+            output = output + String.fromCharCode(chr1);
+
+            if (enc3 != 64) output = output + String.fromCharCode(chr2);
+            if (enc4 != 64) output = output + String.fromCharCode(chr3);
+          }
+
+          output = this._utf8_decode(output);
+
+          return output;
+        }
+
+        // private method for UTF-8 encoding
+        _utf8_encode(string) {
+          string = string.replace(/\r\n/g,"\n");
+          var utftext = "";
+
+          for (var n = 0; n < string.length; n++) {
+
+            var c = string.charCodeAt(n);
+
+            if (c < 128)  utftext += String.fromCharCode(c);
+            else if((c > 127) && (c < 2048)) {
+              utftext += String.fromCharCode((c >> 6) | 192);
+              utftext += String.fromCharCode((c & 63) | 128);
+            } else {
+              utftext += String.fromCharCode((c >> 12) | 224);
+              utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+              utftext += String.fromCharCode((c & 63) | 128);
+            }
+          }
+          return utftext;
+        }
+
+        // private method for UTF-8 decoding
+        _utf8_decode(utftext) {
+          var string = "";
+          var i = 0;
+          var c = c1 = c2 = 0;
+
+          while ( i < utftext.length ) {
+
+            c = utftext.charCodeAt(i);
+
+            if (c < 128) {
+              string += String.fromCharCode(c);
+              i++;
+            } else if((c > 191) && (c < 224)) {
+              c2 = utftext.charCodeAt(i+1);
+              string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+              i += 2;
+            } else {
+              c2 = utftext.charCodeAt(i+1);
+              c3 = utftext.charCodeAt(i+2);
+              string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+              i += 3;
+            }
+          }
+          return string;
         }
       }
     </script>

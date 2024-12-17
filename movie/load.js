@@ -25,36 +25,17 @@ function getMp3Duration(buffer) {
 		});
 	})
 }
+const xmlJs = require('xml-js');
+function jsonToXml(jsonData, o = {}) {
+	const options = movie.assignObjects({
+		compact: true,
+		ignoreComment: true,
+		spaces: 4
+	}, [o]);
+	return xmlJs.js2xml(jsonData, options);
+}
 const OpenAI = require("openai");
 const { zodResponseFormat } = require("openai/helpers/zod");
-// parses a param in a json that most likely could reassemble an array but in a string. Example: dev[0][isJyvee]: true
-function parseStringArray(data, extras) {
-	const json = {
-		arraycount: 0,
-		array: []
-	};
-	function contentCollection() {
-		for (const i in data) {
-			if (i.startsWith(`${extras.start}[${json.arraycount}]`)) {
-				const param = i.split("][")[1].split("]")[0];
-				json.array[json.arraycount] = json.array[json.arraycount] || {};
-				json.array[json.arraycount][param] = data[`${extras.start}[${json.arraycount}][${param}]`];
-			}
-		}
-	}
-	while (json.array.length != getStringArrayLength(data, extras.start)) {
-		if (json.array[json.arraycount] && Object.keys(json.array[json.arraycount]).length == extras.amount) json.arraycount++
-		if (!json.array[json.arraycount]) contentCollection();
-	}
-	return json.array;
-}
-function getStringArrayLength(data, start) {
-	let count = 0;
-	for (const i in data) {
-		if (i.startsWith(`${start}[${count}]`)) count++
-	}
-	return count;
-}
 const nodezip = require("node-zip");
 const JSZip = require("jszip");
 const session = require("../misc/session");
@@ -124,7 +105,9 @@ module.exports = function (req, res, url) {
 					loadPost(req, res).then(async data => {
 						if (data.xml) {
 							if (data.action == "save") {
-								const mId = await movie.save(data.xml, data.thumb, JSON.parse(data.body), false, req);
+								const mId = await movie.save(data.xml, await movie.getBuffersOnline(data.thumbUrl), Object.assign({
+									v: "2010"
+								}, JSON.parse(data.body)), false, req);
 								if (data.saveAndClose) {
 									res.statusCode = 302;
 									res.setHeader("Location", `/player?movieId=${mId}`);
@@ -898,207 +881,133 @@ module.exports = function (req, res, url) {
 					});
 					break;
 				} case "/api/setupText2VideoPreview": {
-					new formidable.IncomingForm().parse(req, async (e, f, files) => {
-						//HOLY SHIT REWRITING THIS WITH THE RIGHT RESPONSE
-						let qvm_theme = f.golite_theme;
-						let expressions = [];
-						let cam = [];
-						let charorder = [];
-						let charids = []
-						let texts = [];
-						const template = f.enc_tid;
-						let voicez = [];
-						const counts = {
-							script: 0,
-							complete: 0
-						};
-						console.log("test:", f);
-						for (const data in f) { // characters & script timings
-							if (data.startsWith(`characters[`)) {
-								charids.push(data.substr(14).slice(0, -1));
-							}
-							if (data.startsWith(`script[${counts.script}]`)) {
-								if (data == `script[${counts.script}][text]`) {
-									console.log(f[data]);
-									if (f[data].toString().includes("#1 -")) {
-										console.log("INCLUDED THE CAMERA!!!!")
-										console.log(f[data].toString().substring(4));
-										texts.push(f[data].toString().substring(4));
-										// These only matter for certain qvms (Talking picz)
-										cam.push("out");
-									} else {
-										texts.push(f[data]);
-										// These only matter for certain qvms (Talking picz)
-										cam.push("normal");
-									}
-								}
-								if (data == `script[${counts.script}][char_num]`) {
-									console.log(f[data]);
-									charorder.push(f[data]);
-								}
-								if (data == `script[${counts.script}][facial]`) {
-									console.log(f[data]);
-									expressions.push(f[data]);
-								}
-								if (data == `script[${counts.script}][voice]`) {
-									console.log(f[data]);
-									voicez.push(f[data]);
-								}
-								counts.complete++;
-								if (counts.complete > 3) {
-									counts.complete = 0;
-									counts.script++;
-								}
-							}
-						}
-						const flashvars = {
+					loadPost(req, res).then(async data => {
+						const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
+						f.player_object = {
+							apiserver: req.headers.origin + '/',
 							appCode: "go",
-							movieLid: 11,
+							v: '2010',
+							isTemplate: 1,
+							storePath4Parser: `${req.headers.origin}/static/tommy/2010/store`,
+							storePath: '/static/tommy/2010/store/<store>',
+							clientThemePath: '/static/tommy/2012/<client_theme>',
 							movieId: "templatePreview",
 							autostart: 1,
-							is_golite_preview: 1,
-							ut: 23,
-							apiserver: "/",
-							storePath: process.env.STORE_URL + "/<store>",
-							clientThemePath: process.env.CLIENT_URL + "/<client_theme>"
-						};
-						//Important!!!
-						let char1id = charids[1];
-						let char2id = charids[0];
-						if (qvm_theme == "pt") char2id = charids[1];
-						let scenetimes = [];
-						const ttsid = [];
-						let di;
-						let ouri = 0;
-						gentts();
-						//Had to rewrite this because it kept cutting out clips
-						function gentts() {
-							let i = ouri;
-							const micid = f[`script[${i}][aid]`] ? f[`script[${i}][aid]`] + ".mp3" : "";
-							console.log(micid)
-							if (!micid) {
-								console.log("page:", i);
-								(async () => {
-									try {
-										const body = await tts.genVoice4Qvm(voicez[i], texts[i]);
-										console.log("Body: " + JSON.stringify(body));
-										di = body.id;
-										try {
-											const duration = body.duration;
-											if (duration.toString().includes(".")) {
-												const round = Math.round(duration);
-												let seconds = round / 1000;
-												console.log("This is rounding:" + seconds);
-												scenetimes.push(seconds + 1);
-											} else {
-												let seconds = duration / 1000;
-												console.log(seconds);
-												scenetimes.push(seconds + 1);
+							is_golite_preview: 1
+						}
+						const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./_TEMPLATES/movieBase.xml`));
+						const scenes2create = await xml2js.parseStringPromise(
+							fs.readFileSync(`./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.xml`)
+						);
+						movieBase.film.scene = [];
+						movieBase.film.sound = scenes2create.film.sound;
+						fs.writeFileSync('jyvee.json', JSON.stringify(scenes2create.film.linkage));
+						const charNumbers = movie.assignObjects({}, f.characters);
+						const avatarIds = {};
+						let soundStartDelay = 0;
+						let defaultProp4head = 4;
+						function insertChar2Scene(k = [], elm2delete) {
+							for (var i = 0; i < k.length; i++) {
+								const l = movieBase.film.scene.length;
+								const scene = k[i];
+								if (elm2delete) delete scene._attributes[elm2delete];
+								scene._attributes.index = l;
+								scene._attributes.id = `SCENE${l}`;
+								soundStartDelay += Number(scene._attributes.adelay);
+								if (scene.char) {
+									for (var c = 0; c < scene.char.length; c++) {
+										const char = scene.char[c];
+										for (const id in charNumbers) {
+											if (char.action[0]._text.startsWith(`ugc.charIdNum${charNumbers[id]}`)) {
+												if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
+												char.action[0]._text = char.action[0]._text.replace(`ugc.charIdNum${
+													charNumbers[id]
+												}`, `ugc.${id}`);
 											}
-											console.log("Id:" + di);
-											ttsid.push(di);
-											let helper = ttsid.toString();
-											while (!ttsid.toString().includes(di)) {
-												if (!helper.includes(di)) {
-													ttsid.push(di);
-													console.log("Keep pushing till its there");
-												}
-											}
-											body.ttsid = ttsid.toString();
-											templateAssets.unshift(body);
-											ouri++;
-											if (i == texts.length - 1) {
-												movie.genxml(
-													qvm_theme, 
-													char1id, 
-													char2id, 
-													expressions, 
-													charorder, 
-													cam, 
-													ttsid, 
-													scenetimes, 
-													template
-												).then(guy => {
-													console.log(guy.success);
-													if (guy.success) return res.end(JSON.stringify({
-														script: f,
-														player_object: flashvars
-													}));
-													res.end(JSON.stringify({
-														error:"A Unknown Error Occured"
-													}))
-												}).catch(e => {
-													console.log(e);
-													res.end(JSON.stringify({
-														error: e.toString()
-													}))
-												});
-											} else gentts();
-										} catch (e) {
-											console.log(e);
-											res.end(JSON.stringify({
-												error: e.toString()
-											}))
 										}
-									} catch (e) {
-										console.log(e);
-										res.end(JSON.stringify({
-											error: e.toString()
-										}))
-									}
-								})();
-							} else {
-								ttsid.push(micid);
-								let helper = ttsid.toString();
-								while (!ttsid.toString().includes(micid)) {
-									if (!helper.includes(micid)) {
-										ttsid.push(micid);
-										console.log("Keep pushing till its there");
 									}
 								}
-								const micRecorderInfo = templateAssets.find(i => i.id == micid);
-								const duration = micRecorderInfo.duration;
-								if (duration.toString().includes(".")) {
-									const round = Math.round(duration);
-									let seconds = round / 1000;
-									console.log("This is rounding:" + seconds);
-									scenetimes.push(seconds + 1);
-								} else {
-									let seconds = duration / 1000;
-									console.log(seconds);
-									scenetimes.push(seconds + 1);
-								}
-								ouri++;
-								micRecorderInfo.ttsid = ttsid.toString();
-								if (i == texts.length - 1) {
-									movie.genxml(
-										qvm_theme, 
-										char1id, 
-										char2id, 
-										expressions, 
-										charorder, 
-										cam, 
-										ttsid, 
-										scenetimes, 
-										template
-									).then(guy => {
-										console.log(guy.success);
-										if (guy.success) return res.end(JSON.stringify({
-											script: f,
-											player_object: flashvars
-										}));
-										res.end(JSON.stringify({
-											error:"A Unknown Error Occured"
-										}))
-									}).catch(e => {
-										console.log(e);
-										res.end(JSON.stringify({
-											error: e.toString()
-										}))
-									});
-								} else gentts();
+								movieBase.film.scene[l] = scene;
 							}
 						}
+						insertChar2Scene(
+							scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoStart != undefined),
+							'isPartOfVideoStart', 
+						);
+						async function getVoiceMeta(script) {
+							if (script.type == "talk" && script.text) {
+								const meta = await tts.genVoice4Qvm(script.voice, script.text);
+								templateAssets.unshift(meta);
+								return meta;
+							}
+						}
+						movieBase.film.linkage = [];
+						for (const script of f.script) {
+							const meta = await getVoiceMeta(script);
+							if (meta) {
+								const soundLength = movieBase.film.sound.length;
+								const prevSoundInfo = movieBase.film.sound[soundLength - 1];
+								const start = prevSoundInfo._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
+								let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
+								if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
+								const sceneLength = movieBase.film.scene.length;
+								movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarIds[script.cid]}`)
+								const currentScene = scenes2create.film.scene.filter(i => i._attributes[`char_${
+									script.char_num
+								}_talking`] != undefined);
+								const json = movie.assignObjects({}, currentScene);
+								json._attributes.adelay = stop + 24;
+								insertChar2Scene([json]);
+								/*if (
+									script.facial[script.char_num] != "default"
+								) movieBase.film.scene[sceneLength].char[script.char_num - 1].head = {
+									_attributes: {
+										id: `PROP${defaultProp4head}`,
+										raceCode: 1
+									},
+									file: [`ugc.${script.cid}.head.head_${script.facial[script.char_num]}.xml`]
+								}, defaultProp4head += 2;*/
+								movieBase.film.sound[soundLength] = {
+									_attributes: {
+										id: `SOUND${soundLength}`,
+										index: soundLength,
+										track: 0,
+										vol: 1,
+										tts: 1
+									},
+									sfile: [`ugc.${meta.file}`],
+									start: [start],
+									stop: [stop + start],
+									fadein: [
+										{
+											_attributes: {
+												duration: 0,
+												vol: 0
+											}
+										}
+									],
+									fadeout: [
+										{
+											_attributes: {
+												duration: 0,
+												vol: 0
+											}
+										}
+									],
+									ttsdata: [
+										{
+											type: ["tts"],
+											text: [script.text],
+											voice: [script.voice]
+										}
+									]
+								};
+							}
+						}
+						insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoEnd != undefined), 'isPartOfVideoEnd');
+						fs.writeFileSync(`./previews/template.xml`, jsonToXml(movieBase));
+						res.setHeader("Content-Type", "application/json");
+						res.end(JSON.stringify(f));
 					});
 					break;
 				} case "/api/movie/generate": {

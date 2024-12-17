@@ -682,12 +682,12 @@ var GoLite = (function(e) {
     function n() {
         var A = {
             en_US: {
-                M: ["joey", "oc_simon"],
-                F: ["oc_kate", "oc_julie"]
+                M: ["joey", "simon"],
+                F: ["kate", "julie"]
             },
             es_ES: {
-                M: ["oc_juan", "oc_jorge"],
-                F: ["oc_carmen", "oc_leonor"]
+                M: ["juan", "jorge"],
+                F: ["carmen", "leonor"]
             }
         };
         var w = "en_US";
@@ -717,29 +717,24 @@ var GoLite = (function(e) {
             return new URLSearchParams(stuff);
         },
         checkLogin(num) {
-            this.auth.onAuthStateChanged(user => {
-                if (!user && jQuery('#login_bar').length) {
-                    jQuery('#seperator0').waypoint(function(e) {
-                        jQuery('#login_bar').slideDown();
-                    }, {offset: 'bottom-in-view', triggerOnce: true});
-            
-                    jQuery(document).bind('user.hasAccount', function(e) {
-                        updateUserState(function(response) {
-                            jQuery.unblockUI();
-                            jQuery(document).trigger('GoLite.stateChange', ['']);
-                            setTimeout(() => {
-                                jQuery('#login_bar').slideUp();
-                                showNotice(response);
-                            }, 500);
-                        });
+            if (!userData && jQuery('#login_bar').length) {
+                jQuery('#seperator0').waypoint(function(e) {
+                    jQuery('#login_bar').slideDown();
+                }, {offset: 'bottom-in-view', triggerOnce: true});
+        
+                jQuery(document).bind('user.hasAccount', function(e) {
+                    updateUserState(function(response) {
+                        jQuery.unblockUI();
+                        jQuery(document).trigger('GoLite.stateChange', ['']);
+                        setTimeout(() => {
+                            jQuery('#login_bar').slideUp();
+                            showNotice(response);
+                        }, 500);
                     });
-                } else {
-                    GoLite.userData = user;
-                    if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
-                }
-                if (!this.params(window.location.search).get("editmode")) this.init(num);
-                else this.initForEdit(num);
-            });
+                });
+            } else if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
+            if (!this.params(window.location.search).get("editmode")) this.init(num);
+            else this.initForEdit(num);
         },
         userLogin(form, callback) {
             const json = Object.fromEntries(this.params(form));
@@ -1216,10 +1211,10 @@ var GoLite = (function(e) {
             return c
         },
         updateUserState: function(w) {
-            this.auth.onAuthStateChanged(function(y) {
+            (function(y) {
+                console.log(y);
                 if (y) {
-                    GoLite.userData = y;
-                    if (y.emailVerified) {
+                    if (y.emailVerified || y.isFTAcc || y.role) {
                         c = 2;
                         e("#templates .plus-cover").remove();
                         e(".plus-character").html("<strong>Premium Character</strong>");
@@ -1230,10 +1225,8 @@ var GoLite = (function(e) {
                 e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c == 2);
                 e("#dialogs .upsell, #step4 .upsell").toggle(c < 2);
                 g();
-                if (w && typeof w == "function") {
-                    w(c)
-                }
-            })
+                if (w && typeof w == "function") w(c)
+            })(userData);
         },
         showSelectCCOverlay: function(y) {
             var w = GoLite.getCharacters();
