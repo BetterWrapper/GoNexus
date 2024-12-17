@@ -906,17 +906,15 @@ module.exports = function (req, res, url) {
 						const avatarIds = {};
 						let soundStartDelay = 0;
 						let defaultProp4head = 4;
-						function insertChar2Scene(k = [], elm2delete) {
-							for (var i = 0; i < k.length; i++) {
+						function insertChar2Scene(k = [], options = {}) {
+							for (const scene of k) {
 								const l = movieBase.film.scene.length;
-								const scene = k[i];
-								if (elm2delete) delete scene._attributes[elm2delete];
+								if (options.elm2delete) delete scene._attributes[options.elm2delete];
 								scene._attributes.index = l;
-								scene._attributes.id = `SCENE${l}`;
+								scene._attributes.id = `SCENE${scene._attributes.index}`;
 								soundStartDelay += Number(scene._attributes.adelay);
 								if (scene.char) {
-									for (var c = 0; c < scene.char.length; c++) {
-										const char = scene.char[c];
+									for (const char of scene.char) {
 										for (const id in charNumbers) {
 											if (char.action[0]._text.startsWith(`ugc.charIdNum${charNumbers[id]}`)) {
 												if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
@@ -925,15 +923,28 @@ module.exports = function (req, res, url) {
 												}`, `ugc.${id}`);
 											}
 										}
+										const pieces = char.action[0]._text.split(".");
+										const id = pieces[1];
+										const facial = (
+											options.useOpeningClosingFacial && options.openingClosingFacialType
+										) ? f.opening_closing[options.openingClosingFacialType].facial[charNumbers[id]] : 'default';
+										if (facial != "default") char.head = {
+											_attributes: {
+												id: `PROP${defaultProp4head}`,
+												raceCode: 1
+											},
+											file: [`ugc.${id}.head.head_${facial}.xml`]
+										}, defaultProp4head += 2;
 									}
 								}
-								movieBase.film.scene[l] = scene;
+								if (!options.dontpushstuff2scene) movieBase.film.scene[l] = scene;
 							}
 						}
-						insertChar2Scene(
-							scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoStart != undefined),
-							'isPartOfVideoStart', 
-						);
+						insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoStart != undefined), {
+							useOpeningClosingFacial: true,
+							openingClosingFacialType: 'opening_characters',
+							elm2delete: 'isPartOfVideoStart'
+						});
 						async function getVoiceMeta(script) {
 							if (script.type == "talk" && script.text) {
 								const meta = await tts.genVoice4Qvm(script.voice, script.text);
@@ -958,15 +969,6 @@ module.exports = function (req, res, url) {
 								const json = movie.assignObjects({}, currentScene);
 								json._attributes.adelay = stop + 24;
 								insertChar2Scene([json]);
-								/*if (
-									script.facial[script.char_num] != "default"
-								) movieBase.film.scene[sceneLength].char[script.char_num - 1].head = {
-									_attributes: {
-										id: `PROP${defaultProp4head}`,
-										raceCode: 1
-									},
-									file: [`ugc.${script.cid}.head.head_${script.facial[script.char_num]}.xml`]
-								}, defaultProp4head += 2;*/
 								movieBase.film.sound[soundLength] = {
 									_attributes: {
 										id: `SOUND${soundLength}`,
@@ -1004,7 +1006,11 @@ module.exports = function (req, res, url) {
 								};
 							}
 						}
-						insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoEnd != undefined), 'isPartOfVideoEnd');
+						insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoEnd != undefined), {
+							useOpeningClosingFacial: true,
+							openingClosingFacialType: 'closing_characters',
+							elm2delete: 'isPartOfVideoEnd'
+						});
 						fs.writeFileSync(`./previews/template.xml`, jsonToXml(movieBase));
 						res.setHeader("Content-Type", "application/json");
 						res.end(JSON.stringify(f));
