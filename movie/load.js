@@ -953,7 +953,13 @@ module.exports = function (req, res, url) {
 							}
 						}
 						movieBase.film.linkage = [];
+						const facials = [];
 						for (const script of f.script) {
+							if (script.facial[script.char_num] != "default") facials.unshift({
+								cid: script.cid,
+								expression: script.facial[script.char_num],
+								sceneCount: movieBase.film.scene.length
+							});
 							const meta = await getVoiceMeta(script);
 							if (meta) {
 								const soundLength = movieBase.film.sound.length;
@@ -1011,7 +1017,25 @@ module.exports = function (req, res, url) {
 							openingClosingFacialType: 'closing_characters',
 							elm2delete: 'isPartOfVideoEnd'
 						});
-						fs.writeFileSync(`./previews/template.xml`, jsonToXml(movieBase));
+						let xml = jsonToXml(movieBase);
+						let pos = xml.indexOf('<scene charsTalking=');
+						while (pos > -1) {
+							const sceneInfo = xml.substr(pos).split("</scene>")[0];
+							const sceneCountBeg = sceneInfo.indexOf(`id="SCENE`) + 9;
+							const sceneCountEnd = sceneInfo.indexOf('"', sceneCountBeg)
+							const sceneCount = Number(sceneInfo.substring(sceneCountBeg, sceneCountEnd));
+							const facialInfo = facials[facials.findIndex(i => i.sceneCount == sceneCount)];
+							if (facialInfo) {
+								const charAvatarId = avatarIds[facialInfo.cid];
+								const charInfo = sceneInfo.substr(sceneInfo.indexOf(`<char id="${charAvatarId}"`)).split("</char>")[0];
+								xml = xml.split(sceneInfo).join(sceneInfo.split(charInfo).join(charInfo + `<head id="PROP${
+									defaultProp4head
+								}" raceCode="1"><file>ugc.${facialInfo.cid}.head.head_${facialInfo.expression}.xml</file></head>`))
+								defaultProp4head += 2;
+							}
+							pos = xml.indexOf('<scene charsTalking=', pos + 19);
+						}
+						fs.writeFileSync(`./previews/template.xml`, xml);
 						res.setHeader("Content-Type", "application/json");
 						res.end(JSON.stringify(f));
 					});

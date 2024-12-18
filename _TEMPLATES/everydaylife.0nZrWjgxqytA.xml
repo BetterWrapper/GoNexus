@@ -133,7 +133,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene char_2_talking="" lock="Y" color="16777215">
+  <scene charsTalking="" char_2_talking="" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.office_blurred.png</file>
     </bg>
@@ -194,7 +194,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene char_1_talking="" lock="Y" color="16777215">
+  <scene charsTalking="" char_1_talking="" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.office_blurred.png</file>
     </bg>
@@ -237,7 +237,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene cam_on_both_chars="" lock="Y" color="16777215">
+  <scene lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.office_blurred.png</file>
     </bg>
