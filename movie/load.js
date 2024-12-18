@@ -4,7 +4,7 @@ const http = require("http");
 const loadPost = require("../misc/post_body");
 const fUtil = require("../misc/file");
 const formidable = require("formidable");
-const path = require("path");
+const tempbuffer = require("../tts/tempBuffer");
 const tts = require("../tts/main");
 const asset = require("../asset/main");
 const ffmpeg = require("fluent-ffmpeg");
@@ -14,6 +14,7 @@ const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
 var templateAssets = [];
+var dialogMethods = [];
 const ncs = require("../ncs/modules/search");
 const cloudinary = require("cloudinary").v2;
 function getMp3Duration(buffer) {
@@ -126,7 +127,7 @@ module.exports = function (req, res, url) {
 					}
 					loadPost(req, res).then(data => {
 						switch (data.code) {
-							case "no_uid": return err("You need to have a Nexus account in order to preview your template", data);
+							case "no_uid": return err("You need to have a GoNexus account in order to preview your template", data);
 							case "missing_fields": return err(
 								"You need to fill out some required fields in order to preview your template", data
 							);
@@ -148,7 +149,7 @@ module.exports = function (req, res, url) {
 					}
 					loadPost(req, res).then(data => {
 						switch (data.code) {
-							case "no_uid": return err("You need to have a Nexus account in order to publish your template", data);
+							case "no_uid": return err("You need to have a GoNexus account in order to publish your template", data);
 							case "missing_fields": return err(
 								"You need to fill out some required fields in order to publish your template", data
 							);
@@ -168,14 +169,10 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/api/initTemplateCreation": {
 					loadPost(req, res).then(data => {
-						const charArray = parseStringArray(data, {
-							start: 'charArray',
-							amount: 2
-						});
-						const sceneArray = parseStringArray(data, {
-							start: 'sceneArray',
-							amount: 2
-						});
+						const f = movie.assignObjects({}, movie.stringArray2Array(data));
+						const charArray = movie.addArray2ObjectWithNumbers(f.charArray);
+						const sceneArray = movie.addArray2ObjectWithNumbers(f.sceneArray);
+						fs.writeFileSync("jyvee.json", JSON.stringify(f, null, "\t"))
 						const userInfo = JSON.parse(fs.readFileSync(asset.folder + '/users.json')).users.find(i => i.id == data.template_uid);
 						if (!userInfo) return res.end(JSON.stringify({
 							code: "no_uid"
@@ -240,7 +237,7 @@ module.exports = function (req, res, url) {
 								message: `1You need to provide a name for Scene ${i + 1}`
 							}))
 							if (!data[`step2movie${i + 1}`]) return res.end(JSON.stringify({
-								message: `1Either you need to login to Nexus or you need to select a movie for Scene ${i + 1}`
+								message: `1Either you need to login to GoNexus or you need to select a movie for Scene ${i + 1}`
 							}))
 							if (!data[`step2desc${i + 1}`]) return res.end(JSON.stringify({
 								message: `1You need to provide a description for Scene ${i + 1}`
@@ -822,53 +819,76 @@ module.exports = function (req, res, url) {
 						});
 					});
 					break;
+				} case "/api/qvm_script/get": {
+					const currentSession = session.get(req);
+					const userInfo = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`)).users.find(
+						i => i.id == currentSession.data.current_uid
+					);
+					if (!userInfo) res.end("You need to have a GoNexus account in order to edit a video made in the QVM.");
+					else {
+						if (!url.query.movieId) res.end("You need to provide a movie id in order to edit in the quick video maker.");
+						else {
+							const movieInfo = userInfo.movies.find(i => i.id == url.query.movieId);
+							if (!movieInfo) res.end('This movie does not exist.');
+							else if (!movieInfo.movieIsMadeWithQVM) res.end(
+								'This movie was not made with the Quick Video Maker. Please choose a different movie.'
+							) 
+							else {
+								res.setHeader("Content-Type", "application/json")
+								res.end(JSON.stringify(movieInfo.qvm_script));
+							}
+						}
+					}
+					break;
 				} case "/api/saveText2Video": { // save a qvm video (requires a user to be logged in)
-					loadPost(req, res).then(data => {
-						console.log(templateAssets);
-						if (!data.userId) return res.end(JSON.stringify({
+					loadPost(req, res).then(async data => {
+						const currentSession = session.get(req);
+						if (!currentSession.data.current_uid) return res.end(JSON.stringify({
 							error: "You need to be logged in to your account in order to save your video."
 						}));
-						let movieXml = fs.readFileSync(`./previews/template.xml`, 'utf8');
-						movieXml = movieXml.replace(`<title><![CDATA[]]></title>`, `<title><![CDATA[${data.title}]]></title>`);
-						movieXml = movieXml.replace(`<desc><![CDATA[]]></desc>`, `<desc><![CDATA[${data.desc}]]></desc>`);
-						movieXml = movieXml.replace(`<tag><![CDATA[]]></tag>`, `<tag><![CDATA[qvm]]></tag>`);
-						const mId = `m-${fUtil.getNextFileId("movie-", ".xml")}`;
+						const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./previews/template.xml`));
+						switch (data.p_setting) {
+							case "public": {
+								movieBase.film._attributes.published = 1;
+								break;
+							} case "private": {
+								movieBase.film._attributes.pshare = 1;
+								break;
+							}
+						}
+						movieBase.film.meta[0].title[0] = data.title;
+						movieBase.film.meta[0].desc[0] = data.desc;
+						const mId = data.enc_mid;
 						const mIdParts = {
 							prefix: mId.substr(0, mId.lastIndexOf("-")),
 							suffix: mId.substr(mId.lastIndexOf("-") + 1)
 						};
-						let thumb;
-						if (data.thumbnail) { // if there was a thumbnail in the video
-							thumb = Buffer.from(data.thumbnail, "base64")
-						} else switch (data.enc_tid) { // generate a thumbnail from the enc_tid param.
-							case "0GWxgtNKvSes": {
-								thumb = fs.readFileSync(`./qvm_files/basketball/bg01.jpg`);
-								break;
-							} case "0nZrWjgxqytA": {
-								thumb = fs.readFileSync(`./qvm_files/bg03.jpg`);
-								break;
-							} default: {
-								return res.end(JSON.stringify({
-									error: "A thumbnail does not exist for this id. because of that, your video could not be saved. if you think that this is a bug, please contact one of our developers on the GoNexus Discord Server about this bug."
-								}));
-							}
-						}
+						if (!data.thumbnail) return res.end(JSON.stringify({
+							error: 'Please select a thumbnail'
+						}));
+						const thumb = Buffer.from(data.thumbnail, "base64")
 						const thumbpath = fUtil.getFileIndex("thumb-", ".png", mIdParts.suffix);
 						const filepath = fUtil.getFileIndex("movie-", ".xml", mIdParts.suffix);
+						if (fs.existsSync(filepath)) parse.deleteTTSFiles(fs.readFileSync(filepath), currentSession.data.current_uid);
 						fs.writeFileSync(thumbpath, thumb);
-						fs.writeFileSync(filepath, movieXml);
-						movie.meta(mId).then(m => {
+						fs.writeFileSync(filepath, jsonToXml(movieBase));
+						movie.oldMeta(mId).then(m => {
+							m.movieIsMadeWithQVM = true;
+							m.qvm_script = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
+							m.dialog_methods = dialogMethods;
+							delete m.qvm_script.thumbnail;
 							const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`))
-							const json = user.users.find(i => i.id == data.userId);
+							const json = user.users.find(i => i.id == currentSession.data.current_uid);
 							for (const meta of templateAssets) {
-								fs.writeFileSync(`${asset.folder}/${meta.id}`, fs.readFileSync(`${asset.tempFolder}/${meta.id}`));
+								fs.writeFileSync(`${asset.folder}/${meta.id}`, tempbuffer.get(meta.id));
 								json.assets.unshift(meta);
-								fs.unlinkSync(`${asset.tempFolder}/${meta.id}`);
 							}
-							json.movies.unshift(m);
+							const existingMovieInfo = json.movies.find(i => i.id == mId)
+							if (!existingMovieInfo) json.movies.unshift(m);
+							else Object.assign(existingMovieInfo, m);
 							fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(user, null, "\t"));
 							templateAssets = [];
-							console.log(templateAssets);
+							dialogMethods = [];
 							res.end(JSON.stringify({
 								url: `/player?movieId=${mId}`
 							}));
@@ -882,162 +902,183 @@ module.exports = function (req, res, url) {
 					break;
 				} case "/api/setupText2VideoPreview": {
 					loadPost(req, res).then(async data => {
-						const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
-						f.player_object = {
-							apiserver: req.headers.origin + '/',
-							appCode: "go",
-							v: '2010',
-							isTemplate: 1,
-							storePath4Parser: `${req.headers.origin}/static/tommy/2010/store`,
-							storePath: '/static/tommy/2010/store/<store>',
-							clientThemePath: '/static/tommy/2012/<client_theme>',
-							movieId: "templatePreview",
-							autostart: 1,
-							is_golite_preview: 1
-						}
-						const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./_TEMPLATES/movieBase.xml`));
-						const scenes2create = await xml2js.parseStringPromise(
-							fs.readFileSync(`./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.xml`)
-						);
-						movieBase.film.scene = [];
-						movieBase.film.sound = scenes2create.film.sound;
-						fs.writeFileSync('jyvee.json', JSON.stringify(scenes2create.film.linkage));
-						const charNumbers = movie.assignObjects({}, f.characters);
-						const avatarIds = {};
-						let soundStartDelay = 0;
-						let defaultProp4head = 4;
-						function insertChar2Scene(k = [], options = {}) {
-							for (const scene of k) {
-								const l = movieBase.film.scene.length;
-								if (options.elm2delete) delete scene._attributes[options.elm2delete];
-								scene._attributes.index = l;
-								scene._attributes.id = `SCENE${scene._attributes.index}`;
-								soundStartDelay += Number(scene._attributes.adelay);
-								if (scene.char) {
-									for (const char of scene.char) {
-										for (const id in charNumbers) {
-											if (char.action[0]._text.startsWith(`ugc.charIdNum${charNumbers[id]}`)) {
-												if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
-												char.action[0]._text = char.action[0]._text.replace(`ugc.charIdNum${
-													charNumbers[id]
-												}`, `ugc.${id}`);
+						try {
+							const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
+							f.player_object = {
+								apiserver: req.headers.origin + '/',
+								appCode: "go",
+								v: '2010',
+								isTemplate: 1,
+								storePath4Parser: `${req.headers.origin}/static/tommy/2010/store`,
+								storePath: '/static/tommy/2010/store/<store>',
+								clientThemePath: '/static/tommy/2012/<client_theme>',
+								movieId: "templatePreview",
+								autostart: 1,
+								is_golite_preview: 1
+							}
+							f.enc_mid = data.enc_mid || `m-${fUtil.getNextFileId("movie-", ".xml")}`
+							const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./_TEMPLATES/movieBase.xml`));
+							const scenes2create = await xml2js.parseStringPromise(
+								fs.readFileSync(`./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.xml`)
+							);
+							movieBase.film.scene = [];
+							movieBase.film.sound = scenes2create.film.sound;
+							const charNumbers = movie.assignObjects({}, f.characters);
+							const avatarIds = {};
+							let soundStartDelay = 0;
+							let defaultProp4head = 4;
+							function insertChar2Scene(k = [], options = {}) {
+								for (const scene of k) {
+									const l = movieBase.film.scene.length;
+									if (options.elm2delete) delete scene._attributes[options.elm2delete];
+									scene._attributes.index = l;
+									scene._attributes.id = `SCENE${scene._attributes.index}`;
+									soundStartDelay += Number(scene._attributes.adelay);
+									if (scene.char) {
+										for (const char of scene.char) {
+											for (const id in charNumbers) {
+												if (char.action[0]._text.startsWith(`ugc.charIdNum${charNumbers[id]}`)) {
+													if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
+													char.action[0]._text = char.action[0]._text.replace(`ugc.charIdNum${
+														charNumbers[id]
+													}`, `ugc.${id}`);
+												}
 											}
+											const pieces = char.action[0]._text.split(".");
+											const id = pieces[1];
+											const facial = (
+												options.useOpeningClosingFacial && options.openingClosingFacialType
+											) ? f.opening_closing[options.openingClosingFacialType].facial[charNumbers[id]] : 'default';
+											if (facial != "default") char.head = {
+												_attributes: {
+													id: `PROP${defaultProp4head}`,
+													raceCode: 1
+												},
+												file: [`ugc.${id}.head.head_${facial}.xml`]
+											}, defaultProp4head += 2;
 										}
-										const pieces = char.action[0]._text.split(".");
-										const id = pieces[1];
-										const facial = (
-											options.useOpeningClosingFacial && options.openingClosingFacialType
-										) ? f.opening_closing[options.openingClosingFacialType].facial[charNumbers[id]] : 'default';
-										if (facial != "default") char.head = {
-											_attributes: {
-												id: `PROP${defaultProp4head}`,
-												raceCode: 1
-											},
-											file: [`ugc.${id}.head.head_${facial}.xml`]
-										}, defaultProp4head += 2;
 									}
+									if (!options.dontpushstuff2scene) movieBase.film.scene[l] = scene;
 								}
-								if (!options.dontpushstuff2scene) movieBase.film.scene[l] = scene;
 							}
-						}
-						insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoStart != undefined), {
-							useOpeningClosingFacial: true,
-							openingClosingFacialType: 'opening_characters',
-							elm2delete: 'isPartOfVideoStart'
-						});
-						async function getVoiceMeta(script) {
-							if (script.type == "talk" && script.text) {
-								const meta = await tts.genVoice4Qvm(script.voice, script.text);
-								templateAssets.unshift(meta);
-								return meta;
-							}
-						}
-						movieBase.film.linkage = [];
-						const facials = [];
-						for (const script of f.script) {
-							if (script.facial[script.char_num] != "default") facials.unshift({
-								cid: script.cid,
-								expression: script.facial[script.char_num],
-								sceneCount: movieBase.film.scene.length
+							insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoStart != undefined), {
+								useOpeningClosingFacial: true,
+								openingClosingFacialType: 'opening_characters',
+								elm2delete: 'isPartOfVideoStart'
 							});
-							const meta = await getVoiceMeta(script);
-							if (meta) {
-								const soundLength = movieBase.film.sound.length;
-								const prevSoundInfo = movieBase.film.sound[soundLength - 1];
-								const start = prevSoundInfo._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
-								let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
-								if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
-								const sceneLength = movieBase.film.scene.length;
-								movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarIds[script.cid]}`)
-								const currentScene = scenes2create.film.scene.filter(i => i._attributes[`char_${
-									script.char_num
-								}_talking`] != undefined);
-								const json = movie.assignObjects({}, currentScene);
-								json._attributes.adelay = stop + 24;
-								insertChar2Scene([json]);
-								movieBase.film.sound[soundLength] = {
-									_attributes: {
-										id: `SOUND${soundLength}`,
-										index: soundLength,
-										track: 0,
-										vol: 1,
-										tts: 1
-									},
-									sfile: [`ugc.${meta.file}`],
-									start: [start],
-									stop: [stop + start],
-									fadein: [
-										{
-											_attributes: {
-												duration: 0,
-												vol: 0
-											}
-										}
-									],
-									fadeout: [
-										{
-											_attributes: {
-												duration: 0,
-												vol: 0
-											}
-										}
-									],
-									ttsdata: [
-										{
-											type: ["tts"],
-											text: [script.text],
-											voice: [script.voice]
-										}
-									]
-								};
+							async function getVoiceMeta(script) {
+								const currentSession = session.get(req);
+								const userAssets = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`)).users.find(
+									i => i.id == currentSession.data.current_uid
+								).assets
+								if (script.text) {
+									dialogMethods.push("tts")
+									const info = userAssets.find(i => i.title == `[${script.voice}] ${script.text}`)
+									if (!info) {
+										const meta = await tts.genVoice4Qvm(script.voice, script.text);
+										templateAssets.unshift(meta);
+										return meta;
+									}
+									return info;
+								} else if (script.aid) {
+									dialogMethods.push("mic");
+									return userAssets.find(
+										i => i.enc_asset_id == script.aid
+									) || templateAssets.find(i => i.enc_asset_id == script.aid);
+								}
 							}
-						}
-						insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoEnd != undefined), {
-							useOpeningClosingFacial: true,
-							openingClosingFacialType: 'closing_characters',
-							elm2delete: 'isPartOfVideoEnd'
-						});
-						let xml = jsonToXml(movieBase);
-						let pos = xml.indexOf('<scene charsTalking=');
-						while (pos > -1) {
-							const sceneInfo = xml.substr(pos).split("</scene>")[0];
-							const sceneCountBeg = sceneInfo.indexOf(`id="SCENE`) + 9;
-							const sceneCountEnd = sceneInfo.indexOf('"', sceneCountBeg)
-							const sceneCount = Number(sceneInfo.substring(sceneCountBeg, sceneCountEnd));
-							const facialInfo = facials[facials.findIndex(i => i.sceneCount == sceneCount)];
-							if (facialInfo) {
-								const charAvatarId = avatarIds[facialInfo.cid];
-								const charInfo = sceneInfo.substr(sceneInfo.indexOf(`<char id="${charAvatarId}"`)).split("</char>")[0];
-								xml = xml.split(sceneInfo).join(sceneInfo.split(charInfo).join(charInfo + `<head id="PROP${
-									defaultProp4head
-								}" raceCode="1"><file>ugc.${facialInfo.cid}.head.head_${facialInfo.expression}.xml</file></head>`))
-								defaultProp4head += 2;
+							movieBase.film.linkage = [];
+							const facials = [];
+							for (const script of f.script) {
+								if (script.facial[script.char_num] != "default") facials.unshift({
+									cid: script.cid,
+									expression: script.facial[script.char_num],
+									sceneCount: movieBase.film.scene.length
+								});
+								const meta = await getVoiceMeta(script);
+								if (meta) {
+									const soundLength = movieBase.film.sound.length;
+									const prevSoundInfo = movieBase.film.sound[soundLength - 1];
+									const start = prevSoundInfo._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
+									let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
+									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
+									const sceneLength = movieBase.film.scene.length;
+									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarIds[script.cid]}`)
+									const currentScene = scenes2create.film.scene.filter(i => i._attributes[`char_${
+										script.char_num
+									}_talking`] != undefined);
+									const json = movie.assignObjects({}, currentScene);
+									json._attributes.adelay = stop + 24;
+									insertChar2Scene([json]);
+									movieBase.film.sound[soundLength] = {
+										_attributes: {
+											id: `SOUND${soundLength}`,
+											index: soundLength,
+											track: 0,
+											vol: 1,
+											tts: 1
+										},
+										sfile: [`ugc.${meta.file}`],
+										start: [start],
+										stop: [stop + start],
+										fadein: [
+											{
+												_attributes: {
+													duration: 0,
+													vol: 0
+												}
+											}
+										],
+										fadeout: [
+											{
+												_attributes: {
+													duration: 0,
+													vol: 0
+												}
+											}
+										],
+										ttsdata: [
+											{
+												type: ["tts"],
+												text: [script.text],
+												voice: [script.voice]
+											}
+										]
+									};
+								}
 							}
-							pos = xml.indexOf('<scene charsTalking=', pos + 19);
+							insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoEnd != undefined), {
+								useOpeningClosingFacial: true,
+								openingClosingFacialType: 'closing_characters',
+								elm2delete: 'isPartOfVideoEnd'
+							});
+							let xml = jsonToXml(movieBase);
+							let pos = xml.indexOf('<scene charsTalking=');
+							while (pos > -1) {
+								const sceneInfo = xml.substr(pos).split("</scene>")[0];
+								const sceneCountBeg = sceneInfo.indexOf(`id="SCENE`) + 9;
+								const sceneCountEnd = sceneInfo.indexOf('"', sceneCountBeg)
+								const sceneCount = Number(sceneInfo.substring(sceneCountBeg, sceneCountEnd));
+								const facialInfo = facials[facials.findIndex(i => i.sceneCount == sceneCount)];
+								if (facialInfo) {
+									const charAvatarId = avatarIds[facialInfo.cid];
+									const charInfo = sceneInfo.substr(sceneInfo.indexOf(`<char id="${charAvatarId}"`)).split("</char>")[0];
+									xml = xml.split(sceneInfo).join(sceneInfo.split(charInfo).join(charInfo + `<head id="PROP${
+										defaultProp4head
+									}" raceCode="1"><file>ugc.${facialInfo.cid}.head.head_${facialInfo.expression}.xml</file></head>`))
+									defaultProp4head += 2;
+								}
+								pos = xml.indexOf('<scene charsTalking=', pos + 19);
+							}
+							fs.writeFileSync(`./previews/template.xml`, xml);
+							res.setHeader("Content-Type", "application/json");
+							res.end(JSON.stringify(f));
+						} catch (e) {
+							console.log(e);
+							res.end(JSON.stringify({
+								error: e.toString()
+							}))
 						}
-						fs.writeFileSync(`./previews/template.xml`, xml);
-						res.setHeader("Content-Type", "application/json");
-						res.end(JSON.stringify(f));
 					});
 					break;
 				} case "/api/movie/generate": {

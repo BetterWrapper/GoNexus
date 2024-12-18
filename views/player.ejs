@@ -102,9 +102,13 @@
                                 </div>
                             </div>
                             <div class="video-actions">
-                                <span class="divider owner-button" style="display: none;">|</span>
-                                <a data-target="#editVideoModal" data-toggle="modal" href="#" class="owner-button" style="display: none;">
+                                <span class="divider">|</span>
+                                <a data-target="#editVideoModal" data-toggle="modal" href="#">
                                     <span class="glyphicon glyphicon-edit"></span> Edit
+                                </a>
+                                <span class="divider edit-in-qvm" style="display: none;">|</span>
+                                <a class="edit-in-qvm" style="display: none;" data-is-hyperlink="">
+                                    <span class="glyphicon glyphicon-pencil"></span> Edit In The QVM
                                 </a>
                                 <span class="divider">|</span>
                                 <a data-target="#movieShareModal" data-toggle="modal" href="#">
@@ -115,10 +119,9 @@
                                     <span class="glyphicon glyphicon-export"></span> Export
                                 </a>
                                 <span class="divider">|</span>
-                                <a data-target="#deleteVideoModal" data-toggle="modal" href="#" class="owner-button" style="display: none;">
+                                <a data-target="#deleteVideoModal" data-toggle="modal" href="#">
                                     <span class="glyphicon glyphicon-trash"></span> Delete
                                 </a>
-                                <span class="divider owner-button" style="display: none;">|</span>
                             </div>
                         </div>
                         <br>
@@ -548,12 +551,19 @@
                 }
                 $("#videoShareURL").val(`${window.location.origin}/videos?movieId=<%= params.flashvars.movieId %>`);
                 jQuery.post("/api/getAllUsers", d => setTimeout(() => {
-                    console.log(d);
                     for (const f of d) {
                         const meta = f.movies.find(i => i.id == id);
                         const movieTitleElement = document.getElementsByClassName('movie-title');
-                        if (meta) for (const elem of movieTitleElement) elem.innerHTML = meta.title;
-                        if (f.id == (userData.uid || userData.id)) $(".owner-button").show();
+                        if (meta) {
+                            for (const elem of movieTitleElement) elem.innerHTML = meta.title;
+                            if (meta.movieIsMadeWithQVM) {
+                                const elem = $(".edit-in-qvm");
+                                elem.each((i, e) => {
+                                    if ($(e).data('is-hyperlink') != undefined) $(e)[0].href = `/quickvideo?theme=${meta.qvm_script.golite_theme}&movieId=${meta.id}`
+                                })
+                                elem.show();
+                            }
+                        }
                         ((d) => {
                             const flashvars = JSON.parse(JSON.stringify(d).split("amp;").join(""));
                             $("#displayName")[0].href = `/public_user/${flashvars.userId = userData.uid || userData.id}`;

@@ -632,12 +632,12 @@ jQuery.ajax({
         function N() {
             var Z = {
                 en_US: {
-                    M: ["eric", "oc_simon"],
-                    F: ["oc_kate", "oc_julie"]
+                    M: ["eric", "simon"],
+                    F: ["kate", "julie"]
                 },
                 es_ES: {
-                    M: ["oc_juan", "oc_jorge"],
-                    F: ["oc_carmen", "oc_leonor"]
+                    M: ["juan", "jorge"],
+                    F: ["carmen", "leonor"]
                 }
             };
             var W = "en_US";
@@ -882,7 +882,7 @@ jQuery.ajax({
                     }
                 });
                 O = true;
-                E.post("/ajax/previewText2Video", W, function(X) {
+                E.post("/api/setupText2VideoPreview", W, function(X) {
                     O = false;
                     if (X.error) {
                         showNotice(X.error, true);
@@ -955,7 +955,7 @@ jQuery.ajax({
                 });
                 O = true;
                 showOverlay(E("#publishing"));
-                E.post("/ajax/saveText2Video", X, function(f) {
+                E.post("/api/saveText2Video", X, function(f) {
                     O = false;
                     if (f.error) {
                         E.unblockUI();

@@ -5,7 +5,7 @@ const tts = require("./main");
 const http = require("http");
 const https = require("https");
 const oldvoices = require("./oldvoices");
-const parse = require("../movie/parse");
+const tempbuffer = require("./tempBuffer");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -37,7 +37,7 @@ module.exports = function (req, res, url) {
 				 * This path will only retrieve tts buffers from the movie parser and not local files.
 				 * From the Coding Mastery Of Joseph.
 				*/
-				res.end(parse.retrieveTTSBuffer(data.assetId));
+				res.end(tempbuffer.get(data.assetId));
 			});
 			break;
 		} case "/goapi/convertTextToSoundAsset/": {

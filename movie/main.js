@@ -597,6 +597,12 @@ module.exports = {
 			}
 		});
 	},
+	stringIsArray(json) {
+        return json ? json.startsWith('[') && json.endsWith(']') : false;
+    },
+    stringIsJson(json) {
+        return json ? json.startsWith('{') && json.endsWith('}') : false;
+    },
 	oldMeta(movieId, isAutosave = false, oldmId) {
 		return new Promise(async (res, rej) => {
 			try {

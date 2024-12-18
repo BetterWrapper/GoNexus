@@ -358,8 +358,13 @@ function loggedIn(user) {
             })
             break;
         } case "/create": {
-            checkStudioLoadingStatus();
-            reloadCCListForTut();
+            const interval = setInterval(() => {
+                if (checkStudioLoadingStatus && reloadCCListForTut) {
+                    clearInterval(interval);
+                    checkStudioLoadingStatus();
+                    reloadCCListForTut();
+                }
+            }, 1)
             break;
         } case "/public_index": {
             add2Element("banner_btn", '/create', 'href')

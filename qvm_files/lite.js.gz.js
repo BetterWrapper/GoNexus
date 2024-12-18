@@ -569,12 +569,6 @@ var GoLite = (function(e) {
             w.opening_closing.closing_characters = {};
             w.opening_closing.closing_characters.facial = e.extend({}, w.script[(w.script.length - 1)].facial)
         }
-        w.editor_mode = "new";
-        if (b) {
-            if (typeof goliteEditorMode != "undefined") {
-                w.editor_mode = goliteEditorMode
-            }
-        }
         return w
     }
     function h(y, w) {
@@ -733,8 +727,10 @@ var GoLite = (function(e) {
                     });
                 });
             } else if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
-            if (!this.params(window.location.search).get("editmode")) this.init(num);
-            else this.initForEdit(num);
+            this.init(num);
+            if (this.params(window.location.search).get("movieId")) jQuery.post(`/api/qvm_script/get?movieId=${
+                this.params(window.location.search).get("movieId")
+            }`, this.initForEdit);
         },
         userLogin(form, callback) {
             const json = Object.fromEntries(this.params(form));
@@ -742,11 +738,9 @@ var GoLite = (function(e) {
             this.auth.signInWithEmailAndPassword(json.email, json.password).then(callback).catch(callback);
         },
         init: function(D) {
-            if (d) {
-                return
-            }
+            if (d) return
             d = true;
-            c = !this.userData ? D : D < 2 ? 2 : D;
+            c = !userData ? D : D < 2 ? 2 : D;
             var A = new ItemSelector(e("#templates"));
             t = A.getItem();
             e("#template_name").html(t.attr("title"));
@@ -1048,7 +1042,6 @@ var GoLite = (function(e) {
             if (H.ed_assignment) {
                 y.ed_assignment = H.ed_assignment
             }
-            e.extend(y, this.userData);
             e.ajaxSetup({
                 error: function(I, K, J) {
                     o = false;
@@ -1071,7 +1064,9 @@ var GoLite = (function(e) {
             })
         },
         initForEdit: function(D) {
+            if (initModeForEdit) return;
             initModeForEdit = true;
+            if (typeof D == "string") return showNotice(D);
             var K = golite_theme != "talkingpicz";
             b = D.enc_mid;
             var O = e("#templates div.item").length;

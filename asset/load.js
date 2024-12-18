@@ -9,7 +9,7 @@ const http = require("http");
 const base = Buffer.alloc(1, 0);
 const fs = require("fs");
 const fUtil = require("../misc/file");
-const parse = require("../movie/parse");
+const tempbuffer = require("../tts/tempBuffer");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -26,7 +26,7 @@ module.exports = function (req, res, url) {
 					console.log(match);
 					const aId = match[3];
 					try {
-						const b = parse.retrieveTTSBuffer(aId) || asset.load(aId);
+						const b = tempbuffer.get(aId) || asset.load(aId);
 						res.statusCode = 200;
 						res.end(b);
 					} catch (e) {
@@ -52,7 +52,7 @@ module.exports = function (req, res, url) {
 								hostname: "flashthemes.net",
 								path: `/goapi/getAsset/${aId}`
 							});
-							else b = parse.retrieveTTSBuffer(aId) || asset.load(aId);
+							else b = tempbuffer.get(aId) || asset.load(aId);
 							if (data.file == "old_full_2013.swf" || parseInt(data.v) <= 2012) res.end(Buffer.concat([base, b]));
 							else res.end(b);
 						} catch (e) {

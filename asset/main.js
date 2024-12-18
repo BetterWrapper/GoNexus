@@ -2,6 +2,7 @@ const fUtil = require("../misc/file");
 const nodezip = require("node-zip");
 const base = Buffer.alloc(1, 0);
 const char = require("../character/main");
+const tempbuffer = require("../tts/tempBuffer");
 const http = require("http");
 const base2 = Buffer.from([0x0]);
 const xmldoc = require("xmldoc");
@@ -81,16 +82,10 @@ module.exports = {
 		return ("" + Math.random()).replace(".", "");
 	},
 	save(buffer, meta, data) {
-		if (data.isTemplate) {
-			if (data.recorderId) meta.enc_asset_id = data.recorderId;
-			else {
-				meta.assetPath = fUtil.getFileIndex('asset-', `.${meta.ext}`, fUtil.getNextFileId("asset-", `.${meta.ext}`));
-				meta.enc_asset_id = meta.assetPath.substr(meta.assetPath.lastIndexOf("/") + 1).split(`.${meta.ext}`)[0];
-			}
-		} else meta.enc_asset_id = this.generateId();
+		meta.enc_asset_id = this.generateId();
 		meta.id = meta.file = meta.enc_asset_id + '.' + meta.ext;
 		if (data.isTemplate) {
-			fs.writeFileSync(meta.assetPath || `${this.tempFolder}/${meta.id}`, buffer);
+			tempbuffer.set(meta.id, buffer);
 			return meta;
 		} else {
 			fs.writeFileSync(`${this.folder}/${meta.id}`, buffer);

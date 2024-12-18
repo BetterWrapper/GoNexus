@@ -5,6 +5,7 @@ const http = require("http");
 const ejs = require('ejs');
 const { existsSync } = require("fs");
 const session = require("../misc/session");
+const { XmlDocument } = require("xmldoc");
 function toAttrString(table) {
 	return typeof table == "object"
 		? Object.keys(table)
@@ -336,6 +337,13 @@ module.exports = function (req, res, url) {
 				},
 				allowScriptAccess: "always",
 			};
+			const userInfo = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users.find(i => i.id == currentSession.data.current_uid);
+			if (userInfo) {
+				const movieInfo = userInfo.movies.find(i => i.id == url.query.movieId);
+				if (movieInfo && movieInfo.movieIsMadeWithQVM) params.flashvars.storePath4Parser = `${
+					req.headers.host.startsWith("localhost") || req.headers.host == "127.0.0.1" ? 'http' : 'https'
+				}://${req.headers.host}/static/tommy/2010/store`
+			}
 			break;
 		} case "/player": {
 			const path = url.query.movieId.startsWith("m-") ? fUtil.getFileIndex("movie-", ".xml", url.query.movieId.substr(
@@ -380,6 +388,9 @@ module.exports = function (req, res, url) {
 			for (const userInfo of JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users) {
 				const movieInfo = userInfo.movies.find(i => i.id == query.movieId);
 				if (!movieInfo) continue;
+				if (movieInfo.movieIsMadeWithQVM) params.flashvars.storePath4Parser = `${
+					req.headers.host.startsWith("localhost") || req.headers.host == "127.0.0.1" ? 'http' : 'https'
+				}://${req.headers.host}/static/tommy/2010/store`
 				params.movieInfo = movieInfo;
 				params.flashvars.movieTitle = params.movieInfo.title;
 				params.flashvars.movieDesc = params.movieInfo.desc;
@@ -436,6 +447,9 @@ module.exports = function (req, res, url) {
 			for (const userInfo of JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users) {
 				const movieInfo = userInfo.movies.find(i => i.id == query.movieId);
 				if (!movieInfo) continue;
+				if (movieInfo.movieIsMadeWithQVM) params.flashvars.storePath4Parser = `${
+					req.headers.host.startsWith("localhost") || req.headers.host == "127.0.0.1" ? 'http' : 'https'
+				}://${req.headers.host}/static/tommy/2010/store`
 				params.movieInfo = movieInfo;
 				title = params.flashvars.movieTitle = params.movieInfo.title;
 				params.flashvars.movieDesc = params.movieInfo.desc;

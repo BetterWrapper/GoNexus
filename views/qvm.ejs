@@ -63,7 +63,7 @@
     jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
         apiserver: "/qvm_micRecord_",
         clientThemePath: "/static/tommy/2012/<client_theme>",
-        u_info_school: ""
+        isTemplate: true
     });
     
     // scroll to target step
@@ -1005,10 +1005,7 @@
     <script type="text/javascript">
         var customCCHeadsBaseUrl = window.location.origin + '/char_heads/';
         var customCCThumbsBaseUrl = window.location.origin + '/char_thumbs/';
-    
-    
-        var goliteEditorMode = !GoLite.params(window.location.search).get("editmode") ? 'new' : 'editor';
-    
+
     </script>
     
     

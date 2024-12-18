@@ -4,7 +4,7 @@ const JSZip = require("jszip");
 const mp3Duration = require("mp3-duration");
 const https = require("https");
 const request = require("request");
-const ttsbuffers = {};
+const tempbuffer = require("../tts/tempBuffer");
 function getBuffersOnline(options, data) {
 	return new Promise((res, rej) => {
 		try {
@@ -243,9 +243,6 @@ module.exports = {
 			}
 		});
 	},
-	retrieveTTSBuffer(assetId) {
-		return ttsbuffers[assetId];
-	},
 	packMovieFromUrl(url) { // Reads an XML buffer from a url, decodes the elements, and returns a PK stream the LVM can parse.
 		return new Promise(async (res, rej) => {
 			const ext = url.split("?")[0].substr(url.lastIndexOf(".") + 1);
@@ -273,7 +270,7 @@ module.exports = {
 							const ttsdata = info.ttsdata[0];
 							filearray = addType2Filearray(file, ttsdata.type[0]);
 							const buffer = await tts.genVoice4Qvm(ttsdata.voice[0].split("_")[0], ttsdata.text[0], true);
-							ttsbuffers[filearray[2]] = buffer;
+							tempbuffer.set(filearray[2], buffer);
 							ugc += asset.meta2Xml({
 								type: "sound",
 								subtype: ttsdata.type[0],
@@ -387,12 +384,12 @@ module.exports = {
 							for (const elem of json.childrenNamed("sound")) {
 								if (elem.attr.tts == "1") try {
 									const file = elem.childNamed("sfile")?.val;
-									if (!file || ttsbuffers[file.substr(4)]) continue;
+									if (!file || tempbuffer.get(file.substr(4))) continue;
 									const ttsdata = elem.lastChild;
    									if (ttsdata.childNamed("voice") && ttsdata.childNamed("text")) {
-										ttsbuffers[file.substr(4)] = await tts.genVoice4Qvm(
+										tempbuffer.set(file.substr(4), await tts.genVoice4Qvm(
 											ttsdata.childNamed("voice").val.split("_")[0], ttsdata.childNamed("text").val, true
-										);
+										));
 									}
 								} catch (e) {
 									console.log(e);
@@ -865,7 +862,7 @@ module.exports = {
 		return themes;
 	},
 	async deleteTTSFiles(xmlBuffer, uId, xmlBuffer2) {
-		if (xmlBuffer.length == 0 || xmlBuffer2 != '1' && xmlBuffer2.length == 0) throw null;
+		if (!xmlBuffer || xmlBuffer.length == 0 || xmlBuffer2 != '1' && xmlBuffer2.length == 0) throw null;
 
 		// this is common in this file
 		async function basicParse(file, type) {
