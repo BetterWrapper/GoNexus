@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <list version="1.0">
 	<fvm_meta theme_code="" is_biz="0" />
-	<theme id="custom" name="Comedy World" ext="jpg" cc_theme_id="family" qvm="everydaylife,tech"/>
+	<theme id="custom" name="Comedy World" ext="jpg" cc_theme_id="family" qvm="everydaylife,pt,michigan"/>
 	<theme id="action" name="Lil' Peepz" ext="jpg" cc_theme_id="cc2" />
 	<!--<theme id="animal" name="Lil' Petz" ext="jpg" cc_theme_id="animal" />-->
 	<theme id="retro" name="Cartoon Classics" ext="jpg" />
@@ -10,8 +10,9 @@
     <theme id="chibi" name="Chibi Peepz" ext="jpg" cc_theme_id="chibi" />
 	<theme id="toonadv" name="Toon Adventure" ext="png"/>
 	<theme id="cctoonadventure" name="Toon Adventure CC" isHidden="1"/>
+	<theme id="pizza" name="Pizza Tower" isHidden="1"/>
 	<theme id="Comm" name="Community Library" isHidden="1"/>
-	<word>Nexus</word>
+	<word/>
 	<whiteword />
 	<excludeAssetIDs />
 	<points />

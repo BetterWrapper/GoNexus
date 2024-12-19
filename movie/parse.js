@@ -487,7 +487,7 @@ module.exports = {
 			if (themeId == "ugc") {
 				const id = pieces[2];
 				try {
-					const buffer = asset.load(id);
+					const buffer = tempbuffer.get(id) || asset.load(id);
 					// add asset meta
 					const assetMeta = (!ownAssets[0] ? user.assets : ownAssets).find(i => i.id == id);
 					if (!assetMeta) console.log(`Asset #${id} is in the XML, but it does not exist.`);
@@ -501,7 +501,7 @@ module.exports = {
 				if (type == "prop" && pieces.indexOf("head") > -1) pieces[1] = "char";
 				const filepath = `${store}/${pieces.join("/")}`;
 				// add the file to the zip
-				fUtil.addToZip(zip, filename, await get(filepath));
+				fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
 			}
 			themes[themeId] = true;
 		}
@@ -572,7 +572,7 @@ module.exports = {
 									const filepath = `${store}/${pieces.join("/")}`;
 									const filename = pieces.join(".");
 	
-									fUtil.addToZip(zip, filename, await get(filepath));
+									fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
 								}
 	
 								for (const e3I in elem2.children) {
@@ -595,7 +595,7 @@ module.exports = {
 										const filepath = `${store}/${pieces2.join("/")}.swf`;
 										pieces2.splice(1, 1, "prop");
 										const filename = `${pieces2.join(".")}.swf`;
-										fUtil.addToZip(zip, filename, await get(filepath));
+										fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
 									}
 	
 									themes[pieces2[0]] = true;
@@ -610,7 +610,7 @@ module.exports = {
 								const text = bubble.childNamed("text");
 								const filename = `${name2Font(text.attr.font)}.swf`;
 								const filepath = `${source}/go/font/${filename}`;
-								fUtil.addToZip(zip, filename, await get(filepath));
+								fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
 								break;
 							}
 						}
@@ -634,21 +634,17 @@ module.exports = {
 			delete themes.cc2;
 			themes.action = true;
 		}
-	
-		const themeKs = Object.keys(themes);
-		for (const t of themeKs) {
+		let themesH = `${header}<themes>`;
+		for (const t in themes) {
+			themesH += `<theme>${t}</theme>`;
 			if (t == "ugc") continue;
-			const file = await get(`${store}/${t}/theme.xml`);
+			const path = `${store}/${t}/theme.xml`;
+			const file = fs.existsSync(path) ? fs.readFileSync(path) : await get(path);
 			fUtil.addToZip(zip, `${t}.xml`, file);
 		}
-	
-		fUtil.addToZip(zip, "themelist.xml", Buffer.from(
-			`${header}<themes>${themeKs.map((t) => `<theme>${t}</theme>`).join("")}</themes>`
-		));
+		fUtil.addToZip(zip, "themelist.xml", themesH + '</themes>');
 		fUtil.addToZip(zip, "ugc.xml", Buffer.from(ugc + "</theme>"));
-		if (packThumb) {
-			fUtil.addToZip(zip, "thumbnail.png", packThumb);
-		}
+		if (packThumb) fUtil.addToZip(zip, "thumbnail.png", packThumb);
 		return await zip.zip();
 	},
 	/**

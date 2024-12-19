@@ -1,5 +1,6 @@
 {
 	"everydaylife": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Comedy World",
 		"customChars_info": {
 			"cc_theme_id": "family",
@@ -201,6 +202,7 @@
 		]
 	},
 	"michigan": {
+		"urlPostVideoPreview": "/ajax/previewText2Video",
 		"themeName": "Comedy World",
 		"customChars_info": {
 			"cc_theme_id": "family",
@@ -240,168 +242,19 @@
 		"intro_steps": "The drill? 1. Select a template / 2. Choose characters / 3. Pull a script out of your best life observations / 4. Watch your masterpiece!",
 		"templates": [
 			{
-				"class": "item",
-				"tid": "0RQRwrb_54Us",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124123.jpg",
-				"title": "Honey. We have to talk...",
-				"desc": "It's time for serious couple talk... or maybe not. This is just a bedroom chat.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg01_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg01_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg01.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0l87L_vwbfMM",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124124.jpg",
-				"title": "You forgot the eggs, didn't you!?",
-				"desc": "Get imaginative. You need to deal with this kitchen face-off.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg02_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg02_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg02.jpg"
-			},
-			{
 				"class": "item selected",
 				"tid": "0nZrWjgxqytA",
 				"thumb": "/static/qvm/templates/everydaylife/thumb/124125.jpg",
 				"title": "Chilling Out in the Office",
-				"desc": "Your characters are taking a break from a stressful day in the pantry. Now what could they be talking about?!",
+				"desc": "Your characters are taking a break from a stressful day in the pantry. Now what could they be talking about?! (BTW this is the only template available right now)",
 				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg03_a.jpg",
 				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg03_b.jpg",
 				"background": "/static/qvm/templates/everydaylife/bg/bg03.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0ksXlNHEjspI",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124126.jpg",
-				"title": "B.F.D.E.?",
-				"desc": "Is this going to be the best or the worst first date ever? Or... is it just not a first date at all? Up to you!",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg05_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg05_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg05.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "09QnavQrm0dU",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124127.jpg",
-				"title": "I'll get a small latte...",
-				"desc": "Small? You mean tall, right? Or maybe you want to spend a little more for a Grande?!",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg08_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg08_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg08.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0xflAvM8ERQQ",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124128.jpg",
-				"title": "Emergency coffee shop meeting",
-				"desc": "A friend in distress asked to meet in a coffee shop. Now, what's all this about?",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg09_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg09_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg09.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0BVv0No9N3qI",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124129.jpg",
-				"title": "A round for everyone!",
-				"desc": "Why is it that everyone loves to tell their life story to bartenders?",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg10_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg10_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg10.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0uXrmLS6VVUg",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124130.jpg",
-				"title": "Done your homework?",
-				"desc": "The bell has rung, but the teacher won't end class until the students answer some tough questions.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg15_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg15_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg15.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0H2Frh7BBGmA",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124131.jpg",
-				"title": "Subway Encounter",
-				"desc": "Talking to strangers in the subway sounds like a great idea... NOT! Well. It happens anyways...",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg16_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg16_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg16.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0uVFaGOBrfHI",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124132.jpg",
-				"title": "The President",
-				"desc": "It's the oval office. It's time to let the president know what you really think... Let it all out.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg04_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg04_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg04.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0NQ88JTAJm4I",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124133.jpg",
-				"title": "Got any grapes?",
-				"desc": "Now what's with that customer again. Some kind of weird request?",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg06_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg06_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg06.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0OgqovHxGjZI",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124134.jpg",
-				"title": "Do not disturb...",
-				"desc": "Imagine sitting on a toilet and someone bursts into the bathroom!... Done? Now, animate the conversation!",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg07_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg07_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg07.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0vq8xZhq6D5g",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124135.jpg",
-				"title": "Are you on the list?",
-				"desc": "Striking a conversation while queuing up to get into the new trendy place in town.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg11_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg11_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg11.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0J4ki2ZURTVY",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124136.jpg",
-				"title": "Step aside, Sir!",
-				"desc": "A passenger sets the alarm off at the airport security check. Animate the ensuing discussion with the security officer.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg12_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg12_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg12.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "0VqO7WZa6s6U",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124137.jpg",
-				"title": "She looks better on TV",
-				"desc": "Watching the latest performance from a popular singer, it's hard not to make comments throughout the show.",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg13_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg13_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg13.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "06K7KyoeDc_c",
-				"thumb": "/static/qvm/templates/everydaylife/thumb/124138.jpg",
-				"title": "Where's the pilot?",
-				"desc": "Flying in a 747 commercial airplane across the world is piece of cake... as long as you're not in the pilot seat. Oh boy!...",
-				"char-thumb-a": "/static/qvm/templates/everydaylife/bg/bg14_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/everydaylife/bg/bg14_b.jpg",
-				"background": "/static/qvm/templates/everydaylife/bg/bg14.jpg"
 			}
 		]
 	},
 	"pt": {
+		"urlPostVideoPreview": "/ajax/previewText2Video",
 		"themeName": "Comedy World",
 		"customChars_info": {
 			"cc_theme_id": "family",
@@ -447,7 +300,7 @@
 		"templates": [
 			{
 				"class": "item selected",
-				"tid": "dGVtcGxhdGUx",
+				"tid": "template1",
 				"thumb": "/static/qvm/templates/pt/thumb/124125.jpg",
 				"title": "Interviewing Peppino",
 				"desc": "You've Decided to interview the one and only peppino spaghetti! Lets see how this goes",
@@ -458,6 +311,7 @@
 		]
 	},
 	"basketball": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Peepz",
 		"customChars_info": {
 			"cc_theme_id": "cc2",
@@ -595,6 +449,7 @@
 		]
 	},
 	"space": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Space Peepz",
 		"customChars_info": {
 			"cc_theme_id": "cc2",
@@ -649,6 +504,7 @@
 		]
 	},
 	"wildlife": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "",
 		"disableFeatures": {
 			"emotions": true
@@ -701,6 +557,7 @@
 		]
 	},
 	"gopets": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Petz",
 		"customChars_info": {
 			"cc_theme_id": "cc2",
@@ -745,6 +602,7 @@
 		]
 	},
 	"pirate": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Peepz",
 		"customChars_info": {
 			"cc_theme_id": "cc2",
@@ -866,6 +724,7 @@
 		]
 	},
 	"office": {
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Peepz",
 		"customChars_info": {
 			"cc_theme_id": "cc2",
@@ -906,207 +765,6 @@
 				"char-thumb-a": "/static/qvm/templates/office/bg/bg03_a.jpg",
 				"char-thumb-b": "/static/qvm/templates/office/bg/bg03_b.jpg",
 				"background": "/static/qvm/templates/office/bg/bg03.jpg"
-			}
-		]
-	},
-	"tech": {
-		"themeName": "Comedy World",
-		"customChars_info": {
-			"cc_theme_id": "family",
-			"tags": ""
-		},
-		"user": "NbJn8ePSi2eV4VvMQOlIWD7aYLH3",
-		"disableFeatures": {},
-		"nonSelectableCharInfo": {},
-		"stockCharacters": [
-			{
-				"cid": "53774620",
-				"name": "",
-				"gender": "M",
-				"head": "/char_heads/53774620.png",
-				"thumb": "/char_thumbs/53774620.png",
-				"char1_default": true
-			},
-			{
-				"cid": "51900632",
-				"name": "",
-				"gender": "F",
-				"head": "/char_heads/51900632.png",
-				"thumb": "/char_thumbs/51900632.png",
-				"char2_default": true
-			},
-			{
-				"cid": "51288759",
-				"name": "",
-				"gender": "M",
-				"head": "/char_heads/51288759.png",
-				"thumb": "/char_thumbs/51288759.png"
-			}
-		],
-		"creator_html": "This Template is created by <a href=\"/public_user/NbJn8ePSi2eV4VvMQOlIWD7aYLH3\" onclick=\"return confirm('You will lose your work if you leave this page. Are you sure?');\">Joseph Animate 2021 // The Main Channel</a>.",
-		"title": "Technology",
-		"intro": "GoNexus brings you a collection of scenes from daily life for you to re-enact and make up comical, satirical or even dramatic stories.",
-		"intro_steps": "The drill? 1. Select a template / 2. Choose characters / 3. Pull a script out of your best life observations / 4. Watch your masterpiece!",
-		"templates": [
-			{
-				"class": "item",
-				"tid": "06645428978654089",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Where's the pilot?",
-				"desc": "Flying in a 747 commercial airplane across the world is piece of cake... as long as you're not in the pilot seat. Oh boy!...",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg16_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg16_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg16.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "6811204887254281",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "She looks better on TV",
-				"desc": "Watching the latest performance from a popular singer, it's hard not to make comments throughout the show.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg15_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg15_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg15.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "6243492377571646",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Step aside, Sir!",
-				"desc": "A passenger sets the alarm off at the airport security check. Animate the ensuing discussion with the security officer.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg14_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg14_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg14.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "528257628601046",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Are you on the list?",
-				"desc": "Striking a conversation while queuing up to get into the new trendy place in town.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg13_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg13_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg13.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "7217360964479734",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Do not disturb...",
-				"desc": "Imagine sitting on a toilet and someone bursts into the bathroom!... Done? Now, animate the conversation!",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg12_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg12_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg12.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "684199988773664",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Got any grapes?",
-				"desc": "Now what's with that customer again. Some kind of weird request?",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg11_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg11_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg11.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "03885904415548802",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "The President",
-				"desc": "It's the oval office. It's time to let the president know what you really think... Let it all out.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg10_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg10_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg10.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "6079206756606311",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Subway Encounter",
-				"desc": "Talking to strangers in the subway sounds like a great idea... NOT! Well. It happens anyways...",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg09_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg09_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg09.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "03595608114376181",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Done your homework?",
-				"desc": "The bell has rung, but the teacher won't end class until the students answer some tough questions.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg08_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg08_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg08.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "9316241153637446",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "A round for everyone!",
-				"desc": "Why is it that everyone loves to tell their life story to bartenders?",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg07_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg07_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg07.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "9014761462223825",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Emergency coffee shop meeting",
-				"desc": "A friend in distress asked to meet in a coffee shop. Now, what's all this about?",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg06_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg06_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg06.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "468715371293115",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "I'll get a small latte...",
-				"desc": "Small? You mean tall, right? Or maybe you want to spend a little more for a Grande?!",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg05_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg05_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg05.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "8986307222983073",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "B.F.D.E.?",
-				"desc": "Is this going to be the best or the worst first date ever? Or... is it just not a first date at all? Up to you!",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg04_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg04_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg04.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "43273472756577647",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Chilling Out in the Office",
-				"desc": "Your characters are taking a break from a stressful day in the pantry. Now what could they be talking about?!",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg03_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg03_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg03.jpg"
-			},
-			{
-				"class": "item",
-				"tid": "08935273307013936",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "You forgot the eggs, didn't you!?",
-				"desc": "Get imaginative. You need to deal with this kitchen face-off.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg02_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg02_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg02.jpg"
-			},
-			{
-				"class": "item selected",
-				"tid": "9573900931660706",
-				"thumb": "/movie_thumbs/m-142.png",
-				"title": "Honey. We have to talk...",
-				"desc": "It's time for serious couple talk... or maybe not. This is just a bedroom chat.",
-				"char-thumb-a": "/static/qvm/templates/tech/bg/bg01_a.jpg",
-				"char-thumb-b": "/static/qvm/templates/tech/bg/bg01_b.jpg",
-				"background": "/static/qvm/templates/tech/bg/bg01.jpg"
 			}
 		]
 	}

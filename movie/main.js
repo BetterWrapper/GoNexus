@@ -9,6 +9,8 @@ const request = require("request");
 const xmldoc = require("xmldoc");
 const xml2js = require('xml2js');
 const char = require("../character/main");
+var templateAssets = [];
+var dialogMethods = [];
 function stream2buffer(r) {
 	return new Promise((res, rej) => {
 		const buffers = [];
@@ -54,6 +56,28 @@ function assignObjects(json, array, options) {
 	return json;
 }
 module.exports = {
+	templateAssets: {
+		set(obj) {
+			templateAssets.unshift(obj)
+		},
+		get() {
+			return templateAssets
+		},
+		deleteAll() {
+			templateAssets = [];
+		}
+	},
+	dialogMethods: {
+		set(obj) {
+			dialogMethods.push(obj)
+		},
+		get() {
+			return dialogMethods
+		},
+		deleteAll() {
+			dialogMethods = [];
+		}
+	},
 	stringIsArray(json) {
 		return json ? json.startsWith('[') && json.endsWith(']') : false;
 	},

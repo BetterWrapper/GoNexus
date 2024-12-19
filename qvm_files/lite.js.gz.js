@@ -538,6 +538,7 @@ function sendPhotoArray() {
 var GoLite = (function(e) {
     var r = 30, p = 10, b, t, a = [], u = null, o = false, s = false, v = "", d = false, c = 0, j = 1, q = false, i = false;
     initModeForEdit = false;
+    var X = '';
     function f() {
         var w = {};
         w.golite_theme = golite_theme;
@@ -710,7 +711,8 @@ var GoLite = (function(e) {
         params(stuff) {
             return new URLSearchParams(stuff);
         },
-        checkLogin(num) {
+        checkLogin(num, d) {
+            if (d) X = d;
             if (!userData && jQuery('#login_bar').length) {
                 jQuery('#seperator0').waypoint(function(e) {
                     jQuery('#login_bar').slideDown();
@@ -727,7 +729,7 @@ var GoLite = (function(e) {
                     });
                 });
             } else if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
-            this.init(num);
+            this.init(num, d);
             if (this.params(window.location.search).get("movieId")) jQuery.post(`/api/qvm_script/get?movieId=${
                 this.params(window.location.search).get("movieId")
             }`, this.initForEdit);
@@ -738,7 +740,7 @@ var GoLite = (function(e) {
             this.auth.signInWithEmailAndPassword(json.email, json.password).then(callback).catch(callback);
         },
         init: function(D) {
-            if (d) return
+            if (d) return;
             d = true;
             c = !userData ? D : D < 2 ? 2 : D;
             var A = new ItemSelector(e("#templates"));
@@ -964,7 +966,7 @@ var GoLite = (function(e) {
                 }
             });
             o = true;
-            e.post("/api/setupText2VideoPreview", w, function(y) {
+            e.post(X, w, function(y) {
                 o = false;
                 if (y.error) {
                     showNotice(y.error, true);

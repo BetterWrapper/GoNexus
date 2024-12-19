@@ -15,6 +15,7 @@ const fUtil = require("./misc/file");
 const nodezip = require("node-zip");
 const loadPost = require("./misc/post_body");
 const https = require("https");
+const jyvee = require("./jyveeCode/qvm");
 const usr = require("./static/user");
 const chr = require("./character/redirect");
 const pmc = require("./character/premade");
@@ -95,7 +96,8 @@ const functions = [
 	slg,
 	gsd,
 	com,
-	usr
+	usr,
+	jyvee
 ];
 function stream2Buffer(readStream) {
 	return new Promise((res, rej) => {

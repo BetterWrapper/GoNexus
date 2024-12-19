@@ -3,7 +3,15 @@ const nodezip = require("node-zip");
 const fs = require("fs");
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(require("@ffmpeg-installer/ffmpeg").path);
+const mp3Duration = require("mp3-duration");
 module.exports = {
+	mp3Duration(buffer) {
+		return new Promise((res, rej) => {
+			mp3Duration(buffer, (e, d) => {
+				res(d * 1e3);
+			});
+		})
+	},
 	/**
 	 * converts a readable stream to any audio ext
 	 * @param {import("stream".Readable)} data

@@ -13,8 +13,6 @@ ffmpeg.setFfprobePath(require("@ffprobe-installer/ffprobe").path);
 const fs = require("fs");
 const parse = require("./parse");
 const mp3Duration = require("mp3-duration");
-var templateAssets = [];
-var dialogMethods = [];
 const ncs = require("../ncs/modules/search");
 const cloudinary = require("cloudinary").v2;
 function getMp3Duration(buffer) {
@@ -115,7 +113,7 @@ module.exports = function (req, res, url) {
 									res.end()
 								} else res.end('Your movie has been saved successfully!');
 							}
-							fs.writeFileSync(`./previews/template.xml`, data.xml)
+							fs.writeFileSync('./previews/template.xml', data.xml)
 						}
 						res.end();
 					})
@@ -133,7 +131,9 @@ module.exports = function (req, res, url) {
 							);
 							case "success": {
 								if (!data.data) return err("Something was successful but had no data returned for some reason", data);
-								fs.writeFileSync(`./previews/template.json`, JSON.stringify(JSON.parse(data.data), null, "\t"));
+								session.set(res, {
+									userTemplateData: JSON.stringify(JSON.parse(data.data))
+								})
 								res.end(JSON.stringify({
 									success: true
 								}))
@@ -158,7 +158,8 @@ module.exports = function (req, res, url) {
 								const templates = JSON.parse(fs.readFileSync('./templates.json'));
 								templates[data.template_id] = JSON.parse(data.data)[data.template_id];
 								fs.writeFileSync(`./templates.json`, JSON.stringify(templates, null, "\t"));
-								if (fs.existsSync('./previews/template.json')) fs.unlinkSync('./previews/template.json')
+								const currentSession = session.get(req);
+
 								res.end(JSON.stringify({
 									success: true
 								}))
@@ -212,12 +213,10 @@ module.exports = function (req, res, url) {
 							templates: []
 						}
 						if (data.template_customChars_enable != "1") delete json[data.template_id].customChars_Info;
-						console.log(json);
+						const currentSession = session.get(req);
 						if (fs.existsSync(`./static/qvm/templates/${data.template_id}`)) {
 							let json = JSON.parse(fs.readFileSync('./templates.json'));
-							if (fs.existsSync('./previews/template.json')) json = JSON.parse(
-								fs.readFileSync('./previews/template.json')
-							)
+							if (currentSession.data.userTemplateData) json = JSON.parse(currentSession.data.userTemplateData);
 							if (json[data.template_id].user != data.template_uid) return res.end(JSON.stringify({
 								message: "1Sorry, but the template id you are trying to provide was already taken. Please choose a different id."
 							}))
@@ -236,21 +235,30 @@ module.exports = function (req, res, url) {
 							if (!data[`step2title${i + 1}`]) return res.end(JSON.stringify({
 								message: `1You need to provide a name for Scene ${i + 1}`
 							}))
-							if (!data[`step2movie${i + 1}`]) return res.end(JSON.stringify({
-								message: `1Either you need to login to GoNexus or you need to select a movie for Scene ${i + 1}`
-							}))
+							if (!data[`step2movie${i + 1}`]) {
+								if (!currentSession.data.current_uid) return res.end(JSON.stringify({
+									message: `1You need to login to GoNexus in order to continue with template preview.`
+								}))
+								return res.end(JSON.stringify({
+									message: `1You need to select a movie for Scene ${i + 1}`
+								}))
+							}
 							if (!data[`step2desc${i + 1}`]) return res.end(JSON.stringify({
 								message: `1You need to provide a description for Scene ${i + 1}`
 							}));
+							const bgnum = function() {
+								const num = i + 1;
+								return num.length > 1 ? `0${num}` : num;
+							}();
 							json[data.template_id].templates.unshift({
 								class: data[`step2class${i + 1}`],
 								tid: data[`step2tid${i + 1}`],
 								thumb: `/movie_thumbs/${data[`step2movie${i + 1}`]}.png`,
 								title: data[`step2title${i + 1}`],
 								desc: data[`step2desc${i + 1}`],
-								"char-thumb-a": `/static/qvm/templates/${data.template_id}/bg/bg${data[`step2bgnum${i + 1}`]}_a.jpg`,
-								"char-thumb-b": `/static/qvm/templates/${data.template_id}/bg/bg${data[`step2bgnum${i + 1}`]}_b.jpg`,
-								background: `/static/qvm/templates/${data.template_id}/bg/bg${data[`step2bgnum${i + 1}`]}.jpg`
+								"char-thumb-a": `/static/qvm/templates/${data.template_id}/bg/bg${bgnum}_a.jpg`,
+								"char-thumb-b": `/static/qvm/templates/${data.template_id}/bg/bg${bgnum}_b.jpg`,
+								background: `/static/qvm/templates/${data.template_id}/bg/bg${bgnum}.jpg`
 							})
 						}
 						res.end(JSON.stringify(json))
@@ -282,7 +290,7 @@ module.exports = function (req, res, url) {
 										downloadtype: "progressive",
 										ext: "mp3"
 									}, f);
-									templateAssets.unshift(meta);
+									movie.templateAssets.set(meta);
 									resolve(`0<asset><id>${meta.id.split(".")[0]}</id><enc_asset_id>${
 										f.recorderId
 									}</enc_asset_id><type>${meta.type}</type><subtype>${meta.subtype}</subtype><title>${
@@ -846,7 +854,7 @@ module.exports = function (req, res, url) {
 						if (!currentSession.data.current_uid) return res.end(JSON.stringify({
 							error: "You need to be logged in to your account in order to save your video."
 						}));
-						const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./previews/template.xml`));
+						const movieBase = await xml2js.parseStringPromise(fs.readFileSync('./previews/template.xml'));
 						switch (data.p_setting) {
 							case "public": {
 								movieBase.film._attributes.published = 1;
@@ -875,11 +883,11 @@ module.exports = function (req, res, url) {
 						movie.oldMeta(mId).then(m => {
 							m.movieIsMadeWithQVM = true;
 							m.qvm_script = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
-							m.dialog_methods = dialogMethods;
+							m.qvm_script.dialog_methods = movie.dialogMethods.get();
 							delete m.qvm_script.thumbnail;
 							const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`))
 							const json = user.users.find(i => i.id == currentSession.data.current_uid);
-							for (const meta of templateAssets) {
+							for (const meta of movie.templateAssets.get()) {
 								fs.writeFileSync(`${asset.folder}/${meta.id}`, tempbuffer.get(meta.id));
 								json.assets.unshift(meta);
 							}
@@ -887,8 +895,8 @@ module.exports = function (req, res, url) {
 							if (!existingMovieInfo) json.movies.unshift(m);
 							else Object.assign(existingMovieInfo, m);
 							fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(user, null, "\t"));
-							templateAssets = [];
-							dialogMethods = [];
+							movie.templateAssets.deleteAll();
+							movie.dialogMethods.deleteAll()
 							res.end(JSON.stringify({
 								url: `/player?movieId=${mId}`
 							}));
@@ -905,13 +913,13 @@ module.exports = function (req, res, url) {
 						try {
 							const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
 							f.player_object = {
-								apiserver: req.headers.origin + '/',
+								apiserver: '/',
 								appCode: "go",
 								v: '2010',
 								isTemplate: 1,
-								storePath4Parser: `${req.headers.origin}/static/tommy/2010/store`,
+								storePath4Parser: req.headers.origin + `/static/tommy/2010/store`,
 								storePath: '/static/tommy/2010/store/<store>',
-								clientThemePath: '/static/tommy/2012/<client_theme>',
+								clientThemePath: '/static/<client_theme>',
 								movieId: "templatePreview",
 								autostart: 1,
 								is_golite_preview: 1
@@ -925,6 +933,8 @@ module.exports = function (req, res, url) {
 							movieBase.film.sound = scenes2create.film.sound;
 							const charNumbers = movie.assignObjects({}, f.characters);
 							const avatarIds = {};
+							const templatrSettingsPath = `./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.json`
+							const settings = fs.existsSync(templatrSettingsPath) ? JSON.parse(fs.readFileSync(templatrSettingsPath)) : {};
 							let soundStartDelay = 0;
 							let defaultProp4head = 4;
 							function insertChar2Scene(k = [], options = {}) {
@@ -937,25 +947,30 @@ module.exports = function (req, res, url) {
 									if (scene.char) {
 										for (const char of scene.char) {
 											for (const id in charNumbers) {
-												if (char.action[0]._text.startsWith(`ugc.charIdNum${charNumbers[id]}`)) {
+												let t;
+												if (settings.includedChar) {
+													if (settings.includedChar != id) t = `ugc.charId`;
+													else continue;
+												} else t = `ugc.charIdNum${charNumbers[id]}`;
+												if (char.action[0]._text.startsWith(t)) {
 													if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
-													char.action[0]._text = char.action[0]._text.replace(`ugc.charIdNum${
-														charNumbers[id]
-													}`, `ugc.${id}`);
+													char.action[0]._text = char.action[0]._text.replace(t, `ugc.${id}`);
 												}
 											}
 											const pieces = char.action[0]._text.split(".");
 											const id = pieces[1];
 											const facial = (
-												options.useOpeningClosingFacial && options.openingClosingFacialType
+												options.useOpeningClosingFacial && options.openingClosingFacialType && charNumbers[id]
 											) ? f.opening_closing[options.openingClosingFacialType].facial[charNumbers[id]] : 'default';
-											if (facial != "default") char.head = {
+											if (facial == "default") continue;
+											char.head = {
 												_attributes: {
 													id: `PROP${defaultProp4head}`,
 													raceCode: 1
 												},
 												file: [`ugc.${id}.head.head_${facial}.xml`]
-											}, defaultProp4head += 2;
+											};
+											defaultProp4head += 2;
 										}
 									}
 									if (!options.dontpushstuff2scene) movieBase.film.scene[l] = scene;
@@ -966,25 +981,27 @@ module.exports = function (req, res, url) {
 								openingClosingFacialType: 'opening_characters',
 								elm2delete: 'isPartOfVideoStart'
 							});
+							const firstScenesLengtj = movieBase.film.scene.length;
+							let charSceneCount = firstScenesLengtj;
 							async function getVoiceMeta(script) {
 								const currentSession = session.get(req);
 								const userAssets = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`)).users.find(
 									i => i.id == currentSession.data.current_uid
 								).assets
 								if (script.text) {
-									dialogMethods.push("tts")
+									movie.dialogMethods.set("tts")
 									const info = userAssets.find(i => i.title == `[${script.voice}] ${script.text}`)
 									if (!info) {
 										const meta = await tts.genVoice4Qvm(script.voice, script.text);
-										templateAssets.unshift(meta);
+										movie.templateAssets.set(meta);
 										return meta;
 									}
 									return info;
 								} else if (script.aid) {
-									dialogMethods.push("mic");
+									movie.dialogMethods.set("mic");
 									return userAssets.find(
 										i => i.enc_asset_id == script.aid
-									) || templateAssets.find(i => i.enc_asset_id == script.aid);
+									) || movie.templateAssets.get().find(i => i.enc_asset_id == script.aid);
 								}
 							}
 							movieBase.film.linkage = [];
@@ -1003,10 +1020,20 @@ module.exports = function (req, res, url) {
 									let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
 									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
 									const sceneLength = movieBase.film.scene.length;
-									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarIds[script.cid]}`)
-									const currentScene = scenes2create.film.scene.filter(i => i._attributes[`char_${
-										script.char_num
-									}_talking`] != undefined);
+									const avatarId = settings.includedChar == script.cid ? settings.includedCharAvatarId : avatarIds[
+										script.cid
+									];
+									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarId}`);
+									let attr = `char_${script.char_num}_talking`;
+									if (settings.charCamScenes) {
+										for (const n of settings.charCamScenes) {
+											if (charSceneCount != n) continue;
+											attr = `char_${script.char_num}_talking_cam`;
+										}
+									}
+									if (settings.maxCharCamSceneNum == charSceneCount) charSceneCount = firstScenesLengtj;
+									else charSceneCount++;
+									const currentScene = scenes2create.film.scene.filter(i => i._attributes[attr] != undefined);
 									const json = movie.assignObjects({}, currentScene);
 									json._attributes.adelay = stop + 24;
 									insertChar2Scene([json]);
@@ -1060,7 +1087,7 @@ module.exports = function (req, res, url) {
 								const sceneCountEnd = sceneInfo.indexOf('"', sceneCountBeg)
 								const sceneCount = Number(sceneInfo.substring(sceneCountBeg, sceneCountEnd));
 								const facialInfo = facials[facials.findIndex(i => i.sceneCount == sceneCount)];
-								if (facialInfo) {
+								if (facialInfo && settings.includedChar != facialInfo.cid) {
 									const charAvatarId = avatarIds[facialInfo.cid];
 									const charInfo = sceneInfo.substr(sceneInfo.indexOf(`<char id="${charAvatarId}"`)).split("</char>")[0];
 									xml = xml.split(sceneInfo).join(sceneInfo.split(charInfo).join(charInfo + `<head id="PROP${
@@ -1070,7 +1097,7 @@ module.exports = function (req, res, url) {
 								}
 								pos = xml.indexOf('<scene charsTalking=', pos + 19);
 							}
-							fs.writeFileSync(`./previews/template.xml`, xml);
+							fs.writeFileSync(`./previews/template.xml`, xml)
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(f));
 						} catch (e) {
@@ -1203,6 +1230,7 @@ module.exports = function (req, res, url) {
 				} case "/goapi/getMovie/": { // loads a movie using the parse.js file
 					loadPost(req, res).then(async data => {
 						try {
+							const currentSession = session.get(req);
 							res.setHeader("Content-Type", "application/zip");
 							if (url.query.movieId != "templatePreview") {
 								const b = await movie.loadZip(url.query, data);
@@ -1210,7 +1238,7 @@ module.exports = function (req, res, url) {
 								else res.end(b);
 							} else res.end(Buffer.concat([
 								base, 
-								await parse.packMovie(fs.readFileSync("./previews/template.xml"), data, false, templateAssets)
+								await parse.packMovie(fs.readFileSync('./previews/template.xml'), data, false, movie.templateAssets.get())
 							]));
 						} catch (e) {
 							res.setHeader("Content-Type", "text/xml");

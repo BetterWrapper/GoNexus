@@ -138,7 +138,7 @@
       <file>custom.office_blurred.png</file>
     </bg>
     <char id="AVATOR138" index="2" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -237,7 +237,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene lock="Y" color="16777215">
+  <scene charsTalking="" char_1_talking_cam="" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.office_blurred.png</file>
     </bg>
@@ -289,7 +289,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE10" adelay="48" lock="Y" index="6" color="16777215" guid="3292EEB6-10ED-5D2D-E504-151CF8E1558F">
+  <scene charsTalking="" char_2_talking_cam="" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.office_blurred.png</file>
     </bg>

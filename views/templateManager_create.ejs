@@ -227,11 +227,14 @@ if (self !== top) jQuery('body').hide();
             return new URLSearchParams(d);
         }
         prepTemplateFilesDownload(theme) {
-            $("#templateFilesDownload").html(`<h3>Get Example Template Files</h3>
-                <p class="text-muted">This will help you create your template without messing things up.</p>
-                <a class="form-control" download="template_files.zip" href="/api/getTemplateFiles?theme=${
-                    theme || this.initTemplateTheme
-                }">Download Files</a><div class="payment-form-section-divider"></div>`);
+            $("#templateFilesDownload").html(`<h3>
+                Get Example Template Files
+            </h3>
+            <p class="text-muted">This will help you create your template without messing things up.</p>
+            <a class="form-control" download="template_files.zip" href="/api/getTemplateFiles?theme=${
+                theme || this.initTemplateTheme
+            }">Download Files</a>
+            <div class="payment-form-section-divider"></div>`);
         }
         selectTemplate(id) {
             $(`#${id}_template`).find(`input[value="${id}"]`).prop("checked", true);
@@ -281,12 +284,12 @@ if (self !== top) jQuery('body').hide();
                         <label for="" class="col-sm-3 control-label">Scene Name<span class="text-danger">*</span></label>
                         <div class="col-sm-6">
                             <input class="form-control" type="text" value="${
-                                this.sceneConfig ? this.sceneConfig[i.val] ? this.sceneConfig[i.val][`step2title${i.index}`] || "" : "" : ""
+                                this.sceneConfig ? this.sceneConfig[i.index] ? this.sceneConfig[i.index][`step2title${i.index}`] || "" : "" : ""
                             }" name="step2title${
                                 i.index
                             }" maxlength="40" placeholder="Just Browing YouTube" onchange="templateManager.saveConfig(this, 'step2title${
                                 i.index
-                            }', 'scene-${i.val}')">
+                            }', 'scene-${i.index}')">
                         </div>
                     </div>
                     <div class="form-group">
@@ -294,10 +297,10 @@ if (self !== top) jQuery('body').hide();
                         <div class="col-sm-6">
                             <textarea class="form-control" onchange="templateManager.saveConfig(this, 'step2desc${
                                 i.index
-                            }', 'scene-${i.val}')" name="step2desc${
+                            }', 'scene-${i.index}')" name="step2desc${
                                 i.index
                             }" placeholder="2 characters deside to browse youtube when something bad happens. Animate the story!">${
-                                this.sceneConfig ? this.sceneConfig[i.val] ? this.sceneConfig[i.val][`step2desc${i.index}`] || "" : "" : ""
+                                this.sceneConfig ? this.sceneConfig[i.index] ? this.sceneConfig[i.index][`step2desc${i.index}`] || "" : "" : ""
                             }</textarea>
                         </div>
                     </div>
@@ -306,7 +309,7 @@ if (self !== top) jQuery('body').hide();
                         <div class="col-sm-6">
                             <select class="form-control movie-scene" onchange="templateManager.saveConfig(this, 'step2movie${
                                 i.index
-                            }', 'scene-${i.val}')" name="step2movie${
+                            }', 'scene-${i.index}')" name="step2movie${
                                 i.index
                             }">
                                 <option value="">You don't have any movies</option>

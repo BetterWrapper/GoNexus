@@ -229,8 +229,8 @@ module.exports = function (req, res, url) {
 		} case "/quickvideo": {
 			let template;
 			if (query.isPreview) {
-				const json = JSON.parse(fs.readFileSync('./previews/template.json'))[url.query.theme];
 				const currentSession = session.get(req);
+				const json = JSON.parse(currentSession.data.userTemplateData)[url.query.theme];
 				if (currentSession && currentSession.data && json.user == currentSession.data.current_uid) {
 					filename = "qvm_preview";
 					template = json;
