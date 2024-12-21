@@ -39,7 +39,7 @@
 var srv_tz_os = -4, view_name = "school", user_cookie_name = "u_info_school";
 var user_country = "US";
 </script>
-
+<script type="text/javascript" src="https://josephanimate2021.github.io/x2js/xml2json.js"></script>
 <!--[if lt IE 9]>
 <script src="https://d2qrjeyl4jwu9j.cloudfront.net/static/c5bab4fb87fee33e/go/js/lib/html5shiv.js"></script>
 <![endif]-->
@@ -141,6 +141,17 @@ if (self !== top) jQuery('body').hide();
                             </div>
                         </div>
                         <div class="payment-form-section-divider"></div>
+                        <h3>Template Preferences</h3>
+                        <div class="form-group">
+                            <label for="" class="col-sm-3 control-label">Scene XML Generation Method<span class="text-danger">*</span></label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="urlPostVideoPreview" id="sceneGenMEthod">
+                                    <option value="/api/setupText2VideoPreview" title="When selected, you won't need to change any advanced scene settings unless you really want to.">Automatic Timings (RECOMMENDED)</option>
+                                    <option value="/ajax/previewText2Video" title="When selected, you will be required to change all advanced settings for your scenes before publishing or previewing your template.">Manual Timings (NOT RECOMMENDED)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="payment-form-section-divider"></div>
                         <div id="customChars_info" style="display: none;">
                             <h3>Custom Character Feature Implmention</h3>
                             <p class="text-muted">
@@ -163,7 +174,7 @@ if (self !== top) jQuery('body').hide();
                         <h3>Your Template Scenes</h3>
                         <p class="text-muted">
                             This section will allow you to add as many scenes as you like into your template. 
-                            a movie made in either Nexus or FlashThemes will be required to make your scene functional in your template.
+                            a movie made in either GoNexus or FlashThemes will be required to make your scene functional in your template.
                         </p>
                         <div id="templates"></div>
                         <h3>Your Template Stock Characters</h3>
@@ -173,6 +184,7 @@ if (self !== top) jQuery('body').hide();
                             (Theme ID and tags will be required though)
                         </p>
                         <div id="stockCharacters"></div>
+                        <div class="payment-form-section-divider"></div>
                     </div>
                     <div class="payment-form-section-footer">
                         <div class="row">
@@ -184,11 +196,12 @@ if (self !== top) jQuery('body').hide();
                                 </p>
                             </div>
                         </div>
-                        <button class="btn btn-orange btn-lg" onclick="templateManager.publishTemplate()">Create Template &gt;</button>
+                        <button class="btn btn-orange btn-lg" onclick="templateManager.publishTemplate()">Publish Template &gt;</button>
                     </div>
                 </div>
 
 <button class="btn btn-green btn-lg" onclick="templateManager.initTemplatePreview()">Preview Template &gt;</button>
+<button class="btn btn-red btn-lg" onclick="templateManager.deleteTemplate()">Delete Template</button>
 
             </form>
             <br><br>
@@ -203,6 +216,8 @@ if (self !== top) jQuery('body').hide();
             this.addScene();
             this.createForm($("#order-form").serialize());
             this.templateEditor = {};
+            this.x2js = new X2JS();
+            this.xmlSerializer = new XMLSerializer();
             $.getJSON("/api/getTemplates", d => {
                 const templateTheme = this.params(window.location.search).get("theme");
                 this.templateEditor.allTemplates = d;
@@ -223,6 +238,35 @@ if (self !== top) jQuery('body').hide();
                 }
             })
         }
+        async loadSongs() {
+            async function cc(tv) {
+                return new Promise(async (res, rej) => {
+                    jQuery.getJSON(`/api/theme/get?tId=${tv}&tag=sound`, d => {
+                        res(d.filter(i => i.attr.subtype == "bgmusic" && !i.attr.id.endsWith(".swf")));
+                    })
+                })
+            }
+            const array = await cc(this.themeInfo.attr.id);
+            const info = {
+                tv: array.length == 0 ? "common" : array
+            }
+            info.results = info.tv == "common" ? await cc(info.tv) : array;
+            return info
+        }
+        newSceneTiming(t) {
+            this.sceneTimings[t.type][this.sceneTimings[t.type].length] = t;
+            $(`#sceneTimings_${t.type}`).append(`<input class="form-control" type="number" name="settings[advanced][${t.type}][${
+                this.sceneTimings[t.type].length
+            }]"${t.is_required ? ' required' : ''}/>`)
+        }
+        removeSceneTiming(t) {
+            if (this.sceneTimings[t.type].length == 1) return displayFeedback("1You cannot remove any more scene timings");
+            $(`#sceneTimings_${t.type}`).find(`input[name="settings[advanced][${t.type}][${this.sceneTimings[t.type].length}]"]`).remove();
+            this.sceneTimings[t.type].splice(this.sceneTimings[t.type].length - 1, 1);
+        }
+        json2xml(j) {
+          return this.xmlSerializer.serializeToString(this.x2js.json2xml(j));
+        }
         params(d) {
             return new URLSearchParams(d);
         }
@@ -239,15 +283,200 @@ if (self !== top) jQuery('body').hide();
         selectTemplate(id) {
             $(`#${id}_template`).find(`input[value="${id}"]`).prop("checked", true);
         }
+        async loadSceneSettings(i) {
+            jQuery.blockUI();
+            const songs = await this.loadSongs();
+            this.sceneBases = this.sceneBases || [];
+            const mid = $(`select[name="step2movie${i}"]`).val();
+            if (!mid) return displayFeedback(`1Please select a movie in scene ${i + 1} in order to change scene settings`);
+            const advancedTemplateSceneSettings = await (async () => {
+                return new Promise((res, rej) => jQuery.post(
+                    '/api/templateStuff/get?filename=templateSettingsBase.json&header=Content-type,application/json', res
+                ));
+            })();
+            jQuery.get(`/movies/${mid}.xml`, d => {
+                this.sceneBases[i] = this.x2js.xml2json(d);
+                this.sceneSettings = $("#sceneSettings");
+                this.sceneSettings.functions = {
+                    loadSceneChooser(t, $this, l) {
+                        return t.type == "array" ? `<div class="form-group"${t.grouoId ? ` id="${t.grouoId}"` : ''}>
+                            <label class="control-label">${t.name}${t.is_required ? `<span class="text-danger">*</span>` : ''}</label>
+                            <select class="form-control" name="settings[advanced][${l}]">${$this.sceneBases[i].film.scene.map(
+                                v => `<option value="${v._id}">Movie Scene #${Number(v._index) + 1}</option>`
+                            ).join('')}</select>
+                        </div>` : `<div class="container">
+                            <label for="" class="control-label">${t.name}${t.is_required ? `<span class="text-danger">*</span>` : ''}</label>
+                            <div class="row">
+                                ${$this.sceneBases[i].film.scene.map(
+                                    v => `<div class="col-md-5"><input type="${t.type}" name="settings[advanced][${l}]${
+                                        t.type == "checkbox" ? `[${v._index}]` : ``
+                                    }" value="${v._index}"${t.is_required ? ' required' : ''}/> Movie Scene #${
+                                        Number(v._index) + 1
+                                    }</div>`
+                                ).join('')}
+                            </div>
+                        </div>`
+                    },
+                    loadAllCharAvatars(t, $this, l) {
+                        const avatars = {};
+                        for (
+                            const scene of $this.sceneBases[i].film.scene
+                        ) if (scene.char) for (const char of scene.char) avatars[char._id] = true;
+                        return `<div class="form-group"${t.grouoId ? ` id="${t.grouoId}"` : ''}>
+                            <label for="" class="control-label">${t.name}${
+                                t.is_required ? `<span class="text-danger">*</span>` : ``
+                            }</label>
+                            <select class="form-control" name="settings[advanced][${l}]">
+                                <option value="">Select An Avatar ID (Required for 1 character, optional on 2 and more characters)</option>
+                                ${Object.keys(avatars).map(v => `<option value="${v}">${v}</option>`).join('')}
+                            </select>
+                        </div>`
+                    },
+                    loadSongOptions(t, $this, l) {
+                        return `<div class="form-group"${t.grouoId ? ` id="${t.grouoId}"` : ''}>
+                            <label for="" class="control-label">${t.name}${t.is_required ? `<span class="text-danger">*</span>` : ``}</label>
+                            <select class="form-control" name="settings[advanced][${l}]">
+                                ${songs.results.map(v => `<option value="${songs.tv}.${v.attr.id}">${v.attr.name}</option>`).join('')}
+                            </select>
+                        </div>`;
+                    },
+                    hideElement(t, l, obj) {
+                        $(t.hideElement)[$(obj).val() == "N" ? 'hide' : 'show']();
+                    },
+                    toOffsetLoader(t, $this, l) {
+                        $this.sceneTimings = $this.sceneTimings || {};
+                        $this.sceneTimings[t.type] = [];
+                        $this.sceneTimings[t.type].unshift(t);
+                        return `<div class="form-group"${t.grouoId ? ` id="${t.grouoId}"` : ''}>
+                            <label for="" class="control-label">${t.name}${
+                                t.is_required ? `<span class="text-danger">*</span>` : ``
+                            }</label>
+                            <button class="btn btn-xs btn-green" onclick='templateManager.newSceneTiming(${
+                                JSON.stringify(t)
+                            })' type="button">Add New Timing</button>
+                            <button class="btn btn-xs btn-red" onclick='templateManager.removeSceneTiming(${
+                                JSON.stringify(t)
+                            })' type="button">Remove Timing</button>
+                            <div id="sceneTimings_${t.type}">
+                                <input class="form-control" type="number" name="settings[advanced][${t.type}][1]"${
+                                    t.is_required ? ' required' : ''
+                                }/>
+                            </div>
+                         </div>`
+                    }
+                }
+                this.sceneSettings.find('h3[class="modal-title"]').text(`Scene ${i} Settings`);
+                const body = this.sceneSettings.find('div[class="modal-body"]');
+                let settings = {
+                    applyBasicSettingsLogic: false,
+                };
+                switch ($("#sceneGenMEthod").val()) {
+                    case "/ajax/previewText2Video": {
+                        Object.assign(settings, advancedTemplateSceneSettings.jyvee);
+                        break;
+                    } default: {
+                        settings.applyBasicSettingsLogic = true;
+                        Object.assign(settings, advancedTemplateSceneSettings.default);
+                        break;
+                    }
+                }
+                body.html(`<input type="hidden" name="currentSceneNum" value="${
+                    i
+                }"/>${settings.applyBasicSettingsLogic ? `<h3>Basic Settings</h3>
+                <div class="container">
+                    <label for="" class="control-label">Movie Scenes To Use For The Start Of The Video</label><br>
+                    <div class="row">
+                        ${this.sceneBases[i].film.scene.map(
+                            v => `<div class="col-md-5"><input type="checkbox" name="settings[basic][usingMovieScene4VideoStart][${v._index}]"/> Movie Scene #${
+                                Number(v._index) + 1
+                            }</div>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="container">
+                    <label for="" class="control-label">Movie Scenes To Use For The End Of The Video</label><br>
+                    <div class="row">
+                        ${this.sceneBases[i].film.scene.map(
+                            v => `<div class="col-md-5"><input type="checkbox" name="settings[basic][usingMovieScene4VideoEnd][${v._index}]"/> Movie Scene #${
+                                Number(v._index) + 1
+                            }</div>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="container">
+                    <label for="" class="control-label">Movie Scenes To Use For The Camera Zooming In To Character One</label><br>
+                    <div class="row">
+                        ${this.sceneBases[i].film.scene.map(
+                            v => `<div class="col-md-5"><input type="checkbox" name="settings[basic][usingMovieScene4Char1CamZommin][${v._index}]"/> Movie Scene #${
+                                Number(v._index) + 1
+                            }</div>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="container">
+                    <label for="" class="control-label">Movie Scenes To Use For Camera Zooning In To Character Two</label><br>
+                    <div class="row">
+                        ${this.sceneBases[i].film.scene.map(
+                            v => `<div class="col-md-5"><input type="checkbox" name="settings[basic][usingMovieScene4Char2CamZoomin][${v._index}]"/> Movie Scene #${
+                                Number(v._index) + 1
+                            }</div>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="container">
+                    <label for="" class="control-label">Movie Scenes To Use For The Camera Zooming In To Both Characters</label><br>
+                    <div class="row">
+                        ${this.sceneBases[i].film.scene.map(
+                            v => `<div class="col-md-5"><input type="checkbox" name="settings[basic][usingMovieScene4CharCam][${v._index}]"/> Movie Scene #${
+                                Number(v._index) + 1
+                            }</div>`
+                        ).join('')}
+                    </div>
+                </div>
+                <h3>Advanced Settings</h3>` : ''}
+                ${(() => {
+                    return Object.keys(settings).map(v => {
+                        if (typeof settings[v] != "object") return;
+                        else if (settings[v].call_function) return this.sceneSettings.functions[settings[v].call_function](
+                            settings[v], this, v
+                        );
+                        else switch (settings[v].type) {
+                            case "array": return `<div class="form-group"${settings[v].grouoId ? ` id="${settings[v].grouoId}"` : ''}>
+                                <label for="" class="control-label">${settings[v].name}${
+                                    settings[v].is_required ? `<span class="text-danger">*</span>` : ''
+                                }</label>
+                                <select class="form-control" name="settings[advanced][${v}]"${
+                                    settings[v].onSelect ? ` onchange='templateManager.sceneSettings.functions.${settings[v].onSelect}(
+                                        ${JSON.stringify(settings[v])}, "${v}", this
+                                    )'` : ''
+                                }>${
+                                    settings[v].options.map(i => `<option value="${i}">${i}</option>`)
+                                }</select>
+                            </div>`
+                            default: return `<div class="form-group"${settings[v].grouoId ? ` id="${settings[v].grouoId}"` : ''}>
+                                <label for="" class="control-label">${settings[v].name}${
+                                    settings[v].is_required ? `<span class="text-danger">*</span>` : ''
+                                }</label>
+                                <input class="form-control" type="${settings[v].type}" name="settings[advanced][${v}]"${
+                                    settings[v].is_required ? ' required' : ''
+                                }/>
+                            </div>`
+                        }
+                    }).join('')
+                })()}`);
+                this.sceneSettings.modal('show');
+                jQuery.unblockUI();
+            });
+        }
         ccThemeIdChange(obj) {
-            const themeInfo = this.themes.find(i => i.attr.id == obj.value);
-            $("#ccThemeId").val(themeInfo.attr.cc_theme_id);
-            this.loadStockChars(themeInfo.attr.cc_theme_id);
+            this.themeInfo = this.themes.find(i => i.attr.id == obj.value);
+            $("#ccThemeId").val(this.themeInfo.attr.cc_theme_id);
+            this.loadStockChars(this.themeInfo.attr.cc_theme_id);
             this.customCharsSetup();
         }
         loadThemes() {
             jQuery.blockUI();
-            $.getJSON("/api/themes/get", d => {
+            $.getJSON("/api/themes/get?no_extras=true", d => {
                 this.themes = d;
                 $("#themeId").html(d.filter(i => i.attr.isHidden != "1").filter(i => i.attr.cc_theme_id).map(v => `<option value="${
                     v.attr.id
@@ -278,13 +507,15 @@ if (self !== top) jQuery('body').hide();
                     <h4 class="scene-text">
                         Scene ${i.index} - <button class="btn btn-xs btn-red" onclick="templateManager.removeScene('${i.index}')" type="button">
                             Remove
+                        </button> - <button class="btn btn-xs btn-orange" onclick="templateManager.loadSceneSettings('${i.index}')" type="button">
+                            Settings
                         </button>
                     </h4>
                     <div class="form-group">
                         <label for="" class="col-sm-3 control-label">Scene Name<span class="text-danger">*</span></label>
                         <div class="col-sm-6">
                             <input class="form-control" type="text" value="${
-                                this.sceneConfig ? this.sceneConfig[i.index] ? this.sceneConfig[i.index][`step2title${i.index}`] || "" : "" : ""
+                                this.sceneConfig ? this.sceneConfig[i.index - 1] ? this.sceneConfig[i.index - 1][`step2title${i.index}`] || "" : "" : ""
                             }" name="step2title${
                                 i.index
                             }" maxlength="40" placeholder="Just Browing YouTube" onchange="templateManager.saveConfig(this, 'step2title${
@@ -300,7 +531,7 @@ if (self !== top) jQuery('body').hide();
                             }', 'scene-${i.index}')" name="step2desc${
                                 i.index
                             }" placeholder="2 characters deside to browse youtube when something bad happens. Animate the story!">${
-                                this.sceneConfig ? this.sceneConfig[i.index] ? this.sceneConfig[i.index][`step2desc${i.index}`] || "" : "" : ""
+                                this.sceneConfig ? this.sceneConfig[i.index - 1] ? this.sceneConfig[i.index - 1][`step2desc${i.index}`] || "" : "" : ""
                             }</textarea>
                         </div>
                     </div>
@@ -311,9 +542,7 @@ if (self !== top) jQuery('body').hide();
                                 i.index
                             }', 'scene-${i.index}')" name="step2movie${
                                 i.index
-                            }">
-                                <option value="">You don't have any movies</option>
-                            </select>
+                            }"></select>
                         </div>
                     </div>
                     <input type="hidden" name="step2tid${i.index}" value="${i.val}"/>
@@ -324,13 +553,13 @@ if (self !== top) jQuery('body').hide();
             })(this.sceneArray);
         }
         loadMovies() {
-            if (userData) {
-                jQuery.blockUI();
-                $.getJSON(`/movieList?uid=${userData.uid || userData.id}`, d => {
-                    $(".movie-scene").html(d.map(v => `<option value="${v.id}">${v.title}</option>`));
-                    jQuery.unblockUI();
-                });
-            }
+            jQuery.blockUI();
+            $.getJSON(`/movieList`, d => {
+                $(".movie-scene").html(
+                    d.map(v => `<option value="${v.id}">${v.title}</option>`).join('') || `<option value="">You don't have any movies</option>`
+                );
+                jQuery.unblockUI();
+            });
         }
         addStockCharsHTML(callback) {
             this.checkForm();
@@ -347,8 +576,8 @@ if (self !== top) jQuery('body').hide();
                         <div class="col-sm-6">
                             <input class="form-control" type="text" onchange="templateManager.saveConfig(this, 'step3name${
                                 i.index
-                            }', 'char-${i.val}')" name="step3name${i.index}" value="${
-                                this.charConfig ? this.charConfig[i.val] ? this.charConfig[i.val][`step3name${i.index}`] || "" : "" : ""
+                            }', 'char-${i.index}')" name="step3name${i.index}" value="${
+                                this.charConfig ? this.charConfig[i.index - 1] ? this.charConfig[i.index - 1][`step3name${i.index}`] || "" : "" : ""
                             }" maxlength="25" placeholder="Character name">
                         </div>
                     </div>
@@ -357,10 +586,10 @@ if (self !== top) jQuery('body').hide();
                         <div class="col-sm-6">
                             <select class="form-control" name="step3gender${i.index}" onchange="templateManager.saveConfig(this, 'step3gender${
                                 i.index
-                            }', 'char-${i.val}')">
+                            }', 'char-${i.index}')">
                                 <option value=F>Female</option>
                                 <option value=M${
-                                    this.charConfig ? this.charConfig[i.val] ? this.charConfig[i.val][`step3gender${
+                                    this.charConfig ? this.charConfig[i.index - 1] ? this.charConfig[i.index - 1][`step3gender${
                                         i.index
                                     }`] == "M" ? ' selected' : "" : "" : ""
                                 }>Male</option>
@@ -441,10 +670,16 @@ if (self !== top) jQuery('body').hide();
             this.template_type = this.templateEditor.isEditor ? "edit" : "new";
             delete this.json;
             delete this.form;
+            delete this.x2js
+            delete this.xmlSerializer;
+            delete this.sceneBases;
+            delete this.sceneSettings;
             return new Promise((res, rej) => {
                 $.post("/api/initTemplateCreation", this, d => {
                     const json = JSON.parse(d);
                     this.checkForm();
+                    this.x2js = new X2JS();
+                    this.xmlSerializer = new XMLSerializer();
                     if (!json[this.json.template_id]) res(json);
                     else {
                         let b = new FormData();
@@ -507,15 +742,15 @@ if (self !== top) jQuery('body').hide();
             $("#introSteps").text(templateInfo.intro_steps);
             this.sceneArray = [];
             this.charArray = [];
-            this.sceneConfig = {};
-            this.charConfig = {};
+            this.sceneConfig = [];
+            this.charConfig = [];
             for (let i = 0; i < templateInfo.templates.length; i++) {
                 const sceneInfo = templateInfo.templates[i];
                 const val = Math.random().toString().substr(2);
                 const index = i + 1;
-                this.sceneConfig[val] = {};
-                this.sceneConfig[val][`step2title${index}`] = sceneInfo.title;
-                this.sceneConfig[val][`step2desc${index}`] = sceneInfo.desc;
+                this.sceneConfig[i] = [];
+                this.sceneConfig[i][`step2title${index}`] = sceneInfo.title;
+                this.sceneConfig[i][`step2desc${index}`] = sceneInfo.desc;
                 this.sceneArray.unshift({
                     index,
                     val
@@ -526,9 +761,9 @@ if (self !== top) jQuery('body').hide();
                 const charInfo = templateInfo.stockCharacters[i];
                 const val = charInfo.cid;
                 const index = i + 1;
-                this.charConfig[val] = {};
-                this.charConfig[val][`step3name${index}`] = charInfo.name;
-                this.charConfig[val][`step3gender${index}`] = charInfo.gender;
+                this.charConfig[i] = [];
+                this.charConfig[i][`step3name${index}`] = charInfo.name;
+                this.charConfig[i][`step3gender${index}`] = charInfo.gender;
                 this.charArray.unshift({
                     index,
                     val
@@ -545,7 +780,6 @@ if (self !== top) jQuery('body').hide();
             this.templateEditor.ideaSelector.json = Object.fromEntries(new URLSearchParams(this.templateEditor.ideaSelector.form));
             this.templateEditor.id = this.templateEditor.ideaSelector.json.template;
             $("#err-message").text('');
-            location.href = templateContent;
             if (!this.templateEditor.id) return $("#err-message").text("Please select a template")
             $("#templateIdeas").modal("hide");
             this.initTemplateEditor(this.templateEditor.allTemplates[this.templateEditor.id]);
@@ -595,9 +829,9 @@ if (self !== top) jQuery('body').hide();
             <div class="case-studies">
                 <div class="case">
                     <div class="case-quote">
-                        <p>I have created around 2 templates for wrapper classic in the past but one of them was a rushed theme who's name was <a href="/quickvideo?theme=michigan">Michigan</a>. But thanks to this tool, i won't need to modify a qvm html just to make templates ever again and all i need from this is my CSS knowledge. this is going to be the best tool for Nexus in a production state so that users will have the best chance to create their own templates without winning in a contest or sending a request to anyone just to have their template sent out to production. the best part is, i can preview my template before it's available for production. Thanks joseph for working on Nexus on your own for a pretty long time and having the idea to make this tool. you are the best!</p>
+                        <p>I have created around 2 templates for wrapper classic in the past but one of them was a rushed theme who's name was <a href="/quickvideo?theme=michigan">Michigan</a>. But thanks to this tool, i won't need to modify a qvm html just to make templates ever again and all i need from this is my CSS knowledge. this is going to be the best tool for GoNexus in a production state so that users will have the best chance to create their own templates without winning in a contest or sending a request to anyone just to have their template sent out to production. the best part is, i can preview my template before it's available for production. Thanks joseph for working on GoNexus on your own for a pretty long time and having the idea to make this tool. you are the best!</p>
                         <div class="case-customer">
-                            - <span class="name"><a href="/public_user/wD87hhngLkhZNvtwraYOUEYeWUl2" target="_blank">Itinerary Jyvee</a></span>,<br>Nexus Developer
+                            - <span class="name"><a href="/public_user/wD87hhngLkhZNvtwraYOUEYeWUl2" target="_blank">Itinerary Jyvee</a></span>,<br>GoNexus Developer
                         </div>
                     </div>
                 </div><!--
@@ -658,13 +892,31 @@ if (self !== top) jQuery('body').hide();
             <div class="modal-body">
                 <br>
                 <p class="text-center h4">
-                    Your template has been created and published to Nexus. 
+                    Your template has been created and published to GoNexus. 
                     <a href="javascript:templateManager.publishedTemplateRedirdct()">Click here</a>
                     to see your template in it's former glory.
                 </p>
                 <br>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal" id="sceneSettings">
+    <div class="modal-dialog modal-lg">
+        <form class="modal-content" onsubmit="templateManager.updateSceneSettings(this)" action="javascript:;">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Settings</button>
+            </div>
+        </form>
     </div>
 </div>
 <div class="modal" id="templateIdeas">

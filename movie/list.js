@@ -1,5 +1,6 @@
 const http = require("http");
 const fs = require("fs");
+const session = require("../misc/session");
 
 /**
  * @param {http.IncomingMessage} req
@@ -9,14 +10,15 @@ const fs = require("fs");
  */
 module.exports = function (req, res, url) {
 	if (req.method != "GET" || url.pathname != "/movieList") return;
+	const currentSession = session.get(req);
 	res.setHeader("Content-Type", "application/json");
-	const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == url.query.uid);
+	const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == currentSession.data.current_uid);
 	function loadMoviesFromJSON(j) {
 		const a = j.movies;
 		const sorted = a.sort((a, b) => b.id - a.id);
 		res.end(JSON.stringify(sorted));
 	}
-	if (url.query.uid && json) loadMoviesFromJSON(json);
+	if (json) loadMoviesFromJSON(json);
 	else {
 		if (!req.headers.host.includes("localhost")) res.end(JSON.stringify([]));
 		else loadMoviesFromJSON(JSON.parse(fs.readFileSync('./_ASSETS/local.json')));

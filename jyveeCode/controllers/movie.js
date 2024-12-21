@@ -1,19 +1,23 @@
 /**
  * qvm generation jyvee edition (made for specific templates)
  */
+// modules
+const fs = require("fs");
 // stuff
-const Movie = require("./main");
-const movie = require("../movie/main");
-const tempbuffer = require("../tts/tempBuffer");
-const tts = require("../tts/main");
-const fUtil = require("../misc/file");
-const loadPost = require("../misc/post_body");
+const Movie = require("../models/movie");
+const movie = require("../../movie/main");
+const tempbuffer = require("../../tts/tempBuffer");
+const tts = require("../../tts/main");
+const fUtil = require("../../misc/file");
+const loadPost = require("../../misc/post_body");
 function guyResponse(guy, res, data, req) {
 	console.log(guy.success);
 	if (guy.success == true) {
 		const obj = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
 		res.end(JSON.stringify(Object.assign({
 			player_object: {
+				ext: "xml",
+				filename: "qvm",
 				storePath4Parser: req.headers.origin + '/static/tommy/2010/store',
 				is_golite_preview: 1,
 				isTemplate: 1,
@@ -37,6 +41,7 @@ module.exports = (req, res, url) => {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
 		case "/ajax/previewText2Video": {
+			if (fs.existsSync('./previews/qvm.xml')) fs.unlinkSync('./previews/qvm.xml');
 			loadPost(req, res).then(f => {
 				//HOLY SHIT REWRITING THIS WITH THE RIGHT RESPONSE
 				let qvm_theme = f.golite_theme;
@@ -203,7 +208,7 @@ module.exports = (req, res, url) => {
 				}
 			})
 			break;
-		}
+		} default: return;
 	}
 	return true;
 }

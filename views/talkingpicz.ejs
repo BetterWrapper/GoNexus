@@ -2,9 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Talking Picz | Text to Video | Nexus</title
+        <title>Talking Picz | Text to Video | GoNexus</title
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="description" content="with Nexus Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
+        <meta name="description" content="with GoNexus Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
         <meta name="keywords" content="Animation, eCard, flash free, web 2.0, cartoon, comics, create animations free">
         <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
         <link href="/qvm_files/buttons.css.gz.css" rel="stylesheet" type="text/css">
@@ -15,6 +15,10 @@
             <link href="http://lightspeed.goanimate.com/static/339/go/css/script2cartoon/ie.css" rel="stylesheet" type="text/css">
         <![endif]-->
         <link href="/qvm_files/school_golite.css.gz.css" rel="stylesheet" type="text/css">
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script src="/js/user.js"></script>
         <script>
             var srv_tz_os = -4, 
                 view_name = "school", 
@@ -29,10 +33,7 @@
         <script type="text/javascript" src="/qvm_files/jquery.swfobject.min.js.gz.js"></script>
         <script type="text/javascript" src="/qvm_files/jquery.waypoints.min.js.gz.js"></script>
         <script type="text/javascript" src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
-        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-        <script src="/qvm_files/lite.js.gz.js"></script>
+        <script src="/qvm_files/lite.j.gz.js"></script>
         <script src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
         <script src="/qvm_files/Gettext.js.gz.js"></script>
         <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
@@ -44,7 +45,7 @@
     <body id="school">
         <script>
             GoLite.settings.player = {
-                swf: "/static/tommy/2012/player.swf",
+                swf: "/static/animation/player.swf",
                 height: 384,
                 width: 550
             }
@@ -366,7 +367,7 @@
                             <div>You've reached the maximum number of dialog lines</div>
                         </div>
                         <div class="upsell">
-                            You need a Nexus account in order to add up to 30 dialog lines in all of your Quick Videos! 
+                            You need a GoNexus account in order to add up to 30 dialog lines in all of your Quick Videos! 
                             <a href="javascript:popAccountModal();">
                                 <br> Get An Account &gt;
                             </a>
@@ -441,10 +442,6 @@
                         <div id="player_container">
                             This content requires the Adobe Flash Player 10.0.12. <a href="https://get.adobe.com/flashplayer/">Get Flash</a>
                         </div>
-                        <div class="upsell">
-                            Upgrade to publish all your videos to YouTube. 
-                            <a href="javascript:popUpgrade('golite_youtube.site');">Get GoPlus now &gt;</a>
-                        </div>
                         <a id="btn_save" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['save']); return false;">
                             Save Now
                         </a>
@@ -483,7 +480,7 @@
         </div>
         <div id="login" class="lightbox" style="display:none">
             <div class="lightbox_wrapper">
-                <h2>Login to Nexus</h2>
+                <h2>Login to GoNexus</h2>
                 <form id="login_form" action="" method="post">
                     <div id="login_form_message"></div>
                     <div>
@@ -582,7 +579,7 @@
         <div id="upgrade" class="lightbox" style="display:none">
             <div class="lightbox_wrapper">
                 <h3>Make animated videos exactly the way you want!</h3>
-                <p>You need a Nexus Account in order to use all of the features in the Quick Video Maker.</p>
+                <p>You need a GoNexus Account in order to use all of the features in the Quick Video Maker.</p>
                 <small id="account_message"></small>
                 <a href="javascript:;" class="buttonbase buttonorange" id="account_confirm" style="margin:15px auto;float:none;display:block;">
                     <div class="buttontitle">Confirm Account</div>
@@ -599,8 +596,8 @@
         <script type="text/javascript">
             function updateUserState(callback) {
                 GoLite.updateUserState(function(userState) {
-                    if (userState == 2) callback("You are currently logged in to Nexus.");
-                    else callback("You are currently not logged in to Nexus.");
+                    if (userState == 2) callback("You are currently logged in to GoNexus.");
+                    else callback("You are currently not logged in to GoNexus.");
                 });
             }
             jQuery('#account_confirm').click(function(e) {
@@ -608,8 +605,7 @@
                 jQuery("#account_message").text("Please Wait...");
                 updateUserState(i => jQuery("#account_message").text(i));
             });
-            GoLite.init(1);
-            updateUserState();
+            GoLite.checkLogin(1, '/api/setupText2VideoPreview');
         </script>
         <script>
             jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";

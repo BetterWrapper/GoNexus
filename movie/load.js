@@ -55,7 +55,14 @@ module.exports = function (req, res, url) {
 	switch (req.method) {
 		case "GET": {
 			switch (url.pathname) {
-				default: {
+				case "/api/isTemplatePublished": {
+					const templates = JSON.parse(fs.readFileSync('./templates.json'));
+					res.setHeader("Content-Type", "application/json");
+					res.end(JSON.stringify({
+						isPublished: templates[url.query.theme] ? true : false
+					}));
+					break;
+				} default: {
 					const match = req.url.match(/\/movies\/([^/]+)$/);
 					if (!match) return;
 					const {data: currentSession} = session.get(req);
@@ -131,9 +138,7 @@ module.exports = function (req, res, url) {
 							);
 							case "success": {
 								if (!data.data) return err("Something was successful but had no data returned for some reason", data);
-								session.set(res, {
-									userTemplateData: JSON.stringify(JSON.parse(data.data))
-								})
+								fs.writeFileSync('./previews/template.json', JSON.stringify(JSON.parse(data.data)));
 								res.end(JSON.stringify({
 									success: true
 								}))
@@ -216,7 +221,7 @@ module.exports = function (req, res, url) {
 						const currentSession = session.get(req);
 						if (fs.existsSync(`./static/qvm/templates/${data.template_id}`)) {
 							let json = JSON.parse(fs.readFileSync('./templates.json'));
-							if (currentSession.data.userTemplateData) json = JSON.parse(currentSession.data.userTemplateData);
+							if (fs.existsSync('./previews/template.json')) json = JSON.parse(fs.readFileSync('./previews/template.json'));
 							if (json[data.template_id].user != data.template_uid) return res.end(JSON.stringify({
 								message: "1Sorry, but the template id you are trying to provide was already taken. Please choose a different id."
 							}))
@@ -909,20 +914,27 @@ module.exports = function (req, res, url) {
 					});
 					break;
 				} case "/api/setupText2VideoPreview": {
+					if (fs.existsSync('./previews/template.xml')) fs.unlinkSync('./previews/template.xml');
+					if (fs.existsSync('./previews/template.zip')) fs.unlinkSync('./previews/template.zip');
+					movie.templateAssets.deleteAll();
 					loadPost(req, res).then(async data => {
 						try {
 							const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
 							f.player_object = {
-								apiserver: '/',
-								appCode: "go",
-								v: '2010',
-								isTemplate: 1,
-								storePath4Parser: req.headers.origin + `/static/tommy/2010/store`,
-								storePath: '/static/tommy/2010/store/<store>',
-								clientThemePath: '/static/<client_theme>',
+								filename: "template",
 								movieId: "templatePreview",
+								siteId: "go",
+								storePath4Parser: req.headers.origin + '/static/tommy/2010/store',
+								is_golite_preview: 1,
+								isTemplate: 1,
 								autostart: 1,
-								is_golite_preview: 1
+								isEmbed: 1,
+								isWide: 0,
+								ut: 23,
+								s3base: "/movie_thumbs",
+								apiserver: "/",
+								storePath: "/static/store/<store>",
+								clientThemePath: "/static/<client_theme>",
 							}
 							f.enc_mid = data.enc_mid || `m-${fUtil.getNextFileId("movie-", ".xml")}`
 							const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./_TEMPLATES/movieBase.xml`));
@@ -945,6 +957,11 @@ module.exports = function (req, res, url) {
 									scene._attributes.id = `SCENE${scene._attributes.index}`;
 									soundStartDelay += Number(scene._attributes.adelay);
 									if (scene.char) {
+										for (const id in charNumbers) {
+											if (
+												!avatarIds[id] && scene.char[Number(id)- 1]
+											) avatarIds[id] = scene.char[Number(id)- 1]._attributes.id 
+										}
 										for (const char of scene.char) {
 											for (const id in charNumbers) {
 												let t;
@@ -956,12 +973,13 @@ module.exports = function (req, res, url) {
 													if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
 													char.action[0]._text = char.action[0]._text.replace(t, `ugc.${id}`);
 												}
+												char._index = charNumbers[id];
 											}
 											const pieces = char.action[0]._text.split(".");
 											const id = pieces[1];
 											const facial = (
 												options.useOpeningClosingFacial && options.openingClosingFacialType && charNumbers[id]
-											) ? f.opening_closing[options.openingClosingFacialType].facial[charNumbers[id]] : 'default';
+											) ? f.opening_closing[options.openingClosingFacialType]?.facial[charNumbers[id]] : 'default';
 											if (facial == "default") continue;
 											char.head = {
 												_attributes: {
@@ -1007,7 +1025,11 @@ module.exports = function (req, res, url) {
 							movieBase.film.linkage = [];
 							const facials = [];
 							for (const script of f.script) {
-								if (script.facial[script.char_num] != "default") facials.unshift({
+								if (
+									script.facial
+									&& script.facial[script.char_num]
+									&& script.facial[script.char_num] != "default"
+								) facials.unshift({
 									cid: script.cid,
 									expression: script.facial[script.char_num],
 									sceneCount: movieBase.film.scene.length
@@ -1097,7 +1119,26 @@ module.exports = function (req, res, url) {
 								}
 								pos = xml.indexOf('<scene charsTalking=', pos + 19);
 							}
-							fs.writeFileSync(`./previews/template.xml`, xml)
+							console.log(movieBase.film.linkage)
+							const assetsPath = `./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.assets`;
+							if (fs.existsSync(assetsPath)) {
+								f.player_object.ext = "zip";
+								const zip = nodezip.create();
+								fUtil.addToZip(zip, 'movie.xml', xml);
+								for (const file of fs.readdirSync(assetsPath)) fUtil.addToZip(
+									zip, file, fs.readFileSync(`${assetsPath}/${file}`)
+								)
+								let ugc = fs.readFileSync(`${assetsPath}/ugc.xml`).toString().split("</theme>")[0];
+								for (const info of movie.templateAssets.get()) {
+									ugc += asset.meta2Xml(info);
+									fUtil.addToZip(zip, `ugc.${info.type}.${info.id}`, tempbuffer.get(info.id));
+								}
+								fUtil.addToZip(zip, 'ugc.xml', ugc + '</theme>');
+								fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await zip.zip());
+							} else {
+								f.player_object.ext = "xml";
+								fs.writeFileSync(`./previews/${f.player_object.filename}.xml`, xml)
+							}
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(f));
 						} catch (e) {
@@ -1230,16 +1271,21 @@ module.exports = function (req, res, url) {
 				} case "/goapi/getMovie/": { // loads a movie using the parse.js file
 					loadPost(req, res).then(async data => {
 						try {
-							const currentSession = session.get(req);
 							res.setHeader("Content-Type", "application/zip");
 							if (url.query.movieId != "templatePreview") {
 								const b = await movie.loadZip(url.query, data);
 								if (!url.query.movieId.startsWith("ft-")) res.end(Buffer.concat([base, b]));
 								else res.end(b);
-							} else res.end(Buffer.concat([
-								base, 
-								await parse.packMovie(fs.readFileSync('./previews/template.xml'), data, false, movie.templateAssets.get())
-							]));
+							} else switch (data.ext) {
+								case "xml": return res.end(Buffer.concat([
+									base, 
+									await parse.packMovie(fs.readFileSync(`./previews/${data.filename}.xml`), data, false, movie.templateAssets.get())
+								]));
+								case "zip": return res.end(Buffer.concat([
+									base, 
+									fs.readFileSync(`./previews/${data.filename}.zip`)
+								]));
+							}
 						} catch (e) {
 							res.setHeader("Content-Type", "text/xml");
 							console.log(e);

@@ -733,6 +733,10 @@ var GoLite = (function(e) {
             if (this.params(window.location.search).get("movieId")) jQuery.post(`/api/qvm_script/get?movieId=${
                 this.params(window.location.search).get("movieId")
             }`, this.initForEdit);
+            if (userData) {
+                GoLite.updateUserState();
+                jQuery("#login_bar").remove();
+            }
         },
         userLogin(form, callback) {
             const json = Object.fromEntries(this.params(form));

@@ -1,7 +1,4 @@
 {
-    "theme": "everydaylife",
-    "xml": "template1_everydaylife",
-    "hasCC": "Y",
     "audioOffset": 132,
     "avater1id": "AVATOR138",
     "avater2id": "AVATOR139",
@@ -15,7 +12,6 @@
     "char1camscene": 5,
     "char2camscene": 6,
     "endPos": 7,
-    "end": 2,
     "toffset": [
         2,
         3,

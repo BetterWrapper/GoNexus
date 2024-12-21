@@ -347,16 +347,6 @@ function loggedIn(user) {
                 }
             }
             break;
-        } case "/quickvideo": {
-            const interval = setInterval(() => {
-                if (GoLite) clearInterval(interval), GoLite.updateUserState(function(userState) {
-                    if (userState == 2) {
-                        reloadCCList();
-                        jQuery('#login_bar').remove()
-                    }
-                });
-            })
-            break;
         } case "/create": {
             const interval = setInterval(() => {
                 if (checkStudioLoadingStatus && reloadCCListForTut) {

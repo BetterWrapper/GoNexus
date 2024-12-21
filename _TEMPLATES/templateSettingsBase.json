@@ -1,0 +1,103 @@
+{
+    "jyvee": {
+        "audioOffset": {
+            "name": "Audio Offset",
+            "type": "number",
+            "is_required": true
+        },
+        "avater1id": {
+            "name": "Avatar ID For Character One",
+            "call_function": "loadAllCharAvatars",
+            "is_required": true
+        },
+        "avater2id": {
+            "name": "Avatar ID For Character Two",
+            "call_function": "loadAllCharAvatars",
+            "is_required": true
+        },
+        "swap": {
+            "name": "Apply Swap To The Characters (Default: false)",
+            "type": "array",
+            "options": [
+                false,
+                true
+            ],
+            "is_required": true
+        },
+        "usesSong": {
+            "name": "Use A Song In The Scene (Default: Y)",
+            "type": "array",
+            "options": [
+                "Y",
+                "N"
+            ],
+            "onSelect": "hideElement",
+            "hideElement": "#MovieSceneSongs",
+            "is_required": true
+        },
+        "song": {
+            "name": "Song Name",
+            "call_function": "loadSongOptions",
+            "grouoId": "MovieSceneSongs",
+            "is_required": true
+        },
+        "startPos": {
+            "name": "Start Positon For Scene",
+            "type": "number",
+            "is_required": true
+        },
+        "char1scene": {
+            "name": "Scene Number For Character One",
+            "type": "array",
+            "call_function": "loadSceneChooser",
+            "is_required": true
+        },
+        "char2scene": {
+            "name": "Scene Number For Character Two",
+            "type": "array",
+            "call_function": "loadSceneChooser",
+            "is_required": true
+        },
+        "char1camscene": {
+            "name": "Scene Number For Character One (Cam)",
+            "type": "array",
+            "call_function": "loadSceneChooser",
+            "is_required": true
+        },
+        "char2camscene": {
+            "name": "Scene Number For Character Two (Cam)",
+            "type": "array",
+            "call_function": "loadSceneChooser",
+            "is_required": true
+        },
+        "endPos": {
+            "name": "End Position For Scene",
+            "type": "number",
+            "is_required": true
+        },
+        "toffset": {
+            "type": "beg",
+            "name": "Scene Timings For The Beginning Of The Video",
+            "call_function": "toOffsetLoader",
+            "is_required": true
+        },
+        "toffset_end": {
+            "type": "end",
+            "name": " Scene Timings For The End Of The Video",
+            "call_function": "toOffsetLoader",
+            "is_required": true
+        }
+    },
+    "default": {
+        "charCamScenes": {
+            "type": "checkbox",
+            "name": "Transition The Camera To both Talking Characters In",
+            "call_function": "loadSceneChooser"
+        },
+        "maxCharCamSceneNum": {
+            "type": "radio",
+            "name": "Start Repeating The Camera Transition To Both Talking Characters In",
+            "call_function": "loadSceneChooser"
+        }
+    }
+}

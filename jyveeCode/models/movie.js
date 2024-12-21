@@ -388,7 +388,7 @@ module.exports = {
 							soundoffset += 2;
 							sceneoffset++;
 						}
-						fs.writeFileSync('./previews/template.xml', moviearray + scenejsoncache.join("") + "</film>")
+						fs.writeFileSync('./previews/qvm.xml', moviearray + scenejsoncache.join("") + "</film>")
 						//console.log("ITS DONE!");
 					})
 			resolve({ "success": true });

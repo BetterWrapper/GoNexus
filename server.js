@@ -15,7 +15,7 @@ const fUtil = require("./misc/file");
 const nodezip = require("node-zip");
 const loadPost = require("./misc/post_body");
 const https = require("https");
-const jyvee = require("./jyveeCode/qvm");
+const jyvee = require("./jyveeCode/controllers/movie");
 const usr = require("./static/user");
 const chr = require("./character/redirect");
 const pmc = require("./character/premade");
@@ -156,23 +156,14 @@ http
 						case "/api/getTemplateFiles": {
 							const zip = nodezip.create();
 							const path = `./static/qvm/templates/${parsedUrl.query.theme}`;
-							fs.readdirSync(path).forEach(file => {
-								const stats = fs.lstatSync(`${path}/${file}`);
-								if (stats.isDirectory()) {
-									fs.readdirSync(`${path}/${file}`).forEach(folder => {
-										if (fs.existsSync(`${path}/${file}/${folder}`)) {
-											const stats = fs.lstatSync(`${path}/${file}/${folder}`);
-											if (stats.isDirectory()) {
-												fs.readdirSync(`${path}/${file}/${folder}`).forEach(file2 => {
-													fUtil.addToZip(zip, `${file}/${folder}/${file2}`, fs.readFileSync(`${path}/${
-														file
-													}/${folder}/${file2}`));
-												});
-											} else fUtil.addToZip(zip, `${file}/${folder}`, fs.readFileSync(`${path}/${file}/${folder}`));
-										}
-									});
-								} else fUtil.addToZip(zip, file, fs.readFileSync(`${path}/${file}`));
-							});
+							function c(p = path, z = []) {
+								fs.readdirSync(p).forEach(file => {
+									const stats = fs.lstatSync(`${p}/${file}`);
+									if (stats.isDirectory()) c(`${p}/${file}`, Object.assign([file], z))
+									else fUtil.addToZip(zip, z.join('/'), fs.readFileSync(`${p}/${file}`));
+								});
+							}
+							c();
 							res.setHeader("Content-Type", "application/zip");
 							zip.zip().then(i => res.end(i));
 							break;

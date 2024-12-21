@@ -26,7 +26,9 @@ function toObjectString(attrs, params) {
 }
 function fetchCharOrder(themeId, pathname) {
 	const json = {};
-	for (const themes of getThemes()) {
+	for (const themes of getThemes({
+		no_extras: true
+	})) {
 		if (themeId == themes.attr.cc_theme_id) {
 			switch (pathname) {
 				case "/cc": {
@@ -202,16 +204,20 @@ module.exports = function (req, res, url) {
 			break;
 		} case "/create": {
 			params = {
-				themes: getThemes(),
+				themes: getThemes({
+					no_extras: true
+				}),
 				templates: JSON.parse(fs.readFileSync('./templates.json')),
 				users: JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users
 			}
 			filename = retroFilename("create", query.page_layout);
-			if (query.sort_by) filename = filename + `_${query.sort_by}`;
+			if (query.sort_by) filename += `_${query.sort_by}`;
 			break;
 		} case "/studio": {
 			params = {
-				themes: getThemes(),
+				themes: getThemes({
+					no_extras: true
+				}),
 				templates: JSON.parse(fs.readFileSync('./templates.json')),
 				users: JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users
 			}
@@ -230,7 +236,7 @@ module.exports = function (req, res, url) {
 			let template;
 			if (query.isPreview) {
 				const currentSession = session.get(req);
-				const json = JSON.parse(currentSession.data.userTemplateData)[url.query.theme];
+				const json = JSON.parse(fs.readFileSync('./previews/template.json'))[url.query.theme];
 				if (currentSession && currentSession.data && json.user == currentSession.data.current_uid) {
 					filename = "qvm_preview";
 					template = json;
@@ -337,6 +343,7 @@ module.exports = function (req, res, url) {
 				},
 				allowScriptAccess: "always",
 			};
+			const currentSession = session.get(req);
 			const userInfo = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`)).users.find(i => i.id == currentSession.data.current_uid);
 			if (userInfo) {
 				const movieInfo = userInfo.movies.find(i => i.id == url.query.movieId);
