@@ -942,7 +942,7 @@ module.exports = function (req, res, url) {
 								fs.readFileSync(`./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.xml`)
 							);
 							movieBase.film.scene = [];
-							movieBase.film.sound = scenes2create.film.sound;
+							movieBase.film.sound = scenes2create.film.sound || [];
 							const charNumbers = movie.assignObjects({}, f.characters);
 							const avatarIds = {};
 							const templatrSettingsPath = `./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.json`
@@ -1024,6 +1024,9 @@ module.exports = function (req, res, url) {
 							}
 							movieBase.film.linkage = [];
 							const facials = [];
+							function getRandomNumber(min, max) {
+								return Math.floor(Math.random() * (max - min + 1)) + min;
+							}
 							for (const script of f.script) {
 								if (
 									script.facial
@@ -1038,7 +1041,7 @@ module.exports = function (req, res, url) {
 								if (meta) {
 									const soundLength = movieBase.film.sound.length;
 									const prevSoundInfo = movieBase.film.sound[soundLength - 1];
-									const start = prevSoundInfo._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
+									const start = prevSoundInfo?._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
 									let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
 									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
 									const sceneLength = movieBase.film.scene.length;
@@ -1046,18 +1049,23 @@ module.exports = function (req, res, url) {
 										script.cid
 									];
 									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarId}`);
-									let attr = `char_${script.char_num}_talking`;
-									if (settings.charCamScenes) {
-										for (const n of settings.charCamScenes) {
-											if (charSceneCount != n) continue;
-											attr = `char_${script.char_num}_talking_cam`;
+									let attr;
+									if (settings.noRandomCamScenes) {
+										attr = `char_${script.char_num}_talking`;
+										if (settings.charCamScenes) {
+											for (const n of settings.charCamScenes) {
+												if (charSceneCount != n) continue;
+												attr = `char_${script.char_num}_talking_cam`;
+											}
 										}
-									}
-									if (settings.maxCharCamSceneNum == charSceneCount) charSceneCount = firstScenesLengtj;
-									else charSceneCount++;
+										if (settings.maxCharCamSceneNum == charSceneCount) charSceneCount = firstScenesLengtj;
+										else charSceneCount++;
+									} else attr = `char_${script.char_num}_talking_cam_${getRandomNumber(1, 3)}`
 									const currentScene = scenes2create.film.scene.filter(i => i._attributes[attr] != undefined);
 									const json = movie.assignObjects({}, currentScene);
 									json._attributes.adelay = stop + 24;
+									delete json._attributes[attr] 
+									json._attributes[`char_${script.char_num}_talking`] = "";
 									insertChar2Scene([json]);
 									movieBase.film.sound[soundLength] = {
 										_attributes: {
