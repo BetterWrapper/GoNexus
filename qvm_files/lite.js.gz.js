@@ -5,6 +5,7 @@ var VoiceCatalog = {
         return this.lang_model || this.fallback_langModel
     }
 };
+var X;
 jQuery.ajax({
     url: VoiceCatalog.apiPath,
     type: 'POST',
@@ -538,7 +539,6 @@ function sendPhotoArray() {
 var GoLite = (function(e) {
     var r = 30, p = 10, b, t, a = [], u = null, o = false, s = false, v = "", d = false, c = 0, j = 1, q = false, i = false;
     initModeForEdit = false;
-    var X = '';
     function f() {
         var w = {};
         w.golite_theme = golite_theme;
@@ -569,6 +569,12 @@ var GoLite = (function(e) {
             }
             w.opening_closing.closing_characters = {};
             w.opening_closing.closing_characters.facial = e.extend({}, w.script[(w.script.length - 1)].facial)
+        }
+        w.editor_mode = "new";
+        if (b) {
+            if (typeof goliteEditorMode != "undefined") {
+                w.editor_mode = goliteEditorMode
+            }
         }
         return w
     }
@@ -712,41 +718,44 @@ var GoLite = (function(e) {
             return new URLSearchParams(stuff);
         },
         checkLogin(num, d) {
-            if (d) X = d;
-            if (!userData && jQuery('#login_bar').length) {
-                jQuery('#seperator0').waypoint(function(e) {
-                    jQuery('#login_bar').slideDown();
-                }, {offset: 'bottom-in-view', triggerOnce: true});
-        
-                jQuery(document).bind('user.hasAccount', function(e) {
-                    updateUserState(function(response) {
-                        jQuery.unblockUI();
-                        jQuery(document).trigger('GoLite.stateChange', ['']);
-                        setTimeout(() => {
-                            jQuery('#login_bar').slideUp();
-                            showNotice(response);
-                        }, 500);
+            this.getUser(user => {
+                if (!user && jQuery('#login_bar').length) {
+                    jQuery('#seperator0').waypoint(function(e) {
+                        jQuery('#login_bar').slideDown();
+                    }, {offset: 'bottom-in-view', triggerOnce: true});
+            
+                    jQuery(document).bind('user.hasAccount', function(e) {
+                        updateUserState(function(response) {
+                            jQuery.unblockUI();
+                            jQuery(document).trigger('GoLite.stateChange', ['']);
+                            setTimeout(() => {
+                                jQuery('#login_bar').slideUp();
+                                showNotice(response);
+                            }, 500);
+                        });
                     });
-                });
-            } else if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
-            this.init(num, d);
-            if (this.params(window.location.search).get("movieId")) jQuery.post(`/api/qvm_script/get?movieId=${
-                this.params(window.location.search).get("movieId")
-            }`, this.initForEdit);
-            if (userData) {
-                GoLite.updateUserState();
-                jQuery("#login_bar").remove();
-            }
+                } else {
+                    this.userData = user;
+                    if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
+                }
+                this.init(num, d);
+                if (this.params(window.location.search).get("movieId")) jQuery.post(`/api/qvm_script/get?movieId=${
+                    this.params(window.location.search).get("movieId")
+                }`, this.initForEdit);
+            });
         },
         userLogin(form, callback) {
             const json = Object.fromEntries(this.params(form));
             console.log(json);
             this.auth.signInWithEmailAndPassword(json.email, json.password).then(callback).catch(callback);
         },
-        init: function(D) {
-            if (d) return;
+        init: function(D, P) {
+            if (d) {
+                return
+            }
             d = true;
-            c = !userData ? D : D < 2 ? 2 : D;
+            c = !this.userData ? D : D < 2 ? 2 : D;
+            X = P;
             var A = new ItemSelector(e("#templates"));
             t = A.getItem();
             e("#template_name").html(t.attr("title"));
@@ -1048,6 +1057,7 @@ var GoLite = (function(e) {
             if (H.ed_assignment) {
                 y.ed_assignment = H.ed_assignment
             }
+            e.extend(y, this.userData);
             e.ajaxSetup({
                 error: function(I, K, J) {
                     o = false;
@@ -1070,9 +1080,7 @@ var GoLite = (function(e) {
             })
         },
         initForEdit: function(D) {
-            if (initModeForEdit) return;
             initModeForEdit = true;
-            if (typeof D == "string") return showNotice(D);
             var K = golite_theme != "talkingpicz";
             b = D.enc_mid;
             var O = e("#templates div.item").length;
@@ -1211,11 +1219,23 @@ var GoLite = (function(e) {
         getUserState: function() {
             return c
         },
+        getUser(callback) {
+            function returnCallback(K) {
+                if (callback && typeof callback == "function") return callback(K);
+                return K
+            }
+            this.auth.onAuthStateChanged(user => {
+                if (user) returnCallback(user);
+                else jQuery.post("/api/getSession", d => {
+                    if (d.data.current_uid) returnCallback(d.data);
+                })
+            })
+        },
         updateUserState: function(w) {
-            (function(y) {
-                console.log(y);
+            this.getUser(function(y) {
                 if (y) {
-                    if (y.emailVerified || y.isFTAcc || y.role) {
+                    GoLite.userData = y;
+                    if (y.emailVerified) {
                         c = 2;
                         e("#templates .plus-cover").remove();
                         e(".plus-character").html("<strong>Premium Character</strong>");
@@ -1226,8 +1246,10 @@ var GoLite = (function(e) {
                 e("#dialogs .dialog_input_message").find(".basic").toggle(c < 2).end().find(".plus").toggle(c == 2);
                 e("#dialogs .upsell, #step4 .upsell").toggle(c < 2);
                 g();
-                if (w && typeof w == "function") w(c)
-            })(userData);
+                if (w && typeof w == "function") {
+                    w(c)
+                }
+            })
         },
         showSelectCCOverlay: function(y) {
             var w = GoLite.getCharacters();

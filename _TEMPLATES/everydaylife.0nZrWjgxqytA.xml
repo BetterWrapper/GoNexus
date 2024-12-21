@@ -14,7 +14,7 @@
       <file>custom.office_pentry_bg.swf</file>
     </bg>
     <char id="AVATOR138" index="3" raceCode="1">
-      <action face="1,1" motionface="1">ugc.charIdNum1.walk.xml</action>
+      <action face="1,1" motionface="1">ugc.charIdNum2.walk.xml</action>
       <x>660.1,408.3</x>
       <y>229.65,227.55</y>
       <xscale>1,1</xscale>
@@ -23,7 +23,7 @@
       <assetMotion ver="2"/>
     </char>
     <char id="AVATOR139" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -68,7 +68,7 @@
       <file>custom.office_pentry_bg.swf</file>
     </bg>
     <char id="AVATOR138" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -76,7 +76,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR139" index="4" raceCode="1">
-      <action face="-1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -138,7 +138,7 @@
       <file>custom.office_blurred.png</file>
     </bg>
     <char id="AVATOR138" index="2" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -146,7 +146,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR139" index="3" raceCode="1">
-      <action face="-1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -199,7 +199,7 @@
       <file>custom.office_blurred.png</file>
     </bg>
     <char id="AVATOR138" index="1" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -207,7 +207,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR139" index="2" raceCode="1">
-      <action face="-1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -242,7 +242,7 @@
       <file>custom.office_blurred.png</file>
     </bg>
     <char id="AVATOR138" index="1" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -250,7 +250,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR139" index="2" raceCode="1">
-      <action face="-1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -294,7 +294,7 @@
       <file>custom.office_blurred.png</file>
     </bg>
     <char id="AVATOR138" index="1" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -302,7 +302,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR139" index="2" raceCode="1">
-      <action face="-1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -346,7 +346,7 @@
       <file>custom.office_pentry_bg.swf</file>
     </bg>
     <char id="AVATOR138" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
       <x>408.3</x>
       <y>227.55</y>
       <xscale>1</xscale>
@@ -354,7 +354,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR139" index="4" raceCode="1">
-      <action face="-1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.8333333</x>
       <y>229.65</y>
       <xscale>1</xscale>
@@ -416,7 +416,7 @@
       <file>custom.office_pentry_bg.swf</file>
     </bg>
     <char id="AVATOR138" index="3" raceCode="1">
-      <action face="-1,-1" motionface="-1">ugc.charIdNum1.walk.xml</action>
+      <action face="-1,-1" motionface="-1">ugc.charIdNum2.walk.xml</action>
       <x>408.3,647.05</x>
       <y>227.55,227.55</y>
       <xscale>1,1</xscale>
@@ -425,7 +425,7 @@
       <assetMotion ver="2"/>
     </char>
     <char id="AVATOR139" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.charIdNum2.stand2.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.stand2.xml</action>
       <x>210.825</x>
       <y>229.65</y>
       <xscale>1</xscale>

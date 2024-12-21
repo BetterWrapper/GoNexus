@@ -1056,6 +1056,7 @@ http
 							));
 							break;
 						} case "/api/getSession": {
+							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(session.get(req)));
 							break;
 						} case "/api/addFTAcc": { // add the flashthemes account to the server after all checks are complete.

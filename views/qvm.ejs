@@ -29,7 +29,6 @@
     <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
     <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
     <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-    <script src="/js/user.js"></script>
     <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
     <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
@@ -49,7 +48,7 @@
     <body id="school">
     <script type="text/javascript">
     GoLite.settings.player = {
-        swf: "/static/animation/player.swf",
+        swf: "/static/tommy/2012/animation/player.swf",
         height: 384,
         width: 550
     }
@@ -63,7 +62,7 @@
     jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
         apiserver: "/qvm_micRecord_",
         clientThemePath: "/static/tommy/2012/<client_theme>",
-        isTemplate: true
+        u_info_school: ""
     });
     
     // scroll to target step
@@ -110,7 +109,7 @@
                 <a href="javascript:jQuery.blockUI()" onclick="updateUserState(response => {
                     jQuery.unblockUI();
                     setTimeout(() => {
-                        if (userData) jQuery('#login_bar').slideUp()
+                        if (GoLite.userData) jQuery('#login_bar').slideUp()
                         showNotice(response)
                     }, 500);
                 });">Confirm Account</a> -
@@ -688,26 +687,7 @@
         </div>
     </div>
     
-    <script type="text/javascript">
-        const customCharInfo = Object.fromEntries(GoLite.params('<%= params.customCharInfo %>'));
-        var customCC_model = [];
-        var reloadCCList = function() {
-            jQuery.ajax({
-                url: '/api/assets/get/theme/ugc',
-                type: 'POST',
-                data: Object.assign({
-                    type: "char",
-                    userId: userData.uid || userData.id
-                }, customCharInfo),
-                dataType: 'json',
-                success: function(data, dummy1, dummy2) {
-                    customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });
-                    jQuery('div.character .customlink').addClass('ready');
-                }
-            });
-        };
-        GoLite.checkLogin(1, '<%= params.qvm.urlPostVideoPreview %>');
-    </script>
+    <script type="text/javascript">GoLite.checkLogin(1);</script>
     
     <div id="footer">
         <%- params.qvm.creator_html %>
@@ -936,6 +916,21 @@
     </script>
     <script type="text/javascript">
     jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
+    const customCharInfo = Object.fromEntries(GoLite.params('<%= params.customCharInfo %>'));
+    var customCC_model = [];
+    var reloadCCList = function() {
+        customCharInfo.userId = GoLite.userData.uid || GoLite.userData.id;
+        jQuery.ajax({
+            url: '/api/getChars',
+            type: 'POST',
+            data: customCharInfo,
+            dataType: 'json',
+            success: function(data, dummy1, dummy2) {
+                customCC_model = jQuery.grep(data, function(cc) { return (cc.head_url && cc.thumb_url); });
+                jQuery('div.character .customlink').addClass('ready');
+            }
+        });
+    };
     
     (function($) {
     $(document).ready(function() {
@@ -1007,7 +1002,10 @@
     <script type="text/javascript">
         var customCCHeadsBaseUrl = window.location.origin + '/char_heads/';
         var customCCThumbsBaseUrl = window.location.origin + '/char_thumbs/';
-
+    
+    
+        var goliteEditorMode = !GoLite.params(window.location.search).get("editmode") ? 'new' : 'editor';
+    
     </script>
     
     

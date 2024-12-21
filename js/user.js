@@ -264,8 +264,7 @@ auth.onAuthStateChanged(user => {
     } else if (!localStorage.getItem("u_info_school")) logout('auto');
 });
 function logout(t) {
-    jQuery.post("/api/getSession", d => {
-        const json = JSON.parse(d);
+    jQuery.post("/api/getSession", json => {
         if (json.data && json.data.loggedIn && json.data.current_uid) {
             if (t != 'auto') jQuery.post('/api/removeSession', {
                 current_uid: json.data.current_uid
