@@ -1,0 +1,1000 @@
+<film copyable="0" published="0" pshare="0" isWide="0">
+    <meta>
+        <title/>
+        <tag/>
+        <hiddenTag/>
+        <desc/>
+        <mver>4</mver>
+        <studio>07d26a11958cddd8e5d87a196669513fee47e73b</studio>
+        <thumbnail index="0"/>
+        <palette>
+            <color value="333333"/>
+            <color value="999999"/>
+            <color value="fbfbfb"/>
+            <color value="669999"/>
+            <color value="55bbaa"/>
+            <color value="7fbb11"/>
+            <color value="15709b"/>
+            <color value="9a5d1"/>
+            <color value="6ab8d6"/>
+            <color value="da2021"/>
+            <color value="fecd31"/>
+            <color value="28c6c1"/>
+            <color value="37444f"/>
+        </palette>
+    </meta>
+    <scene adelay="36" lock="Y" color="16777215" index="0" id="SCENE0">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT0" themecode="common" index="5">
+            <effect x="0" y="0" w="550" h="310" rotate="0" id="fadeInEx" type="FADING" isIn="true" isOut="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+        <effectAsset id="EFFECT48" themecode="common" index="6">
+            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene adelay="72" lock="Y" color="16777215" index="1" id="SCENE1">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR138" index="3" raceCode="1">
+            <action face="1,1" motionface="1">ugc.51900632.walk.xml</action>
+            <x>660.1,408.3</x>
+            <y>229.65,227.55</y>
+            <xscale>1,1</xscale>
+            <yscale>1,1</yscale>
+            <rotation>0,0</rotation>
+            <assetMotion ver="2"/>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="10">
+            <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+        <aTranList>
+            <aTran id="0" target="AVATOR138" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
+        </aTranList>
+    </scene>
+    <scene adelay="48" lock="Y" color="16777215" index="2" id="SCENE2">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR138" index="3" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP13" index="5">
+            <file>ugc.f005883.png</file>
+            <x>-129.55</x>
+            <y>210.3989648</y>
+            <xscale>0.3624161</xscale>
+            <yscale>0.3624161</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="7">
+            <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="35" char_1_talking="" index="3" id="SCENE3">
+        <char id="AVATOR138" index="2" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="3" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="1" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="6">
+            <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>91.1675141</x>
+            <y>74.95</y>
+            <width>258.0649718</width>
+            <height>166.1</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="109" char_2_talking="" index="4" id="SCENE4">
+        <char id="AVATOR138" index="1" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        <head id="PROP8" raceCode="1"><file>ugc.51900632.head.head_angry.xml</file></head></char>
+        <char id="AVATOR139" index="2" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="4">
+            <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>276.2175141</x>
+            <y>75.9</y>
+            <width>258.0649718</width>
+            <height>166.1</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="86" char_1_talking="" index="5" id="SCENE5">
+        <char id="AVATOR138" index="1" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="2" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="5">
+            <effect x="0" y="0" w="368.0649718" h="236.9" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>128.4175141</x>
+            <y>69.95</y>
+            <width>368.0649718</width>
+            <height>236.9</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="72" char_2_talking="" index="6" id="SCENE6">
+        <char id="AVATOR138" index="1" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="2" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="4">
+            <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>276.2175141</x>
+            <y>75.9</y>
+            <width>258.0649718</width>
+            <height>166.1</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="78" char_1_talking="" index="7" id="SCENE7">
+        <char id="AVATOR138" index="2" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="3" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="1" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="6">
+            <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>91.1675141</x>
+            <y>74.95</y>
+            <width>258.0649718</width>
+            <height>166.1</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="137" char_2_talking="" index="8" id="SCENE8">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR138" index="5" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.talk.xml</action>
+            <x>403</x>
+            <y>246</y>
+            <xscale>0.96</xscale>
+            <yscale>0.96</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>216</x>
+            <y>228</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP30" index="1">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP31" index="2">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT64" themecode="common" index="6">
+            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="63" char_1_talking="" index="9" id="SCENE9">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR138" index="5" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>403</x>
+            <y>246</y>
+            <xscale>0.96</xscale>
+            <yscale>0.96</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.talk.xml</action>
+            <x>216</x>
+            <y>228</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP88" index="1">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP89" index="2">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="6">
+            <effect x="0" y="0" w="375.3" h="211.5327273" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>120.5</x>
+            <y>54.3216364</y>
+            <width>375.3</width>
+            <height>241.5567273</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="294" char_2_talking="" index="10" id="SCENE10">
+        <char id="AVATOR138" index="1" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="2" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="4">
+            <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>276.2175141</x>
+            <y>75.9</y>
+            <width>258.0649718</width>
+            <height>166.1</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="106" char_1_talking="" index="11" id="SCENE11">
+        <char id="AVATOR138" index="2" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="3" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        <head id="PROP10" raceCode="1"><file>ugc.53774620.head.head_happy.xml</file></head></char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="1" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="6">
+            <effect x="0" y="0" w="258.0649718" h="166.1" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>91.1675141</x>
+            <y>74.95</y>
+            <width>258.0649718</width>
+            <height>166.1</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="153" char_2_talking="" index="12" id="SCENE12">
+        <char id="AVATOR138" index="1" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="2" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="5">
+            <effect x="0" y="0" w="368.0649718" h="236.9" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>128.4175141</x>
+            <y>69.95</y>
+            <width>368.0649718</width>
+            <height>236.9</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="33" char_1_talking="" index="13" id="SCENE13">
+        <char id="AVATOR138" index="1" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="2" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        <head id="PROP12" raceCode="1"><file>ugc.53774620.head.head_happy.xml</file></head></char>
+        <prop id="PROP94" index="0">
+            <file>custom.office_blurred.png</file>
+            <x>320.1</x>
+            <y>206</y>
+            <xscale>0.66</xscale>
+            <yscale>0.66</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="5">
+            <effect x="0" y="0" w="368.0649718" h="236.9" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>128.4175141</x>
+            <y>69.95</y>
+            <width>368.0649718</width>
+            <height>236.9</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene adelay="24" lock="Y" color="16777215" index="14" id="SCENE14">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR138" index="3" raceCode="1">
+            <action face="1" motionface="1">ugc.51900632.stand.xml</action>
+            <x>408.3</x>
+            <y>227.55</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="-1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.8333333</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+            <head id="PROP4" raceCode="1">
+                <file>ugc.53774620.head.head_happy.xml</file>
+            </head>
+        </char>
+        <bubbleAsset id="BUBBLE173" index="6">
+            <x>-134.8</x>
+            <y>6.75</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <fx>easeNone</fx>
+            <fxdur>0</fxdur>
+            <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+                <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
+                <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true">jyvee x peppino</text>
+                <url target="top"/>
+            </bubble>
+        </bubbleAsset>
+        <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT1" themecode="common" index="7">
+            <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene adelay="48" lock="Y" color="16777215" index="15" id="SCENE15">
+        <bg id="cbg_office_pentry_BG102" index="0">
+            <file>custom.office_pentry_bg.swf</file>
+        </bg>
+        <char id="AVATOR138" index="3" raceCode="1">
+            <action face="-1,-1" motionface="-1">ugc.51900632.walk.xml</action>
+            <x>408.3,647.05</x>
+            <y>227.55,227.55</y>
+            <xscale>1,1</xscale>
+            <yscale>1,1</yscale>
+            <rotation>0,0</rotation>
+            <assetMotion ver="2"/>
+            <_index>1</_index>
+        </char>
+        <char id="AVATOR139" index="4" raceCode="1">
+            <action face="1" motionface="1">ugc.53774620.stand.xml</action>
+            <x>210.825</x>
+            <y>229.65</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <_index>1</_index>
+            <head id="PROP6" raceCode="1">
+                <file>ugc.53774620.head.head_happy.xml</file>
+            </head>
+        </char>
+        <bubbleAsset id="BUBBLE173" index="6">
+            <x>-134.8</x>
+            <y>6.75</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <rotation>0</rotation>
+            <fx>easeNone</fx>
+            <fxdur>0</fxdur>
+            <bubble x="-90" y="-45" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+                <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="90" taily="65" paddingHorizontal="0" paddingVertical="0"/>
+                <text rgb="0" alpha="100" font="Lilita One" size="37" align="center" bold="false" italic="false" embed="true">jyvee x peppino</text>
+                <url target="top"/>
+            </bubble>
+        </bubbleAsset>
+        <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
+            <file>custom.office_pentry_coffee.swf</file>
+            <x>120</x>
+            <y>190</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
+            <file>custom.office_pentry_water_dispenser.swf</file>
+            <x>445</x>
+            <y>245</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <prop id="PROP35" index="3">
+            <file>common.interview_cup.swf</file>
+            <x>166</x>
+            <y>206</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <face>1</face>
+            <rotation>0</rotation>
+        </prop>
+        <effectAsset id="EFFECT8" index="7">
+            <effect id="fade_out.swf" type="ANIME"/>
+            <x>47</x>
+            <y>24</y>
+            <xscale>1</xscale>
+            <yscale>1</yscale>
+            <file>common.fade_out.swf</file>
+        </effectAsset>
+        <effectAsset id="EFFECT1" themecode="common" index="8">
+            <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+        <aTranList>
+            <aTran id="1" target="AVATOR138" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
+        </aTranList>
+    </scene>
+    <sound id="SOUND0" index="0" track="0" vol="1" tts="0">
+        <sfile>common.Sunshine.mp3</sfile>
+        <start>1</start>
+        <stop>1440</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+    </sound>
+    <sound id="SOUND1" index="1" track="0" vol="1" tts="1">
+        <sfile>ugc.026850780264860896.mp3</sfile>
+        <start>156</start>
+        <stop>167</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>hello olivia</text>
+            <voice>joey</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND2" index="2" track="0" vol="1" tts="1">
+        <sfile>ugc.07889237662386315.mp3</sfile>
+        <start>191</start>
+        <stop>276</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>hey! i don't even understand how you knew my name</text>
+            <voice>kate</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND3" index="3" track="0" vol="1" tts="1">
+        <sfile>ugc.004859390121601681.mp3</sfile>
+        <start>300</start>
+        <stop>362</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>neither do i. It is just so convenient.</text>
+            <voice>joey</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND4" index="4" track="0" vol="1" tts="1">
+        <sfile>ugc.03919423920953842.mp3</sfile>
+        <start>386</start>
+        <stop>434</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>well anyway, how are you doing today.</text>
+            <voice>kate</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND5" index="5" track="0" vol="1" tts="1">
+        <sfile>ugc.040519129245685237.mp3</sfile>
+        <start>458</start>
+        <stop>512</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>I am doing really well, how about yourself.</text>
+            <voice>joey</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND6" index="6" track="0" vol="1" tts="1">
+        <sfile>ugc.09922043329339296.mp3</sfile>
+        <start>536</start>
+        <stop>649</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>i am doing really well as well. By the way, have you heard of GoNexus?</text>
+            <voice>kate</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND7" index="7" track="0" vol="1" tts="1">
+        <sfile>ugc.07554561453467938.mp3</sfile>
+        <start>673</start>
+        <stop>712</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>no i have not. What is it?</text>
+            <voice>joey</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND8" index="8" track="0" vol="1" tts="1">
+        <sfile>ugc.034236663642996956.mp3</sfile>
+        <start>736</start>
+        <stop>1006</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>GoNexus is an LVM project that brings back the old experience of GoAnimate For Schools. it has tons of new features plus old ones from GoAnimate For Schools like this very QVM.</text>
+            <voice>kate</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND9" index="9" track="0" vol="1" tts="1">
+        <sfile>ugc.08087708313950281.mp3</sfile>
+        <start>1030</start>
+        <stop>1112</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>that's really nice. I can't wait to check it out when i get home.</text>
+            <voice>joey</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND10" index="10" track="0" vol="1" tts="1">
+        <sfile>ugc.02785250501586152.mp3</sfile>
+        <start>1136</start>
+        <stop>1265</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>Well we still have some work to do buddy. Let's head back to our computers to continue working.</text>
+            <voice>kate</voice>
+        </ttsdata>
+    </sound>
+    <sound id="SOUND11" index="11" track="0" vol="1" tts="1">
+        <sfile>ugc.04127479360234403.mp3</sfile>
+        <start>1289</start>
+        <stop>1298</stop>
+        <fadein duration="0" vol="0"/>
+        <fadeout duration="0" vol="0"/>
+        <ttsdata>
+            <type>tts</type>
+            <text>Okay olivia.</text>
+            <voice>joey</voice>
+        </ttsdata>
+    </sound>
+    <linkage>SOUND1,SCENE3~~~,~~~AVATOR139</linkage>
+    <linkage>SOUND2,SCENE4~~~,~~~AVATOR138</linkage>
+    <linkage>SOUND3,SCENE5~~~,~~~AVATOR139</linkage>
+    <linkage>SOUND4,SCENE6~~~,~~~AVATOR138</linkage>
+    <linkage>SOUND5,SCENE7~~~,~~~AVATOR139</linkage>
+    <linkage>SOUND6,SCENE8~~~,~~~AVATOR138</linkage>
+    <linkage>SOUND7,SCENE9~~~,~~~AVATOR139</linkage>
+    <linkage>SOUND8,SCENE10~~~,~~~AVATOR138</linkage>
+    <linkage>SOUND9,SCENE11~~~,~~~AVATOR139</linkage>
+    <linkage>SOUND10,SCENE12~~~,~~~AVATOR138</linkage>
+    <linkage>SOUND11,SCENE13~~~,~~~AVATOR139</linkage>
+</film>

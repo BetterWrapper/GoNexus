@@ -294,7 +294,9 @@ module.exports = function (req, res, url) {
 										duration: dur,
 										downloadtype: "progressive",
 										ext: "mp3"
-									}, f);
+									}, Object.assign({
+										isTemplate: true
+									}, f));
 									movie.templateAssets.set(meta);
 									resolve(`0<asset><id>${meta.id.split(".")[0]}</id><enc_asset_id>${
 										f.recorderId
