@@ -645,6 +645,7 @@ module.exports = {
 		fUtil.addToZip(zip, "themelist.xml", themesH + '</themes>');
 		fUtil.addToZip(zip, "ugc.xml", Buffer.from(ugc + "</theme>"));
 		if (packThumb) fUtil.addToZip(zip, "thumbnail.png", packThumb);
+		if (data.returnObjectZip) return zip;
 		return await zip.zip();
 	},
 	/**

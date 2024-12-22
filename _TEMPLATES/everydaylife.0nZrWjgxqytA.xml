@@ -1,7 +1,44 @@
-<film>
-  <scene isPartOfVideoStart="" adelay="12" lock="Y" color="0">
-    <effectAsset id="EFFECT1" themecode="common" index="1">
-      <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+<film totalCamCount="3">
+  <scene isPartOfVideoStart="" adelay="36" lock="Y" color="16777215">
+    <bg id="cbg_office_pentry_BG102" index="0">
+      <file>custom.office_pentry_bg.swf</file>
+    </bg>
+    <char id="AVATOR139" index="4" raceCode="1">
+      <action face="1" motionface="1">ugc.charIdNum1.stand.xml</action>
+      <x>210.8333333</x>
+      <y>229.65</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="cbg_office_pentry_PROP71" index="1" attached="Y">
+      <file>custom.office_pentry_coffee.swf</file>
+      <x>120</x>
+      <y>190</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <prop id="cbg_office_pentry_PROP72" index="2" attached="Y">
+      <file>custom.office_pentry_water_dispenser.swf</file>
+      <x>445</x>
+      <y>245</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT0" themecode="common" index="5">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="fadeInEx" type="FADING" isIn="true" isOut="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+    <effectAsset id="EFFECT48" themecode="common" index="6">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
       <x>47</x>
       <y>24</y>
       <width>550</width>
@@ -56,9 +93,6 @@
       <height>354</height>
       <speech>0</speech>
     </effectAsset>
-    <trans id="null" index="11">
-      <fx dur="24" type="fl.Fade.out" ease="null"/>
-    </trans>
     <aTranList>
       <aTran id="0" target="AVATOR138" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
     </aTranList>
