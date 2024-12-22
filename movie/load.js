@@ -1027,7 +1027,7 @@ module.exports = function (req, res, url) {
 							function getRandomNumber(min, max) {
 								return Math.floor(Math.random() * (max - min + 1)) + min;
 							}
-							console.log(scenes2create.film._attributes)
+							let mainSoundCount = 0;
 							for (const script of f.script) {
 								if (
 									script.facial
@@ -1044,7 +1044,7 @@ module.exports = function (req, res, url) {
 									const prevSoundInfo = movieBase.film.sound[soundLength - 1];
 									const start = prevSoundInfo?._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
 									let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
-									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1));
+									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1))
 									const sceneLength = movieBase.film.scene.length;
 									const avatarId = settings.includedChar == script.cid ? settings.includedCharAvatarId : avatarIds[
 										script.cid
@@ -1105,6 +1105,21 @@ module.exports = function (req, res, url) {
 											}
 										]
 									};
+									if (
+										movieBase.film.sound[mainSoundCount]?._attributes.tts != 1
+										&& Number(movieBase.film.sound[mainSoundCount].stop[0]) <= (stop + start)
+									) {
+										const nfo = movieBase.film.sound[mainSoundCount];
+										mainSoundCount = soundLength + 1;
+										movieBase.film.sound[mainSoundCount] = {
+											_attributes: nfo._attributes,
+											sfile: nfo.sfile,
+											start: [Number(nfo.stop[0]) + 1],
+											stop: [Number(nfo.stop[0]) + 1 + Number(nfo.stop[0])],
+											fadein: nfo.fadein,
+											fadeout: nfo.fadeout
+										};
+									}
 								}
 							}
 							insertChar2Scene(scenes2create.film.scene.filter(i => i._attributes.isPartOfVideoEnd != undefined), {

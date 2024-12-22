@@ -1,0 +1,11 @@
+<theme id="ugc" name="ugc">
+    <background subtype="" id="17002285129948973985.swf" name="17002285129948973985.swf" enable="Y"/>
+    <char id="07042731379407767" enc_asset_id="1039" thumbnail_url="https://flashthemes.net/assets/17/assets/char/1704991653240097145.swf" thumb="1704991653240097145.swf" default="1704991653240097145.swf" name="char_htc" isCC="N" enable="Y" facing="left" published="1">
+        <tags>char_htc</tags>
+        <action id="1704991653240097145.swf" name="char_htc"/>
+    </char>
+    <char id="05506303965301269" enc_asset_id="1038" thumbnail_url="https://flashthemes.net/assets/17/assets/char/1707882511262613747.swf" thumb="1707882511262613747.swf" default="1707882511262613747.swf" name="char_ios_New2" isCC="N" enable="Y" facing="left" published="1">
+        <tags>char_ios</tags>
+        <action id="1707882511262613747.swf" name="char_htc"/>
+    </char>
+</theme>
