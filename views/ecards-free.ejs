@@ -70,9 +70,8 @@
                     includeTopBar: false
                 }) %>
                 <script>
-                    var golite_theme = 'holiday_ecard';
                     GoLite.settings.player = {
-                        swf: "/static/tommy/2012/animation/player.swf",
+                        swf: "/static/animation/player.swf",
                         height: 384,
                         width: 550
                     }
@@ -80,10 +79,6 @@
                         swf: "/static/qvm/thumbnailChooser.swf",
                         height: 170,
                         width: 295
-                    }
-                    GoLite.settings.tpEditor = {
-                        swf: "/static/qvm/templates/talkingpicz_christmas/img/step02/tpeditor.swf",
-                        apiserver: "/"
                     }
                     VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
                     jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
@@ -334,8 +329,9 @@
                             <script>
                                 function createTPEditor(settings) {
                                     var flashvars = {
-                                        apiserver: "/",
-                                        ut: "23"
+                                        apiserver: "https://gonexus.xyz/",
+                                        ut: "23",
+                                        clientThemePath: "/static/tommy/2012/<client_theme>"
                                     };
                                     jQuery.extend(flashvars, settings);
                                     jQuery('#editor-container').flash({
@@ -1016,7 +1012,7 @@
                 <div id="upsell" class="lightbox" style="display:none">
                     <div class="lightbox_wrapper">
                         <div class="upsell-main">
-                            <h2>Upgrade to GoPlus and Get All This Cool Stuff!</h2>
+                            <h2>Get a GoNexus Account and Get All This Cool Stuff!</h2>
                             <ul class="blk clearfix">
                                 <li class="blk1">Add Up to 5 Heads</li>
                                 <li class="blk2">8 Extra Talking Heads</li>
@@ -1031,7 +1027,7 @@
                             </div>
                         </div>
                         <div class="upsell-more clearfix">
-                            <h2>And there's just for the Video eCards! GoPlus covers everything on GoAnimate</h2>
+                            <h2>And there's just for the Video eCards! GoPlus covers everything on GoNexus</h2>
                             <ul class="upsell-more-points clearfix">
                                 <li class="studio">Unlimited Studio Access</li>
                                 <li class="app">More Themes</li>
@@ -1039,7 +1035,7 @@
                                 <li class="export">Free HD Export to YouTube</li>
                                 <li class="voice">More Voices</li>
                             </ul>
-                            <a class="action-btn signup" href="https://web.archive.org/web/20120517140356/http://goanimate.com/plusfeatures/?hook=upsell_overlay.site" target="_blank" style="margin-top:40px;">Learn More &gt;</a>
+                            <a class="action-btn signup" href="/public_signup" target="_blank" style="margin-top:40px;">Get An Account &gt;</a>
                         </div>
                         <a class="close_btn" onclick="psPop=false;jQuery.unblockUI();">&#215;</a>
                     </div>

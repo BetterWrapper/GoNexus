@@ -487,6 +487,27 @@ module.exports = function (req, res, url) {
 						}
 					})
 					break;
+				} case "/api/saveBackground": {
+					new formidable.IncomingForm().parse(req, async (e, f, files) => {
+						res.setHeader("Content-Type", "application/json");
+						const ext = f.Filename.substr(f.Filename.lastIndexOf(".") + 1);
+						const meta = asset.save(fs.readFileSync(files.Filedata.filepath), {
+							type: "bg",
+							subtype: 0,
+							title: f.Filename,
+							published: 0,
+							tags: "",
+							ext
+						}, f);
+						tempbuffer.set(meta.id, fs.readFileSync(files.Filedata.filepath));
+						movie.templateAssets.set(meta);
+						res.end(JSON.stringify({
+							ext,
+							assetId: meta.enc_asset_id,
+							encAssetId: meta.id
+						}))
+					});
+					break;
 				} case "/api/uploadTemplateFile": {
 					new formidable.IncomingForm().parse(req, async (e, f, files) => {
 						if (!files.import) {
@@ -923,10 +944,10 @@ module.exports = function (req, res, url) {
 						try {
 							const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
 							f.player_object = {
+								ext: "zip",
 								filename: "template",
 								movieId: "templatePreview",
 								siteId: "go",
-								storePath4Parser: req.headers.origin + '/static/tommy/2010/store',
 								is_golite_preview: 1,
 								isTemplate: 1,
 								autostart: 1,
@@ -945,6 +966,51 @@ module.exports = function (req, res, url) {
 							);
 							movieBase.film.scene = [];
 							movieBase.film.sound = scenes2create.film.sound || [];
+							if (f.bg?.music) await new Promise((res, rej) => {
+								const pieces = f.bg.music.split(".");
+								const ext = pieces.pop();
+								pieces[pieces.length - 1] += `.${ext}`;
+								pieces.splice(1, 0, "sound");
+								https.get(`${process.env.STORE_URL2}/${pieces.join("/")}`, d => {
+									const buffers = [];
+									d.on("data", i => buffers.push(i)).on("end", async () => {
+										const buffer = Buffer.concat(buffers);
+										const duration = await fUtil.mp3Duration(buffer);
+										let stop = Math.round(((Math.round(duration * 132) / 666) / 8.1 - 7) - 8);
+										if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1))
+										pieces.splice(1, 1);
+										movieBase.film.sound.unshift({
+											_attributes: {
+												id: `SOUND0`,
+												index: 0,
+												track: 0,
+												vol: 0.25,
+												tts: 0
+											},
+											sfile: [pieces.join(".")],
+											start: [1],
+											stop: [stop + 1],
+											fadein: [
+												{
+													_attributes: {
+														duration: 0,
+														vol: 0
+													}
+												}
+											],
+											fadeout: [
+												{
+													_attributes: {
+														duration: 0,
+														vol: 0
+													}
+												}
+											]
+										});
+										res();
+									}).on("error", rej);
+								}).on("error", rej)
+							});
 							const charNumbers = movie.assignObjects({}, f.characters);
 							const avatarIds = {};
 							const templatrSettingsPath = `./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.json`
@@ -975,7 +1041,6 @@ module.exports = function (req, res, url) {
 													if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
 													char.action[0]._text = char.action[0]._text.replace(t, `ugc.${id}`);
 												}
-												char._index = charNumbers[id];
 											}
 											const pieces = char.action[0]._text.split(".");
 											const id = pieces[1];
@@ -1172,10 +1237,10 @@ module.exports = function (req, res, url) {
 								const ugc2 = await xml2js.parseStringPromise(zip['ugc.xml'].buffer);
 								fUtil.addToZip(zip, 'ugc.xml', jsonToXml(movie.assignObjects(ugc2, [ugc])));
 								fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await zip.zip());
-							} else {
-								f.player_object.ext = "xml";
-								fs.writeFileSync(`./previews/${f.player_object.filename}.xml`, xml)
-							}
+							} else fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await parse.packMovie(xml, {
+								userId: session.get(req).data?.current_uid || '',
+								storePath4Parser: req.headers.origin + '/static/tommy/2010/store'
+							}, false, movie.templateAssets.get()))
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(f));
 						} catch (e) {

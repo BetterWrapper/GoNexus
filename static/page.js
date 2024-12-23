@@ -238,12 +238,12 @@ module.exports = function (req, res, url) {
 				const currentSession = session.get(req);
 				const json = JSON.parse(fs.readFileSync('./previews/template.json'))[url.query.theme];
 				if (currentSession && currentSession.data && json.user == currentSession.data.current_uid) {
-					filename = "qvm_preview";
 					template = json;
+					filename = `qvm_preview_${template.qvm_year}`;
 				} else return res.end("The theme you are trying to preview either doesen't belong to you or does not exist in this server.");
 			} else {
 				template = JSON.parse(fs.readFileSync('./templates.json'))[url.query.theme];
-				filename = "qvm";
+				filename = `qvm_${template.qvm_year}`;
 			}
 			if (!template) return res.end('This theme has not been added to the server. Current Theme: ' + url.query.theme);
 			params = {

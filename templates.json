@@ -1,5 +1,6 @@
 {
 	"everydaylife": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Comedy World",
 		"customChars_info": {
@@ -202,6 +203,7 @@
 		]
 	},
 	"michigan": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/ajax/previewText2Video",
 		"themeName": "Comedy World",
 		"customChars_info": {
@@ -254,6 +256,7 @@
 		]
 	},
 	"pt": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/ajax/previewText2Video",
 		"themeName": "Comedy World",
 		"customChars_info": {
@@ -311,6 +314,7 @@
 		]
 	},
 	"basketball": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Peepz",
 		"customChars_info": {
@@ -449,6 +453,7 @@
 		]
 	},
 	"space": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Space Peepz",
 		"customChars_info": {
@@ -504,6 +509,7 @@
 		]
 	},
 	"wildlife": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "",
 		"disableFeatures": {
@@ -557,6 +563,7 @@
 		]
 	},
 	"gopets": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Petz",
 		"customChars_info": {
@@ -602,6 +609,7 @@
 		]
 	},
 	"pirate": {
+		"qvm_year": "2011",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Peepz",
 		"customChars_info": {
@@ -724,6 +732,7 @@
 		]
 	},
 	"office": {
+		"qvm_year": "2012",
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Lil' Peepz",
 		"customChars_info": {

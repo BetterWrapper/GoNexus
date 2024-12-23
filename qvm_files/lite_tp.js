@@ -637,7 +637,7 @@ var GoLite = (function(f) {
 
   function h() {
     var z = {};
-    z.golite_theme = "";
+    z.golite_theme = "holiday_ecard";
     if (b) {
       z.enc_mid = b
     }
@@ -1024,7 +1024,7 @@ var GoLite = (function(f) {
         }
       });
       p = true;
-      f.post("/ajax/previewText2Video", y, function(z) {
+      f.post("/api/setupText2VideoPreview", y, function(z) {
         p = false;
         if (z.error) {
           showNotice(z.error, true);

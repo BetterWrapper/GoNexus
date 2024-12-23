@@ -1,30 +1,5 @@
-<film copyable="0" duration="16.5" published="1" pshare="1">
-  <meta>
-    <title><![CDATA[template3]]></title>
-    <tag><![CDATA[school]]></tag>
-    <hiddenTag><![CDATA[]]></hiddenTag>
-    <desc><![CDATA[]]></desc>
-    <mver><![CDATA[4]]></mver>
-    <studio>d7446f28669693f5b7a35d41831e43c3662c48bf</studio>
-    <thumbnail index="1"/>
-    <palette>
-      <color value="333333"/>
-      <color value="999999"/>
-      <color value="fbfbfb"/>
-      <color value="669999"/>
-      <color value="55bbaa"/>
-      <color value="7fbb11"/>
-      <color value="15709b"/>
-      <color value="9a5d1"/>
-      <color value="6ab8d6"/>
-      <color value="da2021"/>
-      <color value="fecd31"/>
-      <color value="28c6c1"/>
-      <color value="37444f"/>
-      <color value="0"/>
-    </palette>
-  </meta>
-  <scene id="SCENE3" adelay="12" lock="Y" index="0" color="0" guid="7B541FC0-21CE-AAE5-BFE4-1EB43C7083AE">
+<film totalCamCount="2">
+  <scene isPartOfVideoStart="" adelay="12" lock="Y" color="0">
     <effectAsset id="EFFECT12" themecode="common" index="1">
       <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
       <x>47</x>
@@ -34,7 +9,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE2" adelay="48" lock="Y" index="1" color="16777215" guid="39C2AEB3-A996-923B-0D9E-908651361063" combgId="custom.cbg_house_ext">
+  <scene isPartOfVideoStart="" adelay="48" lock="Y" color="16777215" combgId="custom.cbg_house_ext">
     <bg id="cbg_house_ext_BG2" index="0">
       <file>custom.house_ext_bg.swf</file>
     </bg>
@@ -47,12 +22,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE4" adelay="48" lock="Y" index="2" color="16777215" guid="FD761963-A620-C294-2821-FBBBA27C9583" combgId="custom.cbg_bedroom">
+  <scene isPartOfVideoStart="" adelay="48" lock="Y" index="2" color="16777215" combgId="custom.cbg_bedroom">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.bedroom_bg.swf</file>
     </bg>
     <char id="AVATOR89" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -60,7 +35,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="5" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -103,12 +78,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE5" adelay="48" lock="Y" index="3" color="16777215" guid="76036484-ED6A-0F2E-B4B1-AF8E9F33B7E7">
+  <scene isPartOfVideoStart="" adelay="48" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.bedroom_bg.swf</file>
     </bg>
     <char id="AVATOR89" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -116,7 +91,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="5" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -159,12 +134,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE6" adelay="48" lock="Y" index="4" color="16777215" guid="1C8D5BED-DAFE-7A43-47BC-41B6F906D055">
+  <scene charsTalking="" char_1_talking_cam_2="" lock="Y" color="16777215">
     <bg id="BG125" index="0">
       <file>custom.bedroom_blurred.png</file>
     </bg>
     <char id="AVATOR89" index="2" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -172,7 +147,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="3" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -197,12 +172,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE8" adelay="48" lock="Y" index="5" color="16777215" guid="DD53BD46-F9D5-AE02-4748-D0A6545A3640">
+  <scene charsTalking="" char_2_talking_cam_2="" lock="Y" color="16777215">
     <bg id="BG125" index="0">
       <file>custom.bedroom_blurred.png</file>
     </bg>
     <char id="AVATOR89" index="2" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -210,7 +185,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="3" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -235,12 +210,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE10" adelay="48" lock="Y" index="6" color="16777215" guid="859C2B20-9893-0655-D357-F13828A8EDF9">
+  <scene charsTalking="" char_1_talking_cam_1="" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.bedroom_bg.swf</file>
     </bg>
     <char id="AVATOR89" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -248,7 +223,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="5" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -291,12 +266,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE11" adelay="48" lock="Y" index="7" color="16777215" guid="1C667984-DD74-4545-8429-9560E7F0EF79">
+  <scene charsTalking="" char_2_talking_cam_1="" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.bedroom_bg.swf</file>
     </bg>
     <char id="AVATOR89" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -304,7 +279,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="5" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -347,12 +322,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE12" adelay="48" lock="Y" index="8" color="16777215" guid="CF4ADE8D-971E-5761-4B3F-5C567186493D">
+  <scene isPartOfVideoEnd="" adelay="48" lock="Y" color="16777215">
     <bg id="cbg_bedroom_BG65" index="0">
       <file>custom.bedroom_bg.swf</file>
     </bg>
     <char id="AVATOR89" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.9cab493.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>417.625</x>
       <y>212.55</y>
       <xscale>1</xscale>
@@ -360,7 +335,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR90" index="5" raceCode="1">
-      <action face="-1" motionface="1">ugc.923f512.stand2.xml</action>
+      <action face="-1" motionface="1">ugc.charIdNum1.stand.xml</action>
       <x>163.8507734</x>
       <y>216.0000099</y>
       <xscale>0.892728</xscale>
@@ -411,4 +386,11 @@
       <file>common.fade_out.swf</file>
     </effectAsset>
   </scene>
+  <sound id="SOUND0" index="0" track="0" vol="1" tts="0">
+    <sfile>common.joyful_2.mp3</sfile>
+    <start>1</start>
+    <stop>1044</stop>
+    <fadein duration="0" vol="0"/>
+    <fadeout duration="0" vol="0"/>
+  </sound>
 </film>

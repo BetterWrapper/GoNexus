@@ -1,48 +1,48 @@
 <html>
-<head>
-    <% const char1Info = params.qvm.stockCharacters.find(i => i.char1_default == true) %>
-    <meta charset="utf-8">
-    <title><%= params.qvm.themeName %> Template | <%= params.qvm.title %> | GoNexus</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <% const nonSelectableCharInfo = params.qvm.nonSelectableCharInfo %>
-    <meta name="description" content="With GoNexus Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
-    
-    <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
-    
-    <link href="/qvm_files/buttons.css.gz.css" rel="stylesheet" type="text/css">
-    <link href="/static/qvm/templates/<%= params.flashvars.theme %>/theme.css" rel="stylesheet" type="text/css">
-    <link href="/qvm_files/school_golite.css.gz.css" rel="stylesheet" type="text/css">
-    <link href="/qvm_files/voiceselectionwidget.css.gz.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Droid+Sans:bold|Anton" rel="stylesheet" type="text/css">
-    <!--[if lt IE 9]>
-    <link href="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/css/script2cartoon/ie.css.gz.css" rel="stylesheet" type="text/css">
-    <![endif]-->
-    
-    <script type="text/javascript" src="/qvm_files/jquery-1.4.4.min.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.blockUI.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.scrollTo.min.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.jplayer.min.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.tmpl.min.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.swfobject.min.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.waypoints.min.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
-    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
-    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
-    <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
-    <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
-    <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
-    <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
-    <script type="text/javascript">
-    var srv_tz_os = -4;
-    var view_name = "school";
-    var user_cookie_name = "u_info";
-    var golite_theme = "<%= params.flashvars.theme %>";
-    var publish_setting = 'public';
-    
-    var I18N_LANG = 'en_US';
-    var GT = new Gettext({'locale_data': json_locale_data});
-    </script>
+    <head>
+        <% const char1Info = params.qvm.stockCharacters.find(i => i.char1_default == true) %>
+        <meta charset="utf-8">
+        <title><%= params.qvm.themeName %> Template | <%= params.qvm.title %> | GoNexus</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <% const nonSelectableCharInfo = params.qvm.nonSelectableCharInfo %>
+        <meta name="description" content="With GoNexus Quick App you can make your own video with just a few clicks and some typing on your keyboard. It's dead simple and fun!">
+        
+        <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA">
+        
+        <link href="/qvm_files/buttons.css.gz.css" rel="stylesheet" type="text/css">
+        <link href="/static/qvm/templates/<%= params.flashvars.theme %>/theme.css" rel="stylesheet" type="text/css">
+        <link href="/qvm_files/school_golite.css.gz.css" rel="stylesheet" type="text/css">
+        <link href="/qvm_files/voiceselectionwidget.css.gz.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Droid+Sans:bold|Anton" rel="stylesheet" type="text/css">
+        <!--[if lt IE 9]>
+        <link href="https://d2qrjeyl4jwu9j.cloudfront.net/static/642cd772aad8e952/go/css/script2cartoon/ie.css.gz.css" rel="stylesheet" type="text/css">
+        <![endif]-->
+        
+        <script type="text/javascript" src="/qvm_files/jquery-1.4.4.min.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.blockUI.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.scrollTo.min.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.jplayer.min.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.tmpl.min.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.swfobject.min.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.waypoints.min.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/jquery.placeholder.min.js.gz.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
+        <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
+        <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
+        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
+        <script type="text/javascript">
+        var srv_tz_os = -4;
+        var view_name = "school";
+        var user_cookie_name = "u_info";
+        var golite_theme = "<%= params.flashvars.theme %>";
+        var publish_setting = 'public';
+        
+        var I18N_LANG = 'en_US';
+        var GT = new Gettext({'locale_data': json_locale_data});
+        </script>
     
     </head>
     <body id="school">
@@ -151,9 +151,7 @@
             <div id="template_name"></div>
             <div id="template_desc"></div>
             <div id="templates" class="item_selector">
-                <% if (params.qvm.templates.length > 1) { %>
-                    <a class="select_button prev" href="#">&lt;</a>
-                <% } %>
+                <a class="select_button prev" href="#">&lt;</a>
                 <div class="items">
                     <% for (const templateInfo of params.qvm.templates) { %>
                         <div 
@@ -169,9 +167,7 @@
                         </div>
                     <% } %>
                 </div>
-                <% if (params.qvm.templates.length > 1) { %>
-                    <a class="select_button next" href="#">&gt;</a>
-                <% } %>
+                <a class="select_button next" href="#">&gt;</a>
             </div>
         </div>
     
@@ -472,11 +468,11 @@
                 <div class="voice_recorder"></div>
                 <div class="dialog_options">
                     <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
-                    {{if hasFacial}}
                     <% if (!params.qvm.disableFeatures.emotions) { %>
-                        <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
-                    <% } %>
+                    {{if hasFacial}}
+                    <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
                     {{/if}}
+                    <% } %>
                     <div class="langarea">
                         <div class="lang"></div>
                         <div class="gender"></div>
