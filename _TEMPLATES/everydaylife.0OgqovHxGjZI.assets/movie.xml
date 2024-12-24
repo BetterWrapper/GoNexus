@@ -1,0 +1,819 @@
+<?xml version="1.0"?>
+<film copyable="0" duration="58.2" published="0" pshare="0" isWide="1">
+  <meta>
+    <title>Do not disturb...</title>
+    <tag/>
+    <hiddenTag/>
+    <desc></desc>
+    <mver><![CDATA[4]]></mver>
+    <studio>a76d829cef09f7bb9bef739f686c0449acbaded8</studio>
+    <thumbnail index="0"/>
+    <palette>
+      <color value="333333"/>
+      <color value="999999"/>
+      <color value="fbfbfb"/>
+      <color value="669999"/>
+      <color value="55bbaa"/>
+      <color value="7fbb11"/>
+      <color value="15709b"/>
+      <color value="9a5d1"/>
+      <color value="6ab8d6"/>
+      <color value="da2021"/>
+      <color value="fecd31"/>
+      <color value="28c6c1"/>
+      <color value="37444f"/>
+    </palette>
+  </meta>
+  <scene id="SCENE25" adelay="60" lock="N" index="0" color="16777215" guid="CE671335-A837-382C-A2FD-47783E213B0F">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <dcsn>9610</dcsn>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <prop id="PROP57" index="1">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_close.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT43" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE26" adelay="60" lock="N" index="1" color="16777215" guid="5C820E9F-3AD3-F91B-81CE-DA3A47339F1B">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE323" index="1">
+      <x>297</x>
+      <y>165</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="60" align="center" bold="false" italic="false" embed="true">opening:1</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT45" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE27" adelay="60" lock="N" index="2" color="16777215" guid="9118F9F7-3017-0091-8A03-A629D85E75FF">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <dcsn>9610</dcsn>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR131" index="2" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="cbg_toilet_PROP0" index="1">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_close.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="fadeInEx" type="FADING" isIn="true" isOut="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+    <effectAsset id="EFFECT47" themecode="common" index="4">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE28" adelay="6" lock="Y" index="3" color="16777215" guid="10958AE7-AE57-1C3F-A7C5-CFFB8A84FB0F">
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.stand.xml</action>
+      <x>-10</x>
+      <y>217</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP6" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_half.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT49" themecode="common" index="4">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE29" adelay="18" lock="Y" index="4" color="16777215" guid="785BE8E4-F407-42B3-7B30-7FC6084C8C3D">
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1,-1" motionface="-1">ugc.15688438.run.xml</action>
+      <x>77,244</x>
+      <y>214,225</y>
+      <xscale>1,1</xscale>
+      <yscale>1,1</yscale>
+      <rotation>0,0</rotation>
+      <assetMotion ver="1"/>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP50" raceCode="1">
+        <file>ugc.15689601.head.head_shocked.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP9" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT51" themecode="common" index="4">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE30" adelay="60" lock="N" index="5" color="16777215" guid="0F1F1098-699B-8FD5-49C1-7C1E01952354">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.fearful.xml</action>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP52" raceCode="1">
+        <file>ugc.15689601.head.head_shocked.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP42" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT53" themecode="common" index="4">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE31" adelay="60" lock="N" index="6" color="16777215" guid="EE052772-0928-B863-84E4-B73ABC3633A8">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE325" index="1">
+      <x>235</x>
+      <y>169</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="48" align="center" bold="false" italic="false" embed="true">character:1</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT55" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE32" adelay="60" lock="N" index="7" color="16777215" guid="0B56F9ED-4386-1C8E-41B9-EB17EAA2AFF6">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <char id="AVATOR326" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.stand.xml</action>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT57" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE33" adelay="60" lock="N" index="8" color="16777215" guid="82916F78-9EB1-8587-3699-9242F2EB1F3E">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE328" index="1">
+      <x>249</x>
+      <y>143</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="47" align="center" bold="false" italic="false" embed="true">character:2</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT59" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE34" adelay="60" lock="N" index="9" color="16777215" guid="674EAD80-2F3A-A9ED-5ED9-4EDF5F63A903">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <char id="AVATOR329" index="1" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.stand.xml</action>
+      <head id="PROP53" raceCode="1">
+        <file>ugc.15689601.head.head_shocked.xml</file>
+      </head>
+      <x>500</x>
+      <y>210</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT61" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE35" adelay="60" lock="N" index="10" color="16777215" guid="994A83F3-8407-233C-4D44-B29377AF1BA0">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE332" index="1">
+      <x>258</x>
+      <y>169</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="74" align="center" bold="false" italic="false" embed="true">1:talk:1</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT63" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE36" adelay="60" lock="N" index="11" color="16777215" guid="EDC68F80-2522-AC4D-7FB3-B0AFF070AA35">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG261" index="0">
+      <file>ugc.17800969.swf</file>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.fearful.xml</action>
+      <head id="PROP54" raceCode="1">
+        <file>ugc.15688438.head.head_neutral.xml</file>
+      </head>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="2" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP59" raceCode="1">
+        <file>ugc.15689601.head.head_shocked.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT4" themecode="common" index="3">
+      <effect x="0" y="0" w="275" h="155" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>118.5</x>
+      <y>83.5</y>
+      <width>275</width>
+      <height>177</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE37" adelay="60" lock="N" index="12" color="16777215" guid="7EA251FB-909C-EAD1-9E37-936E6A341418">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE333" index="1">
+      <x>247</x>
+      <y>162</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="74" align="center" bold="false" italic="false" embed="true">2:talk:1</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT66" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE38" adelay="60" lock="N" index="13" color="16777215" guid="C2606701-8542-985B-4EFF-A6112AF6EEDC">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG261" index="0">
+      <file>ugc.17800969.swf</file>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.stand.xml</action>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP61" raceCode="1">
+        <file>ugc.15689601.head.head_neutral.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP30" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT4" themecode="common" index="4">
+      <effect x="0" y="0" w="275" h="155" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>320.5</x>
+      <y>71.5</y>
+      <width>275</width>
+      <height>177</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE39" adelay="60" lock="N" index="14" color="16777215" guid="318E4EC7-CDF0-2C1E-224B-D205F6702B34">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE334" index="1">
+      <x>239</x>
+      <y>158</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="74" align="center" bold="false" italic="false" embed="true">1:talk:2</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT69" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE40" adelay="60" lock="N" index="15" color="16777215" guid="24F5428E-7234-1631-2EB3-9628FAE5D110">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG261" index="0">
+      <file>ugc.17800969.swf</file>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.stand.xml</action>
+      <head id="PROP63" raceCode="1">
+        <file>ugc.15688438.head.head_neutral.xml</file>
+      </head>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP65" raceCode="1">
+        <file>ugc.15689601.head.head_talk_sad.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP35" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT4" themecode="common" index="4">
+      <effect x="0" y="0" w="225.3" h="126.9872727" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>155.4</x>
+      <y>68.4943636</y>
+      <width>225.3</width>
+      <height>145.0112727</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE41" adelay="60" lock="N" index="16" color="16777215" guid="51C8FE74-AF90-C8C5-3ADA-F58289EDAAA5">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE335" index="1">
+      <x>278</x>
+      <y>168</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="74" align="center" bold="false" italic="false" embed="true">2:talk:2</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT72" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE42" adelay="60" lock="N" index="17" color="16777215" guid="359DE6A4-00CD-A5ED-1845-BE19D6AE597B">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG260" index="0">
+      <file>ugc.17800969.swf</file>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.stand.xml</action>
+      <head id="PROP67" raceCode="1">
+        <file>ugc.15688438.head.head_talk_a.xml</file>
+      </head>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP69" raceCode="1">
+        <file>ugc.15689601.head.head_neutral.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP40" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT4" themecode="common" index="4">
+      <effect x="0" y="0" w="215" h="121.1818182" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>382</x>
+      <y>75.9090909</y>
+      <width>215</width>
+      <height>138.3818182</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE43" adelay="60" lock="N" index="18" color="16777215" guid="A2CD1BFB-036F-62FC-A51C-9C28C73FD917">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE336" index="1">
+      <x>193</x>
+      <y>149</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="74" align="center" bold="false" italic="false" embed="true">1:talk:3</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT75" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE44" adelay="101" lock="N" index="19" color="16777215" guid="A8B223CF-A03F-8816-9DB4-1F898FE239D1">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.talk.xml</action>
+      <head id="PROP71" raceCode="1">
+        <file>ugc.15688438.head.head_neutral.xml</file>
+      </head>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP73" raceCode="1">
+        <file>ugc.15689601.head.head_thinking.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP47" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT4" themecode="common" index="4">
+      <effect x="0" y="0" w="486.1" h="273.9836364" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>110.9</x>
+      <y>40.2141818</y>
+      <width>486.1</width>
+      <height>312.8716364</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE45" adelay="60" lock="N" index="20" color="16777215" guid="F8823A2A-3C83-CB69-278C-B8DF5182E71B">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE337" index="1">
+      <x>233</x>
+      <y>142</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="74" align="center" bold="false" italic="false" embed="true">2:talk:3</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT78" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE46" adelay="60" lock="N" index="21" color="16777215" guid="9CFA84A2-7423-BFA5-2DC7-642D586B92A0">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1">
+      <action face="-1" motionface="1">ugc.15688438.stand.xml</action>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP74" raceCode="1">
+        <file>ugc.15689601.head.head_neutral.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP51" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT4" themecode="common" index="4">
+      <effect x="0" y="0" w="486.1" h="273.9836364" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>110.9</x>
+      <y>40.2141818</y>
+      <width>486.1</width>
+      <height>312.8716364</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE47" adelay="60" lock="N" index="22" color="16777215" guid="F30E9B9C-232C-647A-0307-1FA9990A4586">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bubbleAsset id="BUBBLE338" index="1">
+      <x>237</x>
+      <y>163</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+      <fx>easeNone</fx>
+      <fxdur>0</fxdur>
+      <bubble x="0" y="0" w="180" h="90" rotate="0" type="BLANK" hasTail="0" colorStyle="1" autoTextResize="true">
+        <body rgb="16777215" shadow="1" bgAlpha="0" linergb="0" tailx="180" taily="110" paddingHorizontal="0" paddingVertical="0"/>
+        <text rgb="0" alpha="100" font="Accidental Presidency" size="65" align="center" bold="false" italic="false" embed="true">closing:1</text>
+        <url target="top"><![CDATA[]]></url>
+      </bubble>
+    </bubbleAsset>
+    <effectAsset id="EFFECT81" themecode="common" index="2">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene id="SCENE48" adelay="72" lock="Y" index="23" color="16777215" guid="3BA80B2E-79C0-9001-5DF8-9C9A8CAE5CC7">
+    <bg id="cbg_toilet_BG2" index="0">
+      <file>custom.toilet_bg.swf</file>
+      <color r="ccColorA" oc="0x0">13538451</color>
+    </bg>
+    <char id="AVATOR137" index="1" raceCode="1" faceCamera="true">
+      <action face="-1" motionface="1">ugc.15688438.sad.xml</action>
+      <head id="PROP75" raceCode="1">
+        <file>ugc.15688438.head.head_sad.xml</file>
+      </head>
+      <x>244</x>
+      <y>225</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR131" index="3" raceCode="1" faceCamera="true">
+      <action face="1" motionface="1">ugc.15689601.sit.xml</action>
+      <head id="PROP76" raceCode="1">
+        <file>ugc.15689601.head.head_sad.xml</file>
+      </head>
+      <x>505</x>
+      <y>212</y>
+      <xscale>1.06</xscale>
+      <yscale>1.06</yscale>
+      <rotation>0</rotation>
+    </char>
+    <prop id="PROP58" index="2">
+      <file>custom.msp_toilet_door.msp_toilet_door_toilet_door_open.swf</file>
+      <x>93</x>
+      <y>185</y>
+      <xscale>1</xscale>
+      <yscale>1</yscale>
+      <face>1</face>
+      <rotation>0</rotation>
+    </prop>
+    <effectAsset id="EFFECT4" themecode="common" index="5">
+      <effect x="0" y="0" w="486.1" h="273.9836364" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>110.9</x>
+      <y>40.2141818</y>
+      <width>486.1</width>
+      <height>312.8716364</height>
+      <speech>0</speech>
+    </effectAsset>
+    <effectAsset id="EFFECT11" themecode="common" index="4">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="fadeOutEx" type="FADING" isIn="false" isOut="true"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+</film>

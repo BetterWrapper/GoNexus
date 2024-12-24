@@ -1,0 +1,17 @@
+<film noCams="true" moreThan2Characters="true">
+  <scene isPartOfVideoStart="" adelay="60" lock="Y">
+    <bg bgId="BG0" index="0">
+      <file>ugc.customBg</file>
+    </bg>
+  </scene>
+  <scene charsTalking="" lock="Y">
+    <bg bgId="BG0" index="0">
+      <file>ugc.customBg</file>
+    </bg>
+  </scene>
+  <scene isPartOfVideoEnd="" adelay="60" lock="Y">
+    <bg bgId="BG0" index="0">
+      <file>ugc.customBg</file>
+    </bg>
+  </scene>
+</film>

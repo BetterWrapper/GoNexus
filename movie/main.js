@@ -156,10 +156,9 @@ module.exports = {
 	stringArray2Array(json) {
 		const a = [];
 		for (const key in json) {
-			let k = key.split("][").join(".").split("[").join(".").split("]")
-			k = k[0].split(".");
+			let k = key.split("][").join(">").split("]").join(">").split("[").join(">").split(">");
 			function c(e = 0) {
-				if (e == k.length) return json[key];
+				if (e == k.length - 1) return json[key];
 				const a = {};
 				a[k[e]] = c(e + 1);
 				return a;

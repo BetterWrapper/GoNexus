@@ -21,7 +21,7 @@ module.exports = function (req, res, url) {
 		case "GET": {
 			switch (url.pathname) {
 				default: {
-					const match = url.path.match(/\/(assets|(goapi|qvm_micRecord_goapi)\/getAsset)\/([^/]+)$/);
+					const match = url.path.match(/\/assets|((goapi|qvm_micRecord_goapi|api)\/getAsset)\/([^/]+)$/);
 					if (!match) return;
 					console.log(match);
 					const aId = match[3];

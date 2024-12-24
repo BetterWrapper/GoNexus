@@ -386,7 +386,7 @@
       <file>common.fade_out.swf</file>
     </effectAsset>
   </scene>
-  <sound id="SOUND0" index="0" track="0" vol="1" tts="0">
+  <sound id="SOUND0" index="0" track="0" vol="0.25" tts="0">
     <sfile>common.joyful_2.mp3</sfile>
     <start>1</start>
     <stop>1044</stop>

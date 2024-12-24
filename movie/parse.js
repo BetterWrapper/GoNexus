@@ -462,7 +462,7 @@ module.exports = {
 	async packMovie(xmlBuffer, data = {}, packThumb = false, ownAssets = []) {
 		if (xmlBuffer.length == 0) throw null;
 		const uid = data.movieOwnerId || data.userId;
-		const zip = nodezip.create();
+		const zip = data.existingObjectZip || nodezip.create();
 		/** @type {Record<string, boolean>} */
 		const themes = { common: true };
 		var ugc = `${header}<theme id="ugc">`;
@@ -637,7 +637,7 @@ module.exports = {
 		let themesH = `${header}<themes>`;
 		for (const t in themes) {
 			themesH += `<theme>${t}</theme>`;
-			if (t == "ugc") continue;
+			if (t == "ugc" || t == "tpeditor") continue;
 			const path = `${store}/${t}/theme.xml`;
 			const file = fs.existsSync(path) ? fs.readFileSync(path) : await get(path);
 			fUtil.addToZip(zip, `${t}.xml`, file);

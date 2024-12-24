@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hello hacker ;) -->
+<theme id="tpeditor" name="Talking Picz Editor Assets">
+	<prop id="001.swf" name="001" placeable="1" facing="left" enable="Y" aid="0PayYvmweK0A"/>
+	<prop id="002.swf" name="002" placeable="1" facing="left" enable="Y" aid="0u0Kmci45pxY"/>
+	<prop id="003.swf" name="003" placeable="1" facing="left" enable="Y" aid="0hH7194rU7qU"/>
+	<prop id="004.swf" name="004" placeable="1" facing="left" enable="Y" aid="0P7NfasJb8IA"/>
+	<prop id="005.swf" name="005" placeable="1" facing="left" enable="Y" aid="0F_OGBroqLOo"/>
+	<prop id="006.swf" name="006" placeable="1" facing="left" enable="Y" aid="0-lkRZgxLBlg"/>
+	<prop id="007.swf" name="007" placeable="1" facing="left" enable="Y" aid="0RxIQmKQw2h4"/>
+	<prop id="008.swf" name="008" placeable="1" facing="left" enable="Y" aid="0zE7NSTLUPbE"/>
+	<prop id="009.swf" name="009" placeable="1" facing="left" enable="Y" aid="0uKLQd0r2in0"/>
+	<prop id="010.swf" name="010" placeable="1" facing="left" enable="Y" aid="0v_Qx2RdUVuo"/>
+	<prop id="011.swf" name="011" placeable="1" facing="left" enable="Y" aid="013SyInZyrik"/>
+	<prop id="012.swf" name="012" placeable="1" facing="left" enable="Y" aid="0FCeET2W2uTA"/>
+	<prop id="013.swf" name="013" placeable="1" facing="left" enable="Y" aid="0TL5fdDrw3bQ"/>
+	<prop id="014.swf" name="014" placeable="1" facing="left" enable="Y" aid="0Rx3vF9k94mw"/>
+	<prop id="015.swf" name="015" placeable="1" facing="left" enable="Y" aid="0oGfWdE2A2rQ"/>
+	<prop id="016.swf" name="016" placeable="1" facing="left" enable="Y" aid="0uda9PQGYn8k"/>
+	<prop id="017.swf" name="017" placeable="1" facing="left" enable="Y" aid="0QZLThaOBneI"/>
+	<prop id="018.swf" name="018" placeable="1" facing="left" enable="Y" aid="06X4K0y53G3w"/>
+	<prop id="019.swf" name="019" placeable="1" facing="left" enable="Y" aid="0GCK39fsmXxM"/>
+	<prop id="020.swf" name="020" placeable="1" facing="left" enable="Y" aid="0M4SUX-Ka1nw"/>
+	<prop id="021.swf" name="021" placeable="1" facing="left" enable="Y" aid="0hhMlGYQxenY"/>
+	<prop id="022.swf" name="022" placeable="1" facing="left" enable="Y" aid="05ap7ZtS9IEY"/>
+	<prop id="023.swf" name="023" placeable="1" facing="left" enable="Y" aid="052yw-Qgz6dY"/>
+	<prop id="024.swf" name="024" placeable="1" facing="left" enable="Y" aid="0YTIWZVW3XHw"/>
+	<prop id="025.swf" name="025" placeable="1" facing="left" enable="Y" aid="0a0b_8rv9P-M"/>
+	<prop id="026.swf" name="026" placeable="1" facing="left" enable="Y" aid="0pq6P_PTeq_o"/>
+	<prop id="027.swf" name="027" placeable="1" facing="left" enable="Y" aid="0LtafG2lrXss"/>
+	<prop id="028.swf" name="028" placeable="1" facing="left" enable="Y" aid="0dul8Zy84DXc"/>
+	<prop id="029.swf" name="029" placeable="1" facing="left" enable="Y" aid="0iYdbj0229Os"/>
+	<prop id="030.swf" name="030" placeable="1" facing="left" enable="Y" aid="09iNQQIFK1u0"/>
+	<prop id="031.swf" name="031" placeable="1" facing="left" enable="Y" aid="0gEy3G_4aMbM"/>
+	<prop id="032.swf" name="032" placeable="1" facing="left" enable="Y" aid="0g_RN-NSYUAw"/>
+	<prop id="033.swf" name="033" placeable="1" facing="left" enable="Y" aid="09JAGN953e1Q"/>
+	<prop id="034.swf" name="034" placeable="1" facing="left" enable="Y" aid="0V7jA6tkIVcA"/>
+	<prop id="035.swf" name="035" placeable="1" facing="left" enable="Y" aid="0kazwOY878pw"/>
+	<!-- Valentines & Birthday (?) -->
+	<prop id="vbprop001.swf" name="vbprop001" placeable="1" facing="left" enable="Y" aid="0e1twABldrYs"/>
+	<prop id="vbprop002.swf" name="vbprop002" placeable="1" facing="left" enable="Y" aid="0fQRf8vac9FY"/>
+	<prop id="vbprop003.swf" name="vbprop003" placeable="1" facing="left" enable="Y" aid="0jsCb4ns3Gio"/>
+	<prop id="vbprop004.swf" name="vbprop004" placeable="1" facing="left" enable="Y" aid="02lZV0s-clGQ"/>
+	<prop id="vbprop005.swf" name="vbprop005" placeable="1" facing="left" enable="Y" aid="0WnV_tHSq1m8"/>
+	<prop id="vbprop006.swf" name="vbprop006" placeable="1" facing="left" enable="Y" aid="0IaU1rGZR3_E"/>
+	<prop id="vbprop007.swf" name="vbprop007" placeable="1" facing="left" enable="Y" aid="0pvykuvER5U4"/>
+	<prop id="vbprop008.swf" name="vbprop008" placeable="1" facing="left" enable="Y" aid="0QX4aCMzIppI"/>
+	<prop id="vbprop009.swf" name="vbprop009" placeable="1" facing="left" enable="Y" aid="0f1tkLW_u9VE"/>
+	<prop id="vbprop010.swf" name="vbprop010" placeable="1" facing="left" enable="Y" aid="0nlHmYGJS1kk"/>
+	<prop id="vbprop011.swf" name="vbprop011" placeable="1" facing="left" enable="Y" aid="0f8Hw5T62AXg"/>
+	<prop id="vbprop012.swf" name="vbprop012" placeable="1" facing="left" enable="Y" aid="0yqUAT3qZRe0"/>
+	<prop id="vbprop013.swf" name="vbprop013" placeable="1" facing="left" enable="Y" aid="0yKAGA3Tpx5I"/>
+	<prop id="vbprop014.swf" name="vbprop014" placeable="1" facing="left" enable="Y" aid="0sCjAJGTApF8"/>
+	<prop id="vbprop015.swf" name="vbprop015" placeable="1" facing="left" enable="Y" aid="0RyPVGmP5gew"/>
+	<prop id="vbprop016.swf" name="vbprop016" placeable="1" facing="left" enable="Y" aid="0C4ylMeN9EdI"/>
+	<prop id="vbprop017.swf" name="vbprop017" placeable="1" facing="left" enable="Y" aid="07uD-r52hpxQ"/>
+	<prop id="vbprop018.swf" name="vbprop018" placeable="1" facing="left" enable="Y" aid="0RyZRllnksRE"/>
+	<prop id="vbprop019.swf" name="vbprop019" placeable="1" facing="left" enable="Y" aid="0we3KGP9utcI"/>
+	<prop id="vbprop020.swf" name="vbprop020" placeable="1" facing="left" enable="Y" aid="0-gpOhSCsAlo"/>
+	<prop id="vbprop021.swf" name="vbprop021" placeable="1" facing="left" enable="Y" aid="0-DTVxymPJbY"/>
+	<prop id="vbprop022.swf" name="vbprop022" placeable="1" facing="left" enable="Y" aid="0yH8yOaZ6HUw"/>
+	<prop id="vbprop023.swf" name="vbprop023" placeable="1" facing="left" enable="Y" aid="0LdusnKd-5zs"/>
+	<prop id="vbprop024.swf" name="vbprop024" placeable="1" facing="left" enable="Y" aid="0axkTAU8MXX8"/>
+	<prop id="vbprop025.swf" name="vbprop025" placeable="1" facing="left" enable="Y" aid="0m8ku9FwqsbE"/>
+	<prop id="vbprop026.swf" name="vbprop026" placeable="1" facing="left" enable="Y" aid="0w-A-1jxfWTc"/>
+	<prop id="vbprop027.swf" name="vbprop027" placeable="1" facing="left" enable="Y" aid="0uxPrz4-4tF0"/>
+	<prop id="vbprop028.swf" name="vbprop028" placeable="1" facing="left" enable="Y" aid="0ZBZ8HxYvF1Q"/>
+	<prop id="vbprop029.swf" name="vbprop029" placeable="1" facing="left" enable="Y" aid="0MFjGiNX3SUk"/>
+	<prop id="vbprop030.swf" name="vbprop030" placeable="1" facing="left" enable="Y" aid="0I6tjW_YV2tA"/>
+	<prop id="vbprop031.swf" name="vbprop031" placeable="1" facing="left" enable="Y" aid="0xPDrlDe1JNM"/>
+	<prop id="vbprop032.swf" name="vbprop032" placeable="1" facing="left" enable="Y" aid="0dSNXdKf4OwQ"/>
+	<prop id="vbprop033.swf" name="vbprop033" placeable="1" facing="left" enable="Y" aid="0NBlKNGE1jpY"/>
+	<prop id="vbprop034.swf" name="vbprop034" placeable="1" facing="left" enable="Y" aid="05yHhjwcpFeA"/>
+	<prop id="vbprop035.swf" name="vbprop035" placeable="1" facing="left" enable="Y" aid="0BFEH5Xiai8o"/>
+	<prop id="vbprop036.swf" name="vbprop036" placeable="1" facing="left" enable="Y" aid="02NS6fBOC968"/>
+	<prop id="vbprop037.swf" name="vbprop037" placeable="1" facing="left" enable="Y" aid="0QFU1xxCTvgw"/>
+	<prop id="vbprop038.swf" name="vbprop038" placeable="1" facing="left" enable="Y" aid="01WSXapA19I4"/>
+	<prop id="vbprop039.swf" name="vbprop039" placeable="1" facing="left" enable="Y" aid="0vGpYBHA3E5o"/>
+	<prop id="vbprop040.swf" name="vbprop040" placeable="1" facing="left" enable="Y" aid="0g0xCXSQyPFk"/>
+	<prop id="vbprop041.swf" name="vbprop041" placeable="1" facing="left" enable="Y" aid="0hhRX6MTaT3o"/>
+	<prop id="vbprop042.swf" name="vbprop042" placeable="1" facing="left" enable="Y" aid="0oi7TPn4UQn8"/>
+	<prop id="vbprop043.swf" name="vbprop043" placeable="1" facing="left" enable="Y" aid="0uD7MKGnR_2Q"/>
+	<prop id="vbprop044.swf" name="vbprop044" placeable="1" facing="left" enable="Y" aid="04HIRKxXe6i8"/>
+	<prop id="vbprop045.swf" name="vbprop045" placeable="1" facing="left" enable="Y" aid="0UEPSz2Zr5Mg"/>
+	<prop id="vbprop046.swf" name="vbprop046" placeable="1" facing="left" enable="Y" aid="0ynkKcoGKGiM"/>
+	<prop id="vbprop047.swf" name="vbprop047" placeable="1" facing="left" enable="Y" aid="0O-8_hmfUbwc"/>
+	<prop id="vbprop048.swf" name="vbprop048" placeable="1" facing="left" enable="Y" aid="08Yc3E4VYm24"/>
+	<prop id="vbprop049.swf" name="vbprop049" placeable="1" facing="left" enable="Y" aid="0dtHQMXdfEjM"/>
+	<prop id="vbprop050.swf" name="vbprop050" placeable="1" facing="left" enable="Y" aid="0KXPO7M1YcgQ"/>
+	<prop id="vbprop051.swf" name="vbprop051" placeable="1" facing="left" enable="Y" aid="06dj7O5CE7Gk"/>
+	<prop id="vbprop052.swf" name="vbprop052" placeable="1" facing="left" enable="Y" aid="0UY6tYb7nf4E"/>
+	<prop id="vbprop053.swf" name="vbprop053" placeable="1" facing="left" enable="Y" aid="0ai6NtMg6I5g"/>
+	<prop id="vbprop054.swf" name="vbprop054" placeable="1" facing="left" enable="Y" aid="0K5I8uhJqMxc"/>
+	<prop id="vbprop055.swf" name="vbprop055" placeable="1" facing="left" enable="Y" aid="0TEBDwjyFNhs"/>
+	<prop id="vbprop056.swf" name="vbprop056" placeable="1" facing="left" enable="Y" aid="0M-njv8T7bhc"/>
+	<prop id="vbprop057.swf" name="vbprop057" placeable="1" facing="left" enable="Y" aid="0Vd1biVxL4GQ"/>
+	<prop id="vbprop058.swf" name="vbprop058" placeable="1" facing="left" enable="Y" aid="0lseO6QD3kig"/>
+	<prop id="vbprop059.swf" name="vbprop059" placeable="1" facing="left" enable="Y" aid="0WqBkRa-Ax2A"/>
+	<prop id="vbprop060.swf" name="vbprop060" placeable="1" facing="left" enable="Y" aid="0oJ8gMqpsWOQ"/>
+	<!-- Eyes -->
+	<prop id="eye01_left.swf" name="eye01_left" placeable="1" facing="left" enable="Y" aid="0-id76XNRVjU"/>
+	<prop id="eye01_left_cam.swf" name="eye01_left_cam" placeable="1" facing="left" enable="Y" aid="0SDbm8SkA0No"/>
+	<prop id="eye02_left.swf" name="eye02_left" placeable="1" facing="left" enable="Y" aid="0-id76XNRVjU"/>
+	<prop id="eye02_left_cam.swf" name="eye02_left_cam" placeable="1" facing="left" enable="Y" aid="0a5qX-giEPDE"/>
+	<!-- Frames -->
+	<effect id="frame01.swf" name="frame01" type="ANIME" enable="Y" aid="0CShIR3bmIm0"/>
+	<effect id="frame02.swf" name="frame02" type="ANIME" enable="Y" aid="0Pyg8uLLlbrc"/>
+	<effect id="frame03.swf" name="frame03" type="ANIME" enable="Y" aid="0fvoe2F5dtSM"/>
+	<effect id="frame04.swf" name="frame04" type="ANIME" enable="Y" aid="0PrTqmNHArXY"/>
+	<effect id="frame05.swf" name="frame05" type="ANIME" enable="Y" aid="0CARbHeyOk4I"/>
+	<effect id="frame06.swf" name="frame06" type="ANIME" enable="Y" aid="0yujjljJJVHU"/>
+	<effect id="frame07.swf" name="frame07" type="ANIME" enable="Y" aid="0K28dOVxQ_io"/>
+	<effect id="frame08.swf" name="frame08" type="ANIME" enable="Y" aid="0K7qKvKOjU1w"/>
+	<effect id="frame09.swf" name="frame09" type="ANIME" enable="Y" aid="0pc_xJjopQ0A"/>
+	<effect id="frame10.swf" name="frame10" type="ANIME" enable="Y" aid="0pPrn3YSXTuc"/>
+	<effect id="frame11.swf" name="frame11" type="ANIME" enable="Y" aid="05U6EteoFaBo"/>
+	<effect id="frame12.swf" name="frame12" type="ANIME" enable="Y" aid="0FSMVOVafb-A"/>
+	<effect id="frame13.swf" name="frame13" type="ANIME" enable="Y" aid="0s7maoxK_yWc"/>
+	<effect id="frame14.swf" name="frame14" type="ANIME" enable="Y" aid="0ICxnPt-mF90"/>
+	<effect id="frame15.swf" name="frame15" type="ANIME" enable="Y" aid="05cTdmyWJEuo"/>
+	<effect id="vbframe001.swf" name="vbframe001" type="ANIME" enable="Y" aid="0ef3EyaU_u5k"/>
+	<effect id="vbframe002.swf" name="vbframe002" type="ANIME" enable="Y" aid="0Rx7_8C6PLj4"/>
+	<effect id="vbframe003.swf" name="vbframe003" type="ANIME" enable="Y" aid="0XPEtsmkYrFA"/>
+	<effect id="vbframe004.swf" name="vbframe004" type="ANIME" enable="Y" aid="09frIsbupEKo"/>
+	<effect id="vbframe005.swf" name="vbframe005" type="ANIME" enable="Y" aid="0ZynoD6-TpRc"/>
+	<effect id="vbframe006.swf" name="vbframe006" type="ANIME" enable="Y" aid="06LRsiQT5LEE"/>
+	<effect id="vbframe007.swf" name="vbframe007" type="ANIME" enable="Y" aid="0f2YgO1JXlwg"/>
+	<!-- Mouthes -->
+	<char id="mouth_01" name="mouth_01" thumb="mouth_01.swf" facing="left" default="mouth_01.swf" motion="mouth_01.swf" enable="y" aid="0LEvyXKdo0SA">
+		<action id="mouth_01.swf" name="mouth_01.swf" loop="Y" totalframe="50" enable="Y" aid="0LEvyXKdo0SA"/>
+	</char>
+	<char id="mouth_02" name="mouth_02" thumb="mouth_02.swf" facing="left" default="mouth_02.swf" motion="mouth_02.swf" enable="y" aid="00eoO45L4x2I">
+		<action id="mouth_02.swf" name="mouth_02.swf" loop="Y" totalframe="50" enable="Y" aid="00eoO45L4x2I"/>
+	</char>
+	<char id="mouth_01_cam" name="mouth_01_cam" thumb="mouth_01_cam.swf" facing="left" default="mouth_01_cam.swf" motion="mouth_01_cam.swf" enable="y" aid="0SK-0SHzCRTI">
+		<action id="mouth_01_cam.swf" name="mouth_01_cam.swf" loop="Y" totalframe="50" enable="Y" aid="0SK-0SHzCRTI"/>
+	</char>
+	<char id="mouth_02_cam" name="mouth_02_cam" thumb="mouth_02_cam.swf" facing="left" default="mouth_02_cam.swf" motion="mouth_02_cam.swf" enable="y" aid="06hYkvrMhltc">
+		<action id="mouth_02_cam.swf" name="mouth_02_cam.swf" loop="Y" totalframe="50" enable="Y" aid="06hYkvrMhltc"/>
+	</char>
+	<char id="xm_talk_01" name="xm_talk_01" thumb="xm_talk_01.swf" facing="left" default="xm_talk_01.swf" motion="xm_talk_01.swf" enable="y" aid="0EWVbDoEDnbw">
+		<action id="xm_talk_01.swf" name="xm_talk_01.swf" loop="Y" totalframe="50" enable="Y" aid="0EWVbDoEDnbw"/>
+	</char>
+	<char id="xm_talk_02" name="xm_talk_02" thumb="xm_talk_02.swf" facing="left" default="xm_talk_02.swf" motion="xm_talk_02.swf" enable="y" aid="0YRE3-ixqVyE">
+		<action id="xm_talk_02.swf" name="xm_talk_02.swf" loop="Y" totalframe="50" enable="Y" aid="0YRE3-ixqVyE"/>
+	</char>
+	<char id="xm_talk_03" name="xm_talk_03" thumb="xm_talk_03.swf" facing="left" default="xm_talk_03.swf" motion="xm_talk_03.swf" enable="y" aid="0I18DzA8aC78">
+		<action id="xm_talk_03.swf" name="xm_talk_03.swf" loop="Y" totalframe="50" enable="Y" aid="0I18DzA8aC78"/>
+	</char>
+	<char id="xm_male_01" name="xm_male_01" thumb="xm_male_01.swf" facing="left" default="xm_male_01.swf" motion="xm_male_01.swf" enable="y" aid="0qXR_vkl3NCs">
+		<action id="xm_male_01.swf" name="xm_male_01.swf" loop="Y" totalframe="50" enable="Y" aid="0qXR_vkl3NCs"/>
+	</char>
+	<char id="xm_male_02" name="xm_male_02" thumb="xm_male_02.swf" facing="left" default="xm_male_02.swf" motion="xm_male_02.swf" enable="y" aid="0TqMLoccNusM">
+		<action id="xm_male_02.swf" name="xm_male_02.swf" loop="Y" totalframe="50" enable="Y" aid="0TqMLoccNusM"/>
+	</char>
+	<char id="xm_smile_01" name="xm_smile_01" thumb="xm_smile_01.swf" facing="left" default="xm_smile_01.swf" motion="xm_smile_01.swf" enable="y" aid="0R6pYhvMFRd0">
+		<action id="xm_smile_01.swf" name="xm_smile_01.swf" loop="Y" totalframe="50" enable="Y" aid="0R6pYhvMFRd0"/>
+	</char>
+	<char id="xm_smile_02" name="xm_smile_02" thumb="xm_smile_02.swf" facing="left" default="xm_smile_02.swf" motion="xm_smile_02.swf" enable="y" aid="0ksAojK4So48">
+		<action id="xm_smile_02.swf" name="xm_smile_02.swf" loop="Y" totalframe="50" enable="Y" aid="0ksAojK4So48"/>
+	</char>
+	<char id="xm_smile_03" name="xm_smile_03" thumb="xm_smile_03.swf" facing="left" default="xm_smile_03.swf" motion="xm_smile_03.swf" enable="y" aid="0QULwMWJUlFA">
+		<action id="xm_smile_03.swf" name="xm_smile_03.swf" loop="Y" totalframe="50" enable="Y" aid="0QULwMWJUlFA"/>
+	</char>
+	<char id="xm_sad" name="xm_sad" thumb="xm_sad.swf" facing="left" default="xm_sad.swf" motion="xm_sad.swf" enable="y" aid="021DOW5N91ZM">
+		<action id="xm_sad.swf" name="xm_sad.swf" loop="Y" totalframe="50" enable="Y" aid="021DOW5N91ZM"/>
+	</char>
+	<char id="xm_joker" name="xm_joker" thumb="xm_joker.swf" facing="left" default="xm_joker.swf" motion="xm_joker.swf" enable="y" aid="0OmiUSIPsJhk">
+		<action id="xm_joker.swf" name="xm_joker.swf" loop="Y" totalframe="50" enable="Y" aid="0OmiUSIPsJhk"/>
+	</char>
+	<char id="xm_santa" name="xm_santa" thumb="xm_santa.swf" facing="left" default="xm_santa.swf" motion="xm_santa.swf" enable="y" aid="0HDmLwodbn0Y">
+		<action id="xm_santa.swf" name="xm_santa.swf" loop="Y" totalframe="50" enable="Y" aid="0HDmLwodbn0Y"/>
+	</char>
+	<char id="xm_tape" name="xm_tape" thumb="xm_tape.swf" facing="left" default="xm_tape.swf" motion="xm_tape.swf" enable="y" aid="0UvxD9ZZJyAk">
+		<action id="xm_tape.swf" name="xm_tape.swf" loop="Y" totalframe="50" enable="Y" aid="0UvxD9ZZJyAk"/>
+	</char>
+	<char id="xm_pacifier" name="xm_pacifier" thumb="xm_pacifier.swf" facing="left" default="xm_pacifier.swf" motion="xm_pacifier.swf" enable="y" aid="0RIPeX0_3548">
+		<action id="xm_pacifier.swf" name="xm_pacifier.swf" loop="Y" totalframe="50" enable="Y" aid="0RIPeX0_3548"/>
+	</char>
+	<char id="xm_paperman_01" name="xm_paperman_01" thumb="xm_paperman_01.swf" facing="left" default="xm_paperman_01.swf" motion="xm_paperman_01.swf" enable="y" aid="0oBVXbU0C48E">
+		<action id="xm_paperman_01.swf" name="xm_paperman_01.swf" loop="Y" totalframe="50" enable="Y" aid="0oBVXbU0C48E"/>
+	</char>
+	<char id="xm_paperman_02" name="xm_paperman_02" thumb="xm_paperman_02.swf" facing="left" default="xm_paperman_02.swf" motion="xm_paperman_02.swf" enable="y" aid="0xPIc2KSp8A8">
+		<action id="xm_paperman_02.swf" name="xm_paperman_02.swf" loop="Y" totalframe="50" enable="Y" aid="0xPIc2KSp8A8"/>
+	</char>
+	<char id="xm_paperman_03" name="xm_paperman_03" thumb="xm_paperman_03.swf" facing="left" default="xm_paperman_03.swf" motion="xm_paperman_03.swf" enable="y" aid="0Cl7yxEjFu7E">
+		<action id="xm_paperman_03.swf" name="xm_paperman_03.swf" loop="Y" totalframe="50" enable="Y" aid="0Cl7yxEjFu7E"/>
+	</char>
+	<char id="xm_deer" name="xm_deer" thumb="xm_deer.swf" facing="left" default="xm_deer.swf" motion="xm_deer.swf" enable="y" aid="0KNoJEgJSJDs">
+		<action id="xm_deer.swf" name="xm_deer.swf" loop="Y" totalframe="50" enable="Y" aid="0KNoJEgJSJDs"/>
+	</char>
+</theme>

@@ -593,7 +593,7 @@
       <aTran id="1" target="AVATOR138" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
     </aTranList>
   </scene>
-  <sound id="SOUND0" index="0" track="0" vol="1" tts="0">
+  <sound id="SOUND0" index="0" track="0" vol="0.25" tts="0">
     <sfile>common.Sunshine.mp3</sfile>
     <start>1</start>
     <stop>1440</stop>

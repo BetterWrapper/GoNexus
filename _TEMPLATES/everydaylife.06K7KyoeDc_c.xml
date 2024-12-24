@@ -1,30 +1,5 @@
-<film copyable="0" duration="13.5" published="1" pshare="1">
-  <meta>
-    <title><![CDATA[template4]]></title>
-    <tag><![CDATA[school]]></tag>
-    <hiddenTag><![CDATA[]]></hiddenTag>
-    <desc><![CDATA[]]></desc>
-    <mver><![CDATA[4]]></mver>
-    <studio>d7446f28669693f5b7a35d41831e43c3662c48bf</studio>
-    <thumbnail index="0"/>
-    <palette>
-      <color value="333333"/>
-      <color value="999999"/>
-      <color value="fbfbfb"/>
-      <color value="669999"/>
-      <color value="55bbaa"/>
-      <color value="7fbb11"/>
-      <color value="15709b"/>
-      <color value="9a5d1"/>
-      <color value="6ab8d6"/>
-      <color value="da2021"/>
-      <color value="fecd31"/>
-      <color value="28c6c1"/>
-      <color value="37444f"/>
-      <color value="0"/>
-    </palette>
-  </meta>
-  <scene id="SCENE0" adelay="12" lock="Y" index="0" color="16777215" guid="4D06D3D1-0A0B-F522-6C8D-3E15DF662822" combgId="custom.cbg_plane_cockpit">
+<film totalCamCount="2">
+  <scene isPartOfVideoStart="" adelay="12" lock="Y" color="16777215" combgId="custom.cbg_plane_cockpit">
     <bg id="cbg_plane_cockpit_BG348" index="0">
       <file>custom.cockpit_bg.swf</file>
     </bg>
@@ -64,12 +39,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE8" adelay="48" lock="Y" index="1" color="16777215" guid="C2B03184-9ECC-623B-4F13-ADD0C520FC6F" combgId="custom.cbg_plane_cockpit">
+  <scene isPartOfVideoStart="" adelay="48" lock="Y" color="16777215" guid="C2B03184-9ECC-623B-4F13-ADD0C520FC6F" combgId="custom.cbg_plane_cockpit">
     <bg id="cbg_plane_cockpit_BG348" index="0">
       <file>custom.cockpit_bg.swf</file>
     </bg>
     <char id="AVATOR362" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>377.7685735</x>
       <y>232.3384464</y>
       <xscale>1.1382042</xscale>
@@ -77,7 +52,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -120,12 +95,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE3" adelay="24" lock="Y" index="2" color="16777215" guid="E5A4334C-340D-06DB-ABD5-8843ED72B215">
+  <scene isPartOfVideoStart="" adelay="24" lock="Y" color="16777215">
     <bg id="cbg_plane_cockpit_BG348" index="0">
       <file>custom.cockpit_bg.swf</file>
     </bg>
     <char id="AVATOR362" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>377.7685735</x>
       <y>232.3384464</y>
       <xscale>1.1382042</xscale>
@@ -133,7 +108,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -176,12 +151,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE5" adelay="48" lock="Y" index="3" color="16777215" guid="AB69A3F0-EEB6-26E5-4091-98A3596DD5CF">
+  <scene charsTalking="" char_1_talking_cam_2="" lock="Y" color="16777215">
     <bg id="BG390" index="0">
       <file>custom.plane_blurred.png</file>
     </bg>
     <char id="AVATOR362" index="2" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>377.7685735</x>
       <y>232.3384464</y>
       <xscale>1.1382042</xscale>
@@ -189,7 +164,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -223,12 +198,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE6" adelay="48" lock="Y" index="4" color="16777215" guid="E3232FA9-6112-2598-0784-99B4EADF18A6">
+  <scene charsTalking="" char_2_talking_cam_2="" lock="Y" color="16777215">
     <bg id="BG390" index="0">
       <file>custom.plane_blurred.png</file>
     </bg>
     <char id="AVATOR362" index="2" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.xarms.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.xarms.xml</action>
       <x>377.8244059</x>
       <y>253.8172162</y>
       <xscale>1.1382042</xscale>
@@ -236,7 +211,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -270,12 +245,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE10" adelay="48" lock="Y" index="5" color="16777215" guid="19DE7BCC-1718-8001-4520-757EA7313D6A">
+  <scene charsTalking="" char_1_talking_cam_1="" lock="Y" color="16777215">
     <bg id="cbg_plane_cockpit_BG348" index="0">
       <file>custom.cockpit_bg.swf</file>
     </bg>
     <char id="AVATOR362" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>377.7685735</x>
       <y>232.3384464</y>
       <xscale>1.1382042</xscale>
@@ -283,7 +258,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -326,12 +301,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE11" adelay="48" lock="Y" index="6" color="16777215" guid="6B29DCF8-3DD1-851F-D02C-FC8D8828CFB7">
+  <scene charsTalking="" char_2_talking_cam_1="" lock="Y" color="16777215">
     <bg id="cbg_plane_cockpit_BG348" index="0">
       <file>custom.cockpit_bg.swf</file>
     </bg>
     <char id="AVATOR362" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>377.7685735</x>
       <y>232.3384464</y>
       <xscale>1.1382042</xscale>
@@ -339,7 +314,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -382,12 +357,12 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene id="SCENE12" adelay="48" lock="Y" index="7" color="16777215" guid="EF02D047-3F80-7CED-F945-E7F48290E7DD">
+  <scene isPartOfVideoEnd="" adelay="48" lock="Y" color="16777215">
     <bg id="cbg_plane_cockpit_BG348" index="0">
       <file>custom.cockpit_bg.swf</file>
     </bg>
     <char id="AVATOR362" index="3" raceCode="1">
-      <action face="1" motionface="1">ugc.b6b96c4.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum2.sit.xml</action>
       <x>377.7685735</x>
       <y>232.3384464</y>
       <xscale>1.1382042</xscale>
@@ -395,7 +370,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR360" index="4" raceCode="1">
-      <action face="1" motionface="1">ugc.8d1652a.sit.xml</action>
+      <action face="1" motionface="1">ugc.charIdNum1.sit.xml</action>
       <x>217.3864437</x>
       <y>211.9232394</y>
       <xscale>1.1382042</xscale>
@@ -446,4 +421,11 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
+  <sound id="SOUND0" index="0" track="0" vol="0.25" tts="0">
+    <sfile>common.joyful_2.mp3</sfile>
+    <start>1</start>
+    <stop>1044</stop>
+    <fadein duration="0" vol="0"/>
+    <fadeout duration="0" vol="0"/>
+  </sound>
 </film>

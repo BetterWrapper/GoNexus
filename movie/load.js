@@ -962,8 +962,86 @@ module.exports = function (req, res, url) {
 							f.enc_mid = data.enc_mid || `m-${fUtil.getNextFileId("movie-", ".xml")}`
 							const movieBase = await xml2js.parseStringPromise(fs.readFileSync(`./_TEMPLATES/movieBase.xml`));
 							const scenes2create = await xml2js.parseStringPromise(
-								fs.readFileSync(`./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.xml`)
+								fs.readFileSync(`./_TEMPLATES/${data.golite_theme}.${data.enc_tid}.xml`)
 							);
+							const zip = nodezip.create();
+							if (data.enc_tid == "0jSKjALMlvjk") {
+								const assetsPath = `./_TEMPLATES/${data.golite_theme}.0jSKjALMlvjk.assets`;
+								const tpEditor = await xml2js.parseStringPromise(fs.readFileSync(`${assetsPath}/tpeditor.xml`))
+								function findCharAid(aid) {
+									for (const i in tpEditor.theme) {
+										if (!tpEditor.theme[i] || !Array.isArray(tpEditor.theme[i])) continue;
+										const info = tpEditor.theme[i].find(i => i._attributes.aid == aid);
+										if (!info) continue;
+										info.type = i;
+										return info;
+									}
+								}
+								for (const scene of scenes2create.film.scene) {
+									const bgt = 'customBg';
+									let avatarIdCount = 5;
+									const counts = {};
+									if (scene.bg[0].file[0].endsWith(bgt)) {
+										scene.bg[0].file[0] = scene.bg[0].file[0].replace(bgt, f.opening_closing.opening_props.bg_aid)
+									}
+									const info = movie.addArray2ObjectWithNumbers(f.bg[f.opening_closing.opening_props.bg_aid]);
+									for (const l of info) {
+										const aray = [];
+										const noStrings = Object.keys(l).filter(
+											i => Array.isArray(movie.addArray2ObjectWithNumbers(l[i]))
+										)
+										for (const d of noStrings) {
+											for (const s of movie.addArray2ObjectWithNumbers(l[d])) aray.unshift(s);
+										}
+										for (const info2 of aray) {
+											const info3 = findCharAid(info2.aid);
+											if (!info3) continue;
+											if (info3.type == "effect") info3.type = "effectAsset";
+											scene[info3.type] = scene[info3.type] || [];
+											counts[info3.type] = counts[info3.type] || 1
+											const xmlInfo = {};
+											const filename = `tpeditor.${info3._attributes.thumb || info3._attributes.id}`;
+											const pieces = filename.split(".");
+											const ext = pieces.pop();
+											pieces[pieces.length - 1] += `.${ext}`;
+											const filepath = pieces.join("/");
+											pieces.splice(0, 1, "ugc")
+											switch (info3.type) {
+												case "char": {
+													xmlInfo._attributes = {
+														id: `AVATOR${avatarIdCount}`,
+														raceCode: 0
+													}
+													pieces.splice(1, 0, info3._attributes.id);
+													xmlInfo.action = [
+														{
+															_attributes: {
+																face: info2.face,
+																motionface: 1
+															},
+															_text: pieces.join(".")
+														}
+													]
+													break;
+												} case "prop": {
+													xmlInfo.file = pieces.join(".");
+													break;
+												}
+											}
+											pieces.splice(1, 0, info3.type);
+											fUtil.addToZip(zip, pieces.join("."), fs.readFileSync(`./static/qvm/swf/${filepath}`))
+											for (const i in info2) xmlInfo[i] = info2[i];
+											scene[info3.type][counts[info3.type] - 1] = movie.assignObjects({
+												_attributes: {
+													index: counts[info3.type]
+												}
+											}, [xmlInfo]);
+											counts[info3.type]++;
+											avatarIdCount++
+										}
+									}
+								}
+							}
 							movieBase.film.scene = [];
 							movieBase.film.sound = scenes2create.film.sound || [];
 							if (f.bg?.music) await new Promise((res, rej) => {
@@ -1013,7 +1091,7 @@ module.exports = function (req, res, url) {
 							});
 							const charNumbers = movie.assignObjects({}, f.characters);
 							const avatarIds = {};
-							const templatrSettingsPath = `./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.json`
+							const templatrSettingsPath = `./_TEMPLATES/${data.golite_theme}.${data.enc_tid}.json`
 							const settings = fs.existsSync(templatrSettingsPath) ? JSON.parse(fs.readFileSync(templatrSettingsPath)) : {};
 							let soundStartDelay = 0;
 							let defaultProp4head = 4;
@@ -1091,6 +1169,7 @@ module.exports = function (req, res, url) {
 							}
 							movieBase.film.linkage = [];
 							const facials = [];
+							let charNumCount = 0;
 							function getRandomNumber(min, max) {
 								return Math.floor(Math.random() * (max - min + 1)) + min;
 							}
@@ -1118,7 +1197,11 @@ module.exports = function (req, res, url) {
 									];
 									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarId}`);
 									let attr;
-									if (settings.applyJyveeLikeCameraLogic) {
+									if (
+										scenes2create.film._attributes.noCams == "true"
+										&& scenes2create.film._attributes.moreThan2Characters == "true"
+									) attr = 'charsTalking';
+									else if (settings.applyJyveeLikeCameraLogic) {
 										attr = `char_${script.char_num}_talking`;
 										if (settings.charCamScenes) {
 											for (const n of settings.charCamScenes) {
@@ -1131,11 +1214,15 @@ module.exports = function (req, res, url) {
 									} else attr = `char_${script.char_num}_talking_cam_${
 										getRandomNumber(1, Number(scenes2create.film._attributes.totalCamCount))
 									}`
+									console.log(attr);
 									const currentScene = scenes2create.film.scene.filter(i => i._attributes[attr] != undefined);
 									const json = movie.assignObjects({}, currentScene);
 									json._attributes.adelay = stop + 24;
-									delete json._attributes[attr] 
-									json._attributes[`char_${script.char_num}_talking`] = "";
+									if (
+										json.char[Number(script.char_num) - 1]
+										&& json.char[Number(script.char_num) - 1].head
+										&& script.facial[script.char_num] != "default"
+									) delete json.char[Number(script.char_num) - 1].head;
 									insertChar2Scene([json]);
 									movieBase.film.sound[soundLength] = {
 										_attributes: {
@@ -1212,10 +1299,16 @@ module.exports = function (req, res, url) {
 								}
 								pos = xml.indexOf('<scene charsTalking=', pos + 19);
 							}
-							const assetsPath = `./_TEMPLATES/${f.golite_theme}.${f.enc_tid}.assets`;
+							const assetsPath = `./_TEMPLATES/${data.golite_theme}.${data.enc_tid}.assets`;
 							if (fs.existsSync(assetsPath)) {
 								f.player_object.ext = "zip";
-								const ugc = await xml2js.parseStringPromise(fs.readFileSync(`${assetsPath}/ugc.xml`));
+								const ugc = fs.existsSync(`${assetsPath}/ugc.xml`) ? await xml2js.parseStringPromise(
+									fs.readFileSync(`${assetsPath}/ugc.xml`)
+								) : fs.existsSync(`${assetsPath}/tpeditor.xml`) ? await xml2js.parseStringPromise(
+									fs.readFileSync(`${assetsPath}/tpeditor.xml`)
+								) : {};
+								ugc.theme._attributes.id = "ugc";
+								ugc.theme._attributes.name = "ugc";
 								for (const i in ugc.theme) {
 									if (Array.isArray(ugc.theme[i])) for (const info of ugc.theme[i]) {
 										movie.templateAssets.set({
@@ -1227,19 +1320,21 @@ module.exports = function (req, res, url) {
 										})
 									}
 								}
-								const zip = await parse.packMovie(xml, {
+								const zip2 = await parse.packMovie(xml, {
 									returnObjectZip: true,
+									existingObjectZip: zip,
 									userId: session.get(req).data?.current_uid || ''
 								}, false, movie.templateAssets.set());
-								for (const file of fs.readdirSync(assetsPath)) if (!zip[file]) fUtil.addToZip(
-									zip, file, fs.readFileSync(`${assetsPath}/${file}`)
+								for (const file of fs.readdirSync(assetsPath)) if (!zip2[file]) fUtil.addToZip(
+									zip2, file, fs.readFileSync(`${assetsPath}/${file}`)
 								)
-								const ugc2 = await xml2js.parseStringPromise(zip['ugc.xml'].buffer);
-								fUtil.addToZip(zip, 'ugc.xml', jsonToXml(movie.assignObjects(ugc2, [ugc])));
-								fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await zip.zip());
+								const ugc2 = await xml2js.parseStringPromise(zip2['ugc.xml'].buffer);
+								if (ugc.theme) fUtil.addToZip(zip2, 'ugc.xml', jsonToXml(movie.assignObjects(ugc2, [ugc])));
+								fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await zip2.zip());
 							} else fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await parse.packMovie(xml, {
 								userId: session.get(req).data?.current_uid || '',
-								storePath4Parser: req.headers.origin + '/static/tommy/2010/store'
+								storePath4Parser: req.headers.origin + '/static/tommy/2010/store',
+								existingObjectZip: zip
 							}, false, movie.templateAssets.get()))
 							res.setHeader("Content-Type", "application/json");
 							res.end(JSON.stringify(f));
