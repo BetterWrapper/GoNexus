@@ -979,7 +979,6 @@ module.exports = function (req, res, url) {
 								}
 								for (const scene of scenes2create.film.scene) {
 									const bgt = 'customBg';
-									let avatarIdCount = 5;
 									const counts = {};
 									if (scene.bg[0].file[0].endsWith(bgt)) {
 										scene.bg[0].file[0] = scene.bg[0].file[0].replace(bgt, f.opening_closing.opening_props.bg_aid)
@@ -998,18 +997,25 @@ module.exports = function (req, res, url) {
 											if (!info3) continue;
 											if (info3.type == "effect") info3.type = "effectAsset";
 											scene[info3.type] = scene[info3.type] || [];
-											counts[info3.type] = counts[info3.type] || 1
-											const xmlInfo = {};
+											counts[info3.type] = counts[info3.type] || 0
+											const xmlInfo = {
+												_attributes: {
+													index: counts[info3.type] + 1
+												}
+											};
 											const filename = `tpeditor.${info3._attributes.thumb || info3._attributes.id}`;
 											const pieces = filename.split(".");
 											const ext = pieces.pop();
 											pieces[pieces.length - 1] += `.${ext}`;
 											const filepath = pieces.join("/");
-											pieces.splice(0, 1, "ugc")
+											pieces.splice(0, 1, "ugc");
+											delete info2.zindex;
+											delete info2.aid;
 											switch (info3.type) {
 												case "char": {
 													xmlInfo._attributes = {
-														id: `AVATOR${avatarIdCount}`,
+														index: counts.char + 5,
+														id: `AVATOR${counts.char + 5}`,
 														raceCode: 0
 													}
 													pieces.splice(1, 0, info3._attributes.id);
@@ -1022,22 +1028,26 @@ module.exports = function (req, res, url) {
 															_text: pieces.join(".")
 														}
 													]
+													delete info2.face;
 													break;
 												} case "prop": {
-													xmlInfo.file = pieces.join(".");
+													xmlInfo._attributes.id = `PROP${counts.prop}`;
+													break;
+												} case "effectAsset": {
+													xmlInfo._attributes.id = `EFFECT${counts.effectAsset}`;
+													xmlInfo.effect = {
+														_attributes: info3._attributes
+													}
 													break;
 												}
 											}
-											pieces.splice(1, 0, info3.type);
+											if (info3.type != "char") xmlInfo.file = pieces.join(".");
+											if (info3.type != "effectAsset") pieces.splice(1, 0, info3.type);
+											else pieces.splice(1, 0, "effect");
 											fUtil.addToZip(zip, pieces.join("."), fs.readFileSync(`./static/qvm/swf/${filepath}`))
 											for (const i in info2) xmlInfo[i] = info2[i];
-											scene[info3.type][counts[info3.type] - 1] = movie.assignObjects({
-												_attributes: {
-													index: counts[info3.type]
-												}
-											}, [xmlInfo]);
+											scene[info3.type][counts[info3.type]] = xmlInfo
 											counts[info3.type]++;
-											avatarIdCount++
 										}
 									}
 								}
@@ -1117,7 +1127,9 @@ module.exports = function (req, res, url) {
 												} else t = `ugc.charIdNum${charNumbers[id]}`;
 												if (char.action[0]._text.startsWith(t)) {
 													if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
-													char.action[0]._text = char.action[0]._text.replace(t, `ugc.${id}`);
+													const charId = settings.charFiles2UseForIds ? settings.charFiles2UseForIds[id] : id;
+													console.log(charId);
+													char.action[0]._text = char.action[0]._text.replace(t, `ugc.${charId}`);
 												}
 											}
 											const pieces = char.action[0]._text.split(".");

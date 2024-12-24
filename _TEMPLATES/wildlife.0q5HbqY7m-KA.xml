@@ -1,0 +1,203 @@
+<film totalCamCount="2">
+  <scene isPartOfVideoStart="" adelay="60" lock="N" color="16777215">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG132" index="0">
+      <file>ugc.17913531958522.swf</file>
+    </bg>
+    <char id="AVATOR133" index="1" raceCode="0">
+      <action face="-1" motionface="1">ugc.charIdNum1.swf</action>
+      <x>127.3123633</x>
+      <y>352.9460059</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR134" index="2" raceCode="0">
+      <action face="1" motionface="1">ugc.charIdNum2.swf</action>
+      <x>488.1514255</x>
+      <y>339.8216425</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+    <trans id="null" index="4">
+      <fx dur="12" type="fl.Blinds.out" ease="null" param="10,0"/>
+    </trans>
+  </scene>
+  <scene charsTalking="" char_1_talking_cam_1="" lock="Y" color="16777215">
+    <bg id="BG132" index="0">
+      <file>ugc.17913531958522.swf</file>
+    </bg>
+    <char id="AVATOR133" index="1" raceCode="0">
+      <action face="-1" motionface="1">ugc.charIdNum1.swf</action>
+      <x>127.3123633</x>
+      <y>352.9460059</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR134" index="2" raceCode="0">
+      <action face="1" motionface="1">ugc.charIdNum2.swf</action>
+      <x>488.1514255</x>
+      <y>339.8216425</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene charsTalking="" char_2_talking_cam_1="" lock="Y" color="16777215">
+    <bg id="BG132" index="0">
+      <file>ugc.17913531958522.swf</file>
+    </bg>
+    <char id="AVATOR133" index="1" raceCode="0">
+      <action face="-1" motionface="1">ugc.charIdNum1.swf</action>
+      <x>127.3123633</x>
+      <y>352.9460059</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR134" index="2" raceCode="0">
+      <action face="1" motionface="1">ugc.charIdNum2.swf</action>
+      <x>488.1514255</x>
+      <y>339.8216425</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene charsTalking="" char_1_talking_cam_2="" lock="N" color="16777215">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG132" index="0">
+      <file>ugc.17913531958522.swf</file>
+    </bg>
+    <char id="AVATOR133" index="1" raceCode="0">
+      <action face="-1" motionface="1">ugc.charIdNum1.swf</action>
+      <x>127.3123633</x>
+      <y>352.9460059</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR134" index="2" raceCode="0">
+      <action face="1" motionface="1">ugc.charIdNum2.swf</action>
+      <x>488.1514255</x>
+      <y>339.8216425</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="254.2419355" h="143.3" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>202.5303226</y>
+      <width>254.2419355</width>
+      <height>163.6393548</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene charsTalking="" char_2_talking_cam_2="" lock="N" color="16777215">
+    <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
+    <bg id="BG132" index="0">
+      <file>ugc.17913531958522.swf</file>
+    </bg>
+    <char id="AVATOR133" index="1" raceCode="0">
+      <action face="-1" motionface="1">ugc.charIdNum1.swf</action>
+      <x>127.3123633</x>
+      <y>352.9460059</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR134" index="2" raceCode="0">
+      <action face="1" motionface="1">ugc.charIdNum2.swf</action>
+      <x>488.1514255</x>
+      <y>339.8216425</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="254.2419355" h="143.3" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>342.7580645</x>
+      <y>178.4803226</y>
+      <width>254.2419355</width>
+      <height>163.6393548</height>
+      <speech>0</speech>
+    </effectAsset>
+    
+  </scene>
+  <scene isPartOfVideoEnd="" adelay="30" lock="Y" color="16777215">
+    <bg id="BG168" index="0">
+      <file>ugc.17913531958522.swf</file>
+    </bg>
+    <char id="AVATOR133" index="1" raceCode="0">
+      <action face="-1" motionface="1">ugc.charIdNum1.swf</action>
+      <x>127.3123633</x>
+      <y>352.9460059</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <char id="AVATOR134" index="2" raceCode="0">
+      <action face="1" motionface="1">ugc.charIdNum2.swf</action>
+      <x>488.1514255</x>
+      <y>339.8216425</y>
+      <xscale>0.7564999</xscale>
+      <yscale>0.7564999</yscale>
+      <rotation>0</rotation>
+    </char>
+    <effectAsset id="EFFECT0" themecode="common" index="3">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+  </scene>
+  <scene isPartOfVideoEnd="" adelay="30" lock="Y" index="5" color="0" guid="F5B8D0DB-A820-29B6-911D-38EDF35EDB55">
+    <effectAsset id="EFFECT23" themecode="common" index="1">
+      <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+      <x>47</x>
+      <y>24</y>
+      <width>550</width>
+      <height>354</height>
+      <speech>0</speech>
+    </effectAsset>
+    <trans id="null" index="1">
+      <fx dur="12" type="fl.Blinds.out" ease="null" param="10,"/>
+    </trans>
+  </scene>
+  <sound id="SOUND53" index="0" track="0" vol="1" tts="0">
+    <sfile>common.midi_music_loop_lullaby.mp3</sfile>
+    <start>1</start>
+    <stop>612</stop>
+    <fadein duration="0" vol="0"/>
+    <fadeout duration="0" vol="0"/>
+  </sound>
+</film>
