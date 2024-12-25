@@ -7,7 +7,7 @@ const apiKeys = {
 const xmldoc = require("xmldoc");
 const exec = require("child_process");
 const JSZip = require("jszip");
-const http = require("http");
+const express = require("express");
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
 const asset = require("./asset/main");
@@ -26,8 +26,6 @@ const chh = require("./character/head");
 const mvu = require("./movie/upload");
 const asu = require("./asset/upload");
 const com = require("./asset/community");
-const swf = require("./static/swf");
-const qvm = require("./static/qvm");
 const snd = require("./sound/save");
 const sn1 = require("./sound/load/old");
 const sn2 = require("./sound/load/2010");
@@ -55,7 +53,7 @@ const sdb = require("./school/db");
 const slg = require("./school/login");
 const gsd = require("./school/getting_started");
 const url = require("url");
-const path = require("path");
+const app = express();
 const discord = require("discord.js");
 const formidable = require("formidable");
 const session = require("./misc/session");
@@ -63,15 +61,13 @@ const functions = [
 	lcl,
 	mvL,
 	sn1, 
-	sn2,
-	qvm, 
+	sn2, 
 	tmp, 
 	ebd, 
 	pre, 
 	snd, 
 	fme, 
 	str, 
-	swf, 
 	tsl, 
 	pmc, 
 	asl, 
@@ -111,8 +107,9 @@ const {
 } = require("./movie/main");
 const { stdout, stderr } = require("process");
 let json = {};
-http
-	.createServer(async (req, res) => {
+app.use(express.static('./frontend'));
+app
+	.use(async (req, res) => {
 		try {
 			function checkFtAcc(data) {
 				https.request({

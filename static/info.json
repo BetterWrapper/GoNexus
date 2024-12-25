@@ -17,20 +17,7 @@
 				"Content-Type": "image/png"
 			},
 			"content": ""
-		},
-		"/js": {
-			"headers": {
-				"Content-Type": "text/javascript"
-			}
-		},
-		"/qvm_files": {},
-		"/lvm_files": {},
-		"/ui/fonts": {
-			"headers": {
-				"Content-Type": "application/font-woff; charset=UTF-8"
-			}
-		},
-		"/ui": {}
+		}
 	},
 	"POST": {
 		"/api_v2/studio_preference/get": {
