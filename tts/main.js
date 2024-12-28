@@ -74,32 +74,35 @@ module.exports = {
 			let flags = {};
 			if (!voice) return rej(`The voiceName ${voiceName} does not exist.`);
 			async function saveAsset(stream) {
-				res(await new Promise((res, rej) => {
-					const buffers = [];
-					stream.on("data", b => buffers.push(b)).on("end", () => {
-						try {
-							const buffer = Buffer.concat(buffers);
-							mp3Duration(buffer, (e, d) => {
-								const dur = d * 1e3;
-								if (e || !dur) return rej(e || "Unable to retrieve MP3 stream.");
-								res(noSave ? buffer : asset.save(buffer, {
-									type: "sound",
-									subtype: "tts",
-									published: 0,
-									title: `[${voice.desc}] ${text}`,
-									tags: "",
-									duration: dur,
-									downloadtype: "progressive",
-									ext: "mp3"
-								}, {
-									isTemplate: true
-								}))
-							});
-						} catch (e) {
-							rej(e);
-						}
-					}).on("error", rej);
-				}));
+				function c() {
+					return new Promise((res, rej) => {
+						const buffers = [];
+						stream.on("data", b => buffers.push(b)).on("end", () => {
+							try {
+								const buffer = Buffer.concat(buffers);
+								mp3Duration(buffer, (e, d) => {
+									const dur = d * 1e3;
+									if (e || !dur) return rej(e || "Unable to retrieve MP3 stream.");
+									res(noSave ? buffer : asset.save(buffer, {
+										type: "sound",
+										subtype: "tts",
+										published: 0,
+										title: `[${voice.desc}] ${text}`,
+										tags: "",
+										duration: dur,
+										downloadtype: "progressive",
+										ext: "mp3"
+									}, {
+										isTemplate: true
+									}))
+								});
+							} catch (e) {
+								rej(e);
+							}
+						}).on("error", rej);
+					});
+				}
+				c().then(res).catch(rej);
 			}
 			try {
 				switch (voice.source) {

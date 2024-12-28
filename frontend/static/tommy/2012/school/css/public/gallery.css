@@ -1,0 +1,450 @@
+.container {
+    width: 100%;
+    margin-top: 0
+}
+
+.content {
+    width: 100%
+}
+
+#footer {
+    background-image: url(../../img/footer/shadow_dark.gif)
+}
+
+#gallery-top {
+    width: 100%
+}
+
+#gallery-top .gallery-top-inside {
+    margin: 0 auto;
+    padding-bottom: 30px;
+    width: 960px;
+    position: relative
+}
+
+#gallery-bottom {
+    background: #333 url(../../img/common/img_grid_bg.gif) repeat 0 0;
+    width: 100%
+}
+
+#gallery-bottom .gallery-bottom-inside {
+    margin: 0 auto;
+    padding: 25px 0 75px;
+    width: 960px;
+    position: relative
+}
+
+#gallery-bottom h2 {
+    color: #999;
+    font-size: 18px;
+    padding: 0;
+    margin: 0 0 10px
+}
+
+#sub_menu {
+    background-color: #aaa;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 10px
+}
+
+#sub_menu.technology {
+    background-color: #5585ae
+}
+
+#sub_menu.language {
+    background-color: #e34469
+}
+
+#sub_menu.literature {
+    background-color: #b573de
+}
+
+#sub_menu.science {
+    background-color: #7ab315
+}
+
+#sub_menu.history {
+    background-color: #dd6739
+}
+
+#sub_menu.math {
+    background-color: #fc8800
+}
+
+#sub_menu.music {
+    background-color: #e0c300
+}
+
+#sub_menu.miscellaneous {
+    background-color: #3db6cc
+}
+
+#sub_menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 2px 15px;
+    margin: 0 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 15px
+}
+
+#sub_menu a:hover {
+    text-decoration: underline
+}
+
+#sub_menu a.on {
+    background-color: #858585
+}
+
+#sub_menu.technology a.on {
+    background-color: #376287
+}
+
+#sub_menu.language a.on {
+    background-color: #c6254b
+}
+
+#sub_menu.literature a.on {
+    background-color: #8f44bd
+}
+
+#sub_menu.science a.on {
+    background-color: #5d9200
+}
+
+#sub_menu.history a.on {
+    background-color: #ba3d17
+}
+
+#sub_menu.math a.on {
+    background-color: #fc4d00
+}
+
+#sub_menu.music a.on {
+    background-color: #c59e16
+}
+
+#sub_menu.miscellaneous a.on {
+    background-color: #2096ab
+}
+
+#category_tag {
+    color: #fff;
+    display: block;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 10px;
+    margin: 0 5px 0 0
+}
+
+.all .comment_block {
+    background-color: #aaa
+}
+
+#category_tag.technology,#movie_category.technology,.technology .comment_block {
+    background-color: #5585ae
+}
+
+#category_tag.language,#movie_category.language,.language .comment_block {
+    background-color: #e34469
+}
+
+#category_tag.literature,#movie_category.literature,.literature .comment_block {
+    background-color: #b573de
+}
+
+#category_tag.science,#movie_category.science,.science .comment_block {
+    background-color: #7ab315
+}
+
+#category_tag.history,#movie_category.history,.history .comment_block {
+    background-color: #dd6739
+}
+
+#category_tag.math,#movie_category.math,.math .comment_block {
+    background-color: #fc8800
+}
+
+#category_tag.music,#movie_category.music,.music .comment_block {
+    background-color: #e0c300
+}
+
+#category_tag.miscellaneous,#movie_category.miscellaneous,.miscellaneous .comment_block {
+    background-color: #3db6cc
+}
+
+#featured_animation {
+    margin: 20px 0 0
+}
+
+#featured_animation h3 {
+    color: #666;
+    font-size: 12px;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    padding: 0;
+    margin: 0
+}
+
+#featured_animation_c1 {
+    float: left;
+    width: 470px
+}
+
+#featured_animation_c2 {
+    float: right;
+    width: 400px
+}
+
+#featured_animation .info {
+    color: #666;
+    padding: 5px 0
+}
+
+#featured_animation .data {
+    float: right;
+    width: 120px
+}
+
+#featured_animation .data .likes,#featured_animation .data .views,#featured_animation .data .comments {
+    float: left;
+    font-size: 10px;
+    font-weight: bold;
+    padding-left: 20px;
+    width: 35px;
+    height: 14px;
+    line-height: 14px
+}
+
+#featured_animation .data .likes {
+    background: transparent url(../../img/common/icons/ico_recommend.png) no-repeat 0 0
+}
+
+#featured_animation .data .views {
+    background: transparent url(../../img/common/icons/ico_view.png) no-repeat 0 0
+}
+
+#featured_animation .data .comments {
+    background: transparent url(../../img/common/icons/ico_comment.png) no-repeat 0 0
+}
+
+#featured_comments .comment_block {
+    color: #fff;
+    padding: 10px;
+    margin: 5px 0 10px;
+    height: 45px;
+    overflow: hidden;
+    border-radius: 5px
+}
+
+#featured_comments .comment_user_thumb {
+    display: block;
+    float: left;
+    width: 40px;
+    margin: 0 10px 0 0
+}
+
+#movie_actions {
+    float: left;
+    width: 285px
+}
+
+.commentform textarea {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    font: 12px Trebuchet MS,Tahoma,sans-serif;
+    height: 90px;
+    width: 100%
+}
+
+.commentform button {
+    background-color: #6c8b35;
+    border: 0;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    padding: 2px 15px;
+    margin-top: 10px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px
+}
+
+.commentform button:hover {
+    background-color: #91bb46
+}
+
+.public_block_c1 {
+    float: left;
+    width: 520px
+}
+
+.public_block_c2 {
+    float: right;
+    width: 400px;
+    min-height: 700px
+}
+
+.empty_message {
+    font-size: 14px;
+    color: #808080
+}
+
+#gallery_block a {
+    color: #fff
+}
+
+.results {
+    color: #666;
+    float: left;
+    font-size: 10px;
+    padding: 0 10px 0 0;
+    margin: 0 10px 10px 0;
+    width: 110px
+}
+
+* html .results {
+    display: inline
+}
+
+.results a {
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold
+}
+
+.results .title {
+    display: block;
+    width: 110px;
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden
+}
+
+.results .thumbnail {
+    display: block;
+    height: 71px;
+    width: 110px
+}
+
+.results img {
+    height: 71px;
+    width: 110px;
+    vertical-align: top
+}
+
+.results .category,.movie_block .category {
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase
+}
+
+.results .category.technology,.movie_block .category.technology {
+    background-color: #5585ae
+}
+
+.results .category.language,.movie_block .category.language {
+    background-color: #e34469
+}
+
+.results .category.literature,.movie_block .category.literature {
+    background-color: #b573de
+}
+
+.results .category.science,.movie_block .category.science {
+    background-color: #7ab315
+}
+
+.results .category.history,.movie_block .category.history {
+    background-color: #dd6739
+}
+
+.results .category.math,.movie_block .category.math {
+    background-color: #fc8800
+}
+
+.results .category.music,.movie_block .category.music {
+    background-color: #e0c300
+}
+
+.results .category.miscellaneous,.movie_block .category.miscellaneous {
+    background-color: #3db6cc
+}
+
+.results .by {
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    width: 85px;
+    overflow: hidden
+}
+
+.results .duration {
+    float: right;
+    text-align: right;
+    width: 25px
+}
+
+.results .data div {
+    float: left;
+    padding-left: 20px;
+    height: 14px;
+    line-height: 14px;
+    width: 35px
+}
+
+.results .likes {
+    background: transparent url(../../img/common/icons/ico_recommend.png) no-repeat 0 0
+}
+
+.results .views {
+    background: transparent url(../../img/common/icons/ico_view.png) no-repeat 0 0
+}
+
+.movie_thumbnail img {
+    vertical-align: top
+}
+
+div.form_note {
+    color: #bbb;
+    float: left;
+    font-size: 15px;
+    height: 36px;
+    padding-top: 8px;
+    width: 365px
+}
+
+div#contactus_sent {
+    color: #666;
+    display: none;
+    float: left;
+    font-size: 20px;
+    padding: 100px 0 280px 20px;
+    text-align: center;
+    width: 540px
+}
+
+div.movie_detail {
+    float: left;
+    padding-left: 10px
+}
+
+#feedsmain {
+    color: #808080
+}
+
+.public_top_left {
+    float: left;
+    width: 70%
+}
+
+.public_top_right {
+    float: right;
+    width: 30%
+}

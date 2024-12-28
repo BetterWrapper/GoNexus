@@ -23,121 +23,63 @@
             <color value="37444f"/>
         </palette>
     </meta>
-    <scene adelay="60" lock="N" color="16777215" index="0" id="SCENE0">
-        <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
-        <bg id="BG132" index="0">
-            <file>ugc.17913531958522.swf</file>
+    <scene adelay="60" lock="Y" color="16777215" index="0" id="SCENE0">
+        <bg id="BG0" index="0">
+            <file>ugc.0759171361733624.png</file>
         </bg>
-        <char id="AVATOR133" index="1" raceCode="0">
-            <action face="-1" motionface="1">ugc.0csPN6Kdm044.swf</action>
-            <x>127.3123633</x>
-            <y>352.9460059</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
+        <char index="1" id="AVATOR0" raceCode="0">
+            <action face="1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>210.7</y>
+            <yscale>2</yscale>
             <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>524.1</x>
         </char>
-        <char id="AVATOR134" index="2" raceCode="0">
-            <action face="1" motionface="1">ugc.0lQsok3RqPM0.swf</action>
-            <x>488.1514255</x>
-            <y>339.8216425</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
+        <char index="4" id="AVATOR1" raceCode="0">
+            <action face="-1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>213.4</y>
+            <yscale>2</yscale>
             <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>379.2</x>
         </char>
-        <effectAsset id="EFFECT0" themecode="common" index="3">
-            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
-            <x>47</x>
-            <y>24</y>
-            <width>550</width>
-            <height>354</height>
-            <speech>0</speech>
-        </effectAsset>
-        <trans id="null" index="4">
-            <fx dur="12" type="fl.Blinds.out" ease="null" param="10,0"/>
-        </trans>
-    </scene>
-    <scene charsTalking="" char_1_talking_cam_2="" lock="N" color="16777215" adelay="25" index="1" id="SCENE1">
-        <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
-        <bg id="BG132" index="0">
-            <file>ugc.17913531958522.swf</file>
-        </bg>
-        <char id="AVATOR133" index="1" raceCode="0">
-            <action face="-1" motionface="1">ugc.0csPN6Kdm044.swf</action>
-            <x>127.3123633</x>
-            <y>352.9460059</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
+        <prop index="2" id="PROP0">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
             <rotation>0</rotation>
-        </char>
-        <char id="AVATOR134" index="2" raceCode="0">
-            <action face="1" motionface="1">ugc.0lQsok3RqPM0.swf</action>
-            <x>488.1514255</x>
-            <y>339.8216425</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
+            <xscale>2</xscale>
+            <x>564.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="3" id="PROP1">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
             <rotation>0</rotation>
-        </char>
-        <effectAsset id="EFFECT0" themecode="common" index="3">
-            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="false" isPan="true"/>
-            <x>47,47</x>
-            <y>24,194.6051613</y>
-            <width>550,267.3709677</width>
-            <height>354,172.0896774</height>
-            <speech>0</speech>
-        </effectAsset>
-    </scene>
-    <scene charsTalking="" char_2_talking_cam_2="" lock="Y" color="16777215" adelay="26" index="2" id="SCENE2">
-        <bg id="BG132" index="0">
-            <file>ugc.17913531958522.swf</file>
-        </bg>
-        <char id="AVATOR133" index="1" raceCode="0">
-            <action face="-1" motionface="1">ugc.0csPN6Kdm044.swf</action>
-            <x>127.3123633</x>
-            <y>352.9460059</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
+            <xscale>2</xscale>
+            <x>484.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="5" id="PROP2">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
             <rotation>0</rotation>
-        </char>
-        <char id="AVATOR134" index="2" raceCode="0">
-            <action face="1" motionface="1">ugc.0lQsok3RqPM0.swf</action>
-            <x>488.1514255</x>
-            <y>339.8216425</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
+            <xscale>2</xscale>
+            <x>419.2</x>
+            <face>-1</face>
+        </prop>
+        <prop index="6" id="PROP3">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
             <rotation>0</rotation>
-        </char>
-        <effectAsset id="EFFECT0" themecode="common" index="3">
-            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="false" isPan="true"/>
-            <x>47,204.0762712</x>
-            <y>24,118.8169492</y>
-            <width>550,392.9237288</width>
-            <height>354,252.9</height>
-            <speech>0</speech>
-            <st dur="30">1</st>
-            <et dur="0">150</et>
-        </effectAsset>
-    </scene>
-    <scene adelay="15" lock="Y" color="16777215" index="3" id="SCENE3">
-        <bg id="BG168" index="0">
-            <file>ugc.17913531958522.swf</file>
-        </bg>
-        <char id="AVATOR133" index="1" raceCode="0">
-            <action face="-1" motionface="1">ugc.0csPN6Kdm044.swf</action>
-            <x>127.3123633</x>
-            <y>352.9460059</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
-            <rotation>0</rotation>
-        </char>
-        <char id="AVATOR134" index="2" raceCode="0">
-            <action face="1" motionface="1">ugc.0lQsok3RqPM0.swf</action>
-            <x>488.1514255</x>
-            <y>339.8216425</y>
-            <xscale>0.7564999</xscale>
-            <yscale>0.7564999</yscale>
-            <rotation>0</rotation>
-        </char>
-        <effectAsset id="EFFECT0" themecode="common" index="3">
+            <xscale>2</xscale>
+            <x>339.2</x>
+            <face>-1</face>
+        </prop>
+        <effectAsset id="EFFECT0" themecode="common" index="7">
             <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
             <x>47</x>
             <y>24</y>
@@ -146,8 +88,63 @@
             <speech>0</speech>
         </effectAsset>
     </scene>
-    <scene adelay="15" lock="Y" color="0" index="4" id="SCENE4">
-        <effectAsset id="EFFECT23" themecode="common" index="1">
+    <scene charsTalking="" lock="Y" color="16777215" adelay="59" index="1" id="SCENE1">
+        <bg id="BG0" index="0">
+            <file>ugc.0759171361733624.png</file>
+        </bg>
+        <char index="1" id="AVATOR0" raceCode="0">
+            <action face="1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>210.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>524.1</x>
+        </char>
+        <char index="4" id="AVATOR1" raceCode="0">
+            <action face="-1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>213.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>379.2</x>
+        </char>
+        <prop index="2" id="PROP0">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>564.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="3" id="PROP1">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>484.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="5" id="PROP2">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>419.2</x>
+            <face>-1</face>
+        </prop>
+        <prop index="6" id="PROP3">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>339.2</x>
+            <face>-1</face>
+        </prop>
+        <effectAsset id="EFFECT0" themecode="common" index="7">
             <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
             <x>47</x>
             <y>24</y>
@@ -155,41 +152,168 @@
             <height>354</height>
             <speech>0</speech>
         </effectAsset>
-        <trans id="null" index="1">
-            <fx dur="12" type="fl.Blinds.out" ease="null" param="10,"/>
-        </trans>
     </scene>
-    <sound id="SOUND53" index="0" track="0" vol="0.25" tts="0">
-        <sfile>common.midi_music_loop_lullaby.mp3</sfile>
+    <scene charsTalking="" lock="Y" color="16777215" adelay="31" index="2" id="SCENE2">
+        <bg id="BG0" index="0">
+            <file>ugc.0759171361733624.png</file>
+        </bg>
+        <char index="1" id="AVATOR0" raceCode="0">
+            <action face="1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>210.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>524.1</x>
+        </char>
+        <char index="4" id="AVATOR1" raceCode="0">
+            <action face="-1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>213.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>379.2</x>
+        </char>
+        <prop index="2" id="PROP0">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>564.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="3" id="PROP1">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>484.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="5" id="PROP2">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>419.2</x>
+            <face>-1</face>
+        </prop>
+        <prop index="6" id="PROP3">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>339.2</x>
+            <face>-1</face>
+        </prop>
+        <effectAsset id="EFFECT0" themecode="common" index="7">
+            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <scene adelay="60" lock="Y" color="16777215" index="3" id="SCENE3">
+        <bg id="BG0" index="0">
+            <file>ugc.0759171361733624.png</file>
+        </bg>
+        <char index="1" id="AVATOR0" raceCode="0">
+            <action face="1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>210.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>524.1</x>
+        </char>
+        <char index="4" id="AVATOR1" raceCode="0">
+            <action face="-1" motionface="1">tpeditor.mouth_01.mouth_01.swf</action>
+            <y>213.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>379.2</x>
+        </char>
+        <prop index="2" id="PROP0">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>564.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="3" id="PROP1">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>140.7</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>484.1</x>
+            <face>1</face>
+        </prop>
+        <prop index="5" id="PROP2">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>419.2</x>
+            <face>-1</face>
+        </prop>
+        <prop index="6" id="PROP3">
+            <file>tpeditor.eye01_left.swf</file>
+            <y>143.4</y>
+            <yscale>2</yscale>
+            <rotation>0</rotation>
+            <xscale>2</xscale>
+            <x>339.2</x>
+            <face>-1</face>
+        </prop>
+        <effectAsset id="EFFECT0" themecode="common" index="7">
+            <effect x="0" y="0" w="550" h="310" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
+            <x>47</x>
+            <y>24</y>
+            <width>550</width>
+            <height>354</height>
+            <speech>0</speech>
+        </effectAsset>
+    </scene>
+    <sound id="SOUND0" index="0" track="0" vol="0.25" tts="0">
+        <sfile>common.Soul_Mate.mp3</sfile>
         <start>1</start>
-        <stop>612</stop>
+        <stop>1491</stop>
         <fadein duration="0" vol="0"/>
         <fadeout duration="0" vol="0"/>
     </sound>
     <sound id="SOUND1" index="1" track="0" vol="1" tts="1">
-        <sfile>ugc.05852507176875752.mp3</sfile>
+        <sfile>ugc.0365864146613629.mp3</sfile>
         <start>60</start>
-        <stop>61</stop>
+        <stop>95</stop>
         <fadein duration="0" vol="0"/>
         <fadeout duration="0" vol="0"/>
         <ttsdata>
             <type>tts</type>
-            <text>hello</text>
-            <voice>joey</voice>
+            <text>why make some mistakes?</text>
+            <voice>david</voice>
         </ttsdata>
     </sound>
     <sound id="SOUND2" index="2" track="0" vol="1" tts="1">
-        <sfile>ugc.07436514772402496.mp3</sfile>
-        <start>85</start>
-        <stop>87</stop>
+        <sfile>ugc.04832619299541683.mp3</sfile>
+        <start>119</start>
+        <stop>126</stop>
         <fadein duration="0" vol="0"/>
         <fadeout duration="0" vol="0"/>
         <ttsdata>
             <type>tts</type>
-            <text>hi</text>
-            <voice>simon</voice>
+            <text>i dono</text>
+            <voice>evan</voice>
         </ttsdata>
     </sound>
-    <linkage>SOUND1,SCENE1~~~,~~~AVATOR133</linkage>
-    <linkage>SOUND2,SCENE2~~~,~~~AVATOR134</linkage>
+    <linkage>SOUND1,SCENE1~~~,~~~AVATOR0</linkage>
+    <linkage>SOUND2,SCENE2~~~,~~~AVATOR1</linkage>
 </film>

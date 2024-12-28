@@ -1,0 +1,124 @@
+#movie-content {
+    position: relative
+}
+
+#movie-sharer {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    width: 60px
+}
+
+#movie-category {
+    background-color: #aaa;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 10px;
+    padding: 0 20px
+}
+
+#movie-category.technology {
+    background-color: #5585ae
+}
+
+#movie-category.language {
+    background-color: #e34469
+}
+
+#movie-category.literature {
+    background-color: #b573de
+}
+
+#movie-category.science {
+    background-color: #7ab315
+}
+
+#movie-category.history {
+    background-color: #dd6739
+}
+
+#movie-category.math {
+    background-color: #fc8800
+}
+
+#movie-category.music {
+    background-color: #e0c300
+}
+
+#movie-category.miscellaneous {
+    background-color: #3db6cc
+}
+
+#movie-category a {
+    color: #fff;
+    text-decoration: none;
+    padding: 2px 15px;
+    margin: 0 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 15px
+}
+
+#movie-category a:hover {
+    text-decoration: underline
+}
+
+#movie-category a.on {
+    background-color: #858585
+}
+
+#movie-category.technology a.on {
+    background-color: #376287
+}
+
+#movie-category.language a.on {
+    background-color: #c6254b
+}
+
+#movie-category.literature a.on {
+    background-color: #8f44bd
+}
+
+#movie-category.science a.on {
+    background-color: #5d9200
+}
+
+#movie-category.history a.on {
+    background-color: #ba3d17
+}
+
+#movie-category.math a.on {
+    background-color: #fc4d00
+}
+
+#movie-category.music a.on {
+    background-color: #c59e16
+}
+
+#movie-category.miscellaneous a.on {
+    background-color: #2096ab
+}
+
+.moviebasic .data {
+    float: right;
+    padding-top: 8px
+}
+
+.moviebasic .data .likes,.moviebasic .data .views {
+    background: transparent url(../img/common/icons/ico_recommend.png) no-repeat 0 0;
+    float: left;
+    font-size: 10px;
+    font-weight: bold;
+    padding-left: 20px;
+    margin-left: 20px;
+    height: 14px;
+    line-height: 14px
+}
+
+.moviebasic .data .views {
+    background: transparent url(../img/common/icons/ico_view.png) no-repeat 0 0
+}

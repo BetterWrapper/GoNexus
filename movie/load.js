@@ -954,7 +954,7 @@ module.exports = function (req, res, url) {
 								isEmbed: 1,
 								isWide: 0,
 								ut: 23,
-								s3base: "/movie_thumbs",
+								appCode: "go",
 								apiserver: "/",
 								storePath: "/static/store/<store>",
 								clientThemePath: "/static/<client_theme>",
@@ -966,8 +966,7 @@ module.exports = function (req, res, url) {
 							);
 							const zip = nodezip.create();
 							if (data.enc_tid == "0jSKjALMlvjk") {
-								const assetsPath = `./_TEMPLATES/${data.golite_theme}.0jSKjALMlvjk.assets`;
-								const tpEditor = await xml2js.parseStringPromise(fs.readFileSync(`${assetsPath}/tpeditor.xml`))
+								const tpEditor = await xml2js.parseStringPromise(fs.readFileSync(`./frontend/static/store/tpeditor/theme.xml`))
 								function findCharAid(aid) {
 									for (const i in tpEditor.theme) {
 										if (!tpEditor.theme[i] || !Array.isArray(tpEditor.theme[i])) continue;
@@ -979,7 +978,9 @@ module.exports = function (req, res, url) {
 								}
 								for (const scene of scenes2create.film.scene) {
 									const bgt = 'customBg';
-									const counts = {};
+									const counts = {
+										global: 1
+									};
 									if (scene.bg[0].file[0].endsWith(bgt)) {
 										scene.bg[0].file[0] = scene.bg[0].file[0].replace(bgt, f.opening_closing.opening_props.bg_aid)
 									}
@@ -1000,7 +1001,7 @@ module.exports = function (req, res, url) {
 											counts[info3.type] = counts[info3.type] || 0
 											const xmlInfo = {
 												_attributes: {
-													index: counts[info3.type] + 1
+													index: counts.global
 												}
 											};
 											const filename = `tpeditor.${info3._attributes.thumb || info3._attributes.id}`;
@@ -1008,16 +1009,14 @@ module.exports = function (req, res, url) {
 											const ext = pieces.pop();
 											pieces[pieces.length - 1] += `.${ext}`;
 											const filepath = pieces.join("/");
-											pieces.splice(0, 1, "ugc");
 											delete info2.zindex;
 											delete info2.aid;
 											switch (info3.type) {
 												case "char": {
-													xmlInfo._attributes = {
-														index: counts.char + 5,
-														id: `AVATOR${counts.char + 5}`,
+													Object.assign(xmlInfo._attributes, {
+														id: `AVATOR${counts.char}`,
 														raceCode: 0
-													}
+													});
 													pieces.splice(1, 0, info3._attributes.id);
 													xmlInfo.action = [
 														{
@@ -1044,61 +1043,82 @@ module.exports = function (req, res, url) {
 											if (info3.type != "char") xmlInfo.file = pieces.join(".");
 											if (info3.type != "effectAsset") pieces.splice(1, 0, info3.type);
 											else pieces.splice(1, 0, "effect");
-											fUtil.addToZip(zip, pieces.join("."), fs.readFileSync(`./static/qvm/swf/${filepath}`))
+											fUtil.addToZip(zip, pieces.join("."), fs.readFileSync(`./frontend/static/qvm/swf/${filepath}`))
 											for (const i in info2) xmlInfo[i] = info2[i];
-											scene[info3.type][counts[info3.type]] = xmlInfo
+											scene[info3.type][counts[info3.type]] = xmlInfo;
 											counts[info3.type]++;
+											counts.global++
 										}
 									}
+									scene.effectAsset = scene.effectAsset || [];
+									scene.effectAsset.unshift({
+										_attributes: {
+											id: `EFFECT${counts.effectAsset ? counts.effectAsset : 0}`,
+											themecode: 'common',
+											index: counts.global
+										},
+										effect: {
+											_attributes: {
+												x: 0,
+												y: 0,
+												w: 550,
+												h: 310,
+												rotate: 0,
+												id: "cut",
+												type: "ZOOM",
+												isCut: true,
+												isPan: false
+											}
+										},
+										x: 47,
+										y: 24,
+										width: 550,
+										height: 354,
+										speech: 0
+									});
 								}
 							}
 							movieBase.film.scene = [];
 							movieBase.film.sound = scenes2create.film.sound || [];
-							if (f.bg?.music) await new Promise((res, rej) => {
+							if (f.bg?.music && !f.bg.music.endsWith("nosound")) {
 								const pieces = f.bg.music.split(".");
 								const ext = pieces.pop();
 								pieces[pieces.length - 1] += `.${ext}`;
 								pieces.splice(1, 0, "sound");
-								https.get(`${process.env.STORE_URL2}/${pieces.join("/")}`, d => {
-									const buffers = [];
-									d.on("data", i => buffers.push(i)).on("end", async () => {
-										const buffer = Buffer.concat(buffers);
-										const duration = await fUtil.mp3Duration(buffer);
-										let stop = Math.round(((Math.round(duration * 132) / 666) / 8.1 - 7) - 8);
-										if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1))
-										pieces.splice(1, 1);
-										movieBase.film.sound.unshift({
+								const buffer = fs.readFileSync(`./frontend/static/store/${pieces.join("/")}`)
+								const duration = await fUtil.mp3Duration(buffer);
+								let stop = Math.round(((Math.round(duration * 132) / 666) / (8.1 - 7)) - 6);
+								if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1))
+								pieces.splice(1, 1);
+								movieBase.film.sound.unshift({
+									_attributes: {
+										id: `SOUND0`,
+										index: 0,
+										track: 0,
+										vol: 0.25,
+										tts: 0
+									},
+									sfile: [pieces.join(".")],
+									start: [1],
+									stop: [stop + 1],
+									fadein: [
+										{
 											_attributes: {
-												id: `SOUND0`,
-												index: 0,
-												track: 0,
-												vol: 0.25,
-												tts: 0
-											},
-											sfile: [pieces.join(".")],
-											start: [1],
-											stop: [stop + 1],
-											fadein: [
-												{
-													_attributes: {
-														duration: 0,
-														vol: 0
-													}
-												}
-											],
-											fadeout: [
-												{
-													_attributes: {
-														duration: 0,
-														vol: 0
-													}
-												}
-											]
-										});
-										res();
-									}).on("error", rej);
-								}).on("error", rej)
-							});
+												duration: 0,
+												vol: 0
+											}
+										}
+									],
+									fadeout: [
+										{
+											_attributes: {
+												duration: 0,
+												vol: 0
+											}
+										}
+									]
+								});
+							}
 							const charNumbers = movie.assignObjects({}, f.characters);
 							const avatarIds = {};
 							const templatrSettingsPath = `./_TEMPLATES/${data.golite_theme}.${data.enc_tid}.json`
@@ -1201,7 +1221,7 @@ module.exports = function (req, res, url) {
 									const soundLength = movieBase.film.sound.length;
 									const prevSoundInfo = movieBase.film.sound[soundLength - 1];
 									const start = prevSoundInfo?._attributes.tts == 1 ? prevSoundInfo.stop[0] + 24 : soundStartDelay;
-									let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 7);
+									let stop = Math.round(((Math.round(meta.duration * 132) / 666) / 8.1 - 7) - 6);
 									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1))
 									const sceneLength = movieBase.film.scene.length;
 									const avatarId = settings.includedChar == script.cid ? settings.includedCharAvatarId : avatarIds[
@@ -1209,10 +1229,7 @@ module.exports = function (req, res, url) {
 									];
 									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarId}`);
 									let attr;
-									if (
-										scenes2create.film._attributes.noCams == "true"
-										&& scenes2create.film._attributes.moreThan2Characters == "true"
-									) attr = 'charsTalking';
+									if (settings.willHaveMoreThan2Chars) attr = 'charsTalking';
 									else if (settings.applyJyveeLikeCameraLogic) {
 										attr = `char_${script.char_num}_talking`;
 										if (settings.charCamScenes) {
@@ -1314,13 +1331,7 @@ module.exports = function (req, res, url) {
 							const assetsPath = `./_TEMPLATES/${data.golite_theme}.${data.enc_tid}.assets`;
 							if (fs.existsSync(assetsPath)) {
 								f.player_object.ext = "zip";
-								const ugc = fs.existsSync(`${assetsPath}/ugc.xml`) ? await xml2js.parseStringPromise(
-									fs.readFileSync(`${assetsPath}/ugc.xml`)
-								) : fs.existsSync(`${assetsPath}/tpeditor.xml`) ? await xml2js.parseStringPromise(
-									fs.readFileSync(`${assetsPath}/tpeditor.xml`)
-								) : {};
-								ugc.theme._attributes.id = "ugc";
-								ugc.theme._attributes.name = "ugc";
+								const ugc = await xml2js.parseStringPromise(fs.readFileSync(`${assetsPath}/ugc.xml`))
 								for (const i in ugc.theme) {
 									if (Array.isArray(ugc.theme[i])) for (const info of ugc.theme[i]) {
 										movie.templateAssets.set({
@@ -1345,7 +1356,6 @@ module.exports = function (req, res, url) {
 								fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await zip2.zip());
 							} else fs.writeFileSync(`./previews/${f.player_object.filename}.zip`, await parse.packMovie(xml, {
 								userId: session.get(req).data?.current_uid || '',
-								storePath4Parser: req.headers.origin + '/static/tommy/2010/store',
 								existingObjectZip: zip
 							}, false, movie.templateAssets.get()))
 							res.setHeader("Content-Type", "application/json");

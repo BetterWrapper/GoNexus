@@ -1,7 +1,5 @@
 {
-	"SWF_URL": "/static/0b2b56fdb66bdbfd/animation",
+	"SWF_URL": "/static/animation",
 	"STORE_URL": "/static/store",
-	"CLIENT_URL": "/static/0b2b56fdb66bdbfd",
-	"CLIENT_URL2": "https://goanimate-wrapper.github.io/GoAnimate-Assets/static/ad44370a650793d9",
-	"STORE_URL2": "https://goanimate-wrapper.github.io/GoAnimate-Assets/store/3a981f5cb2739137"
+	"CLIENT_URL": "/static/ad44370a650793d9"
 }

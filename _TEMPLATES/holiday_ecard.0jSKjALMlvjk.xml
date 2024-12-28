@@ -1,16 +1,16 @@
-<film noCams="true" moreThan2Characters="true">
-  <scene isPartOfVideoStart="" adelay="60" lock="Y">
-    <bg bgId="BG0" index="0">
+<film>
+  <scene isPartOfVideoStart="" adelay="60" lock="Y" color="16777215">
+    <bg id="BG0" index="0">
       <file>ugc.customBg</file>
     </bg>
   </scene>
-  <scene charsTalking="" lock="Y">
-    <bg bgId="BG0" index="0">
+  <scene charsTalking="" lock="Y" color="16777215">
+    <bg id="BG0" index="0">
       <file>ugc.customBg</file>
     </bg>
   </scene>
-  <scene isPartOfVideoEnd="" adelay="60" lock="Y">
-    <bg bgId="BG0" index="0">
+  <scene isPartOfVideoEnd="" adelay="60" lock="Y" color="16777215">
+    <bg id="BG0" index="0">
       <file>ugc.customBg</file>
     </bg>
   </scene>

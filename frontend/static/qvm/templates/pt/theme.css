@@ -57,7 +57,7 @@ ul {
 }
 
 .item_selector .select_button {
-  float: center;
+  float: left;
 }
 
 .item_selector .items {

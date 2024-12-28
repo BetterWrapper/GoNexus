@@ -1,0 +1,579 @@
+div.main_block {
+    float: left;
+    padding: 5px 0 25px;
+    width: 100%
+}
+
+div.movie_block {
+    float: left;
+    width: 460px;
+    padding: 15px 20px
+}
+
+div.movie_block div.movie_thumbnail {
+    float: left;
+    background-color: #EEE;
+    border: 1px solid #cecece;
+    padding: 3px 3px 20px 3px;
+    width: 115px;
+    height: 74px;
+    position: relative
+}
+
+div.movie_draft {
+    bottom: 1px;
+    color: #898989;
+    font-size: 14px;
+    font-weight: bold;
+    left: 5px;
+    position: absolute
+}
+
+div.movie_detail {
+    float: left;
+    padding: 3px 0 0 20px;
+    width: 310px
+}
+
+div.movie_text {
+    float: left;
+    padding-bottom: 10px;
+    width: 290px
+}
+
+div.moviebasic {
+    margin: 10px auto 0;
+    width: 620px
+}
+
+div.moviebasic h1 {
+    font-size: 16px;
+    margin: 6px 0
+}
+
+div.moviebasic div.player {
+    margin-bottom: 8px
+}
+
+div.moviebasic span.hint {
+    font-style: italic;
+    color: #a0a0a0
+}
+
+div.moviebuttonbar {
+    margin: 0 auto;
+    width: 550px
+}
+
+div.moviebuttonbar div.green_button {
+    margin-right: 5px
+}
+
+div.grey_background {
+    background-color: #eee;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    -moz-border-radius-bottomleft: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-left-radius: 5px;
+    margin: 0 auto
+}
+
+div.grey_top_half {
+    background-color: #eee;
+    padding: 10px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0 auto;
+    float: right
+}
+
+div.downloadbar {
+    float: right;
+    overflow: auto
+}
+
+div.movie_right_block {
+    float: left;
+    width: 220px;
+    padding: 5px
+}
+
+div.movie_right_thumbnail {
+    float: left;
+    background-color: #EEE;
+    border: 1px solid #cecece;
+    width: 65px;
+    height: 42px
+}
+
+div.movie_right_detail {
+    float: left;
+    padding: 0 0 0 10px;
+    width: 130px
+}
+
+div.movie_right_text {
+    float: left;
+    padding-bottom: 6px;
+    width: 130px
+}
+
+div.movie_gray_block {
+    float: left;
+    width: 460px;
+    padding: 15px 20px;
+    background-color: #DDD;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    position: relative
+}
+
+div.movie_gray_block div.movie_thumbnail {
+    float: left;
+    background-color: #FFF;
+    border: 1px solid #cecece;
+    padding: 3px 3px 20px 3px;
+    width: 115px;
+    height: 74px;
+    position: relative
+}
+
+.movie_green_button {
+    font-size: 14px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 15px;
+    border-right: solid 1px #4f514d;
+    border-bottom: solid 1px #4f514d;
+    border-top: solid 1px #fcfcfc;
+    border-left: solid 1px #fcfcfc;
+    background-color: #84a54a;
+    color: #fff;
+    position: absolute;
+    bottom: 10px;
+    right: 10px
+}
+
+.movie_green_button:hover {
+    font-size: 14px;
+    text-decoration: underline;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 15px;
+    background-color: #bfde86;
+    color: #fff;
+    position: absolute;
+    bottom: 10px;
+    right: 10px
+}
+
+.movie_green_button a:link,.movie_green_button a:visited {
+    color: #fff;
+    text-decoration: none
+}
+
+.movie_green_button a:hover,.movie_green_button a:active {
+    color: #fff;
+    text-decoration: underline
+}
+
+.moviebuttonbar .left_side {
+    float: left;
+    font-weight: bold;
+    line-height: 27px
+}
+
+.moviebuttonbar .left_side span {
+    color: #8baa4d
+}
+
+.moviebuttonbar .right_side {
+    float: right
+}
+
+.moviebuttonbar .right_side #publish_group_button {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 15px
+}
+
+.moviebuttonbar hr {
+    margin: 12px 0
+}
+
+.moviebuttonbar .subtitles {
+    font-weight: bold;
+    margin: 5px 0
+}
+
+#promotion_message {
+    background-color: #800a37;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 10px;
+    text-align: center;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px
+}
+
+#promotion_message a {
+    color: #fc0
+}
+
+#publish_button_student,#unpublish_button_student {
+    background-color: #a3b779;
+    font-size: 14px;
+    float: right;
+    display: block;
+    padding: 5px 15px;
+    position: relative;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    color: #fff;
+    text-shadow: -0.5px -0.5px .5px #666;
+    filter: dropshadow(color=#000000,offx=-1,offy=-1);
+    background-image: -ms-linear-gradient(top,#a3b779 30%,#85a153 100%);
+    background-image: -moz-linear-gradient(top,#a3b779 30%,#85a153 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0.3,#a3b779),color-stop(1,#85a153));
+    background-image: -webkit-linear-gradient(top,#a3b779 30%,#85a153 100%);
+    background-image: linear-gradient(top,#a3b779 30%,#85a153 100%);
+    cursor: pointer;
+    box-shadow: 0 2px 2px #666
+}
+
+#publish_button_student,#unpublish_button_student {
+    float: left;
+    text-decoration: none;
+    background-color: #bfde86;
+    color: #5b5b5b
+}
+
+#publish_button_student:hover,#unpublish_button_student:hover {
+    text-decoration: underline;
+    background-color: #e9ffc0;
+    color: #5b5b5b
+}
+
+.teacher_command {
+    padding-top: 20px;
+    padding-bottom: 50px
+}
+
+.moviebasic .actions {
+    margin: 10px 0
+}
+
+.top_menu {
+    text-align: center;
+    line-height: 20px
+}
+
+#recommend_button {
+    color: #777;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    text-transform: uppercase;
+    display: inline-block;
+    cursor: pointer
+}
+
+.recommend_icon {
+    background: url("../img/common/icons/ico_recommend.png") no-repeat scroll 0 2px transparent;
+    display: inline-block;
+    width: 20px;
+    height: 15px
+}
+
+#recommend_button:hover {
+    color: #84aa64
+}
+
+#recommend_button:hover .recommend_icon {
+    background-position: 0 -13px
+}
+
+#unrecommend_button {
+    color: #777;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    text-transform: uppercase;
+    display: inline-block;
+    cursor: pointer
+}
+
+#unrecommend_button:hover {
+    color: #84aa64
+}
+
+#unrecommend_button .recommend_icon {
+    background-position: 0 2px
+}
+
+#unrecommend_button:hover .recommend_icon {
+    background-position: 0 -43px
+}
+
+.recommend_num {
+    font-weight: bold;
+    color: #777;
+    font-size: 13px;
+    padding-right: 7px;
+    display: inline-block;
+    vertical-align: bottom;
+    line-height: 23px
+}
+
+.recommend_div {
+    float: right
+}
+
+#inappropriate {
+    background: #3f3f3f url(../img/common/icons/ico_flag.gif) no-repeat center 0;
+    border: 1px solid #999;
+    color: #fff;
+    display: block;
+    float: right;
+    width: 24px;
+    height: 18px;
+    padding: 3px 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px
+}
+
+#inappropriate:hover {
+    background-position: center -24px
+}
+
+#inappropriate span {
+    display: none
+}
+
+#moviecommentfrm .title {
+    color: #666;
+    margin: 5px 0;
+    font-size: 14px;
+    font-weight: bold
+}
+
+#movie_embed {
+    background-color: #fff;
+    padding: 5px;
+    margin-bottom: 10px;
+    text-align: center
+}
+
+#movie_embed div {
+    float: left;
+    margin: 0 10px
+}
+
+#movie_embed input {
+    color: #666;
+    padding: 3px;
+    width: 205px;
+    border: 1px solid #ccc
+}
+
+#movie_select_group {
+    background-color: #eee;
+    font-size: 14px;
+    height: 205px;
+    width: 436px
+}
+
+#movie_select_group .title {
+    font-weight: bold;
+    margin: 10px 0;
+    padding: 30px 0 10px
+}
+
+#movie_select_group .bottom {
+    color: #666;
+    font-size: 12px;
+    letter-spacing: -0.3px;
+    line-height: 15px;
+    padding: 26px 15px;
+    text-align: left
+}
+
+#movie_select_group hr {
+    margin-top: 15px
+}
+
+#movie_select_group select {
+    width: 200px
+}
+
+#movie_select_group button {
+    background-color: #ff7800;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0 20px;
+    padding: 5px
+}
+
+a.green_button {
+    color: #fff
+}
+
+a.control_button {
+    margin-right: 5px;
+    color: #777;
+    font-size: 14px
+}
+
+.control_button:hover {
+    color: #84aa64;
+    text-decoration: none
+}
+
+.control_button:hover .edit_icon,.control_button:hover .copy_icon,.control_button:hover .delete_icon {
+    background-position: 0 -15px
+}
+
+.edit_icon {
+    background-image: url(../img/ico_edit.gif)
+}
+
+.copy_icon {
+    background-image: url(../img/ico_copy.gif)
+}
+
+.delete_icon {
+    background-image: url(../img/ico_delete.gif)
+}
+
+.edit_icon,.copy_icon,.delete_icon {
+    height: 15px;
+    width: 20px
+}
+
+.button_seperator {
+    color: #777
+}
+
+a.b_pending {
+    color: #888;
+    background-color: #bbb;
+    background-image: none
+}
+
+a.b_pending:hover {
+    color: #888;
+    background-color: #bbb;
+    text-decoration: none
+}
+
+a.b_completed {
+    color: #fff;
+    background-color: #90c500;
+    background-image: none
+}
+
+a.b_completed:hover {
+    background-color: #ade416
+}
+
+a.b_disabled {
+    color: #888;
+    background-color: #bbb;
+    text-decoration: none;
+    cursor: pointer
+}
+
+a.b_disabled:hover {
+    color: #888;
+    background-color: #bbb;
+    text-decoration: none;
+    cursor: pointer
+}
+
+a.buttonorange {
+    color: #ffba00
+}
+
+.publish_dropdown {
+    border-radius: 3px;
+    box-shadow: 0 2px 2px #666;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    min-width: 140px;
+    padding: 5px 33px 5px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    background: #666;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#999999',endColorstr='#666666');
+    background: -webkit-gradient(linear,left top,left bottom,from(#999),to(#666));
+    background: -moz-linear-gradient(top,#999,#666);
+    position: relative
+}
+
+.publish_dropdown:hover {
+    background: #cf4f8b;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bbbbbb',endColorstr='#999999');
+    background: -webkit-gradient(linear,left top,left bottom,from(#bbb),to(#999));
+    background: -moz-linear-gradient(top,#bbb,#999);
+    box-shadow: 0 2px 2px #666;
+    color: #fff
+}
+
+.publish_dropdown-options {
+    display: none;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 26px;
+    z-index: 10000;
+    border-top: solid 1px #666
+}
+
+.publish_dropdown-options a {
+    background-color: #ccc;
+    color: #666;
+    display: block;
+    text-align: left;
+    padding: 4px 8px;
+    margin: 0 4px
+}
+
+.publish_dropdown:hover .publish_dropdown-options {
+    display: block
+}
+
+.publish_dropdown-arrow {
+    position: absolute;
+    right: 7px;
+    top: 11px;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid #fff
+}
+
+.unpublish_button {
+    vertical-align: middle
+}

@@ -10,8 +10,6 @@ const tempbuffer = require("../../tts/tempBuffer");
 const tts = require("../../tts/main");
 const fUtil = require("../../misc/file");
 const loadPost = require("../../misc/post_body");
-const session = require("../../misc/session");
-const https = require("https");
 function guyResponse(guy, res, data, req) {
 	console.log(guy.success);
 	if (guy.success == true) {
@@ -20,45 +18,43 @@ function guyResponse(guy, res, data, req) {
 			player_object: {
 				ext: "xml",
 				filename: "qvm",
-				storePath4Parser: req.headers.origin + '/static/tommy/2010/store',
-				is_golite_preview: 1,
-				isTemplate: 1,
 				movieId: "templatePreview",
 				siteId: "go",
+				is_golite_preview: 1,
+				isTemplate: 1,
 				autostart: 1,
 				isEmbed: 1,
-				isWide: "0",
-				ut: "23",
+				appCode: "go",
 				apiserver: req.headers.origin + "/",
-				storePath: req.headers.origin + "/static/tommy/2010/store/<store>",
+				storePath: req.headers.origin + "/static/store/<store>",
 				clientThemePath: req.headers.origin + "/static/<client_theme>"
 			},
 			enc_mid: data.enc_mid || `m-${fUtil.getNextFileId("movie-", ".xml")}`
 		}, obj)));
 	} else res.end(JSON.stringify({
-		error: "A Unknown Error Occured"
-	}))
+		error: guy.message
+	}));
 }
 module.exports = (req, res, url) => {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
 		case "/ajax/previewText2Video": {
 			if (fs.existsSync('./previews/qvm.xml')) fs.unlinkSync('./previews/qvm.xml');
-			loadPost(req, res).then(f => {
+			loadPost(req, res).then(async f => {
 				//HOLY SHIT REWRITING THIS WITH THE RIGHT RESPONSE
-				let qvm_theme = f.golite_theme;
-				let expressions = [];
-				let cam = [];
-				let charorder = [];
-				let charids = []
-				let texts = [];
-				let mcids = [];
-				let template = "";
+				const qvm_theme = f.golite_theme;
+				const expressions = [];
+				const cam = [];
+				const charorder = [];
+				const charids = []
+				const texts = [];
+				const mcids = [];
+				const template = f.enc_tid;
+				const templateInfo = JSON.parse(fs.readFileSync(`./templates.json`))[qvm_theme];
 				let scriptscene = 0;
-				let voicez = [];
+				const voicez = [];
 				let focuschar = "";
 				for (const data in f) { // characters & script timings
-					if (data.includes(`enc_tid`)) template = f[data];
 					if (data.includes(`characters[`)) {
 						console.log(data.indexOf("]"));
 						let start = data.indexOf("]");
@@ -105,28 +101,28 @@ module.exports = (req, res, url) => {
 				//Important!!!
 				let char1id = charids[1];
 				let char2id = charids[0];
-				if (qvm_theme == "pt") char2id = charids[1];
+				if (templateInfo.nonSelectableCharInfo.name != undefined) char2id = charids[1];
 				let sound = 0;
-				let scenetimes = [];
-
+				const scenetimes = [];
 				let sum = 0;
 				let duration;
 				const ttsid = [];
 				let di;
 				let ouri = 0;
-				gentts();
+				await gentts();
 				//Had to rewrite this because it kept cutting out clips
 				async function gentts() {
 					let i = ouri;
 					if (mcids[i] == "") try {
 						console.log("page:", i);
-						(async () => {
+						if (!texts[i]) res.end(JSON.stringify({
+							error: `Please enter some text for dialog ${i + 1}.`
+						}));
+						tts.genVoice4Qvm(voicez[i], texts[i]).then(body => {
 							try {
-								const body = await tts.genVoice4Qvm(voicez[i], texts[i]);
 								movie.templateAssets.set(body);
 								const di = body.id;
-								setTimeout(addDuration, 200)
-								async function addDuration() {
+								setTimeout(async () => {
 									const buffer = tempbuffer.get(di);
 									const duration = await fUtil.mp3Duration(buffer);
 									if (duration.toString().includes(".")) {
@@ -149,25 +145,28 @@ module.exports = (req, res, url) => {
 										}
 									}
 									ouri++;
-									if (i == texts.length - 1) {
-										await Movie.genxml(
-											qvm_theme, char1id, char2id, expressions, charorder, cam, ttsid, scenetimes, template
-										).then(guy => guyResponse(guy, res, f, req));
-										
-									} else gentts();
-								}
+									if (i == texts.length - 1) Movie.genxml(
+										qvm_theme, char1id, char2id, expressions, charorder, cam, ttsid, scenetimes, template
+									).then(guy => guyResponse(guy, res, f, req));
+									else await gentts();
+								}, 200);
 							} catch (e) {
 								console.log(e);
 								res.end(JSON.stringify({
 									error: e.toString()
-								}))
+								}));
 							}
-						})();
+						}).catch((e) => {
+							console.log(e);
+							res.end(JSON.stringify({
+								error: e.toString()
+							}));
+						})
 					} catch (e) {
 						console.log(e);
 						res.end(JSON.stringify({
 							error: e.toString()
-						}))
+						}));
 					} else try {
 						ttsid.push(mcids[i] + ".mp3");
 						let helper = ttsid.toString();
@@ -190,16 +189,15 @@ module.exports = (req, res, url) => {
 							scenetimes.push(seconds + 1);
 						}
 						ouri++;
-						if (i == texts.length - 1) {
-							await Movie.genxml(qvm_theme, char1id, char2id, expressions, charorder, cam, ttsid, scenetimes, template).then(
-								guy => guyResponse(guy, res, f, req)
-							);
-						} else gentts();
+						if (i == texts.length - 1) Movie.genxml(
+							qvm_theme, char1id, char2id, expressions, charorder, cam, ttsid, scenetimes, template
+						).then(guy => guyResponse(guy, res, f, req));
+						else await gentts();
 					} catch (e) {
 						console.log(e);
 						res.end(JSON.stringify({
 							error: e.toString()
-						}))
+						}));
 					}
 				}
 			})

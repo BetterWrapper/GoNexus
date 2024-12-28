@@ -131,10 +131,22 @@
                     <div class="featured">
                         <h3>Featured Videos</h3>
                         <div id="featured_videos">
-                            <!--<a class="featured_video" data-mid="00BjXldckeuA" data-author="lipko" data-authorUrl="http://goanimate.com/user/09836_B000Js" href="http://goanimate.com/movie/00BjXldckeuA/1">
-                                <img src="http://goanimate.com//files/thumbnails/movie/1888/1978888/7409947.jpg" alt="The GNN Debate" />
-                                <span class="caption">The GNN Debate</span>
-                            </a>-->
+                            <a class="featured_video" data-mid="pMYaK9py" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/pMYaK9py">
+                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-pMYaK9py.png" alt="the final news 4 jews" />
+                                <span class="caption">the final news 4 jews</span>
+                            </a>
+                            <a class="featured_video" data-mid="nin2dfX5gI" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/nin2dfX5gI">
+                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-nin2dfX5gI.png" alt="I fucking hate whi" />
+                                <span class="caption">I fucking hate whi</span>
+                            </a>
+                            <a class="featured_video" data-mid="9zRmvoX" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/9zRmvoX">
+                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-9zRmvoX.png" alt="it's coming" />
+                                <span class="caption">it's coming</span>
+                            </a>
+                            <a class="featured_video" data-mid="J0OKRSn" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/J0OKRSn">
+                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-J0OKRSn.png" alt="d" />
+                                <span class="caption">d</span>
+                            </a>
                         </div>
                         <div id="overlay-player" class="lightbox" style="display:none">
                             <div class="lightbox_wrapper">
@@ -151,12 +163,29 @@
                 </div>
                 <script id="previewTmpl" type="text/x-jquery-tmpl">
                     <div class="sharer"></div>
-                    <iframe src="https://nexus.loophole.site/player/embed?movieId=${movieId}?autostart=1&sharer=1" id="iframe_player" allowtransparency="true" frameborder="0" height="390" scrolling="no" width="550"></iframe>
+                    <object data="https://flashthemes.net/static/animationnew/414827163ad4eb60/player.swf" id="iframe_player" height="390" width="550" type="application/x-shockwave-flash">
+                        <param name="bgcolor" value="#000000">
+                        <param name="scale" value="exactfit">
+                        <param name="quality" value="low">
+                        <param name="allowScriptAccess" value="always">
+                        <param name="allowFullScreen" value="true">
+                        <param name="wmode" value="transparent">
+                        <param name="flashvars" value="movieOwner=${
+                            author.split(".")[1]
+                        }&amp;movieOwnerId=${
+                            author.split(".")[0]
+                        }&amp;movieId=${movieId}&amp;movieLid=6&amp;pwm=0&amp;movieDesc=&amp;userId=${
+                            author.split(".")[0]
+                        }&amp;username=${
+                            author.split(".")[1]
+                        }&amp;ut=-1&amp;apiserver=https%3A%2F%2Fflashthemes.net%2F&amp;playcount=1&amp;copyable=0&amp;isPublished=1&amp;ctc=go&amp;tlang=en_US&amp;is_private_shared=0&amp;autostart=1&amp;isInitFromExternal=0&amp;isWide=1&amp;appCode=go&amp;is_slideshow=0&amp;is_emessage=0&amp;storePath=https%3A%2F%2Fflashthemes.net%2Fstatic%2Fstore%2F%3Cstore%3E%3Fv%3D17%26p%3Dtrue&amp;clientThemePath=https%3A%2F%2Fflashthemes.net%2Fstatic%2Fct%2Fad44370a650793d9%2F%3Cclient_theme%3E&amp;isTemplate=0&amp;showButtons=1&amp;chain_mids=&amp;averageRating=0&amp;ratingCount=2&amp;endStyle=0&amp;showshare=false">
+                        <param name="movie" value="https://flashthemes.net/static/animationnew/414827163ad4eb60/player.swf">
+                    </object>
                     <div class="movie-info clearfix">
-                        <a class="movie-info-title" target="_blank" href="https://nexus.loophole.site/public_movie?movieId=${movieId}">
+                        <a class="movie-info-title" target="_blank" href="https://flashthemes.net/movie/${movieId}">
                             ${movieTitle}
                         </a>
-                        <span class="movie-info-author">by <a target="_blank" href="${authorUrl}">${author}</a></span>
+                        <span class="movie-info-author">by <a target="_blank" href="${authorUrl}">${author.split(".")[1]}</a></span>
                     </div>
                 </script>
                 <div id="seperator0"></div>

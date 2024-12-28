@@ -29,8 +29,6 @@
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
         <script type="text/javascript" src="/qvm_files/lite.js.gz.js"></script>
         <script type="text/javascript" src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
-        <script type="text/javascript" src="/qvm_files/Gettext.js.gz.js"></script>
-        <script type="text/javascript" src="/static/tommy/2012/go/po/goserver_js-en_US.js"></script>
         <script type="text/javascript">
         var srv_tz_os = -4;
         var view_name = "school";
@@ -39,7 +37,6 @@
         var publish_setting = 'public';
         
         var I18N_LANG = 'en_US';
-        var GT = new Gettext({'locale_data': json_locale_data});
         </script>
     
     </head>
@@ -501,7 +498,7 @@
                     formErrorMessage('Please Wait...');
                     if (!email_val || email_val == email.attr('placeholder')) {
                         email.addClass('error').focus();
-                        formErrorMessage(GT.gettext('Please enter your Email'));
+                        formErrorMessage('Please enter your Email');
                         return false;
                     }
                     if (!password.val()) {

@@ -496,8 +496,7 @@ function userLogout() {
             break;
         }
     }
-    jQuery.post("/api/getSession", d => {
-        const json = JSON.parse(d);
+    jQuery.post("/api/getSession", json => {
         if (json.data && json.data.loggedIn && json.data.current_uid) logout();
         else {
             auth.signOut().then(logout).catch(e => {

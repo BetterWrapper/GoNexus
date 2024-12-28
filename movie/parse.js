@@ -60,9 +60,7 @@ const asset = require("../asset/main");
 const get = require("../misc/get");
 const {
 	THEME_FOLDER: themeFolder,
-	CLIENT_URL2: source,
 	XML_HEADER: header,
-	STORE_URL2: store1
 } = process.env;
 
 const xml2js = require('xml2js');
@@ -225,7 +223,7 @@ module.exports = {
 			pieces.splice(1, 0, "sound");
 			let filepath;
 			if (themeId == "ugc") filepath = `${asset.folder}/${pieces[pieces.length - 1]}`;
-			else filepath = `./static/2010/store/${pieces.join("/")}`;
+			else filepath = `./frontend/static/store/${pieces.join("/")}`;
 			return {
 				filepath,
 				start: +v.childNamed("start").val,
@@ -252,7 +250,7 @@ module.exports = {
 				const themes = [];
 				let ugc = `${header}<theme id="ugc">`;
 				fUtil.addToZip(zip, 'movie.xml', buffer);
-				const store = "https://raw.githubusercontent.com/octanuary/GoAnimate-Archive/main/store/3a981f5cb2739137";
+				const store = "./frontend/static/store";
 				function addType2Filearray(file, type) {
 					const pieces = file.split(".");
 					const themeId = pieces[0];
@@ -291,7 +289,7 @@ module.exports = {
 							}
 							if (!zip[filename]) {
 								console.log(filename);
-								fUtil.addToZip(zip, filename, await getBuffersOnline(`${store}/${filearray.join("/")}`));
+								fUtil.addToZip(zip, filename, fs.readFileSync(`${store}/${filearray.join("/")}`));
 							}
 						}
 					} catch (e) {
@@ -467,7 +465,6 @@ module.exports = {
 		const themes = { common: true };
 		var ugc = `${header}<theme id="ugc">`;
 		fUtil.addToZip(zip, "movie.xml", xmlBuffer);
-		const store = data.v ? `https://file.garden/ZP0Nfnn29AiCnZv5/static/2010/store` : data.storePath4Parser || store1;
 		/**
 		 * why not just merge em together they're all similar anyway
 		 * @param {string} file 
@@ -497,11 +494,11 @@ module.exports = {
 				} catch (e) {
 					console.log(`WARNING: ${id}:`, e);
 				}
-			} else {
+			} else if (themeId != "tpeditor") {
 				if (type == "prop" && pieces.indexOf("head") > -1) pieces[1] = "char";
-				const filepath = `${store}/${pieces.join("/")}`;
+				const filepath = `./frontend/static/store/${pieces.join("/")}`;
 				// add the file to the zip
-				fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
+				fUtil.addToZip(zip, filename, fs.readFileSync(filepath));
 			}
 			themes[themeId] = true;
 		}
@@ -568,11 +565,11 @@ module.exports = {
 										console.log(`WARNING: ${id}:`, e);
 										continue;
 									}
-								} else {
-									const filepath = `${store}/${pieces.join("/")}`;
+								} else if (themeId != "tpeditor") {
+									const filepath = `./frontend/static/store/${pieces.join("/")}`;
 									const filename = pieces.join(".");
 	
-									fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
+									fUtil.addToZip(zip, filename, fs.readFileSync(filepath));
 								}
 	
 								for (const e3I in elem2.children) {
@@ -590,9 +587,9 @@ module.exports = {
 									} else { // heads
 										// i used to understand this
 										// i'll look back on it and explain when i'm in the mood to refactor this
-										if (pieces2[0] == "ugc") continue;
+										if (pieces2[0] == "ugc" || pieces2[0] == "tpeditor") continue;
 										pieces2.pop(), pieces2.splice(1, 0, "char");
-										const filepath = `${store}/${pieces2.join("/")}.swf`;
+										const filepath = `./frontend/static/store/${pieces2.join("/")}.swf`;
 										pieces2.splice(1, 1, "prop");
 										const filename = `${pieces2.join(".")}.swf`;
 										fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
@@ -609,7 +606,7 @@ module.exports = {
 								const bubble = elem2.childNamed("bubble");
 								const text = bubble.childNamed("text");
 								const filename = `${name2Font(text.attr.font)}.swf`;
-								const filepath = `${source}/go/font/${filename}`;
+								const filepath = `./frontend/static/go/font/${filename}`;
 								fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
 								break;
 							}
@@ -637,10 +634,9 @@ module.exports = {
 		let themesH = `${header}<themes>`;
 		for (const t in themes) {
 			themesH += `<theme>${t}</theme>`;
-			if (t == "ugc" || t == "tpeditor") continue;
-			const path = `${store}/${t}/theme.xml`;
-			const file = fs.existsSync(path) ? fs.readFileSync(path) : await get(path);
-			fUtil.addToZip(zip, `${t}.xml`, file);
+			if (t == "ugc") continue;
+			const path = `./frontend/static/store/${t}/theme.xml`;
+			fUtil.addToZip(zip, `${t}.xml`, fs.readFileSync(path));
 		}
 		fUtil.addToZip(zip, "themelist.xml", themesH + '</themes>');
 		fUtil.addToZip(zip, "ugc.xml", Buffer.from(ugc + "</theme>"));
@@ -792,7 +788,7 @@ module.exports = {
 				defaults: ''
 			};
 			let groupEmotionXml = '<category name="emotion">';
-			const xml = new XmlDocument(fs.readFileSync(`./static/2010/store/cc_store/${tId}/cc_theme.xml`));
+			const xml = new XmlDocument(fs.readFileSync(`./frontend/static/store/cc_store/${tId}/cc_theme.xml`));
 			for (const info of xml.children.filter(i => i.name == "bodyshape")) {
 				if (info.attr.id == char.getCharTypeViaBuff(buf)) {
 					charJSON.defaults = `default="${info.attr.action_thumb + ziporxml}" motion="${

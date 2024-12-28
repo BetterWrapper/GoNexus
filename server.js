@@ -105,8 +105,8 @@ function stream2Buffer(readStream) {
 const {
 	getBuffersOnline
 } = require("./movie/main");
-const { stdout, stderr } = require("process");
 let json = {};
+app.use(express.json());
 app.use(express.static('./frontend'));
 app
 	.use(async (req, res) => {

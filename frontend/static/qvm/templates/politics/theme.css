@@ -417,7 +417,7 @@ ul {
 }
 
 .by_ga {
-    background: transparent url(/static/qvm/templates/politics/img/step00/img_ga.png) no-repeat 0 0;
+    background: transparent url(/ui/img/img_ga.png) no-repeat 0 0;
     display: block;
     height: 18px;
     width: 205px;

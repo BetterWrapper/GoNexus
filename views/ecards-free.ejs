@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <title>Make eCards for Free Online with Nexus's Custom Video eCards</title>
-        <meta property="og:site_name" content="Nexus"/>
+        <title>Make eCards for Free Online with GoNexus's Custom Video eCards</title>
+        <meta property="og:site_name" content="GoNexus"/>
         <meta property="fb:app_id" content="177116303202"/>
-        <meta name="description" content="Make eCards and video eCard greetings with Nexus's online eCard Video Maker. Create eCards for birthdays, holidays and more - Click, Drag, Action!"/>
+        <meta name="description" content="Make eCards and video eCard greetings with GoNexus's online eCard Video Maker. Create eCards for birthdays, holidays and more - Click, Drag, Action!"/>
         <meta name="keywords" content="Animation, eCard, flash free, web 2.0, cartoon, comics, create animations free, movie, film, video"/>
         <meta name="google-site-verification" content="K_niiTfCVi72gwvxK00O4NjsVybMutMUnc-ZnN6HUuA"/>
         <style>
@@ -47,9 +47,9 @@
             var I18N_LANG = 'en_US';
             var GT = new Gettext({'locale_data': json_locale_data});
         </script>
-        <script src="https://flashthemes.net/static/ft/js/swfupload/swfupload.js"></script>
-        <script src="https://flashthemes.net/static/ft/js/jquery/jquery.jplayer.min.js"></script>
-        <script src="https://flashthemes.net/static/ft/js/jquery/jquery.tmpl.min.js"></script>
+        <script src="/static/tommy/2012/go/js/swfupload/swfupload.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.jplayer.min.js"></script>
+        <script src="/static/tommy/2012/go/js/jquery/jquery.tmpl.min.js"></script>
         <script src="/qvm_files/lite_tp.js"></script>
         <script src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
         <script src="/qvm_files/talkingpicz_importer.js"></script>        
@@ -303,7 +303,7 @@
                             <script>
                                 function createTPEditor(settings) {
                                     var flashvars = {
-                                        apiserver: "https://gonexus.xyz/",
+                                        apiserver: "/",
                                         ut: "23",
                                         clientThemePath: "/static/tommy/2012/<client_theme>"
                                     };
@@ -703,8 +703,8 @@
                 <div id="app-bottom">
                     <div class="app-bottom-inside clearfix">
                         <div id="about">
-                            <h2>Nexus at a Glance</h2>
-                            Nexus offers a wide range of video production tools from simple animated templates to a full-featured studio 
+                            <h2>GoNexus at a Glance</h2>
+                            GoNexus offers a wide range of video production tools from simple animated templates to a full-featured studio 
                             allowing you to make your own 100% custom series and videos.
                             <ul id="feature-highlights">
                                 <li class="tool">
@@ -978,7 +978,7 @@
                         function donePreviewSignup() {
                             GoLite.updateUserState(function(userState) {
                                 $(document).trigger('GoLite.stateChange', ['']);
-                                showNotice('You are now logged in to Nexus');
+                                showNotice('You are now logged in to GoNexus');
                             });
                         }
                     })(jQuery);

@@ -69,9 +69,7 @@ function getVoicesXml(apiName) {
 				voices: []
 			};
 			const voices = JSON.parse(fs.readFileSync(`./tts/${apiName.split("_")[1]}/voices.json`));
-			for (const i in voices) {
-				json.voices.unshift(voices[i]);
-			}
+			for (const i in voices) json.voices.unshift(voices[i]);
 			genXml(json);
 		} else https.get(`https://lazypy.ro/tts/assets/js/voices.json`, r => {
 			const buffers = [];
@@ -96,8 +94,8 @@ function getVoicesJson(apiName, isQvm = false, filename) {
 				const lang = json.languages && json.languages[langPre] ? json.languages[langPre] : voiceInfo.lang || voiceInfo.language;
 				voices[vid] = voiceInfo;
 				const stuffExists = [
-					fs.existsSync(`./ui/img/${flag}.png`) && langPre,
-					fs.existsSync(`./ui/img/voiceflag_${langPre}.png`)
+					fs.existsSync(`./frontend/ui/img/${flag}.png`) && langPre,
+					fs.existsSync(`./frontend/ui/img/voiceflag_${langPre}.png`)
 				]
 				const stuff = stuffExists[1] ? `${langPre}.${lang}` : "More";
 				if (stuffExists[0]) {
@@ -165,9 +163,11 @@ module.exports = function (req, res, url) {
 				r.on("data", b => buffers.push(b)).on("end", () => {
 					try {
 						res.setHeader("Content-Type", "application/json");
-						res.end(JSON.stringify(Object.keys(JSON.parse(Buffer.concat(buffers)))));
+						res.json(Object.keys(JSON.parse(Buffer.concat(buffers))));
 					} catch (e) {
 						console.error(e);
+						e.message = e.toString();
+						res.json(e);
 					}
 				}).on("error", console.error);
 			}).on("error", console.error);
@@ -175,7 +175,7 @@ module.exports = function (req, res, url) {
 		} case "/api/getTTSVoices4QVM": {
 			getVoicesJson("", true, "qvmvoices").then(i => {
 				res.setHeader("Content-Type", "application/json");
-				res.end(JSON.stringify(i));
+				res.json(i);
 			});
 			break;
 		} case "/goapi/getTextToSpeechVoices/": {
