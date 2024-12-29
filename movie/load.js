@@ -937,15 +937,18 @@ module.exports = function (req, res, url) {
 					});
 					break;
 				} case "/api/setupText2VideoPreview": {
-					if (fs.existsSync('./previews/template.xml')) fs.unlinkSync('./previews/template.xml');
 					if (fs.existsSync('./previews/template.zip')) fs.unlinkSync('./previews/template.zip');
 					movie.templateAssets.deleteAll();
 					loadPost(req, res).then(async data => {
 						try {
 							const f = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
+							f.opening_closing.fileInfo = {
+								name: "template",
+								ext: "zip"
+							}
 							f.player_object = {
-								ext: "zip",
-								filename: "template",
+								ext: f.opening_closing.fileInfo.ext,
+								filename: f.opening_closing.fileInfo.name,
 								movieId: "templatePreview",
 								siteId: "go",
 								is_golite_preview: 1,
@@ -1119,8 +1122,8 @@ module.exports = function (req, res, url) {
 									]
 								});
 							}
-							const charNumbers = movie.assignObjects({}, f.characters);
-							const avatarIds = {};
+							console.log(f.characters)
+							const avatarIds = [], themeIds = [];
 							const templatrSettingsPath = `./_TEMPLATES/${data.golite_theme}.${data.enc_tid}.json`
 							const settings = fs.existsSync(templatrSettingsPath) ? JSON.parse(fs.readFileSync(templatrSettingsPath)) : {};
 							let soundStartDelay = 0;
@@ -1133,38 +1136,57 @@ module.exports = function (req, res, url) {
 									scene._attributes.id = `SCENE${scene._attributes.index}`;
 									soundStartDelay += Number(scene._attributes.adelay);
 									if (scene.char) {
-										for (const id in charNumbers) {
-											if (
-												!avatarIds[id] && scene.char[Number(id)- 1]
-											) avatarIds[id] = scene.char[Number(id)- 1]._attributes.id 
+										for (const info of f.characters) {
+											for (const id in info) {
+												if (
+													!avatarIds[Number(info[id]) - 1]
+													&& scene.char[Number(id)- 1]
+												) avatarIds[Number(info[id]) - 1] = scene.char[Number(id)- 1]._attributes.id; 
+											}
 										}
 										for (const char of scene.char) {
-											for (const id in charNumbers) {
-												let t;
-												if (settings.includedChar) {
-													if (settings.includedChar != id) t = `ugc.charId`;
-													else continue;
-												} else t = `ugc.charIdNum${charNumbers[id]}`;
-												if (char.action[0]._text.startsWith(t)) {
-													if (!avatarIds[id]) avatarIds[id] = char._attributes.id;
-													const charId = settings.charFiles2UseForIds ? settings.charFiles2UseForIds[id] : id;
-													console.log(charId);
-													char.action[0]._text = char.action[0]._text.replace(t, `ugc.${charId}`);
+											for (const info of f.characters) {
+												for (const id in info) {
+													let t;
+													if (settings.includedChar) {
+														if (settings.includedChar != id) t = `charId`;
+														else continue;
+													} else t = `charIdNum${info[id]}`;
+													if (char.action[0]._text.includes(t)) {
+														if (
+															!avatarIds[Number(info[id]) - 1]
+														) avatarIds[Number(info[id]) - 1] = char._attributes.id; 
+														if (
+															!themeIds[Number(info[id]) - 1]
+														) themeIds[Number(info[id]) - 1] = id.split(":")[0] || "ugc"
+														const charId = settings.charFiles2UseForIds ? settings.charFiles2UseForIds[id] : id;
+														char.action[0]._text = char.action[0]._text.replace(t, charId);
+													}
 												}
 											}
 											const pieces = char.action[0]._text.split(".");
 											const id = pieces[1];
-											const facial = (
-												options.useOpeningClosingFacial && options.openingClosingFacialType && charNumbers[id]
-											) ? f.opening_closing[options.openingClosingFacialType]?.facial[charNumbers[id]] : 'default';
-											if (facial == "default") continue;
-											char.head = {
-												_attributes: {
-													id: `PROP${defaultProp4head}`,
-													raceCode: 1
-												},
-												file: [`ugc.${id}.head.head_${facial}.xml`]
-											};
+											for (const info of f.characters) {
+												if (!info[id]) continue;
+												const facial = (
+													options.useOpeningClosingFacial && options.openingClosingFacialType
+												) ? f.opening_closing[options.openingClosingFacialType]?.facial[info[id]] : 'default';
+												if (facial == "default") continue;
+												const file = [
+													themeIds[Number(info[id]) - 1] != "ugc" && fs.existsSync(`./frontend/static/store/${
+														themeIds[Number(info[id]) - 1]
+													}/char/head`) ? `${
+														themeIds[Number(info[id]) - 1]
+													}.${id}.head.${facial}` : `ugc.${id}.head.head_${facial}.xml`
+												]
+												char.head = {
+													_attributes: {
+														id: `PROP${defaultProp4head}`,
+														raceCode: 1
+													},
+													file
+												};
+											}
 											defaultProp4head += 2;
 										}
 									}
@@ -1225,7 +1247,7 @@ module.exports = function (req, res, url) {
 									if (stop.toString().startsWith("-")) stop = Number(stop.toString().substr(1))
 									const sceneLength = movieBase.film.scene.length;
 									const avatarId = settings.includedChar == script.cid ? settings.includedCharAvatarId : avatarIds[
-										script.cid
+										Number(script.char_num) - 1
 									];
 									movieBase.film.linkage.push(`SOUND${soundLength},SCENE${sceneLength}~~~,~~~${avatarId}`);
 									let attr;
@@ -1318,12 +1340,22 @@ module.exports = function (req, res, url) {
 								const sceneCountEnd = sceneInfo.indexOf('"', sceneCountBeg)
 								const sceneCount = Number(sceneInfo.substring(sceneCountBeg, sceneCountEnd));
 								const facialInfo = facials[facials.findIndex(i => i.sceneCount == sceneCount)];
-								if (facialInfo && settings.includedChar != facialInfo.cid) {
-									const charAvatarId = avatarIds[facialInfo.cid];
+								if (facialInfo && settings.includedChar != facialInfo.cid) for (const info of f.characters) {
+									if (!info[facialInfo.cid]) continue;
+									const charAvatarId = avatarIds[Number(info[facialInfo.cid]) - 1];
 									const charInfo = sceneInfo.substr(sceneInfo.indexOf(`<char id="${charAvatarId}"`)).split("</char>")[0];
+									const file = themeIds[
+										Number(info[facialInfo.cid]) - 1
+									] != "ugc" && fs.existsSync(`./frontend/static/store/${
+										themeIds[Number(info[facialInfo.cid]) - 1]
+									}/char/head`) ? `${
+										themeIds[Number(info[facialInfo.cid]) - 1]
+									}.${facialInfo.cid}.head.${facialInfo.expression}` : `ugc.${facialInfo.cid}.head.head_${
+										facialInfo.expression
+									}.xml`;
 									xml = xml.split(sceneInfo).join(sceneInfo.split(charInfo).join(charInfo + `<head id="PROP${
 										defaultProp4head
-									}" raceCode="1"><file>ugc.${facialInfo.cid}.head.head_${facialInfo.expression}.xml</file></head>`))
+									}" raceCode="1"><file>${file}</file></head>`))
 									defaultProp4head += 2;
 								}
 								pos = xml.indexOf('<scene charsTalking=', pos + 19);

@@ -1,4 +1,3 @@
-<!doctype html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -18,8 +17,9 @@
         <script>
             var srv_tz_os = -5, 
                 view_name = "school", 
-                user_cookie_name = "u_info", 
-                golite_theme = "politics";
+                user_cookie_name = "u_info_school", 
+                golite_theme = "politics",
+                publish_setting = 'public';
         </script>
         <script src="/qvm_files/jquery-1.4.4.min.js.gz.js"></script>
         <script src="/qvm_files/jquery-ui.1.8.16.custom.min.js"></script>
@@ -27,6 +27,9 @@
         <script src="/qvm_files/jquery.scrollTo.min.js.gz.js"></script>
         <script src="/qvm_files/jquery.jplayer.min.js.gz.js"></script>
         <script src="/qvm_files/jquery.tmpl.min.js.gz.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-auth.js"></script>
+        <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/init.js"></script>
         <script src="/qvm_files/lite_politics.js"></script>
         <script src="/qvm_files/voiceselectionwidget.js.gz.js"></script>
         <script src="/qvm_files/Gettext.js.gz.js"></script>
@@ -50,11 +53,6 @@
                 height: 170,
                 width: 295
             }
-            VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
-            jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
-                apiserver: "/qvm_micRecord_",
-                u_info: ""
-            });
             function stepTo(step) {
                 var settings = {
                     duration: 1500,
@@ -127,26 +125,14 @@
                             How come regular folks never get to sidestep questions, stick to the party line or blame the other team? 
                             Well, GoAnimate says you can! Get your keyboard or mic ready, and let's hear the pols tell it like it is!
                         </p>
-                    </div>
+                    </div><!--
                     <div class="featured">
                         <h3>Featured Videos</h3>
                         <div id="featured_videos">
-                            <a class="featured_video" data-mid="pMYaK9py" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/pMYaK9py">
-                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-pMYaK9py.png" alt="the final news 4 jews" />
-                                <span class="caption">the final news 4 jews</span>
-                            </a>
-                            <a class="featured_video" data-mid="nin2dfX5gI" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/nin2dfX5gI">
-                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-nin2dfX5gI.png" alt="I fucking hate whi" />
-                                <span class="caption">I fucking hate whi</span>
-                            </a>
-                            <a class="featured_video" data-mid="9zRmvoX" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/9zRmvoX">
-                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-9zRmvoX.png" alt="it's coming" />
-                                <span class="caption">it's coming</span>
-                            </a>
-                            <a class="featured_video" data-mid="J0OKRSn" data-author="17.ItsJay" data-authorUrl="https://flashthemes.net/user/17" href="https://flashthemes.net/movie/J0OKRSn">
-                                <img height="97" width="150" src="https://flashthemes.net/movie_thumbs/thumb-J0OKRSn.png" alt="d" />
-                                <span class="caption">d</span>
-                            </a>
+                            <!-<a class="featured_video" data-mid="00BjXldckeuA" data-author="lipko" data-authorUrl="http://goanimate.com/user/09836_B000Js" href="http://goanimate.com/movie/00BjXldckeuA/1">
+                                <img src="http://goanimate.com//files/thumbnails/movie/1888/1978888/7409947.jpg" alt="The GNN Debate" />
+                                <span class="caption">The GNN Debate</span>
+                            </a>->
                         </div>
                         <div id="overlay-player" class="lightbox" style="display:none">
                             <div class="lightbox_wrapper">
@@ -157,35 +143,18 @@
                                 <a onclick="jQuery('.overlay-player-container').empty();jQuery.unblockUI();" class="close_btn">&#215;</a>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     <a class="btn_next" href="#step1" onclick="stepTo('#step1'); return false;">Go!</a>
                     <a class="by_ga" href="https://vyond.com" onclick="return confirm('You will lose your work if you leave this page. Are you sure?');"></a>
                 </div>
                 <script id="previewTmpl" type="text/x-jquery-tmpl">
                     <div class="sharer"></div>
-                    <object data="https://flashthemes.net/static/animationnew/414827163ad4eb60/player.swf" id="iframe_player" height="390" width="550" type="application/x-shockwave-flash">
-                        <param name="bgcolor" value="#000000">
-                        <param name="scale" value="exactfit">
-                        <param name="quality" value="low">
-                        <param name="allowScriptAccess" value="always">
-                        <param name="allowFullScreen" value="true">
-                        <param name="wmode" value="transparent">
-                        <param name="flashvars" value="movieOwner=${
-                            author.split(".")[1]
-                        }&amp;movieOwnerId=${
-                            author.split(".")[0]
-                        }&amp;movieId=${movieId}&amp;movieLid=6&amp;pwm=0&amp;movieDesc=&amp;userId=${
-                            author.split(".")[0]
-                        }&amp;username=${
-                            author.split(".")[1]
-                        }&amp;ut=-1&amp;apiserver=https%3A%2F%2Fflashthemes.net%2F&amp;playcount=1&amp;copyable=0&amp;isPublished=1&amp;ctc=go&amp;tlang=en_US&amp;is_private_shared=0&amp;autostart=1&amp;isInitFromExternal=0&amp;isWide=1&amp;appCode=go&amp;is_slideshow=0&amp;is_emessage=0&amp;storePath=https%3A%2F%2Fflashthemes.net%2Fstatic%2Fstore%2F%3Cstore%3E%3Fv%3D17%26p%3Dtrue&amp;clientThemePath=https%3A%2F%2Fflashthemes.net%2Fstatic%2Fct%2Fad44370a650793d9%2F%3Cclient_theme%3E&amp;isTemplate=0&amp;showButtons=1&amp;chain_mids=&amp;averageRating=0&amp;ratingCount=2&amp;endStyle=0&amp;showshare=false">
-                        <param name="movie" value="https://flashthemes.net/static/animationnew/414827163ad4eb60/player.swf">
-                    </object>
+                    <iframe src="https://nexus.loophole.site/player/embed?movieId=${movieId}?autostart=1&sharer=1" id="iframe_player" allowtransparency="true" frameborder="0" height="390" scrolling="no" width="550"></iframe>
                     <div class="movie-info clearfix">
-                        <a class="movie-info-title" target="_blank" href="https://flashthemes.net/movie/${movieId}">
+                        <a class="movie-info-title" target="_blank" href="https://nexus.loophole.site/public_movie?movieId=${movieId}">
                             ${movieTitle}
                         </a>
-                        <span class="movie-info-author">by <a target="_blank" href="${authorUrl}">${author.split(".")[1]}</a></span>
+                        <span class="movie-info-author">by <a target="_blank" href="${authorUrl}">${author}</a></span>
                     </div>
                 </script>
                 <div id="seperator0"></div>
@@ -442,112 +411,56 @@
                         </div>
                         <div class="selectvoiceoverlay lightbox" style="display:none">
                             <div class="lightbox_wrapper">
-                                <style type="text/css">
-                                    .selectvoiceoverlay { 
-                                        width: 550px; 
-                                    }
-                                    .selectvoiceoverlay h2 { 
-                                        text-align: center; 
-                                        color: black; 
-                                        margin-bottom: 0px;  
-                                    }
-                                    .selectvoiceoverlay h3 { 
-                                        text-align: center; 
-                                        color: #999999; 
-                                        font-style: oblique; 
-                                        margin-top: 0px; 
-                                        margin-bottom: 2em; 
-                                        font-weight: normal; 
-                                    }
-                                    .selectvoiceoverlay .voiceselectorwidget { 
-                                        margin-left: auto; 
-                                        margin-right: auto; 
-                                    }
-                                    .selectvoiceoverlay a.bottomcancel { 
-                                        float: left; 
-                                        text-align: center; 
-                                        margin: 30px auto; 
-                                        display: block; 
-                                        color: #666666; 
-                                        font-size: 16px; 
-                                        font-weight: bold; 
-                                        text-decoration: none; 
-                                    }
-                                    .selectvoiceoverlay a.bottomcancel:hover { 
-                                        color: #777777; 
-                                        text-decoration: none; 
-                                    }
-                                </style>
+                        
+                        <style type="text/css">
+                        .selectvoiceoverlay { width: 550px; }
+                        .selectvoiceoverlay h2 { text-align: center; color: black; margin-bottom: 0px; font-size: 18px; line-height: 20px; }
+                        .selectvoiceoverlay h3 { text-align: center; color: #999999; font-style: oblique; margin-top: 0px; margin-bottom: 2em; font-weight: normal; font-size: 13px; line-height: 20px; }
+                        .selectvoiceoverlay .voiceselectorwidget { margin-left: auto; margin-right: auto; }
+                        .selectvoiceoverlay a.bottomcancel { float: left; text-align: center; margin: 30px auto; display: block; color: #666666; font-size: 16px; font-weight: bold; text-decoration: none; }
+                        .selectvoiceoverlay a.bottomcancel:hover { color: #777777; text-decoration: none; }
+                        </style>
+                        
                                 <h2>Select a voice for your character</h2>
-                                <h3>This change applies to the whole movie</h3>
+                                <h3>This change applies to the whole video</h3>
                                 <script type="text/javascript">
-                                    var VoiceCatalog = (function() {
-                                        var lang_model = {"en":{"desc":"English","options":[{"id":"amy","desc":"Amy","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_amy.mp3","lang":"en","country":"GB","plus":false},{"id":"brian","desc":"Brian","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_brian.mp3","lang":"en","country":"GB","plus":false},{"id":"emma","desc":"Emma","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_emma.mp3","lang":"en","country":"GB","plus":false},{"id":"eric","desc":"Eric","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_eric.mp3","lang":"en","country":"US","plus":false},{"id":"jennifer","desc":"Jennifer","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_jennifer.mp3","lang":"en","country":"US","plus":false},{"id":"joey","desc":"Joey","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_joey.mp3","lang":"en","country":"US","plus":false},{"id":"kendra","desc":"Kendra","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_kendra.mp3","lang":"en","country":"US","plus":false},{"id":"kimberly","desc":"Kimberly","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_kimberly.mp3","lang":"en","country":"US","plus":false},{"id":"oc_kate","desc":"Kate","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_kate.mp3","lang":"en","country":"US","plus":false},{"id":"oc_paul","desc":"Paul","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_paul.mp3","lang":"en","country":"US","plus":false},{"id":"oc_julie","desc":"Julie","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_julie.mp3","lang":"en","country":"US","plus":false},{"id":"oc_steven","desc":"Steven","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_steven.mp3","lang":"en","country":"US","plus":false},{"id":"oc_susan","desc":"Susan","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_susan.mp3","lang":"en","country":"US","plus":false},{"id":"oc_bridget","desc":"Bridget","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_bridget.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_elizabeth","desc":"Elizabeth","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_elizabeth.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_simon","desc":"Simon","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_simon.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_catherine","desc":"Catherine","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_catherine.mp3","lang":"en","country":"GB","plus":false},{"id":"oc_allison","desc":"Allison","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_allison.mp3","lang":"en","country":"US","plus":false},{"id":"oc_dave","desc":"Dave","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_dave.mp3","lang":"en","country":"US","plus":false},{"id":"oc_alan","desc":"Alan","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_alan.mp3","lang":"en","country":"AU","plus":false},{"id":"oc_grace","desc":"Grace","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_grace.mp3","lang":"en","country":"AU","plus":false},{"id":"oc_veena","desc":"Veena","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_veena.mp3","lang":"en","country":"IN","plus":false}]},"es":{"desc":"Spanish","options":[{"id":"miguel","desc":"Miguel","vendor":"Ivona","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_miguel.mp3","lang":"es","country":"US","plus":false},{"id":"penelope","desc":"Pen\u00e9lope","vendor":"Ivona","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_penelope.mp3","lang":"es","country":"US","plus":false},{"id":"oc_carmen","desc":"Carmen","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_carmen.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_juan","desc":"Juan","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_juan.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_jorge","desc":"Jorge","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_jorge.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_leonor","desc":"Leonor","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_leonor.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_violeta","desc":"Violeta","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_violeta.mp3","lang":"es","country":"ES","plus":false},{"id":"oc_carlos","desc":"Carlos","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_carlos.mp3","lang":"es","country":"US","plus":false},{"id":"oc_soledad","desc":"Soledad","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_soledad.mp3","lang":"es","country":"US","plus":false},{"id":"oc_ximena","desc":"Ximena","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_ximena.mp3","lang":"es","country":"US","plus":false},{"id":"oc_francisca","desc":"Francisca","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_francisca.mp3","lang":"es","country":"CL","plus":false},{"id":"oc_diego","desc":"Diego","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_diego.mp3","lang":"es","country":"AR","plus":false},{"id":"oc_esperanza","desc":"Esperanza","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_esperanza.mp3","lang":"es","country":"MX","plus":false}]},"pt":{"desc":"Portuguese","options":[{"id":"oc_amalia","desc":"Amalia","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_amalia.mp3","lang":"pt","country":"PT","plus":false},{"id":"oc_eusebio","desc":"Eusebio","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_eusebio.mp3","lang":"pt","country":"PT","plus":false},{"id":"oc_gabriela","desc":"Gabriela","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_gabriela.mp3","lang":"pt","country":"BR","plus":false},{"id":"oc_fernanda","desc":"Fernanda","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_fernanda.mp3","lang":"pt","country":"BR","plus":false},{"id":"oc_felipe","desc":"Felipe","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_felipe.mp3","lang":"pt","country":"BR","plus":false}]},"ja":{"desc":"Japanese","options":[{"id":"oc_show","desc":"Show","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_show.mp3","lang":"ja","country":"JP","plus":false},{"id":"oc_misaki","desc":"Misaki","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_misaki.mp3","lang":"ja","country":"JP","plus":false},{"id":"akari","desc":"Akari","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_akari.mp3","lang":"ja","country":"JP","plus":false},{"id":"nanako","desc":"Nanako","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_nanako.mp3","lang":"ja","country":"JP","plus":false},{"id":"kaho","desc":"Kaho","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_kaho.mp3","lang":"ja","country":"JP","plus":false},{"id":"maki","desc":"Maki","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_maki.mp3","lang":"ja","country":"JP","plus":false},{"id":"anzu","desc":"Anzu","vendor":"Aij","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_anzu.mp3","lang":"ja","country":"JP","plus":false},{"id":"seiji","desc":"Seiji","vendor":"Aij","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_seiji.mp3","lang":"ja","country":"JP","plus":false},{"id":"hiroshi","desc":"Hiroshi","vendor":"Aij","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_hiroshi.mp3","lang":"ja","country":"JP","plus":false},{"id":"koutarou","desc":"Koutarou","vendor":"Aij","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_koutarou.mp3","lang":"ja","country":"JP","plus":false}]},"default":{"desc":"More","options":[{"id":"oc_stefan","desc":"Stefan","vendor":"Oddcast","sex":"M","demo":"","lang":"de","country":"DE","plus":false},{"id":"oc_katrin","desc":"Katrin","vendor":"Oddcast","sex":"F","demo":"","lang":"de","country":"DE","plus":false},{"id":"oc_bernard","desc":"Bernard","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_bernard.mp3","lang":"fr","country":"FR","plus":false},{"id":"oc_jolie","desc":"Jolie","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_jolie.mp3","lang":"fr","country":"FR","plus":false},{"id":"oc_florence","desc":"Florence","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_florence.mp3","lang":"fr","country":"FR","plus":false},{"id":"oc_charlotte","desc":"Charlotte (French)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_charlotte.mp3","lang":"fr","country":"CA","plus":false},{"id":"oc_olivier","desc":"Olivier (French)","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_olivier.mp3","lang":"fr","country":"CA","plus":false},{"id":"oc_montserrat","desc":"Montserrat (Catalan)","vendor":"Oddcast","sex":"F","demo":"","lang":"ca","country":false,"plus":false},{"id":"oc_jordi","desc":"Jordi (Catalan)","vendor":"Oddcast","sex":"M","demo":"","lang":"ca","country":false,"plus":false},{"id":"oc_empar","desc":"Empar (Catalan)","vendor":"Oddcast","sex":"F","demo":"","lang":"ca","country":false,"plus":false},{"id":"oc_paola","desc":"Paola","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_silvana","desc":"Silvana","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_valentina","desc":"Valentina","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_luca","desc":"Luca","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_marcello","desc":"Marcello","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_roberto","desc":"Roberto","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_matteo","desc":"Matteo","vendor":"Oddcast","sex":"M","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_giulia","desc":"Giulia","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_federica","desc":"Federica","vendor":"Oddcast","sex":"F","demo":"","lang":"it","country":"IT","plus":false},{"id":"oc_afroditi","desc":"Afroditi","vendor":"Oddcast","sex":"F","demo":"","lang":"el","country":"GR","plus":false},{"id":"oc_nikos","desc":"Nikos","vendor":"Oddcast","sex":"M","demo":"","lang":"el","country":"GR","plus":false},{"id":"oc_annika","desc":"Annika","vendor":"Oddcast","sex":"F","demo":"","lang":"sv","country":"SE","plus":false},{"id":"oc_sven","desc":"Sven","vendor":"Oddcast","sex":"M","demo":"","lang":"sv","country":"SE","plus":false},{"id":"oc_willem","desc":"Willem","vendor":"Oddcast","sex":"M","demo":"","lang":"nl","country":"NL","plus":false},{"id":"oc_saskia","desc":"Saskia","vendor":"Oddcast","sex":"F","demo":"","lang":"nl","country":"NL","plus":false},{"id":"oc_zosia","desc":"Zosia","vendor":"Oddcast","sex":"F","demo":"","lang":"pl","country":"PL","plus":false},{"id":"oc_krzysztof","desc":"Krzysztof","vendor":"Oddcast","sex":"M","demo":"","lang":"pl","country":"PL","plus":false},{"id":"oc_carmela","desc":"Carmela (Galician)","vendor":"Oddcast","sex":"F","demo":"","lang":"gl","country":false,"plus":false},{"id":"oc_kerem","desc":"Kerem","vendor":"Oddcast","sex":"M","demo":"","lang":"tr","country":"TR","plus":false},{"id":"oc_zeynep","desc":"Zeynep","vendor":"Oddcast","sex":"F","demo":"","lang":"tr","country":"TR","plus":false},{"id":"oc_selin","desc":"Selin","vendor":"Oddcast","sex":"F","demo":"","lang":"tr","country":"TR","plus":false},{"id":"oc_frida","desc":"Frida","vendor":"Oddcast","sex":"F","demo":"","lang":"da","country":"DK","plus":false},{"id":"oc_magnus","desc":"Magnus","vendor":"Oddcast","sex":"M","demo":"","lang":"da","country":"DK","plus":false},{"id":"oc_vilde","desc":"Vilde","vendor":"Oddcast","sex":"F","demo":"","lang":"no","country":false,"plus":false},{"id":"oc_henrik","desc":"Henrik","vendor":"Oddcast","sex":"M","demo":"","lang":"no","country":false,"plus":false},{"id":"oc_olga","desc":"Olga","vendor":"Oddcast","sex":"F","demo":"","lang":"ru","country":"RU","plus":false},{"id":"oc_dmitri","desc":"Dmitri","vendor":"Oddcast","sex":"M","demo":"","lang":"ru","country":"RU","plus":false},{"id":"oc_milla","desc":"Milla","vendor":"Oddcast","sex":"F","demo":"","lang":"fi","country":"FI","plus":false},{"id":"oc_marko","desc":"Marko","vendor":"Oddcast","sex":"M","demo":"","lang":"fi","country":"FI","plus":false},{"id":"oc_ioana","desc":"Ioana","vendor":"Oddcast","sex":"F","demo":"","lang":"ro","country":"RO","plus":false},{"id":"oc_ludoviko","desc":"Ludoviko (Esperanto)","vendor":"Oddcast","sex":"M","demo":"","lang":"eo","country":false,"plus":false},{"id":"oc_yumi","desc":"Yumi","vendor":"Oddcast","sex":"F","demo":"","lang":"ko","country":"KR","plus":false},{"id":"oc_junwoo","desc":"Junwoo","vendor":"Oddcast","sex":"M","demo":"","lang":"ko","country":"KR","plus":false},{"id":"oc_linlin","desc":"Linlin (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_linlin.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_lisheng","desc":"Lisheng (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_lisheng.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_lily","desc":"Lily (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_lily.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_hui","desc":"Hui (Mandarin)","vendor":"Oddcast","sex":"F","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_hui.mp3","lang":"zh","country":"CN","plus":false},{"id":"oc_liang","desc":"Liang (Mandarin)","vendor":"Oddcast","sex":"M","demo":"https:\/\/web.archive.org\/web\/20120214143634\/http:\/\/lightspeed.goanimate.com\/static\/285\/go\/voicedemo\/voicedemo_oc_liang.mp3","lang":"zh","country":"CN","plus":false}]}};
-                                        return {
-                                            getModel: function() {
-                                                return lang_model;
-                                            },
-                                            lookupVoiceInfo: function(voice_id) {
-                                                for (var langId in lang_model) {
-                                                    for (var i=0; i<lang_model[langId]['options'].length; i++) {
-                                                        if (lang_model[langId]['options'][i].id == voice_id) {
-                                                            return {
-                                                                desc: lang_model[langId]['options'][i].desc,
-                                                                sex: lang_model[langId]['options'][i].sex,
-                                                                plus: lang_model[langId]['options'][i].plus,
-                                                                locale: { 
-                                                                    id: langId, 
-                                                                    lang: lang_model[langId]['options'][i].lang, 
-                                                                    country: lang_model[langId]['options'][i].country, 
-                                                                    desc: lang_model[langId].desc 
-                                                                }
-                                                            };
-                                                        }
-                                                    }
-                                                }
-                                                return null;
-                                            }
-                                        };
-                                    })();
-                                </script>
-                                <div class="voiceselectorwidget">
-                                    <div class="voiceselector"></div>
-                                    <!-- Templates -->
-                                    <div class="templates" style="display: none">
-                                        <!-- Voice list -->
-                                        <div class="categorytab">
-                                            <div class="flag" title="Language"></div>
-                                            <div class="masteroptionscontainer">
-                                                <div class="optionscontainer"></div>
-                                            </div>
-                                        </div>
-                                        <!-- Voice option -->
-                                        <div class="option">
-                                            <div class="cflag"></div>
-                                            <div class="sex"></div>
-                                            <span class="label"></span>
-                                            <span class="plus"> 
-                                                (Only for GoPlus)
-                                            </span>
-                                            <div class="playercontrol">
-                                                <div class="button play"></div>
-                                            </div>
+                        </script>
+                        <div class="voiceselectorwidget">
+                            <div class="voiceselector">
+                            </div>
+                            <!-- Templates -->
+                            <div class="templates" style="display: none">
+                                <!-- Voice list -->
+                                <div class="categorytab">
+                                    <div class="flag" title="Language"></div>
+                                    <div class="masteroptionscontainer">
+                                        <div class="optionscontainer">
                                         </div>
                                     </div>
-                                    <div class="jplayer"></div>
                                 </div>
+                                <!-- Voice option -->
+                                <div class="option">
+                                    <div class="cflag"></div>
+                                    <div class="sex"></div>
+                                    <span class="desc"></span>
+                                                    <span class="plus"> (Premium account only)</span>
+                                                <div class="playercontrol">
+                                        <div class="button play"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="jplayer"></div>
+                        </div>
                                 <div style="overflow: auto; padding-left: 85px;">
                                     <a href="javascript:;" class="buttonbase buttonorange" id="voiceselectonly_confirm" style="margin:15px auto;float:left;display:block;">
-                                        <div class="buttontitle">Confirm</div>
-                                    </a>
-                                    <a href="javascript:;" class="buttonbase buttonblue dark" id="voiceselectonly_plusupgrade" style="margin:15px auto;float:left;display:none;">
-                                        <div class="buttontitle">Upgrade Now</div>
-                                    </a>
-                                    <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel">
-                                        <div style="width: 180px">Cancel</div>
-                                    </a>
+                        <div class="buttontitle">Confirm</div>
+                        </a>
+                                                    <a href="/public_features" class="buttonbase buttonpurple3 dark" id="voiceselectonly_plusupgrade" style="margin:15px auto;float:left;display:none;">
+                        <div class="buttontitle">Get a quote</div>
+                        </a>
+                                                <a href="#" onclick="jQuery.unblockUI();return false;" class="bottomcancel"><div style="width: 180px">Cancel</div></a>
                                 </div>
-                                <a onclick="jQuery.unblockUI()" class="close_btn">&#215;</a>
+                                <a onclick="jQuery.unblockUI()" class="close_btn">×</a>
                             </div>
                         </div>
                     </div>
@@ -601,10 +514,6 @@
                                         <a class="dialog_mic" data-method="mic">
                                             <div class="icon"></div>
                                             <span class="tips">Voice Recording</span>
-                                        </a>
-                                        <a class="dialog_upload" data-method="upload">
-                                            <div class="icon"></div>
-                                            <span class="tips">Upload Voice</span>
                                         </a>
                                     </div>
                                     <div class="dialog_control">
@@ -1036,21 +945,25 @@
                         }
                         $('#nav_links').find('li').removeClass('on').end().find('.' + id).addClass('on');
                     });
-                    if ($('#login_bar').length) {
-                        $('#seperator0').waypoint(function(e) {
-                            $('#login_bar').slideDown();
-                        }, {
-                            offset: 'bottom-in-view', 
-                            triggerOnce: true
-                        });
-                        $(document).bind('user.hasAccount', function(e) {
-                            GoLite.updateUserState(function() {
-                                $(document).trigger('GoLite.stateChange', ['']);
-                                $('#login_bar').slideUp();
-                                showNotice('You are now logged in to Nexus');
+                    GoLite.getUser(user => {
+                        if ($('#login_bar').length && !user) {
+                            $('#seperator0').waypoint(function(e) {
+                                $('#login_bar').slideDown();
+                            }, {
+                                offset: 'bottom-in-view', 
+                                triggerOnce: true
                             });
+                            $(document).bind('user.hasAccount', function(e) {
+                                GoLite.updateUserState(function() {
+                                    $(document).trigger('GoLite.stateChange', ['']);
+                                    $('#login_bar').slideUp();
+                                    showNotice('You are now logged in to GoNexus');
+                                });
+                            });
+                        } else GoLite.updateUserState(c => {
+                            if (c == 2) $(document).trigger('GoLite.stateChange', ['']);
                         });
-                    }
+                    });
                     $('#movie_title, #movie_description').placeholder();
                     $('.featured_video').click(function(e) {
                         e.preventDefault();

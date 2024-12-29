@@ -126,9 +126,8 @@
                             case "2013":
                             case "2012": {
                                 if (window.location.pathname == "/cc") {
-                                    flashvars.clientThemePath = `/static/<client_theme>?v=${year}`;
-                                    flashvars.storePath = `/static/store/<store>?v=2010`;
-                                    swf = `/static/animation/cc.swf?v=${year}`;
+                                    flashvars.clientThemePath = `/static/tommy/${year}/<client_theme>`;
+                                    swf = `/animation/${year}/cc.swf`;
                                     height = "600";
                                     width = "960";
                                 } else {
@@ -138,15 +137,14 @@
                                 }
                                 break;
                             } case "2010": {
-                                swf = `/static/animation/cc.swf?v=2010`;
+                                swf = `/animation/2010/cc.swf`;
                                 height = "600";
                                 width = "960";
                                 break;
                             } default: {
                                 if (window.location.pathname == "/cc") {
-                                    flashvars.clientThemePath = `/static/<client_theme>?v=${year}`;
-                                    flashvars.storePath = `/static/store/<store>?v=2010`;
-                                    swf = `/static/animation/cc.swf?v=${year}`;
+                                    flashvars.clientThemePath = `/static/tommy/${year}/<client_theme>`;
+                                    swf = `/animation/${year}/cc.swf`;
                                 }
                                 break;
                             }

@@ -78,127 +78,115 @@ function ItemSelector(c) {
         }
     }
 }
-var VoiceRecorder;
-if (VoiceRecorder == undefined) {
-    VoiceRecorder = function(a) {
-        this.init(a)
+class VoiceRecorder {
+    constructor(a) {
+        this.counter = 0;
+        this.instances = {};
+        this.recording = false;
+        this.defaultSettings = {
+            swf: "/static/qvm/MyMicRecorder.swf",
+            flashvars: {
+                apiserver: "/qvm_micRecord_",
+                appCode: "go",
+                clientThemePath: "/static/tommy/2012/<client_theme>"
+            }
+        };
+        this.init(a);
     }
-}
-VoiceRecorder.prototype.init = function(a) {
-    try {
-        this.settings = jQuery.extend({
-            loadHandler: null,
-            processCompleteHandler: null,
-            reRecordHandler: null,
-            focusHandler: null
-        }, VoiceRecorder.defaultSettings, a);
-        this.recorderId = "voice_recorder_" + VoiceRecorder.counter++;
-        VoiceRecorder.instances[this.recorderId] = this;
-        if (typeof (a.initAssetId) === "undefined") {
-            this.load({})
+    init(a) {
+        try {
+            this.settings = jQuery.extend({
+                loadHandler: null,
+                processCompleteHandler: null,
+                reRecordHandler: null,
+                focusHandler: null
+            }, this.defaultSettings, a);
+            this.recorderId = "voice_recorder_" + this.counter++;
+            this.instances[this.recorderId] = this;
+            if (typeof (a.initAssetId) === "undefined") {
+                this.load({});
+            } else {
+                this.load({
+                    assetId: a.initAssetId
+                });
+            }
+        } catch (b) {
+            delete this.instances[this.recorderId];
+            throw b;
+        }
+    }
+    destory() {
+        try {
+            var a = document.getElementById(this.recorderId);
+            if (a) {
+                try {
+                    a.parentNode.removeChild(a);
+                } catch (b) { }
+            }
+            window[this.recorderId] = null;
+            this.instances[this.recorderId] = null;
+            delete this.instances[this.recorderId];
+            if (this.recording == this.recorderId) {
+                this.recording = false;
+            }
+            this.recorderId = null;
+            this.settings = null;
+            return true;
+        } catch (b) {
+            return false;
+        }
+    }
+    load(a) {
+        if (typeof this.settings.loadHandler == "function") {
+            a = jQuery.extend({}, a, {
+                recorderId: this.recorderId,
+                tlang: ((typeof I18N_LANG != "undefined") ? I18N_LANG : "en_US")
+            });
+            this.settings.loadHandler.apply(this, [a]);
+        }
+    }
+    processComplete(a) {
+        this.recording = false;
+        if (typeof this.settings.processCompleteHandler == "function") {
+            this.settings.processCompleteHandler.apply(this, [a]);
+        }
+    }
+    processError() {
+        this.recording = false;
+    }
+    reRecord() {
+        if (typeof this.settings.reRecordHandler == "function") {
+            this.settings.reRecordHandler.apply(this);
+        }
+    }
+    focus() {
+        if (typeof this.settings.focusHandler == "function") {
+            this.settings.focusHandler.apply(this);
+        }
+    }
+    showSettings() {
+        this.setHeight(205);
+    }
+    doneSettings() {
+        this.setHeight(48);
+    }
+    startRecord() {
+        if (this.recording) {
+            return false;
+        }
+        this.recording = this.recorderId;
+        return true;
+    }
+    setHeight(a) {
+        if (jQuery.browser.mozilla) {
+            jQuery(document.getElementById(this.recorderId).parentNode).height(a);
         } else {
-            this.load({
-                assetId: a.initAssetId
-            })
+            jQuery(document.getElementById(this.recorderId).parentNode).animate({
+                height: a + "px"
+            }, 300);
         }
-    } catch (b) {
-        delete VoiceRecorder.instances[this.recorderId];
-        throw b
     }
 }
-;
-VoiceRecorder.prototype.destory = function() {
-    try {
-        var a = document.getElementById(this.recorderId);
-        if (a) {
-            try {
-                a.parentNode.removeChild(a)
-            } catch (b) {}
-        }
-        window[this.recorderId] = null;
-        VoiceRecorder.instances[this.recorderId] = null;
-        delete VoiceRecorder.instances[this.recorderId];
-        if (VoiceRecorder.recording == this.recorderId) {
-            VoiceRecorder.recording = false
-        }
-        this.recorderId = null;
-        this.settings = null;
-        return true
-    } catch (b) {
-        return false
-    }
-}
-;
-VoiceRecorder.prototype.load = function(a) {
-    if (typeof this.settings.loadHandler == "function") {
-        a = jQuery.extend({}, a, {
-            recorderId: this.recorderId,
-            tlang: ((typeof I18N_LANG != "undefined") ? I18N_LANG : "en_US")
-        });
-        this.settings.loadHandler.apply(this, [a])
-    }
-}
-;
-VoiceRecorder.prototype.processComplete = function(a) {
-    VoiceRecorder.recording = false;
-    if (typeof this.settings.processCompleteHandler == "function") {
-        this.settings.processCompleteHandler.apply(this, [a])
-    }
-}
-;
-VoiceRecorder.prototype.processError = function() {
-    VoiceRecorder.recording = false
-}
-;
-VoiceRecorder.prototype.reRecord = function() {
-    if (typeof this.settings.reRecordHandler == "function") {
-        this.settings.reRecordHandler.apply(this)
-    }
-}
-;
-VoiceRecorder.prototype.focus = function() {
-    if (typeof this.settings.focusHandler == "function") {
-        this.settings.focusHandler.apply(this)
-    }
-}
-;
-VoiceRecorder.prototype.showSettings = function() {
-    this.setHeight(205)
-}
-;
-VoiceRecorder.prototype.doneSettings = function() {
-    this.setHeight(48)
-}
-;
-VoiceRecorder.prototype.startRecord = function() {
-    if (VoiceRecorder.recording) {
-        return false
-    }
-    VoiceRecorder.recording = this.recorderId;
-    return true
-}
-;
-VoiceRecorder.prototype.setHeight = function(a) {
-    if (jQuery.browser.mozilla) {
-        jQuery(document.getElementById(this.recorderId).parentNode).height(a)
-    } else {
-        jQuery(document.getElementById(this.recorderId).parentNode).animate({
-            height: a + "px"
-        }, 300)
-    }
-}
-;
-VoiceRecorder.counter = 0;
-VoiceRecorder.instances = {};
-VoiceRecorder.recording = false;
-VoiceRecorder.defaultSettings = {
-    swf: "",
-    flashvars: {
-        apiserver: "/qvm_micRecord_",
-        appCode: "go",
-        u_info: ""
-    }
-};
 (function(a) {
     a.fn.scriptDialog = function() {
         var b = GoLite.settings.dialigMaxLength;
@@ -540,53 +528,37 @@ var GoLite = (function(e) {
     var r = 30, p = 10, b, t, a = [], u = null, o = false, s = false, v = "", d = false, c = 0, j = 1, q = false, i = false;
     initModeForEdit = false;
     function f() {
-        var w = {};
-        w.golite_theme = golite_theme;
-        if (b) {
-            w.enc_mid = b
-        }
-        w.enc_tid = t.data("tid");
-        if (u) {
-            w.opening_closing = u
-        } else {
-            w.opening_closing = {
-                opening: "",
-                closing: ""
-            }
-        }
-        w.characters = [];
+        var w = {
+            golite_theme,
+            enc_tid: t.data("tid"),
+            characters: [],
+            script: GoLite.getScripts()
+        };
+        if (b) w.enc_mid = b
+        if (u) w.opening_closing = u
+        else w.opening_closing = {}
         e.each(a, function(z, A) {
             var y = {};
-            y[A.data("cid")] = z + 1;
+            let g = A.data("cid");
+            g = g.includes(".") ? g.split(".").join(":") : g;
+            y[g] = z + 1;
             w.characters.push(y)
         });
-        w.script = GoLite.getScripts();
         if (i) {
-            w.opening_closing.opening_characters = {};
-            w.opening_closing.opening_characters.facial = e.extend({}, w.script[0].facial);
-            for (x in w.opening_closing.opening_characters.facial) {
-                w.opening_closing.opening_characters.facial[x] = "default"
-            }
-            w.opening_closing.closing_characters = {};
-            w.opening_closing.closing_characters.facial = e.extend({}, w.script[(w.script.length - 1)].facial)
-        }
-        w.editor_mode = "new";
-        if (b) {
-            if (typeof goliteEditorMode != "undefined") {
-                w.editor_mode = goliteEditorMode
-            }
+            w.opening_closing.opening_characters = {
+                facial: w.script[0].facial
+            };
+            w.opening_closing.closing_characters = {
+                facial: w.script[(w.script.length - 1)].facial
+            };
         }
         return w
     }
     function h(y, w) {
-        var z = 384;
-        if (w.isWide) {
-            z = 339
-        }
         e("#" + y).flash({
             id: "Player",
             swf: GoLite.settings.player.swf,
-            height: z,
+            height: !w.isWide ? 384 : 339,
             width: 550,
             bgcolor: "#000000",
             quality: "high",
