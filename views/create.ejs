@@ -101,13 +101,9 @@
                     </div>
                     <p id="error-message-lvmSelector" style="color: red;"></p>
                     <center class="modal-body">
-                        <p>In order to use a custom LVM in your video, please type in a year and filename of any LVM below.</p>
-                        <p>https://wrapperclassic.netlify.app/animation/<input 
-                            type="text" id="customlvmyear" value="2015" placeholder="Custom LVM Year" 
-                            oninput="selectLVM()"/>/<input 
-                            type="text" name="customlvmfile" value="go_full_late.swf" 
-                            placeholder="Custom LVM Filename"/>
-                        </p>
+                        <p>In order to use a custom LVM in your video, please select a year and filename of any LVM below.</p>
+                        <label>Year: <select id="customlvmyear" onchange="selectLVM()"></select></label><br>
+                        <label>File: <select name="customlvmfile"></select></label>
                         <br>
                     </center>
                     <script>
@@ -174,7 +170,9 @@
                     <center class="modal-footer">
                         <h2>Other options</h2>
                         <div id="other-options">
-                            <p id="grid-item" class="tutorial">Tutorial <input type="checkbox" name="tutorial" onclick="tutCharOption(studio)"></p>
+                            <p id="grid-item" class="tutorial">
+                                Tutorial <input type="checkbox" name="tutorial" onclick="tutCharOption(studio)">
+                            </p>
                             <p id="grid-item" class="widescreen">Widescreen <input type="checkbox" name="widescreen" checked></p>
                             <div id="grid-item" class="tutorialchar2010" style="display: none;">
                                 <h4>Select Your Character To Use For The 2010 LVM Tutorial</h4><br>
@@ -183,15 +181,18 @@
                                     but for now, this is what we are doing.
                                 </p><br>
                                 <script>
-                                    document.write(`<label for="devs_selector">GoNexus Developers <select id="devs_selector">${
-                                        nexus_devs.map(oi => {
-                                            if (oi.people) return `<optgroup label="${oi.name}" ${oi.disabled ? 'disabled' : ''}>${
-                                                oi.people.map(v => `<option value="${
-                                                    v.id
-                                                }" ${v.disabled ? 'disabled' : ''}>${v.name}</option>`)
-                                        }</optgroup>`;
-                                        else return `<option value="${oi.id}" ${oi.disabled ? 'disabled' : ''}>${oi.name}</option>`;
-                                    })}</select></label><br>`)
+                                    document.write(`<label for="devs_selector">GoNexus Developers <select id="devs_selector">
+                                        <option value="">Select A Developer</option>
+                                        ${
+                                            nexus_devs.map(oi => {
+                                                if (oi.people) return `<optgroup label="${oi.name}" ${oi.disabled ? 'disabled' : ''}>${
+                                                    oi.people.map(v => `<option value="${
+                                                        v.id
+                                                    }" ${v.disabled ? 'disabled' : ''}>${v.name}</option>`)
+                                            }</optgroup>`;
+                                            else return `<option value="${oi.id}" ${oi.disabled ? 'disabled' : ''}>${oi.name}</option>`;
+                                        })}</select>
+                                    </label><br>`);
                                 </script>
                                 <label>Custom Characters</label>
                                 <div id="tutorial-chars"></div>
@@ -207,16 +208,9 @@
                         <div id="ct2010" style="display: none;">
                             <p>LVM Style</p>
                             <select name="ct2010">
-                                <option value="go">Normal</option>
+                                <option value="">Normal</option>
                                 <option value="domo">Domo</option>
                                 <option value="cn">Cartoon Network</option>
-                            </select>
-                        </div>
-                        <div id="ct2011" style="display: none;">
-                            <p>Color Theme</p>
-                            <select name="ct2011">
-                                <option value="silver">Dark</option>
-                                <option value="go" selected>Silver</option>
                             </select>
                         </div>
                         <div id="ct2012" style="display: none;">
@@ -230,7 +224,7 @@
                             $('#customLVM').block()
                             $('#error-message-lvmSelector').text('');
                             studio = $('#customlvmyear').val();
-                            newAnimation(Object.fromEntries(new URLSearchParams($('#createVideoForm').serialize())));
+                            newCustomLVMAnimation(Object.fromEntries(new URLSearchParams($('#createVideoForm').serialize())));
                         })()" class="btn btn-orange">Create a Video</button>
                     </center>
                 </form>
@@ -246,19 +240,9 @@
                 </div>
             </div>
         </div>
-        <div id="import_popup_container" class="lightbox" style="display:none">
-            <div id="lightbox_wrapper">
-                <h5>Import an Asset <a style="float: right;" href="javascript:;" 
-                    onclick="jQuery('#studiodiv').unblock();">×</a>
-                </h5>
-                <!-- Import form -->
-                <div id="import_image">
-                    <form id="uploadbanner" enctype="multipart/form-data" method="post" action="javascript:;">
-                        <input id="fileupload" name="import" type="file" accept=".mp3,.wav,.png,.jpg" required>
-                        <div id="importQuene"></div>
-                    </form>
-                </div>
-            </div>
+        <div id="import_popup_container" class="lightbox" style="display:none;width:725.6px;height:549px;">
+            <a style="float: right;" href="javascript:;" onclick="jQuery('#studiodiv').unblock();">×</a>
+            <div id="importerdiv"></div>
         </div>
         <div id="previewPlayerContainer" class="lightbox" style="display: none; width: 700px;">
             <div class="lightbox_wrapper">
@@ -266,7 +250,9 @@
                 <div id="playerdiv"></div>
                 <div style="margin-bottom: auto;">
                     <button class="preview-button" onclick="jQuery('#studiodiv').unblock();">< Back to editing</button>
-                    <button class="preview-button" style="float: right;" onclick="jQuery('#studiodiv').unblock(); jQuery('#Studio')[0].onExternalPreviewPlayerPublish()">Save Now ></button>            
+                    <button class="preview-button" style="float: right;" onclick="jQuery('#studiodiv').unblock(); jQuery(
+                        '#Studio'
+                    )[0].onExternalPreviewPlayerPublish()">Save Now ></button>            
                 </div>
             </div>
         </div>
@@ -302,26 +288,32 @@
                 }));;
                 $("#templatesModal").modal('show')
             }
-            let tId, tmcId, studio = "2016", chars = [], hasChars = false, themes = [], loadingStudio = false, previewerMovieXML, previewerFlashvars;
-            const flashvars = {
-                tts_enabled: 1,
-			    upl: 1,
-			    hb: 1,
-			    appCode: "go",
-			    uisa: 1,
-			    isLogin: "Y",
-			    tlang: "en_US",
-			    isEmbed: 1,
-			    isWide: "0",
-                nextUrl: "/api/redirect",
-                siteId: window.location.host.startsWith("localhost") ? 7 : "go",
-                lid: window.location.host.startsWith("localhost") ? 7 : 13,
-			    ut: "50",
-                isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
-                apiserver: window.location.origin + "/",
-                staticserver: "https://wrapperclassic.netlify.app/",
-            };
+            let customlvmfiles = {
+
+            }, tId, tmcId, studio = "2016", chars = [
+
+            ], hasChars = false, themes = [
+
+            ], loadingStudio = false, previewerMovieXML, previewerFlashvars;
             function showImporter() {
+                jQuery("#importerdiv").flash({
+                    id: "StudioImporter",
+                    swf: `/animation/2010/importer copy.swf`,
+                    width: "725",
+                    height: "519",
+                    align: "middle",
+                    allowScriptAccess: "always",
+                    allowFullScreen: "true",
+                    wmode: "window",
+                    hasVersion: "10.3",
+                    style: "margin-left: -10px;",
+                    flashvars: {
+                        apiserver: window.location.origin + "/",
+                        ut: 10,
+                        appCode: "go",
+                        userId: userData.uid || userData.id
+                    }
+                });
                 showOverlayOnElement("#studiodiv", $("#import_popup_container"));
             }
             function retrievePreviewPlayerData() {
@@ -336,22 +328,21 @@
                 }
                 jQuery("#playerdiv").flash({
                     id: "Player",
-                    swf: "https://file.garden/ZP0Nfnn29AiCnZv5/player_old.swf",
+                    swf: `/animation/${studio}/player.swf`,
                     width: "640",
                     height: "360",
-                    allowFullScreen: true,
                     allowScriptAccess: "always",
                     flashvars: {
+                        isPreview: 1,
+                        appCode: "go",
                         apiserver: window.location.origin + "/",
-                        staticserver: "https://wrapperclassic.netlify.app/",
                         isEmbed: 1,
                         tlang: "en_US",
                         isInitFromExternal: 1,
                         startFrame,
-                        movieId: flashvars.presaveId,
                         autostart: 1,
-                        storePath: "https://wrapperclassic.netlify.app/static/store/<store>",
-                        clientThemePath: "https://file.garden/ZP0Nfnn29AiCnZv5/477/<client_theme>",
+                        storePath: "/static/store/<store>",
+                        clientThemePath: `/static/tommy/2012/<client_theme>`,
                     }
                 });
                 showOverlayOnElement("#studiodiv", jQuery("#previewPlayerContainer"));
@@ -365,147 +356,99 @@
                 studio = (new URLSearchParams(window.location.search)).get("lvm");
                 loadingStudio = true;
             }
-            function checkStudioLoadingStatus() {
-                const params = new URLSearchParams(window.location.search);
-                if (loadingStudio && studio == params.get("lvm") && tId == params.get("tId")) {
-                    $("#studioLoading").modal('hide');
-                    newAnimation({
-                        customlvmfile: studio == "2016" ? "go" : "old" + "_full.swf",
-                        tutorial: false,
-                        lvmmode: "block",
-                        ct2012: "go",
-                        year: params.get("lvm")
-                    });
-                }
-            }
             const interactiveTutorial = {
                 hideTutorial: true,
                 neverDisplay() {
-                    return this.hideTutorial;
+                    return this.needToShow();
+                },
+                needToShow: function() {
+                    return !this.hideTutorial
                 }
             }
             function selectLVM() {
                 studio = $("#customlvmyear").val();
+                $('select[name="customlvmfile"]').html(customlvmfiles[studio].map(v => `<option value="${v}">${v}</option>`));
                 $("#error-message-lvmSelector").text('');
                 tutCharOption(studio);
                 if (studio == '2010') {
                     $(".widescreen").hide();
                     $("#ct2010").show();
-                    $("#ct2011").hide();
                     $("#ct2012").hide();
-                } else if (studio == '2011') {
+                } else if (studio == '2011' || studio == '2012' || studio == '2013') {
                     $(".widescreen").show();
                     $("#ct2010").hide();
-                    $("#ct2011").show();
-                    $("#ct2012").hide();
-                } else if (studio == '2012' || studio == '2013') {
-                    $(".widescreen").show();
-                    $("#ct2010").hide();
-                    $("#ct2011").hide();
                     $("#ct2012").show();
                 } else {
                     $(".widescreen").show();
                     $("#ct2010").hide();
-                    $("#ct2011").hide();
                     $("#ct2012").hide();
                 }
             }
             function lvmSelectorError(msg) {
                 $("#customLVM").unblock()
+                location.href = "#createVideoForm"
                 $("#error-message-lvmSelector").text(msg);
             }
-            function newAnimation(json) {
-                if (studio == '2010' && json.tutorial && !($('#devs_selector').val() || tmcId) && hasChars) lvmSelectorError('Please select a character to use in the 2010 LVM tutorial');
+            function newCustomLVMAnimation(json) {
+                if (
+                    studio == '2010' && json.tutorial && !($('#devs_selector').val() || tmcId)
+                ) lvmSelectorError('Please select a character to use in the 2010 LVM tutorial');
                 else if (json.lvmmode == "block") jQuery.post('/api/getNewMovieId', d => {
-                    if (studio == "2010" && window.location.host.startsWith("localhost") && tId != "retro") {
+                    /*if (studio == "2010" && window.location.host.startsWith("localhost") && tId != "retro") {
                         const themeInfo = themes.find(i => i.id == tId);
                         lvmSelectorError(`due to the crossdomain.xml file not being fetched correctly while using localhost, ${
                             themeInfo.name
                         } does not want to work in the 2010 LVM while you use localhost. Please try using GoNexus online for better results.`);
                         return;
-                    }
+                    }*/
                     interactiveTutorial.hideTutorial = json.tutorial ? false : true;
                     window.onbeforeunload = function(e) {
                         var e = e || window.event;
                         if (e) e.returnValue = 'You are about to lose all your unsaved changes in the studio.';
                     };
-                    const attrs = {
-                        data: `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val() || json.year}/${json.customlvmfile}`,
-                        width: "100%",
-                        height: "100%",
-                        type: "application/x-shockwave-flash"
-                    };
-                    const swf = parseInt(studio) >= 2013 ? `/api/serveLVMViaURL?i=https://wrapperclassic.netlify.app/animation/${
-                        $("#customlvmyear").val() || json.year
-                    }/${json.customlvmfile}` : `https://wrapperclassic.netlify.app/animation/${$("#customlvmyear").val() || json.year}/${json.customlvmfile}`;
-                    const storePath = parseInt(studio) >= 2013 ? `/static/2011/store/<store>` : `https://wrapperclassic.netlify.app/static/store/<store>`;
-                    const clientThemePath = parseInt(studio) >= 2013 ? `/static/2012/477/<client_theme>?themeColor=${json.ct2012 || "go"}` : `https://wrapperclassic.netlify.app/static/tommy/${
-                        $("#customlvmyear").val() || json.year
-                    }/<client_theme>`;
+                    const flashvars = {
+                        pts: 1,
+                        upl: 1,
+                        hb: 1,
+			            appCode: "go",
+			            uisa: studio == "2010" ? 1 : 0,
+			            isLogin: "Y",
+			            tlang: "en_US",
+			            isEmbed: 0,
+			            isWide: json.widescreen == "on" ? 1 : 0,
+			            nextUrl: "/api/redirect",
+                        siteId: "school",
+			            ut: 20,
+                        apiserver: window.location.origin + "/"
+                    }
                     flashvars.studio = studio;
                     flashvars.userId = userData.uid || userData.id;
                     flashvars.presaveId = d;
-                    flashvars.ctc = json.ct2010;
+                    if (studio == "2010") {
+                        if (json.ct2010) flashvars.ctc = json.ct2010; 
+                        if (json.tutorial) flashvars.tmcc = $('#devs_selector').val() || tmcId;
+                    } else {
+                        flashvars.lid = 11;
+                        flashvars.ctc = "go";
+                        flashvars.storePath = `/static/store/<store>`;
+                        flashvars.clientThemePath = `/static/tommy/${$("#customlvmyear").val() || json.year}/<client_theme>`;
+                        flashvars.themeColor = json.ct2012;
+                        flashvars.has_asset_char = 1;
+                    }
                     flashvars.tm = json.tutorial ? "SEMI" : "FIN";
-                    if (json.tutorial && studio == "2010") flashvars.tmcc = $('#devs_selector').val() || tmcId;
-                    if (studio != '2010') jQuery("#studiodiv").flash({
+                    flashvars.tray = tId;
+                    jQuery("#studiodiv").flash({
                         id: "Studio",
-                        swf,
-                        width: "960",
+                        swf: `/animation/${$("#customlvmyear").val() || json.year}/${json.customlvmfile}`,
+                        width: "959",
                         height: "630",
                         align: "middle",
                         allowScriptAccess: "always",
                         allowFullScreen: "true",
                         wmode: "window",
                         hasVersion: "10.3",
-                        flashvars: {
-                            apiserver: "/",
-                            storePath,
-                            isEmbed: 1,
-                            ctc: "go",
-                            ut: parseInt(studio) <= 2012 ? 60 : 23,
-                            tm: json.tutorial ? "NEW" : "FIN",
-                            appCode: "go",
-                            tray: tId,
-                            siteId: "go",
-                            lid: 13,
-                            isLogin: "Y",
-                            retut: 1,
-                            clientThemePath,
-                            tlang: "en_US",
-                            studio,
-                            userId: flashvars.userId,
-                            isWide: json.widescreen ? 1 : 0,
-                            collab: 0,
-                            nextUrl: "/api/redirect",
-                            themeColor: parseInt(studio) <= 2012 ? json.ct2012 : "go",
-                            presaveId: d
-                        }
+                        flashvars
                     });
-                    else {
-                        const yesorno = window.location.host.startsWith("localhost") ? confirm("For whatever reason, when localhost is being used to fetch the crossdomain.xml file on the 2010 LVM, it tries to get it using localhost90 which is a host that does not exist on all WI-FI networks. Because of this bug, we had no choice but to set the isOffline flashvar to 1 on the 2010 LVM which will cause some features to not work properly in the 2010 LVM like saving your movie, getting user assets, and etc. After you press OK, you are agreeing with the statements that are mentioned above and the reason for all of this is because of the reason stated in the first sentence above and due to that very bug not being fixable no matter how many times one of our developers tried removing the bug. are you sure that you want to proceed to the 2010 LVM?") : true;
-                        if (yesorno) {
-                            if (studio == '2010' && jQuery.flash.available && yesorno) {
-                                const params = flashvars;
-                                jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:0%"></div></div>');
-                                jQuery.post('/api/getNewMovieId', d => {
-                                    flashvars.presaveId = d;
-                                    flashvars.tray = tId;
-                                    jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:25%"></div></div>');
-                                    jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=attrs&protocall=https&method=POST&apiPath=/.netlify/functions/api", attrs, () => {
-                                        jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:50%"></div></div>');
-                                        jQuery.post("/api/sendParamInfo2Server?apiHost=wrapperclassic.netlify.app&type=params&protocall=https&method=POST&apiPath=/.netlify/functions/api", params, () => {
-                                            jQuery("#studiodiv").html('<div class="w3-border"><div class="w3-green" style="height:24px;width:100%"></div></div>');
-                                            jQuery.post('/api/lvmVarsStatus?apiHost=wrapperclassic.netlify.app&protocall=https&method=POST&apiPath=/.netlify/functions/api', d => {
-                                                if (d.isThere) jQuery("#studiodiv").html(`<embed height="629" width="954" src="https://wrapperclassic.netlify.app/lvmEmbed.html"></embed>`)
-                                                else jQuery("#studiodiv").html('<center>Some data was not sent in successfully to wrapper: classic. Please relaunch the 2010 Video Maker.</center>');
-                                            });
-                                        });
-                                    })
-                                })
-                            }
-                        } else return;
-                    }
                     $("#customLVM").unblock().modal('hide');
                     $("#studioBlock").modal({
                         keyboard: false,
@@ -515,64 +458,34 @@
                 else location.href = `/go_full?y=${studio}&isWide=${
                     json.widescreen == "on" ? '1' : '0'
                 }&tutorial=${json.tutorial == "on" ? true : false}&tray=${tId}`
-                if (studio == "2010") {
-                    if (!window.location.host.startsWith("localhost")) $("#closeStudio").on("click", () => {
-                        if (closeStudio()) $("#closeStudio").off("click");
-                    });
-                    else {
-                        window.onbeforeunload = function(e) {
-                            return null;
-                        };
-                        $("#closeStudio").on("click", () => {
-                            closeStudio2();
-                            $("#closeStudio").off("click");
-                        });
-                    }
-                } else $("#closeStudio").on("click", () => {
-                    if (closeStudio()) $("#closeStudio").off("click");
+                $("#closeStudio").on("click", () => {
+                    closeStudio();
+                    $("#closeStudio").off("click");
                 });
             }
-            function closeStudio(l) {
-                const yesorno = confirm(`Before you leave the ${l || studio} LVM, please save any changes that you made to your video.`);
-                if (!yesorno) {
-                    switch (l || studio) {
-                        case "2010":
-                        case "custom": {
-                            jQuery.post("/api/deleteParamInfo", new URLSearchParams({
-                                apiHost: 'wrapperclassic.netlify.app',
-                                types: 'attrs_params',
-                                protocall: 'https',
-                                method: 'POST',
-                                apiPath: '/.netlify/functions/api'
-                            }).toString());
-                            break;
-                        }
-                    }
-                    $("#studioBlock").modal('hide');
-                    window.onbeforeunload = function(e) {
-                        return null;
-                    };
-                    return true;
-                } else return false;
-            }
-            function closeStudio2(l) {
-                switch (l || studio) {
-                    case "2010":
-                    case "custom": {
-                        jQuery.post("/api/deleteParamInfo", new URLSearchParams({
-                            apiHost: 'wrapperclassic.netlify.app',
-                            types: 'attrs_params',
-                            protocall: 'https',
-                            method: 'POST',
-                            apiPath: '/.netlify/functions/api'
-                        }).toString());
-                        break;
-                    }
-                }
+            function closeStudio() {
                 $("#studioBlock").modal('hide');
                 window.onbeforeunload = function(e) {
                     return null;
                 };
+            }
+            function setupCustomLVM(d) {
+                jQuery.blockUI();
+                tId = d;
+                let years = '';
+                jQuery.post("/api/getCustomLVMFileSystemTree", d => {
+                    for (const i in d) {
+                        if (i.length != 4) continue;
+                        customlvmfiles[i] = [];
+                        if (studio == i) years += `<option value="${i}" selected>${i}</option>`;
+                        else years += `<option value="${i}">${i}</option>`;
+                        for (const g in d[i]) if (g.endsWith("swf")) customlvmfiles[i].push(g);
+                    }
+                    $("#customlvmyear").html(years);
+                    setTimeout(selectLVM, 200);
+                    $("#customLVM").modal('show')
+                    jQuery.unblockUI();
+                })
             }
             jQuery.getJSON("/api/themes/get", (d) => {
                 const counts = {
@@ -595,13 +508,14 @@
                                 <div class="theme-meat">
                                     <div class="apps">
                                         <h3>${theme.attr.name}</h3>
-                                        ${!theme.attr.only_show_options || theme.attr.only_show_options.includes("studio") ? `<a class="btn btn-orange" href="/go_full?tray=${
+                                        ${!theme.attr.only_show_options || theme.attr.only_show_options.includes(
+                                            "studio"
+                                        ) ? `<a class="btn btn-orange" href="/go_full?tray=${
                                             theme.attr.id
                                         }" title="" data-original-title="LVM">Make a Video</a>
-                                        <a class="btn btn-default" title="" data-original-title="Custom LVM" 
-                                            data-toggle="modal" data-target="#customLVM" onclick="tId = '${
-                                                theme.attr.id
-                                            }'">Custom LVM
+                                        <a class="btn btn-default" title="" data-original-title="Custom LVM" onclick="setupCustomLVM('${
+                                            theme.attr.id
+                                        }')">Custom LVM
                                         </a>` : ''}
                                         ${
                                             (
@@ -616,7 +530,9 @@
                                         ${
                                             (
                                                 !theme.attr.only_show_options || theme.attr.only_show_options.includes("qvm")
-                                            ) && (theme.attr.qvm || theme.attr.qvm_url) ? !theme.attr.qvm?.includes(",") ? `<a class="btn btn-default" 
+                                            ) && (
+                                                theme.attr.qvm || theme.attr.qvm_url
+                                            ) ? !theme.attr.qvm?.includes(",") ? `<a class="btn btn-default" 
                                                 href="${
                                                     theme.attr.qvm_url ? theme.attr.qvm_url : `/quickvideo?theme=${theme.attr.qvm}`
                                                 }" title="" 
@@ -645,12 +561,33 @@
                     $("#lvmmode").hide();
                     if (!window.location.host.startsWith("localhost")) {
                         $("input[name='tutorial']").prop("checked") ? $(".tutorialchar2010").show() : $(".tutorialchar2010").hide()
-                        for (const d of chars) {
-                            hasChars = true;
-                            break;
-                        }
-                        if (!hasChars) $("#tutorial-chars").html(`<p id="grid-item">You have not created any characters yet.</p>`);
-                        tmcId = $('#devs_selector').val() || "4048901";
+                        if (chars.length == 0) $("#tutorial-chars").html(`<p id="grid-item">
+                            Either you have not created any characters yet or a char head image does not exist for your character.
+                            To check, follow these steps:
+                            <ol>
+                                <li>
+                                    Go into the <strong>Character Icon</strong> on the LVM. Once there, the Custom Characters should load by default. 
+                                    If the Stock Characters load by default or theres nothing in the tray, 
+                                    then that means that you have not created any characters.
+                                </li>
+                                <li>
+                                    Go into the Quick Video Maker and scroll to step 2 where you can click a link below either character called <strong>
+                                        Use your own character
+                                    </strong>. Once there, you will be able to tell whatever or not a thumb or head image exists for your characters.
+                                    Normally, after you create a character, A char thumb or head image comes saved with your character. 
+                                    If not, then you may have most likely done the following things with a character:
+                                    <ul>
+                                        <li>
+                                            You used some of your gopoints to buy a custom character in the studio witch after 
+                                            purchace is complete, a char thumb or head image does not come with your character for some 
+                                            reason even though the older Character Creators came with a feature to pack a thumb and head image 
+                                            for your character after saving is complete.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </p>`);
+                        tmcId = $('#devs_selector').val();
                     } else $(".tutorial").hide();
                 } else {
                     $("#lvmmode").show();
@@ -660,11 +597,11 @@
             }
             function reloadCCListForTut() {
                 jQuery.ajax({
-                    url: '/api/getChars',
+                    url: '/api/assets/get/theme/ugc',
                     type: 'POST',
                     data: { 
-                        cc_theme_id: 'family', 
-                        tags: '',
+                        type: "char",
+                        themeId: "family",
                         userId: userData.uid || userData.id
                     },
                     dataType: 'json',
@@ -672,6 +609,7 @@
                         chars = [];
                         $("#tutorial-chars").html('');
                         for (const cc of data) {
+                            if (!cc.head_url) continue;
                             $("#tutorial-chars").append(`<a href="javascript:;" id="char${cc.id}" onclick="selectTutChar('${
                                 cc.id
                             }')" class="tutorial-char"><img src="${cc.head_url}"><h2>${
@@ -685,7 +623,7 @@
             function selectTutChar(cId) {
                 tmcId = cId;
                 if ($(`#char${cId}`).hasClass("tutorial-char-active")) {
-                    tmcId = $('#devs_selector').val() || "4048901";
+                    tmcId = $('#devs_selector').val();
                     $(`#char${cId}`).removeClass("tutorial-char-active").removeClass("tutorial-char");
                 } else {
                     $(".tutorial-char-active").addClass("tutorial-char").removeClass("tutorial-char-active");

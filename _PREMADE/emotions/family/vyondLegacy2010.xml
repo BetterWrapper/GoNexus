@@ -1,0 +1,41 @@
+<action id="stand.zip" name="Stand" loop="Y" totalframe="1" enable="Y"/>
+<motion id="walk.zip" name="Walk" loop="Y" totalframe="24" enable="Y"/>
+<motion id="run.zip" name="Run" loop="Y" totalframe="20" enable="Y"/>
+<action id="sit.zip" name="Sit" loop="Y" totalframe="1" enable="Y"/>
+<action id="lie.zip" name="Lie down" loop="Y" totalframe="1" enable="Y"/>
+<action id="kneel.zip" name="Kneel down" loop="Y" totalframe="1" enable="Y"/>
+<action id="xarms.zip" name="Crossed arms" loop="Y" totalframe="1" enable="Y"/>
+<category name="emotion">
+    <action id="excited.zip" name="Excited / Cheers" loop="Y" totalframe="80" enable="Y"/>
+    <action id="taunt.zip" name="Taunt" loop="Y" totalframe="60" enable="Y"/>
+    <action id="chuckle.zip" name="Chuckle" loop="Y" totalframe="6" enable="Y"/>
+    <action id="laugh.zip" name="Laugh" loop="Y" totalframe="6" enable="Y"/>
+    <action id="sad.zip" name="Sad" loop="Y" totalframe="60" enable="Y"/>
+    <action id="fearful.zip" name="Fearful" loop="Y" totalframe="60" enable="Y"/>
+</category>
+<action id="pt_at.zip" name="Point at" loop="Y" totalframe="30" enable="Y"/>
+<action id="talk_phone.zip" name="Talk on phone" loop="Y" totalframe="115" enable="Y"/>
+<action id="dance.zip" name="Dance" loop="Y" totalframe="23" enable="Y"/>
+<action id="talk.zip" name="Talk" loop="Y" totalframe="100" enable="Y"/>
+<facial id="head_talk_a.zip" name="Talk neutral A" enable="Y"/>
+<facial id="head_talk_b.zip" name="Talk neutral B" enable="Y"/>
+<facial id="head_talk_angry.zip" name="Talk angry" enable="Y"/>
+<facial id="head_talk_happy.zip" name="Talk happy" enable="Y"/>
+<facial id="head_talk_sad.zip" name="Talk sad" enable="Y"/>
+<facial id="head_happy.zip" name="Happy" enable="Y"/>
+<facial id="head_sad.zip" name="Sad" enable="Y"/>
+<facial id="head_angry.zip" name="Angry" enable="Y"/>
+<facial id="head_neutral.zip" name="Neutral" enable="Y"/>
+<facial id="head_laugh.zip" name="Laugh" enable="Y"/>
+<facial id="head_cry.zip" name="Cry" enable="Y"/>
+<facial id="head_shocked.zip" name="Shocked" enable="Y"/>
+<facial id="head_surprised.zip" name="Surprised" enable="Y"/>
+<facial id="head_thinking.zip" name="Thinking" enable="Y"/>
+<facial id="head_sick.zip" name="Sick" enable="Y"/>
+<facial id="head_asleep.zip" name="Asleep" enable="Y"/>
+<facial id="head_yawn.zip" name="Yawn" enable="Y"/>
+<facial id="head_chewing.zip" name="Chewing" enable="Y"/>
+<facial id="head_disgusted.zip" name="Disgusted" enable="Y"/>
+<facial id="head_schemeing.zip" name="Schemeing" enable="Y"/>
+<facial id="head_talk_cry.zip" name="Talk while crying" enable="Y"/>
+<facial id="head_taunt.zip" name="Taunt" enable="Y"/>

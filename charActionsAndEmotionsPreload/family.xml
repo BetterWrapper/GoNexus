@@ -1,0 +1,43 @@
+<char types="adam,eve">
+    <action id="stand.xml" name="Stand" loop="Y" totalframe="1" enable="Y"/>
+    <motion id="walk.xml" name="Walk" loop="Y" totalframe="24" enable="Y"/>
+    <motion id="run.xml" name="Run" loop="Y" totalframe="20" enable="Y"/>
+    <action id="sit.xml" name="Sit" loop="Y" totalframe="1" enable="Y"/>
+    <action id="lie.xml" name="Lie down" loop="Y" totalframe="1" enable="Y"/>
+    <action id="kneel.xml" name="Kneel down" loop="Y" totalframe="1" enable="Y"/>
+    <action id="xarms.xml" name="Crossed arms" loop="Y" totalframe="1" enable="Y"/>
+    <category name="emotion">
+        <action id="excited.xml" name="Excited / Cheers" loop="Y" totalframe="80" enable="Y"/>
+        <action id="taunt.xml" name="Taunt" loop="Y" totalframe="60" enable="Y"/>
+        <action id="chuckle.xml" name="Chuckle" loop="Y" totalframe="6" enable="Y"/>
+        <action id="laugh.xml" name="Laugh" loop="Y" totalframe="6" enable="Y"/>
+        <action id="sad.xml" name="Sad" loop="Y" totalframe="60" enable="Y"/>
+        <action id="fearful.xml" name="Fearful" loop="Y" totalframe="60" enable="Y"/>
+    </category>
+    <action id="pt_at.xml" name="Point at" loop="Y" totalframe="30" enable="Y"/>
+    <action id="talk_phone.xml" name="Talk on phone" loop="Y" totalframe="115" enable="Y"/>
+    <action id="dance.xml" name="Dance" loop="Y" totalframe="23" enable="Y"/>
+    <action id="talk.xml" name="Talk" loop="Y" totalframe="100" enable="Y"/>
+    <facial id="head_talk_a.xml" name="Talk neutral A" enable="Y"/>
+    <facial id="head_talk_b.xml" name="Talk neutral B" enable="Y"/>
+    <facial id="head_talk_angry.xml" name="Talk angry" enable="Y"/>
+    <facial id="head_talk_happy.xml" name="Talk happy" enable="Y"/>
+    <facial id="head_talk_sad.xml" name="Talk sad" enable="Y"/>
+    <facial id="head_happy.xml" name="Happy" enable="Y"/>
+    <facial id="head_sad.xml" name="Sad" enable="Y"/>
+    <facial id="head_angry.xml" name="Angry" enable="Y"/>
+    <facial id="head_neutral.xml" name="Neutral" enable="Y"/>
+    <facial id="head_laugh.xml" name="Laugh" enable="Y"/>
+    <facial id="head_cry.xml" name="Cry" enable="Y"/>
+    <facial id="head_shocked.xml" name="Shocked" enable="Y"/>
+    <facial id="head_surprised.xml" name="Surprised" enable="Y"/>
+    <facial id="head_thinking.xml" name="Thinking" enable="Y"/>
+    <facial id="head_sick.xml" name="Sick" enable="Y"/>
+    <facial id="head_asleep.xml" name="Asleep" enable="Y"/>
+    <facial id="head_yawn.xml" name="Yawn" enable="Y"/>
+    <facial id="head_chewing.xml" name="Chewing" enable="Y"/>
+    <facial id="head_disgusted.xml" name="Disgusted" enable="Y"/>
+    <facial id="head_schemeing.xml" name="Schemeing" enable="Y"/>
+    <facial id="head_talk_cry.xml" name="Talk while crying" enable="Y"/>
+    <facial id="head_taunt.xml" name="Taunt" enable="Y"/>
+</char>

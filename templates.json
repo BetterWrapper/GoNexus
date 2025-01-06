@@ -1,6 +1,15 @@
 {
 	"everydaylife": {
 		"qvm_year": "2012",
+		"playerYearOptions": {
+			"2015": {
+				"clientYear": "2015"
+			},
+			"2016": {
+				"clientYear": "2016",
+				"default": ""
+			}
+		},
 		"urlPostVideoPreview": "/api/setupText2VideoPreview",
 		"themeName": "Comedy World",
 		"customChars_info": {
@@ -33,6 +42,55 @@
 				"gender": "M",
 				"head": "/char_heads/51288759.png",
 				"thumb": "/char_thumbs/51288759.png"
+			},
+			{
+				"cid": "25919810",
+				"name": "",
+				"gender": "M",
+				"head": "/char_heads/25919810.png",
+				"thumb": "/char_thumbs/25919810.png"
+			},
+			{
+				"cid": "25919737",
+				"name": "",
+				"gender": "M",
+				"head": "/char_heads/25919737.png",
+				"thumb": "/char_thumbs/25919737.png"
+			},
+			{
+				"cid": "25919156",
+				"name": "",
+				"gender": "M",
+				"head": "/char_heads/25919156.png",
+				"thumb": "/char_thumbs/25919156.png"
+			},
+			{
+				"cid": "25918935",
+				"name": "",
+				"gender": "F",
+				"head": "/char_heads/25918935.png",
+				"thumb": "/char_thumbs/25918935.png"
+			},
+			{
+				"cid": "15748198",
+				"name": "",
+				"gender": "M",
+				"head": "/char_heads/15748198.png",
+				"thumb": "/char_thumbs/15748198.png"
+			},
+			{
+				"cid": "15747889",
+				"name": "",
+				"gender": "M",
+				"head": "/char_heads/15747889.png",
+				"thumb": "/char_thumbs/15747889.png"
+			},
+			{
+				"cid": "15747725",
+				"name": "",
+				"gender": "M",
+				"head": "/char_heads/15747725.png",
+				"thumb": "/char_thumbs/15747725.png"
 			}
 		],
 		"creator_html": "<a class=\"by_ga\" href=\"https://vyond.com/\" onclick=\"return confirm('You will lose your work if you leave this page. Are you sure?');\"></a>",
@@ -259,6 +317,27 @@
 		"qvm_year": "2012",
 		"urlPostVideoPreview": "/ajax/previewText2Video",
 		"themeName": "Comedy World",
+		"playerYearOptions": {
+			"2011": {
+				"clientYear": "2012"
+			},
+			"2012": {
+				"clientYear": "2012"
+			},
+			"2013": {
+				"clientYear": "2012"
+			},
+			"2014": {
+				"clientYear": "2014"
+			},
+			"2015": {
+				"clientYear": "2015"
+			},
+			"2016": {
+				"clientYear": "2016",
+				"default": ""
+			}
+		},
 		"customChars_info": {
 			"cc_theme_id": "family",
 			"tags": ""
@@ -312,6 +391,24 @@
 				"background": "/static/qvm/templates/pt/bg/bg03.jpg"
 			}
 		]
+	},
+	"school": {
+		"qvm_year": "2012",
+		"urlPostVideoPreview": "/api/setupText2VideoPreview",
+		"themeName": "Lil' Peepz",
+		"customChars_info": {
+			"cc_theme_id": "cc2",
+			"tags": "!_sticky_animal"
+		},
+		"ga_template": true,
+		"disableFeatures": {},
+		"nonSelectableCharInfo": {},
+		"stockCharacters": [],
+		"creator_html": "<a class=\"by_ga\" href=\"https://vyond.com/\" onclick=\"return confirm('You will lose your work if you leave this page. Are you sure?');\"></a>",
+		"title": "The School Chronicles",
+		"intro": "School years. So many things to learn. So many new people to meet. And of course so many stories to tell. So. Go for it! It's story time!",
+		"intro_steps": "The drill?<br/>1. Select a setting<br/>2. Choose characters<br/>3. Type or record your dialog<br/>4. Watch your masterpiece!",
+		"templates": []
 	},
 	"basketball": {
 		"qvm_year": "2012",

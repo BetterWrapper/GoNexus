@@ -49,7 +49,7 @@
     <body id="school">
     <script type="text/javascript">
     GoLite.settings.player = {
-        swf: "/static/tommy/2012/animation/player.swf",
+        swf: "/static/animation/player.swf",
         height: 384,
         width: 550
     }
@@ -58,13 +58,6 @@
         height: 170,
         width: 295
     }
-    
-    VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
-    jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
-        apiserver: "/qvm_micRecord_",
-        clientThemePath: "/static/tommy/2012/<client_theme>",
-        u_info_school: ""
-    });
     
     // scroll to target step
     function stepTo(step) {
@@ -105,7 +98,7 @@
     </div>
     <div id="login_bar" style="display:none">
         <div class="inside">
-            You'll need to publish your template to preview and save your video.  Do it now.		
+            You'll need to publish your template in order to preview and save your video.  Do it now.		
             <div class="options">
                 <a href="javascript:showOverlay(jQuery('#publishing'))" onclick="publishTemplate();">Publish Template</a>
             </div>
@@ -157,11 +150,6 @@
         </div>
     
         <a class="btn_next" href="#step2" onclick="stepTo('#step2'); return false;">Next</a>
-        <div class="upgrade" style="display: none;">
-            <a href="javascript:popAccountModal();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
-    <div class="buttontitle">Get A Nexus Account</div>
-    </a>
-        </div>
     </div>
     
     <div id="seperator1"></div>
@@ -451,11 +439,11 @@
                 <div class="voice_recorder"></div>
                 <div class="dialog_options">
                     <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
-                    {{if hasFacial}}
                     <% if (!params.qvm.disableFeatures.emotions) { %>
-                        <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
-                    <% } %>
+                    {{if hasFacial}}
+                    <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
                     {{/if}}
+                    <% } %>
                     <div class="langarea">
                         <div class="lang"></div>
                         <div class="gender"></div>
@@ -475,11 +463,6 @@
     </script>
     
         <a class="btn_next" href="#step3" onclick="stepTo('#step3'); return false;">Next</a>
-        <div class="upgrade" style="display: none;">
-            <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
-    <div class="buttontitle">Upgrade Now</div>
-    </a>
-        </div>
     </div>
     
     <div id="seperator2"></div>
@@ -508,7 +491,7 @@
                     <div class="dialog_options">
                         <a class="dialog_switch">Actor<span class="tips">Switch Actor</span></a>
                         <% if (!params.qvm.disableFeatures.emotions) { %>
-                            <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
+                        <a class="dialog_facial">Emotion<span class="tips">Switch Emotion</span></a>
                         <% } %>
                         <div class="langarea">
                             <div class="lang US"></div>
@@ -551,12 +534,6 @@
         <div class="footer">
             <div class="bottom"></div>
             <a class="btn_next" onclick="GoLite.preview();stepTo('#step4');">Preview</a>
-    
-            <div class="upgrade" style="display: none;">
-                <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" style="margin:0 auto;float:none;display:block;">
-    <div class="buttontitle">Upgrade Now</div>
-    </a>
-            </div>
         </div>
     
         <div id="facial_expression" class="lightbox" style="display:none">
@@ -612,17 +589,10 @@
     
         <div class="inside">
             <div class="anonymous">
-                <h3>You need to publish your template to preview and save your video.</h3>
+                <h3>You need to publish your template in order to preview and save your video.</h3>
                 <a href="javascript:showOverlay(jQuery('#publishing'))" class="buttonbase buttonfacebook dark" id="btn_facebook_login" onclick="publishTemplate();" style="width:220px;margin:15px auto;float:none;display:block;">
                     <div class="buttontitle">Publish Template</div>
                 </a>
-            </div>
-            <div class="upgrade" style="display:none">
-                <h3>Upgrade to GoPlus to enable preview and save your video.</h3>
-    
-                <a href="javascript:popUpgrade();" class="buttonbase buttonblue dark" id="btn_upgrade" style="margin:15px auto;float:none;display:block;">
-    <div class="buttontitle">Upgrade Now</div>
-    </a>
             </div>
             <div class="generate" style="display: none;">
                 <a class="btn_preview" href="#" onclick="GoLite.preview(); return false;">Generate Preview</a>
@@ -632,7 +602,7 @@
             <div class="loading"></div>
             <div class="preview" style="display:none">
                 <div id="player_container">
-                    You can't use Nexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                    You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                 </div>
                 <a id="btn_save" href="#" onclick="jQuery(document).trigger('GoLite.stateChange', ['save']); return false;">Save Now</a>
             </div>
@@ -641,7 +611,7 @@
                 <div class="thumbnail">
                     Choose your thumbnail
                     <div id="thumb_chooser_container">
-                        You can't use Nexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
+                        You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                     </div>
                 </div>
     
@@ -672,7 +642,7 @@
         </div>
     </div>
     
-    <script type="text/javascript">GoLite.init(0);</script>
+    <script type="text/javascript">GoLite.init(0, '<%= params.qvm.urlPostVideoPreview %>');</script>
     
     <div id="footer">
         <%- params.qvm.creator_html %>
@@ -682,18 +652,6 @@
     
     <div id="publishing" class="lightbox" style="display:none">
         <div class="lightbox_wrapper">Publishing ...</div>
-    </div>
-    
-    <div id="upgrade" class="lightbox" style="display:none">
-        <div class="lightbox_wrapper">
-			<h3>Make animated videos exactly the way you want!</h3>
-            <p>You need to publish your template in order to use all of the features in the Quick Video Maker.</p>
-            <small id="account_message"></small>
-            <a href="javascript:;" class="buttonbase buttonorange" id="account_confirm" style="margin:15px auto;float:none;display:block;">
-                <div class="buttontitle">Publish Template</div>
-            </a>
-		</div>
-        <a class="close_btn" onclick="jQuery.unblockUI()">&#215;</a>
     </div>
     <script type="text/javascript">
     jQuery('#account_confirm').click(function(e) {
@@ -790,9 +748,6 @@
     <script type="text/javascript">
         var customCCHeadsBaseUrl = window.location.origin + '/char_heads/';
         var customCCThumbsBaseUrl = window.location.origin + '/char_thumbs/';
-    
-    
-        var goliteEditorMode = !new URLSearchParams(window.location.search).get("editmode") ? 'new' : 'editor';
     
     </script>
     

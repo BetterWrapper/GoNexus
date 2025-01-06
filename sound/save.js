@@ -111,7 +111,7 @@ module.exports = function (req, res, url) {
                 }
             });
         }
-        res.end(0 + f.file == "old_full_2013.swf" || parseInt(f.v) <= 2012 ? response : `<response>${
+        res.end(0 + f.file == "old_full_2013.swf" || parseInt(f.studio) <= 2012 ? response : `<response>${
             response
         }</response>`);
 	});

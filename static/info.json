@@ -37,12 +37,6 @@
 				"Content-Type": "text/html; charset=UTF-8"
 			},
 			"content": "<?xml encoding=\"UTF-8\"?><watermarks><current/><preview/></watermarks>"
-		},
-		"/goapi/getMovieInfo/": {
-			"headers": {
-				"Content-Type": "text/html; charset=UTF-8"
-			},
-			"content": "<?xml encoding=\"UTF-8\"?><movie_info><watermark>/ui/img/logo_better.png</watermark></movie_info>"
 		}
 	},
 	"pages": {

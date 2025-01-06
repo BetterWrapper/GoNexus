@@ -1,13 +1,13 @@
 {
     "welcome_screen": {
         "header": {
-            "h4": "Welcome to Nexus! Let's get started!"
+            "h4": "Welcome to GoNexus! Let's get started!"
         },
         "body": {
-            "p": "In this guide, you will be learning how to use Nexus with some demos provided in this guide."
+            "p": "In this guide, you will be learning how to use GoNexus with some demos provided in this guide."
         },
         "footer": {
-            "small": "If you already know how to use Nexus, click <a href='javascript:skipGuide()'>here</a> to skip this guide."
+            "small": "If you already know how to use GoNexus, click <a href='javascript:skipGuide()'>here</a> to skip this guide."
         },
         "next": "char_themes_selector"
     },
@@ -16,7 +16,7 @@
             "h4": "Selecting A Theme For Your Character"
         },
         "body": {
-            "p": "In order to make a character in Nexus, you need to select a theme in order to get started.",
+            "p": "In order to make a character in GoNexus, you need to select a theme in order to get started.",
             "select": {
                 "class": "form-control",
                 "id": "themes_selector",
@@ -59,7 +59,7 @@
             "h4": "Selecting A Theme For Your Video"
         },
         "body": {
-            "p": "In order to make a video in Nexus, you need to select a theme in order to get started.",
+            "p": "In order to make a video in GoNexus, you need to select a theme in order to get started.",
             "select": {
                 "class": "form-control",
                 "id": "themes_selector",
@@ -67,7 +67,7 @@
             }
         },
         "footer": {
-            "small": "If you have already made a video in Nexus, you may click <a href='javascript:checkUserVideos()'>here</a> to move on to the Video Management step.",
+            "small": "If you have already made a video in GoNexus, you may click <a href='javascript:checkUserVideos()'>here</a> to move on to the Video Management step.",
             "h6": "Want to make characters? click <a href=\"javascript:goTo('char_themes_selector')\">here</a> to go to the theme selection for the cc."
         },
         "next": "lvm"
@@ -83,7 +83,7 @@
             }
         },
         "footer": {
-            "small": "If you have already made a video in Nexus, you may click <a href='javascript:checkUserVideos()'>here</a> to move on to the Video Management step.",
+            "small": "If you have already made a video in GoNexus, you may click <a href='javascript:checkUserVideos()'>here</a> to move on to the Video Management step.",
             "h6": "Want to make characters? click <a href=\"javascript:goTo('char_themes_selector')\">here</a> to go to the theme selection for the cc."
         },
         "prev": "themes_selector"
@@ -123,7 +123,7 @@
             "h4": "Video Management"
         },
         "body": {
-            "p": "At some point you may need to manage your videos in Nexus. Don't know how? this step provides everything you need to know about Video Management. below are your videos and their actions. Try using one of the actions to see what happens.",
+            "p": "At some point you may need to manage your videos in GoNexus. Don't know how? this step provides everything you need to know about Video Management. below are your videos and their actions. Try using one of the actions to see what happens.",
             "table": {
                 "class": "table getting_started_user_videos"
             }

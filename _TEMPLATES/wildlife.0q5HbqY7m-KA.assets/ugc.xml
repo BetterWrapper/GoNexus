@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<theme id="ugc" name="ugc"><background subtype="" id="17913531958522.swf" name="17913531958522.swf" enable="Y"/><char id="71423675115333" enc_asset_id="22621" thumbnail_url="https://flashthemes.net/assets/3684/assets/char/34029115514119.swf" thumb="34029115514119.swf" default="34029115514119.swf" name="Zebra" isCC="N" enable="Y" facing="left" published="1">
-  <tags>stand</tags>
-  <action id="34029115514119.swf" name="stand"/>
-</char>
-<char id="81302493273146" enc_asset_id="22118" thumbnail_url="https://flashthemes.net/assets/3684/assets/char/20323467873301.swf" thumb="20323467873301.swf" default="20323467873301.swf" name="Elephant" isCC="N" enable="Y" facing="left" published="1">
-  <tags>stand</tags>
-  <action id="20323467873301.swf" name="stand"/>
-</char></theme>
+<theme id="ugc" name="ugc">
+  <background subtype="" id="17913531958522.swf" name="17913531958522.swf" enable="Y"/>
+  <char id="71423675115333" enc_asset_id="22621" thumbnail_url="https://flashthemes.net/assets/3684/assets/char/34029115514119.swf" thumb="34029115514119.swf" default="34029115514119.swf" name="Zebra" isCC="N" enable="Y" facing="left" published="1">
+    <tags>stand</tags>
+    <action id="34029115514119.swf" name="stand"/>
+  </char>
+  <char id="81302493273146" enc_asset_id="22118" thumbnail_url="https://flashthemes.net/assets/3684/assets/char/20323467873301.swf" thumb="20323467873301.swf" default="20323467873301.swf" name="Elephant" isCC="N" enable="Y" facing="left" published="1">
+    <tags>stand</tags>
+    <action id="20323467873301.swf" name="stand"/>
+  </char>
+</theme>

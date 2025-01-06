@@ -8,10 +8,9 @@ const fs = require("fs");
 const xmldoc = require("xmldoc");
 async function listAssets(data, isAssetSearch) {
 	const xmls = [], files = [], counts = {
-		min: data.page * data.count,
-		max: parseInt((`${data.count * data.page + data.count}`).substring(1))
+		min: Number(data.page) * Number(data.count),
 	};
-	console.log(counts);
+	counts.max = counts.min + Number(data.count);
 	var checkcode;
 	switch (data.type) { // if we are going to do chars, then we will need to make sure that custom characters are complatable with the Community Library.
 		case "bg": {

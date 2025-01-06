@@ -421,7 +421,7 @@ ul {
 }
 
 #step2 .btn_next {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step02/btn_next02.jpg) no-repeat 0 0;
+  background: transparent url(/static/qvm/templates/everydaylife/img/step01/btn_next01.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   height: 68px;
@@ -500,7 +500,7 @@ ul {
 
 #step3 .bottom {
   background: transparent url(/static/qvm/templates/everydaylife/img/step03/img_step03_bg_middle.jpg) repeat-y 0 0;
-  height: 100px;
+  height: 101px;
   width: 960px
 }
 
@@ -509,7 +509,7 @@ ul {
 }
 
 #step3 .btn_next {
-  background: transparent url(/static/qvm/templates/everydaylife/img/step03/btn_preview03.jpg) no-repeat 0 0;
+  background: transparent url(/static/qvm/templates/everydaylife/img/step01/btn_next01.jpg) no-repeat 0 0;
   display: block;
   overflow: hidden;
   height: 68px;

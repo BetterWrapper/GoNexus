@@ -3,69 +3,82 @@
         "tag": "_category_professions",
         "people": [
             {
-                "name": "2010 LVM Tutorial Woman",
+                "title": "2010 LVM Tutorial Woman",
                 "id": "4715202",
-                "cat": "GoAnimate 2010 Characters"
+                "cat": "GoAnimate 2010 Characters",
+                "type": "char"
             },
             {
-                 "name": "David Escobar",
+                 "title": "David Escobar",
                  "id": "192",
-                 "cat": "Jyvee's Frends"
+                 "cat": "Jyvee's Frends",
+                 "type": "char"
             },
             {
-                 "name": "Daniel",
+                 "title": "Daniel",
                  "id": "666",
-                 "cat": "Jyvee's Frends"
+                 "cat": "Jyvee's Frends",
+                 "type": "char"
             },
             {
                 "id": "325084254",
-                "name": "GA4S Man",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Man",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084241",
-                "name": "GA4S Basket-Ball Player",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Basket-Ball Player",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084260",
-                "name": "GA4S Old Man",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Old Man",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084270",
-                "name": "GA4S Fat Woman",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Fat Woman",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084290",
-                "name": "GA4S Woman",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Woman",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084283",
-                "name": "GA4S Woman",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Woman",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084277",
-                "name": "GA4S Cheerleader",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Cheerleader",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084296",
-                "name": "GA4S Woman",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Woman",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084304",
-                "name": "GA4S Strong Person",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Strong Person",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             },
             {
                 "id": "325084300",
-                "name": "GA4S Strong Man",
-                "cat": "GA4S Stock Characters"
+                "title": "GA4S Strong Man",
+                "cat": "GA4S Stock Characters",
+                "type": "char"
             }
         ]
     },
@@ -73,149 +86,178 @@
         "tag": "_category_celebrities",
         "people": [
             {
-                "name": "BluePeacocks",
+                "title": "BluePeacocks",
                 "id": "60897073",
-                "cat": "Nexus Developers"
+                "cat": "GoNeuxs Developers",
+                "type": "char"
             },
             {
-                "name": "Jyvee",
+                "title": "Jyvee",
                 "id": "66670973",
-                "cat": "Nexus Developers"
+                "cat": "GoNeuxs Ex Developers",
+                "type": "char"
             },
             {
-                "name": "Joseph",
+                "title": "Joseph",
                 "id": "4048901",
-                "cat": "Nexus Developers"
+                "cat": "GoNeuxs Developers",
+                "type": "char"
             },
             {
-                "name": "Rage",
+                "title": "Rage",
                 "id": "0000000",
-                "cat": "Nexus Side Developers"
+                "cat": "GoNeuxs Side Developers",
+                "type": "char"
             },
             {
-                "name": "Owen",
+                "title": "Owen",
                 "id": "4635901",
-                "cat": "Nexus Developers"
+                "cat": "GoNeuxs Ex Developers",
+                "type": "char"
             },
             {
                 "id": "327412169",
-                "name": "GoTube",
-                "cat": "GoAnimators"
+                "title": "GoTube",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327275957",
-                "name": "LukeAnimate",
-                "cat": "GoAnimators"
+                "title": "LukeAnimate",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764308",
-                "name": "BrentAnimate",
-                "cat": "GoAnimators"
+                "title": "BrentAnimate",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764453",
-                "name": "RareYellowWUUTBee",
-                "cat": "GoAnimators"
+                "title": "RareYellowWUUTBee",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764148",
-                "name": "CanadianScout",
-                "cat": "GoAnimators"
+                "title": "CanadianScout",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764650",
-                "name": "Isaac Anderson Animations",
-                "cat": "GoAnimators"
+                "title": "Isaac Anderson Animations",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "400001042",
-                "name": "NathanSB (SaturnBoi)",
-                "cat": "GoAnimators"
+                "title": "NathanSB (SaturnBoi)",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764259",
-                "name": "Tbone Animate",
-                "cat": "GoAnimators"
+                "title": "Tbone Animate",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764372",
-                "name": "African Vulture",
-                "cat": "GoAnimators" 
+                "title": "African Vulture",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764522",
-                "name": "The FunEditor4",
-                "cat": "GoAnimators"
+                "title": "The FunEditor4",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764594",
-                "name": "sasmter5677",
-                "cat": "GoAnimators" 
+                "title": "sasmter5677",
+                "cat": "GoAnimators",
+                "type": "char" 
             },
             {
                 "id": "330469767",
-                "name": "Fartnoise9",
-                "cat": "GoAnimators"
+                "title": "Fartnoise9",
+                "cat": "GoAnimators",
+                "type": "char"
             }, 
             {
                 "id": "400001002",
-                "name": "GoTest334",
-                "cat": "GoAnimators"
+                "title": "GoTest334",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "327764590",
-                "name": "Brendan Barney",
-                "cat": "GoAnimators" 
+                "title": "Brendan Barney",
+                "cat": "GoAnimators",
+                "type": "char" 
             },
             {
                 "id": "327779791",
-                "name": "Richie Verdi",
-                "cat": "GoAnimators" 
+                "title": "Richie Verdi",
+                "cat": "GoAnimators",
+                "type": "char" 
             },
             {
                 "id": "400001004",
-                "name": "Rack Animate",
-                "cat": "GoAnimators" 
+                "title": "Rack Animate",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "400001003",
-                "name": "Poke Animations",
-                "cat": "GoAnimators" 
+                "title": "Poke Animations",
+                "cat": "GoAnimators",
+                "type": "char" 
             }, 
             {
                 "id": "400001005",
-                "name": "VittorioTheVyonder2003",
-                "cat": "GoAnimators"
+                "title": "VittorioTheVyonder2003",
+                "cat": "GoAnimators",
+                "type": "char"
             }, 
             {
                 "id": "330470251",
-                "name": "HanIflmranAnimator",
-                "cat": "GoAnimators"
+                "title": "HanIflmranAnimator",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "330873615",
-                "name": "Cewyah",
-                "cat": "GoAnimators" 
+                "title": "Cewyah",
+                "cat": "GoAnimators",
+                "type": "char"
             },
             {
                 "id": "400001001",
-                "name": "papermariofan",
-                "cat": "GoAnimators" 
+                "title": "papermariofan",
+                "cat": "GoAnimators",
+                "type": "char" 
             },
             {
                 "id": "400001008",
-                "name": "TheVideoEditorGuy6579",
-                "cat": "GoAnimators" 
+                "title": "TheVideoEditorGuy6579",
+                "cat": "GoAnimators",
+                "type": "char" 
             },
             {
                 "id": "400001009",
-                "name": "CyanAnimate",
-                "cat": "GoAnimators" 
+                "title": "CyanAnimate",
+                "cat": "GoAnimators",
+                "type": "char" 
             },
             {
                 "id": "400001034",
-                "name": "TBPG Studios",
-                "cat": "GoAnimators" 
+                "title": "TBPG Studios",
+                "cat": "GoAnimators",
+                "type": "char" 
             }
         ]
     }

@@ -266,9 +266,13 @@ auth.onAuthStateChanged(user => {
 function logout(t) {
     jQuery.post("/api/getSession", json => {
         if (json.data && json.data.loggedIn && json.data.current_uid) {
-            if (t != 'auto') jQuery.post('/api/removeSession', {
-                current_uid: json.data.current_uid
-            }, d => {
+            const dontremove = {
+                site_access_key_is_correct: true
+            }
+            for (const i in json.data) {
+                if (dontremove[i]) delete json.data[i]
+            }
+            if (t != 'auto') jQuery.post('/api/removeSession', json.data, d => {
                 if (JSON.parse(d).success) {
                     jQuery.post(`/api/fetchAPIKeys`, (d) => {
                         const json = JSON.parse(d);
@@ -324,6 +328,8 @@ function logout(t) {
 }
 function loggedIn(user) {
     userData = user;
+    $("#converter_videoTypes").find('option[value="import"]').show();
+    $(".needs-account").hide();
     getSchoolInfo();
     hideElement('signup-button');
     hideElement('login-button');
@@ -348,9 +354,8 @@ function loggedIn(user) {
             break;
         } case "/create": {
             const interval = setInterval(() => {
-                if (checkStudioLoadingStatus && reloadCCListForTut) {
+                if (reloadCCListForTut) {
                     clearInterval(interval);
-                    checkStudioLoadingStatus();
                     reloadCCListForTut();
                 }
             }, 1)
@@ -474,9 +479,9 @@ function userSignup(email, password, name) {
     signupComplete = true;
     displayName = name;
     auth.createUserWithEmailAndPassword(email, password).catch(e => {
-        console.log(e);
-        jQuery("#signup-processing").hide();
-        jQuery("#error-message").text(e.message);
+        console.error(e)
+        jQuery("#signup-processing").modal('hide');
+        jQuery("#signup-error-message").text(e.message);
     });
 }
 function userLogin(email, password) {

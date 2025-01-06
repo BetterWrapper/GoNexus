@@ -508,7 +508,7 @@ ul {
 
 #step3 .bottom {
   background: transparent url(./img/step03/img_step03_bg_middle.jpg) repeat-y 0 0;
-  height: 100px;
+  height: 101px;
   width: 960px
 }
 
@@ -904,7 +904,7 @@ ul {
 }
 
 #templates .select_button {
-  background: transparent url(./img/step01/img_arrowl01.png) no-repeat 0 0;
+  background: transparent url(/ui/img/img_arrowl01.png) no-repeat 0 0;
   height: 0;
   width: 35px;
   padding-top: 57px;
@@ -917,7 +917,7 @@ ul {
 }
 
 #templates .select_button.next {
-  background-image: url(./img/step01/img_arrowr01.png);
+  background-image: url(/ui/img/img_arrowr01.png);
 }
 
 #templates .items {
@@ -1008,7 +1008,7 @@ ul {
 }
 
 .character_selector .select_button {
-  background: transparent url(./img/step01/img_arrowl01.png) no-repeat 0 0;
+  background: transparent url(/ui/img/img_arrowl01.png) no-repeat 0 0;
   height: 0;
   width: 35px;
   padding-top: 57px;
@@ -1021,7 +1021,7 @@ ul {
 }
 
 .character_selector .select_button.next {
-  background-image: url(./img/step01/img_arrowr01.png);
+  background-image: url(/ui/img/img_arrowr01.png);
 }
 
 .character_selector .items {

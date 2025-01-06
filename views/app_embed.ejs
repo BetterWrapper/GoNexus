@@ -17,9 +17,9 @@
     </script>
 <% } else if (params.type == "go_full") { %>
     <iframe style="display: none" name="dummy"></iframe>
-    <form style="display: none;" id="uploadbanner" enctype="multipart/form-data" method="post" action="/api/embed/upload_asset" target="dummy">
-        <input type="text" name="params"/>
-        <input id="fileupload" name="import" type="file" onchange="importComplete(
+    <form style="display: none;" id="uploadbanner" enctype="multipart/form-data" method="post" action="/ajax/saveUserProp" target="dummy">
+        <input type="text" name="subtype"/>
+        <input id="fileupload" name="file" type="file" onchange="importComplete(
             this
         )" accept=".mp3,.wav,.png,.jpg"/><input type='submit'value='submit'id='submit'/>
     </form>
@@ -52,8 +52,7 @@
         function quitStudio() {
             parent.exitStudio();
         }
-        const fu = document.getElementById('fileupload'),
-            sub = document.getElementById('submit');
+        const fu = document.getElementById('fileupload'),sub = document.getElementById('submit');
         function showImporter() {
             fu.click();
         };
@@ -61,7 +60,7 @@
             const file = obj.files[0];
             if (file != undefined) {
                 const ext = file.name.substring(file.name.lastIndexOf('.') + 1);
-                var params = flashvars.presaveId + '.';
+                var params = '';
                 if (ext == 'mp3' || ext == 'wav') {
                     var c;
                     while(c != 'vo' && c != 'se' && c != 'mu') {
@@ -75,7 +74,7 @@
                     }
                     params += c;
                 }
-                obj.parentElement.firstChild.value = params + '.' + ext;
+                obj.parentElement.firstChild.value = params;
                 sub.click();
                 return true;
             }

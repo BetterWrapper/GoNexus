@@ -10,11 +10,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="GoNexus is an LVM project that helps improve the errors Wrapper: Offline has right now.">
+<meta name="description" content="GoNexus is a GoAnimate For Schools Restoration Project with tons of new and stock GA4S Features.">
 
 <meta property="og:site_name" content="GoNexus">
-<meta property="fb:app_id" content="122508887813978">
-<meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
 
 
 <style>
@@ -261,16 +259,7 @@ function submitLogin() {
 
     var buttonText = $('#btn-login').text();
     $('#btn-login').text('Logging in...');
-    $.post("/api/checkEmail", {
-        email: $('#login-email').val()
-    }, d => {
-        if (d.success) userLogin($('#login-email').val(), $('#login-password').val());
-        else {
-            processing = false;
-            formErrorMessage(d.error);
-            $('#btn-login').text(buttonText);
-        }
-    })
+    userLogin($('#login-email').val(), $('#login-password').val());
 }
 
 $('#login-form').submit(function() {

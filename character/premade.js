@@ -20,7 +20,6 @@ module.exports = function (req, res, url) {
 	if (req.method != "POST") return;
 	switch (url.pathname) {
 		case "/api/getLatestPremadeCharIds": {
-			res.setHeader("Content-Type", "application/json");
 			const array = fs.readdirSync("./premadeChars/xml");
 			const table = [];
 			var count = 0;
@@ -37,27 +36,25 @@ module.exports = function (req, res, url) {
 					val
 				})
 			}
-			res.end(JSON.stringify(table));
+			res.json(table);
 			break;
 		} case "/goapi/getCCPreMadeCharacters": {
 			loadPost(req, res).then(async data => {
 				let chars = '';
-				if (data.v == "2010" && fs.existsSync(`./_PREMADE/${data.theme_code || data.themeId}.json`)) try { 
+				if (parseInt(data.v) < 2014 && fs.existsSync(`./_PREMADE/${data.theme_code || data.themeId}.json`)) try { 
 					const json = JSON.parse(fs.readFileSync(`./_PREMADE/${data.theme_code || data.themeId}.json`));
 					for (const meta of json) {
 						for (const s of meta.people) {
 							const buf = await character.load(s.id);
-							chars += buf.toString().split("<cc_char").join(`<cc_char is_premium="Y" sharing="5" money="0" aid="${
+							chars += buf.toString().split("<cc_char").join(`<cc_char is_premium="Y" sharing="2" money="0" aid="${
 								s.id
-							}" tags="${data.theme_code || data.themeId},_category_${
-								meta.tag
-							}" id="${s.id}" name="${
-								s.name
+							}" tags="${data.theme_code || data.themeId},${meta.tag}" id="${s.id}" name="${
+								s.title
 							}"`)
 						}
 					}
 					res.setHeader("Content-Type", "application/xml");
-					res.end(chars);
+					res.end(chars.split(process.env.XML_HEADER).join(""));
 				} catch (e) {
 					console.log(e);
 					res.end("1");
@@ -67,7 +64,6 @@ module.exports = function (req, res, url) {
 		} case "/ajax/getCCPreMadeCharacters": {
 			loadPost(req, res).then(async data => {
 				const chars = [];
-				res.setHeader("Content-Type", "application/json");
 				function newInfo(v) {
 					chars.unshift({
 						id: v.id, 
@@ -96,7 +92,7 @@ module.exports = function (req, res, url) {
 					})
 				}
 				console.log(chars);
-				res.end(JSON.stringify(chars));
+				res.json(chars);
 			});
 			break;
 		} default: return;

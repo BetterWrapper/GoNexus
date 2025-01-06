@@ -6,61 +6,10 @@ const get = require("../misc/get");
 const fw = process.env.FILE_WIDTH;
 const fs = require("fs");
 const http = require("http");
+const {jsonToXml, xmlToJson} = require("../movie/xmlConverter");
 const xmldoc = require("xmldoc");
 const https = require("https");
 const nodezip = require("node-zip");
-function getCharActionsJson(v) { // loads char actions from the cc theme xml using char bs
-	const actions = {
-		default: {
-			upper_body: v.action,
-			lower_body: v.action,
-			skeleton: v.action == "default" ? "stand" : v.action
-		}
-	}
-	const ccTheme = fs.readFileSync(`./static/2010/store/cc_store/${v.theme_id}/cc_theme.xml`);
-	const result = new xmldoc.XmlDocument(ccTheme);
-	const shapes = result.children.filter(i => i.name == "bodyshape");
-	const char = shapes.find(i => i.attr.id == v.bs);
-	switch (v.theme_id) {
-		case "cctoonadventure":
-		case "family": {
-			for (const charActions of char.children.filter(i => i.name == "action")) {
-				actions[charActions.attr.id] = {};
-				for (const act of charActions.children.filter(i => i.name == "selection")) {
-					if (!act.attr.facial_id) actions[charActions.attr.id][act.attr.type] = act.attr.state_id;
-				}
-			}
-			break;
-		} default: {
-			for (const packs of char.children.filter(i => i.name == "actionpack")) {
-				for (const charActions of packs.children.filter(i => i.name == "action")) {
-					actions[charActions.attr.id] = {
-						freeaction: charActions.attr.id
-					}
-				}
-			}
-		}
-	}
-	return actions;
-}
-function getCharEmotionsJson(v) {
-	const emotions = {
-		default: {
-			eye: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action,
-			eyebrow: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action,
-			mouth: v.action.startsWith("head_") ? v.action.split("head_")[1] : v.action
-		}
-	}
-	const ccTheme = fs.readFileSync(`./static/2010/store/cc_store/${v.theme_id}/cc_theme.xml`);
-	const result = new xmldoc.XmlDocument(ccTheme);
-	for (const facial of result.children.filter(i => i.name == "facial")) {
-		emotions[facial.attr.id] = {};
-		for (const stuff of facial.children.filter(i => i.name == "selection")) {
-			if (stuff.attr.state_id != "default") emotions[facial.attr.id][stuff.attr.type] = stuff.attr.state_id;
-		}
-	}
-	return emotions;
-}
 function save(id, data) {
 	const i = id.indexOf("-");
 	const prefix = id.substr(0, i);
@@ -119,11 +68,6 @@ function getHeadPath(id) {
 }
 
 module.exports = {
-	meta2libraryXml(w) {
-		return `<library type="${w.type}" file="${w.component_id}.swf" path="${
-			w.component_id
-		}" component_id="${w.component_id}" theme_id="${w.theme_id}"/>`
-	},
 	getJoseph() {
 		return new Promise((res, rej) => {
 			https.get('https://wrapperclassic.netlify.app/chars/4048901.xml', r => {
@@ -188,275 +132,173 @@ module.exports = {
 			});
 		});
 	},
-	getCharEmotionsJson(v) { // loads char emotions from the cc theme xml (not all emotions work).
-		return getCharEmotionsJson(v);
+	async getCCThemeParts(charComponents, isLegacy = false) {
+		let file = 'cc_theme';
+		if (isLegacy) file += '_old';
+		const info = charComponents.find(i => i._attributes.type == "bodyshape");
+		const result = await xmlToJson(fs.readFileSync(`./frontend/static/store/cc_store/${info._attributes.theme_id}/${file}.xml`));
+		return {
+			info,
+			data: result.cc_theme
+		};
 	},
-	getJyveeEmotions(tId) { // Jyvee we are finally loading your emotions into Nexus :)
-		const emotions = {};
-		fs.readdirSync(`./static/2010/store/cc_store/${tId}/emotions`).filter(i => i.startsWith("head_")).forEach(feeling => {
-			emotions[feeling.split(".json")[0]] = JSON.parse(fs.readFileSync(`./static/2010/store/cc_store/${tId}/emotions/${
-				feeling
-			}`));
-		});
-		return emotions;
+	async getBodyshapeParts(charComponents, isLegacy = false) {
+		const stuff = await this.getCCThemeParts(charComponents, isLegacy)
+		return stuff.data.bodyshape.find(i => i._attributes.id == stuff.info._attributes.component_id);
 	},
-	getJyveeActions(tId) { // Jyvee we are finally loading your actions into Nexus :)
-		const actions = {};
-		fs.readdirSync(`./static/2010/store/cc_store/${tId}/emotions`).filter(i => !i.startsWith("head_")).forEach(act => {
-			actions[act.split(".json")[0]] = JSON.parse(fs.readFileSync(`./static/2010/store/cc_store/${tId}/emotions/${act}`));
-		});
-		return actions;
-	},
-	meta2componentXml(v) {
-		const stuff = getCharEmotionsJson(v);
-		let xml;
-		let ty = v.type;
-		const action2 = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][
-			v.type
-		] : stuff.head_neutral[v.type];
-		const action = fs.existsSync(`./static/2010/store/cc_store/${v.theme_id}/${v.type}/${v.component_id}/${
-			action2
-		}.swf`) ? action2 : "default";
-		if (ty == "eye" || ty == "eyebrow" || ty == "mouth") {
-			let animetype = v.theme_id == "anime" ? "side_" + action : action;
-			xml = `<component type="${v.type}" theme_id="${
-				v.theme_id
-			}" file="${animetype}.swf" path="${v.component_id}" x="${v.x}" y="${v.y}" xscale="${
-				v.xscale
-			}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" ${v.split ? `split="N"` : ``}/>`;
-		} else if (v.id) xml = `<component id="${v.id}" type="${v.type}" theme_id="${v.theme_id}" path="${v.component_id}" x="${v.x}" y="${
-			v.y
-		}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
-		else if (
-			v.type != "skeleton" 
-			&& v.type != "bodyshape" 
-			&& v.type != "freeaction"
-		) xml = `<component type="${v.type}" theme_id="${
-			v.theme_id
-		}" path="${v.component_id}" x="${
-			v.x
-		}" y="${v.y}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
-		else xml = `<component type="${v.type}" theme_id="${v.theme_id}" ${
-			v.type == "skeleton" ? `file="${
-				action
-			}.swf"` : v.type == "freeaction" && v.theme_id == "cc2" ? `file="${
-				action
-			}.swf"` : `file="thumbnail.swf"`
-		} path="${v.component_id}" x="${v.x}" y="${
-			v.y
-		}" xscale="${v.xscale}" yscale="${v.yscale}" offset="${v.offset}" rotation="${v.rotation}" />`;
-		return xml;
-	},
-	getCharActionsJson(v) {
-		return getCharActionsJson(v);
-	},
-	meta2componentXml2(v) {
-		const stuff = getCharActionsJson(v);
-		const action = stuff[v.action] && stuff[v.action][v.type] ? stuff[v.action][v.type] : stuff.default[
-			v.type
-		] ? stuff.default[v.type] : v.type == "bodyshape" ? 'thumbnail' : "default";
-		return `<component type="${v.type}" theme_id="${v.theme_id}" file="${action}.swf" path="${
-			v.component_id
-		}" component_id="${v.component_id}" x="${v.x}" y="${v.y}" xscale="${v.xscale}" yscale="${
-			v.yscale
-		}" offset="${v.offset}" rotation="${v.rotation}" />`;
-	},
-	meta2colourXml(v) {
-		let xml;
-		if (v.oc === undefined && !v.targetComponent) xml = `<color r="${v.r}">${v.text}</color>`;
-		else if (v.targetComponent === undefined) xml = `<color r="${v.r}" oc="${v.oc}">${v.text}</color>`;	
-		else xml = `<color r="${v.r}" targetComponent="${v.targetComponent}">${v.text}</color>`;	
-		return xml;
-	},
-	async zipAction(bs, act, result, actions) {
-		const components = result.children.filter(i => i.name == "component");
-		const action = actions[act];
-		const libArray = [];
-		const mappedColors = [];
-		const mappedComponent = [];
-		const componentswithactions = {};
-		const actionzip = nodezip.create();
-		for (const info of result.children) {
-			switch (info.name) {
-				case "library": {
-					libArray.unshift(info.attr);
-					break;
-				} case "component": {
-					const inf = info.attr;
-					inf.action = act;
-					inf.bs = bs;
-					mappedComponent.unshift(inf);
-					break;
-				} case "color": {
-					const inf = info.attr;
-					inf.text = info.val;
-					mappedColors.unshift(inf);
-					break;
-				}
-			}
-		}
-		fUtil.addToZip(actionzip, `desc.xml`, `<cc_char ${
-			result.attr ? `xscale='${result.attr.xscale}' yscale='${
-				result.attr.yscale
-			}' hxscale='${result.attr.hxscale}' hyscale='${
-				result.attr.hyscale
-			}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
-		}>${mappedComponent.map(this.meta2componentXml2).join("")}${
-			mappedColors.map(this.meta2colourXml).join("")
-		}${libArray.map(this.meta2libraryXml).join("")}</cc_char>`);
-		for (const i in action) {
-			const component = components.find(d => d.attr.type == i);
-			if (component) {
-				fUtil.addToZip(actionzip, `${component.attr.theme_id}.${
-					component.attr.type
-				}.${
-					component.attr.component_id
-				}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
-					component.attr.type
-				}/${
-					component.attr.component_id
-				}/${action[component.attr.type]}.swf`));
-				componentswithactions[component.attr.type] = true;
-			}
-		}
-		for (const component of components) {
-			switch (component.attr.type) {
+	prepxml(result) {
+		for (const component of result.cc_char.component) {
+			switch (component._attributes.type) {
 				case "bodyshape": {
-					fUtil.addToZip(actionzip, `${component.attr.theme_id}.${
-						component.attr.type
-					}.${
-						component.attr.component_id
-					}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
-						component.attr.theme_id
-					}/${component.attr.type}/${
-						component.attr.component_id
-					}/thumbnail.swf`))
+					component._attributes.file = "thumbnail.swf";
 					break;
 				} default: {
-					if (!componentswithactions[component.attr.type]) fUtil.addToZip(
-						actionzip, `${component.attr.theme_id}.${component.attr.type}.${
-							component.attr.component_id
-						}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
-							component.attr.theme_id
-						}/${
-							component.attr.type
-						}/${component.attr.component_id}/${
-							component.attr.type == "skeleton" ? "stand" : "default"
-						}.swf`)
-					);
+					if (fs.existsSync(`./frontend/static/store/cc_store/${component._attributes.theme_id}/${component._attributes.type}/${
+						component._attributes.component_id
+					}/default.swf`)) component._attributes.file = "default.swf";
 					break;
 				}
 			}
+			if (component._attributes.file) component._attributes.path = component._attributes.component_id
 		}
-		return await actionzip.zip();
+		return result;
 	},
-	async zipEmotion(bs, feeling, result, facials) {
-		const components = result.children.filter(i => i.name == "component");
-		const libArray = []
-		const mappedColors = [];
-		const mappedComponent = [];
-		const componentswithactions = {};
-		const facialzip = nodezip.create();
-		for (const info of result.children) {
-			switch (info.name) {
-				case "library": {
-					libArray.unshift(info.attr);
-					break;
-				} case "component": {
-					const inf = info.attr;
-					inf.action = feeling;
-					inf.bs = bs
-					mappedComponent.unshift(inf);
-					break;
-				} case "color": {
-					const inf = info.attr;
-					inf.text = info.val;
-					mappedColors.unshift(inf);
-					break;
+	async finalxml(result, action, array, isLegacy = false) {
+		const $this = this;
+		async function c(a, b) {
+			const info = a.find(i => i._attributes.id == b);
+			for (const json of info.selection) {
+				if (json._attributes.type == "facial") {
+					const facials = (await $this.getCCThemeParts(result.cc_char.component, isLegacy)).data.facial;
+					await c(facials, json._attributes.facial_id)
+				} else {
+					const components = result.cc_char.component.filter(i => i._attributes.type == json._attributes.type);
+					for (const component of components) {
+						component._attributes.file = json._attributes.state_id + '.swf';
+						if (!component._attributes.path) component._attributes.path = component._attributes.component_id
+					}
 				}
 			}
 		}
-		fUtil.addToZip(facialzip, `desc.xml`, `<cc_char ${
-			result.attr ? `xscale='${result.attr.xscale}' yscale='${
-				result.attr.yscale
-			}' hxscale='${result.attr.hxscale}' hyscale='${
-				result.attr.hyscale
-			}' headdx='${result.attr.headdx}' headdy='${result.attr.headdy}'` : ``
-		}>${mappedComponent.map(this.meta2componentXml2).join("")}${
-			mappedColors.map(this.meta2colourXml).join("")
-		}${libArray.map(this.meta2libraryXml).join("")}</cc_char>`);
-		for (const i in facials[feeling]) {
-			const component = components.find(d => d.attr.type == i);
-			if (component) {
-				fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
-					component.attr.type
-				}.${
-					component.attr.component_id
-				}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${component.attr.theme_id}/${
-					component.attr.type
-				}/${
-					component.attr.component_id
-				}/${facials[feeling][component.attr.type]}.swf`));
-				componentswithactions[component.attr.type] = true;
-			}
-		}
-		for (const component of components) {
-			switch (component.attr.type) {
-				case "lower_body":
-				case "upper_body":
-				case "skeleton": break;
-				case "bodyshape": {
-					fUtil.addToZip(facialzip, `${component.attr.theme_id}.${
-						component.attr.type
-					}.${
-						component.attr.component_id
-					}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
-						component.attr.theme_id
-					}/${component.attr.type}/${
-						component.attr.component_id
-					}/thumbnail.swf`))
-					break;
-				} default: {
-					if (!componentswithactions[component.attr.type]) fUtil.addToZip(
-						facialzip, `${component.attr.theme_id}.${component.attr.type}.${
-							component.attr.component_id
-						}.swf`, fs.readFileSync(`./static/2010/store/cc_store/${
-							component.attr.theme_id
-						}/${
-							component.attr.type
-						}/${component.attr.component_id}/default.swf`)
-					);
-					break;
+		await c(array, action);
+		return result;
+	},
+	async genActionXml(result, action, isLegacy = false) {
+		return jsonToXml(
+			await this.finalxml(
+				this.prepxml(result), action, (await this.getBodyshapeParts(result.cc_char.component, isLegacy)).action, isLegacy
+			)
+		);
+	},
+	async genFacialXml(result, facial, tagStart) {
+		if (tagStart && typeof tagStart == "string") result = this.prepxml(result);
+		result = await this.finalxml(result, facial, (
+			await this.getCCThemeParts(result.cc_char.component, typeof tagStart == "boolean" && tagStart)
+		).data.facial);
+		return tagStart && typeof tagStart == "string" ? `<${tagStart}>
+			${jsonToXml(result.cc_char)}
+		</${tagStart}>` : jsonToXml(result);
+	},
+	async genZip4ActionAndFacials(result, actions = [], isLegacy = false) {
+		const zip = nodezip.create();
+		fUtil.addToZip(zip, `desc.xml`, jsonToXml(result));
+		for (const j of actions) {
+			const xml = await this[j.function](result, j.action, isLegacy);
+			const json = await xmlToJson(xml);
+			for (const info of json.cc_char.component) {
+				const i = info._attributes;
+				if (i.path && i.file) {
+					const filename = `${i.theme_id}.${i.type}.${i.path}`;
+					fUtil.addToZip(zip, filename + '.swf', fs.readFileSync(`./frontend/static/store/cc_store/${
+						filename.split(".").join("/") + `/${i.file}`
+					}`));
 				}
 			}
 		}
-		return await facialzip.zip();
+		return await zip.zip();
 	},
 	async packZip(data) {
 		try {
 			const buf = await this.load(data.assetId);
 			const zip = nodezip.create();
-			const result = new xmldoc.XmlDocument(buf);
-			const themeid = this.getTheme(buf);
-			const actions = this.getJyveeActions(themeid);
-			const actionproperties = Object.keys(actions);
-			if (data.action) return await this.zipAction(this.getCharTypeViaBuff(buf), data.action, result, actions);
-			for (var num = 0; num < actionproperties.length; num++) fUtil.addToZip(zip, `char/${data.assetId}/${
-				actionproperties[num]
-			}.zip`, Buffer.from(await this.zipAction(this.getCharTypeViaBuff(buf), actionproperties[num], result, actions)));
-			const facials = this.getJyveeEmotions(themeid)
-			const testfacials = Object.keys(facials);
-			if (data.emotion) return await this.zipEmotion(this.getCharTypeViaBuff(buf), data.emotion, result, facials)
-			for (a = 0; a < 3; a++) fUtil.addToZip(zip, `char/${data.assetId}/head/${
-				testfacials[a]
-			}.zip`, Buffer.from(await this.zipEmotion(this.getCharTypeViaBuff(buf), testfacials[a], result, facials)));
+			const result = await xmlToJson(buf);
+			if (data.action) return await this.genZip4ActionAndFacials(result, [
+				{
+					function: 'genActionXml',
+					action: data.action
+				}
+			]);
+			if (data.emotion) return await this.genZip4ActionAndFacials(result, [
+				{
+					function: 'genFacialXml',
+					action: data.emotion
+				}
+			])
+			if (data.emotionsFile) {
+				if (data.studio == "2010") data.emotionsFile += 2010;
+				const themeid = this.getThemeViaXml2jsOutout(result);
+				const emotions = (await xmlToJson(`<emotions>${
+					fs.readFileSync(`./_PREMADE/emotions/${themeid}/${data.emotionsFile}.xml`)
+				}</emotions>`)).emotions;
+				const actions = ["action","motion"];
+				async function packActions(a, $this) {
+					for (const action of a) fUtil.addToZip(zip, `char/${data.assetId}/${
+						action._attributes.id
+					}`, Buffer.from(await $this.genZip4ActionAndFacials(result, [
+						{
+							function: 'genActionXml',
+							action: action._attributes.id.split(".")[0]
+						}
+					])));
+				}
+				function prepActionpack(l, $this) {
+					for (const f of actions) {
+						if (!l[f]) continue;
+						packActions(l[f], $this);
+					}
+				}
+				for (const catInfo of emotions.category) prepActionpack(catInfo, this);
+				prepActionpack(emotions, this);
+				for (const facial of emotions.facial) fUtil.addToZip(zip, `char/${data.assetId}/head/${
+					facial._attributes.id
+				}`, Buffer.from(await this.genZip4ActionAndFacials(result, [
+					{
+						function: 'genFacialXml',
+						action: facial._attributes.id.split(".")[0]
+					}
+				])));
+			} else {
+				const actions = (await this.getBodyshapeParts(result.cc_char.component, data.studio == "2010")).action;
+				for (var num = 0; num < actions.length; num++) fUtil.addToZip(zip, `char/${data.assetId}/${
+					actions[num]._attributes.id
+				}.zip`, Buffer.from(await this.genZip4ActionAndFacials(result, [
+					{
+						function: 'genActionXml',
+						action: actions[num]._attributes.id
+					}
+				], data.studio == "2010")));
+				const facials = (await this.getCCThemeParts(result.cc_char.component, data.studio == "2010")).data.facial;
+				for (a = 0; a < facials.length; a++) fUtil.addToZip(zip, `char/${data.assetId}/head/${
+					facials[a]._attributes.id
+				}.zip`, Buffer.from(await this.genZip4ActionAndFacials(result, [
+					{
+						function: 'genFacialXml',
+						action: facials[a]._attributes.id
+					}
+				], data.studio == "2010")));
+			}
 			return await zip.zip();
 		} catch (e) {
-			const zip = nodezip.create();
-			fs.readdirSync(`./_PREMADE/comm_chars/${data.assetId}`).forEach(i => {
-				fUtil.addToZip(zip, `char/${data.assetId}/${i}`, fs.readFileSync(`./_PREMADE/comm_chars/${data.assetId}/${i}`));
-			});
-			return await zip.zip();
+			console.warn(e, '\nLoading your character from the Community Library instead.');
+			try {
+				const zip = nodezip.create();
+				fs.readdirSync(`./_PREMADE/comm_chars/${data.assetId}`).forEach(i => {
+					fUtil.addToZip(zip, `char/${data.assetId}/${i}`, fs.readFileSync(`./_PREMADE/comm_chars/${data.assetId}/${i}`));
+				});
+				return await zip.zip();
+			} catch (e) {
+				console.error('Character Load Failed due to this', e)
+			}
 		}
 	},
 	async getThemeFromCharId(id) {
@@ -468,14 +310,25 @@ module.exports = {
 	 */
 	getTheme(buff) {
 		const json = new xmldoc.XmlDocument(buff);
+		return this.getThemeVisXmldocOutput(json);
+	},
+	getThemeVisXmldocOutput(json) {
 		return json.children.filter(i => i.name == "component").find(i => i.attr.type == "bodyshape").attr.theme_id;
+	},
+	getThemeViaXml2jsOutout(json) {
+		return json.cc_char.component.find(i => i._attributes.type == "bodyshape")._attributes.theme_id;
 	},
 	async getCharType(id) {
 		return this.getCharTypeViaBuff(await this.load(id))
 	},
 	getCharTypeViaBuff(buff) {
-		const json = new xmldoc.XmlDocument(buff);
+		return this.getCharTypeViaXmldocOutput(new xmldoc.XmlDocument(buff));
+	},
+	getCharTypeViaXmldocOutput(json) {
 		return json.children.filter(i => i.name == "component").find(i => i.attr.type == "bodyshape").attr.component_id;
+	},
+	getCharTypeViaXml2jsOutput(result) {
+		return result.cc_char.component.find(i => i._attributes.type == "bodyshape")._attributes.component_id;
 	},
 	/**
 	 * @param {string} id
@@ -550,15 +403,12 @@ module.exports = {
 				const prefix = id.substr(0, i);
 				switch (prefix) {
 					case "c":
-					case "C":
-						fs.writeFile(getCharPath(id), data, (e) => (e ? rej() : res(id)));
-					default:
-						res(save(id, data));
+					case "C": {
+						fs.writeFile(getCharPath(id), data, (e) => (e ? rej(e) : res(id)));
+						break;
+					} default: res(save(id, data));
 				}
-			} else {
-				saveId = `c-${fUtil.getNextFileId("char-", ".xml")}`;
-				res(save(saveId, data));
-			}
+			} else res(save(`c-${fUtil.getNextFileId("char-", ".xml")}`, data));
 		});
 	},
 	/**

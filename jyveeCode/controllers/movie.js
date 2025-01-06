@@ -10,11 +10,11 @@ const tempbuffer = require("../../tts/tempBuffer");
 const tts = require("../../tts/main");
 const fUtil = require("../../misc/file");
 const loadPost = require("../../misc/post_body");
-function guyResponse(guy, res, data, req) {
+function guyResponse(guy, res, data, req, extraData) {
 	console.log(guy.success);
 	if (guy.success == true) {
 		const obj = movie.addArray2ObjectWithNumbers(movie.assignObjects({}, movie.stringArray2Array(data)));
-		res.end(JSON.stringify(Object.assign({
+		res.end(JSON.stringify(movie.assignObjects({
 			player_object: {
 				ext: "xml",
 				filename: "qvm",
@@ -26,11 +26,18 @@ function guyResponse(guy, res, data, req) {
 				isEmbed: 1,
 				appCode: "go",
 				apiserver: req.headers.origin + "/",
-				storePath: req.headers.origin + "/static/store/<store>",
-				clientThemePath: req.headers.origin + "/static/<client_theme>"
+				storePath: req.headers.origin + "/static/store/<store>"
 			},
-			enc_mid: data.enc_mid || `m-${fUtil.getNextFileId("movie-", ".xml")}`
-		}, obj)));
+			enc_mid: data.enc_mid || `m-${fUtil.getNextFileId("movie-", ".xml")}`,
+			opening_closing: {
+				fileInfo: {
+					name: "qvm",
+					ext: "xml"
+				}
+			},
+			playerYearOptions: extraData.playerYearOptions,
+			hasPlayerYearOptions: extraData.hasPlayerYearOptions
+		}, [obj])));
 	} else res.end(JSON.stringify({
 		error: guy.message
 	}));
@@ -50,7 +57,7 @@ module.exports = (req, res, url) => {
 				const texts = [];
 				const mcids = [];
 				const template = f.enc_tid;
-				const templateInfo = JSON.parse(fs.readFileSync(`./templates.json`))[qvm_theme];
+				const templateInfo = JSON.parse(fs.readFileSync(`./templates.json`))[qvm_theme] || {};
 				let scriptscene = 0;
 				const voicez = [];
 				let focuschar = "";
@@ -147,7 +154,12 @@ module.exports = (req, res, url) => {
 									ouri++;
 									if (i == texts.length - 1) Movie.genxml(
 										qvm_theme, char1id, char2id, expressions, charorder, cam, ttsid, scenetimes, template
-									).then(guy => guyResponse(guy, res, f, req));
+									).then(guy => guyResponse(guy, res, f, req, {
+										hasPlayerYearOptions: templateInfo.playerYearOptions ? Object.keys(
+											templateInfo.playerYearOptions
+										).length > 1 : false,
+										playerYearOptions: templateInfo.playerYearOptions
+									}));
 									else await gentts();
 								}, 200);
 							} catch (e) {
@@ -191,7 +203,12 @@ module.exports = (req, res, url) => {
 						ouri++;
 						if (i == texts.length - 1) Movie.genxml(
 							qvm_theme, char1id, char2id, expressions, charorder, cam, ttsid, scenetimes, template
-						).then(guy => guyResponse(guy, res, f, req));
+						).then(guy => guyResponse(guy, res, f, req, {
+							hasPlayerYearOptions: templateInfo.playerYearOptions ? Object.keys(
+								templateInfo.playerYearOptions
+							).length > 1 : false,
+							playerYearOptions: templateInfo.playerYearOptions
+						}));
 						else await gentts();
 					} catch (e) {
 						console.log(e);

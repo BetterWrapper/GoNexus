@@ -1,12 +1,15 @@
 const loadPost = require("../misc/post_body");
 const folder = process.env.THEME_FOLDER;
 const fUtil = require("../misc/file");
-const https = require("https");
 const http = require("http");
-const parse = require("../movie/parse");
-const char = require("../character/main");
+const {
+	xmlToJson,
+	jsonToXml
+} = require("../movie/xmlConverter");
+const asset = require("../asset/main");
 const fs = require("fs");
-const xmldoc = require("xmldoc");
+const { assignObjects } = require("../movie/main");
+const session = require("../misc/session");
 /**
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
@@ -19,7 +22,6 @@ module.exports = function (req, res, url) {
 		case "/goapi/getTheme/": {
 			loadPost(req, res).then(async data => {
 				var theme = data.themeId;
-				const themeInfo = (parse.getThemes()).find(i => i.attr.id == theme);
 				switch (theme) {
 					case "family": {
 						theme = "custom";
@@ -32,30 +34,27 @@ module.exports = function (req, res, url) {
 						break;
 					}
 				}
+				const buffer = fs.readFileSync(`./_THEMES/${theme}.xml`);
+				const themeInfo = (await xmlToJson(buffer)).theme;
 				async function getThemeXML() {
-					let filename = 'themelist';
-					if (data.v) {
-						filename += '-old';
-						if (data.v == '2010' || data.v == '2012') filename += `-${data.v}`;
-					}
-					const json = new xmldoc.XmlDocument(fs.readFileSync(`${folder}/${filename}.xml`));
-					const tJSON = json.children.filter(i => i.name == "theme").find(i => i.attr.id == theme);
-					/*if (tJSON.attr.cc_theme_id && fs.existsSync(`./_PREMADE/${tJSON.attr.cc_theme_id}.json`)) {
-						const json = JSON.parse(fs.readFileSync(`./_PREMADE/${tJSON.attr.cc_theme_id}.json`));
+					if (themeInfo._attributes.cc_theme_id && fs.existsSync(`./_PREMADE/${themeInfo._attributes.cc_theme_id}.json`)) {
+						const json = JSON.parse(fs.readFileSync(`./_PREMADE/${themeInfo._attributes.cc_theme_id}.json`));
 						if (
-							data.v
-							&& parseInt(data.v) <= 2012
-						) return await oldStockCharsXML(json, tJSON.attr.cc_theme_id);
-						else return await stockCharsXML(json, tJSON.attr.cc_theme_id);
-					} else */return fs.readFileSync(`./_THEMES/${theme}${parseInt(data.v) <= 2012 ? 'old' : ''}.xml`)
+							data.studio
+							&& parseInt(data.studio) <= 2012
+						) return await oldStockCharsXML(json, themeInfo._attributes.cc_theme_id);
+						if (data.file != "old_full_2013.swf") return await stockCharsXML(json, themeInfo._attributes.cc_theme_id);
+						return buffer
+					} else return buffer
 				}
 				async function stockCharsXML(stockChars, tId) {
-					var xml2zip = (fs.readFileSync(`./_THEMES/${theme}.xml`)).toString().split("</theme>")[0];
+					var xml2zip = buffer.toString().split("</theme>")[0];
 					for (const stockChar of stockChars) {
+						const encId = stockChar.id || '';
 						for (const v of stockChar.people) {
-							const id = stockChar.id ? stockChar.id + v.id : v.id;
+							const id = encId + v.id;
 							xml2zip += `<char id="${id}" name="${
-								v.name
+								v.title
 							}" thumbnail_url="/char-default.png" cc_theme_id="${
 								tId
 							}" copyable="Y"><tags>${tId},_free,_cat:${v.cat}</tags></char>`
@@ -64,42 +63,46 @@ module.exports = function (req, res, url) {
 					return xml2zip + '</theme>';
 				}
 				async function oldStockCharsXML(stockChars, tId) {
-					var xml2zip = (fs.readFileSync(`./_THEMES/${theme}old.xml`)).toString().split("</theme>")[0];
+					var xml2zip = buffer.toString().split("</theme>")[0];
+					const currentSession = session.get(req);
+					const defaultEmotions = currentSession.data?.emotionsDefault;
 					for (const stockChar of stockChars) {
-						for (const v of stockChar.people) {
-							const id = stockChar.id ? stockChar.id + v.id : v.id;
-							const buf = await char.load(id);
-							const charJSON = await parse.getStuffForOldStockChar(buf, data, tId);
-							xml2zip += `<char id="${id}" enc_asset_id="${v.id}" thumb="${id}.zip" is_premium="Y" sharing="5" money="0" name="${
-								v.name
-							}" cc_theme_id="${tId}" editable="N" ${
-								charJSON.defaults
-							} enable="Y" copyable="Y" isCC="Y" locked="Y" facing="left" published="1"><tags>${
-								tId
-							},${
-								stockChar.tag
-							}</tags>${charJSON.xmls}</char>`
-						}
+						const json = await xmlToJson(`<chars>${await asset[
+							defaultEmotions ? "genOldCharAssetXmlWithPreloadedEmotions" : "genOldCharAssetXml"
+						](stockChar.people, data.studio == "2010" ? "zip" : 'xml', tId, defaultEmotions || data.studio == "2010")}</chars>`);
+						xml2zip += jsonToXml({
+							char: json.chars.char.map(v => assignObjects(v, [
+								{
+									_attributes: {
+										sharing: 2,
+										is_premium: "Y",
+										money: 0
+									},
+									tags: [`${tId},${stockChar.tag}`]
+								}
+							]))
+						});
 					}
 					return xml2zip + '</theme>';
 				}
 				res.setHeader("Content-Type", "application/zip");
-				fUtil.makeZipFromBuffer(await getThemeXML(), "theme.xml").then((b) => res.end(b));
+				res.end(await fUtil.makeZipFromBuffer(await getThemeXML(), "theme.xml"));
 			});
 			break;
 		} case "/goapi/getThemeList/": {
 			loadPost(req, res).then(async data => {
 				let filename = 'themelist';
-				if (data.v) {
+				if (data.studio) {
 					filename += '-old';
-					if (data.v == '2010' || data.v == '2012') filename += `-${data.v}`;
+					if (data.studio == '2010' || data.studio == '2012') filename += `-${data.studio}`;
 				}
 				res.setHeader("Content-Type", "application/zip");
 				let userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.find(i => i.id == data.userId);
 				if (req.headers.host.includes("localhost")) userInfo = JSON.parse(fs.readFileSync('./_ASSETS/local.json'));
-				const tXML = fs.readFileSync(`${folder}/${filename}.xml`).toString().split("points").join(`points money="0" sharing="${userInfo.gopoints}"`);
-				fUtil.makeZipFromBuffer(Buffer.from(tXML), "themelist.xml").then((b) => res.end(b));
-
+				const tXML = fs.readFileSync(`${folder}/${filename}.xml`).toString().split("points").join(
+					`points money="0" sharing="${userInfo.gopoints}"`
+				);
+				res.end(await fUtil.makeZipFromBuffer(Buffer.from(tXML), "themelist.xml"));
 			})
 			break;
 		} default: return;

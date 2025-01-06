@@ -298,7 +298,7 @@ ul {
 }
 
 .by_ga {
-    background: transparent url(./img/step00/img_ga.png) no-repeat 0 0;
+    background: transparent url(/ui/img/img_ga.png) no-repeat 0 0;
     display: block;
     height: 18px;
     width: 205px;
@@ -1149,14 +1149,14 @@ ul {
     float: left;
     width: 15px;
     height: 34px;
-    background: url('/web/20111026101621im_/http://lightspeed.goanimate.com/static/249/go/img/script2cartoon/voiceselectionwidget/ico_male.png') no-repeat 0 1px;
+    background: url('/ui/img/ico_male.png') no-repeat 0 1px;
 }
 
 .dialog_input_wrapper .langarea .gender.F {
     float: left;
     width: 15px;
     height: 34px;
-    background: url('/web/20111026101621im_/http://lightspeed.goanimate.com/static/249/go/img/script2cartoon/voiceselectionwidget/ico_female.png') no-repeat 0 1px;
+    background: url('/ui/img/ico_female.png') no-repeat 0 1px;
 }
 
 .dialog_input_wrapper .langarea .tips {

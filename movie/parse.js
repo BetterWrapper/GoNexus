@@ -62,7 +62,7 @@ const {
 	THEME_FOLDER: themeFolder,
 	XML_HEADER: header,
 } = process.env;
-
+const charController = require("../jyveeCode/models/charController");
 const xml2js = require('xml2js');
 const tts = require("../tts/main");
 /**
@@ -463,7 +463,8 @@ module.exports = {
 		const zip = data.existingObjectZip || nodezip.create();
 		/** @type {Record<string, boolean>} */
 		const themes = { common: true };
-		var ugc = `${header}<theme id="ugc">`;
+		var ugc = !zip['ugc.xml'] ? `${header}<theme id="ugc">` : zip['ugc.xml'].buffer.toString().split("</theme>")[0];
+		const user = JSON.parse(fs.readFileSync(asset.folder + '/users.json')).users.find(i => i.id == uid);
 		fUtil.addToZip(zip, "movie.xml", xmlBuffer);
 		/**
 		 * why not just merge em together they're all similar anyway
@@ -479,26 +480,27 @@ module.exports = {
 			pieces[pieces.length - 1] += "." + ext;
 			// add the type to the filename
 			pieces.splice(1, 0, type);
-			const user = JSON.parse(fs.readFileSync(asset.folder + '/users.json')).users.find(i => i.id == uid);
 			const filename = pieces.join(".");
-			if (themeId == "ugc") {
-				const id = pieces[2];
-				try {
-					const buffer = tempbuffer.get(id) || asset.load(id);
-					// add asset meta
-					const assetMeta = (!ownAssets[0] ? user.assets : ownAssets).find(i => i.id == id);
-					if (!assetMeta) console.log(`Asset #${id} is in the XML, but it does not exist.`);
-					else ugc += asset.meta2Xml(assetMeta);
-					// and add the file
-					fUtil.addToZip(zip, filename, buffer);
-				} catch (e) {
-					console.log(`WARNING: ${id}:`, e);
+			if (!zip[filename]) {
+				if (themeId == "ugc") {
+					const id = pieces[2];
+					try {
+						const buffer = tempbuffer.get(id) || asset.load(id);
+						// add asset meta
+						const assetMeta = (!ownAssets[0] ? user.assets : ownAssets).find(i => i.id == id);
+						if (!assetMeta) console.log(`Asset #${id} is in the XML, but it does not exist.`);
+						else ugc += asset.meta2Xml(assetMeta);
+						// and add the file
+						fUtil.addToZip(zip, filename, buffer);
+					} catch (e) {
+						console.log(`WARNING: ${id}:`, e);
+					}
+				} else if (themeId != "tpeditor") {
+					if (type == "prop" && pieces.indexOf("head") > -1) pieces[1] = "char";
+					const filepath = `./frontend/static/store/${pieces.join("/")}`;
+					// add the file to the zip
+					fUtil.addToZip(zip, filename, fs.readFileSync(filepath));
 				}
-			} else if (themeId != "tpeditor") {
-				if (type == "prop" && pieces.indexOf("head") > -1) pieces[1] = "char";
-				const filepath = `./frontend/static/store/${pieces.join("/")}`;
-				// add the file to the zip
-				fUtil.addToZip(zip, filename, fs.readFileSync(filepath));
 			}
 			themes[themeId] = true;
 		}
@@ -544,23 +546,116 @@ module.exports = {
 								const ext = pieces.pop();
 								pieces[pieces.length - 1] += "." + ext;
 								pieces.splice(1, 0, elem2.name);
-		
+								const fillFilePieces = pieces;
 								if (themeId == "ugc") {
+									const fillFile = pieces.join(".")
 									// remove the action from the array
 									pieces.splice(3, 1);
-	
+									const filename = pieces.join(".");
 									const id = pieces[2];
 									try {
 										const charXml = await char.load(id);
-										const filename = pieces.join(".");
-	
-										ugc += asset.meta2Xml({
+										fUtil.addToZip(zip, filename + ".xml", charXml);
+										if (data.file == "old_full_2013.swf" || (data.studio && Number(data.studio) < 2013)) {
+											await charController.getCharacterAction({
+												body: {
+													charXml,
+													actionId: `${fillFile.split(".")[3]}.${ext}`,
+													facialId: "",
+													default: ""
+												}
+											}, {
+												setHeader() {},
+												end(r) {
+													fUtil.addToZip(zip, fillFile, r)
+												}
+											})
+											const fatials = [], actions = [], action_cat = {}, defaultActions = {};
+											const componentArray = [], colorArray = [], libArray = [];
+											const data = new XmlDocument(fs.readFileSync(`./frontend/static/store/cc_store/${
+												char.getTheme(charXml)
+											}/cc_theme.xml`));
+											function get(stuff, param, com, com2) {
+												if (!com2) for (const info of data.children.filter(i => i.name == com)) {
+													for (const data of info.children.filter(i => i.name == "selection")) {
+														if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+													}
+												}
+												else for (const i of data.children.filter(i => i.name == com2)) {
+													for (const info of i.children.filter(i => i.name == com)) {
+														for (const data of info.children.filter(i => i.name == "selection")) {
+															if (data.attr.state_id == stuff && info.attr[param]) return info.attr[param]
+														}
+													}
+												}
+											}
+											for (const info of data.children.filter(i => i.name == 'facial')) {
+												fatials.unshift(info.attr);
+											}
+											for (const i of data.children.filter(i => i.name == 'bodyshape')) {
+												if (i.attr.id == await char.getCharType(id)) {
+													defaultActions.default = i.attr.default_action;
+													defaultActions.motion = i.attr.default_motion;
+													function actionsInsert(i) {
+														for (const info of i.children.filter(i => i.name == 'action')) {
+															const inf = info.attr;
+															const data = info.children.filter(i => i.name == "selection");
+															inf.facial = data[0].attr.facial_id;
+															if (inf.category) {
+																if (!action_cat[inf.category]) action_cat[
+																	inf.category
+																] = {
+																	array: [],
+																	xml: `<category name="${inf.category}">`
+																};
+																action_cat[inf.category].array.unshift(inf);
+															} else actions.unshift(inf);
+														}
+													}
+													switch (char.getTheme(charXml)) {
+														case "cctoonadventure":
+														case "family": {
+															actionsInsert(i);
+															break;
+														} default: {
+															for (const d of i.children.filter(i => i.name == 'actionpack')) actionsInsert(d);
+														}
+													}
+												}
+											}
+											for (const i in action_cat) {
+												action_cat[i].xml += action_cat[i].array.map(v => `<${
+													v.is_motion == "Y" ? "motion" : "action"
+												} id="${v.id}.xml" name="${
+													v.name
+												}" loop="${v.loop}" totalframe="${
+													v.totalframe
+												}" enable="${v.enable}" is_motion="${
+													v.is_motion
+												}"/>`).join("");
+											}
+											ugc += `<char id="${id}" thumb="stand.zip" name="Untitled" cc_theme_id="${
+												char.getTheme(charXml)
+											}" default="${defaultActions.default}.xml" motion="${
+												defaultActions.motion
+											}.xml" editable="Y" enable="Y" copyable="Y" isCC="Y" locked="N" facing="left" published="0">
+												<tags></tags>
+												${Object.keys(action_cat).map(i => action_cat[i].xml + '</category>')}
+												${actions.map(v => `<${
+													v.is_motion == "Y" ? "motion" : "action"
+												} id="${v.id}.xml" name="${v.name}" loop="${v.loop}" totalframe="${
+													v.totalframe
+												}" enable="${v.enable}" is_motion="${
+													v.is_motion
+												}"/>`).join("")}
+												${fatials.map(v => `<facial id="${v.id}.xml" name="${v.name}" enable="${v.enable}"/>`).join("")}
+											</char>`;
+										} else ugc += asset.meta2Xml({
 											// i can't just select the character data because of stock chars :(
 											id,
 											type: "char",
 											themeId: char.getTheme(charXml)
 										});
-										fUtil.addToZip(zip, filename + ".xml", charXml);
 									} catch (e) {
 										console.log(`WARNING: ${id}:`, e);
 										continue;
@@ -579,23 +674,38 @@ module.exports = {
 									// add props and head stuff
 									file = elem3.childNamed("file")?.val;
 									if (!file) continue;
-									const pieces2 = file.split(".");
+									const pieces = file.split(".");
 	
 									// headgears and handhelds
 									if (elem3.name != "head") {
 										await basicParse(file, "prop");
 									} else { // heads
-										// i used to understand this
-										// i'll look back on it and explain when i'm in the mood to refactor this
-										if (pieces2[0] == "ugc" || pieces2[0] == "tpeditor") continue;
-										pieces2.pop(), pieces2.splice(1, 0, "char");
-										const filepath = `./frontend/static/store/${pieces2.join("/")}.swf`;
-										pieces2.splice(1, 1, "prop");
-										const filename = `${pieces2.join(".")}.swf`;
-										fUtil.addToZip(zip, filename, fs.existsSync(filepath) ? fs.readFileSync(filepath) : await get(filepath));
+										const ext = pieces.pop();
+										pieces[pieces.length - 1] += `.${ext}`;
+										pieces.splice(1, 0, "char");
+										if (pieces[0] == "tpeditor") continue;
+										const filepath = `./frontend/static/store/${pieces.join("/")}`;
+										pieces.splice(1, 1, "prop");
+										if (pieces[0] != "ugc") fUtil.addToZip(zip, pieces.join("."), fs.readFileSync(filepath));
+										else if (data.file == "old_full_2013.swf" || (
+											data.studio && Number(data.studio) < 2013
+										)) await charController.getCharacterAction({
+											body: {
+												charId: `${pieces[2]}.head`,
+												facialId: pieces[4],
+												actionId: "",
+												isPlayer: true
+											}
+										}, {
+											assert() {},
+											setHeader() {},
+											end(r) {
+												fUtil.addToZip(zip, pieces.join(''), r)
+											}
+										})
 									}
 	
-									themes[pieces2[0]] = true;
+									themes[pieces[0]] = true;
 								}
 	
 								themes[themeId] = true;

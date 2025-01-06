@@ -43,12 +43,10 @@
         var I18N_LANG = 'en_US';
         var GT = new Gettext({'locale_data': json_locale_data});
         </script>
-    
     </head>
     <body id="school">
     <script type="text/javascript">
     GoLite.settings.player = {
-        swf: "/static/animation/player.swf",
         height: 384,
         width: 550
     }
@@ -57,13 +55,6 @@
         height: 170,
         width: 295
     }
-    
-    VoiceRecorder.defaultSettings.swf = "/static/qvm/MyMicRecorder.swf";
-    jQuery.extend(VoiceRecorder.defaultSettings.flashvars, {
-        apiserver: "/qvm_micRecord_",
-        clientThemePath: "/static/tommy/2012/<client_theme>",
-        u_info_school: ""
-    });
     
     // scroll to target step
     function stepTo(step) {
@@ -630,6 +621,7 @@
                     </div>
                     <div class="loading"></div>
                     <div class="preview" style="display:none">
+                        <input id="GoLitePlayerYear" type="hidden" value="2011b"/>
                         <div id="player_container">
                             You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                         </div>

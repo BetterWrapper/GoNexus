@@ -598,6 +598,12 @@
                     <span class="sr-only">Close</span>
                 </button>
                 <h3 class="modal-title">FlashThemes Video Converter</h3>
+                <div class="alert alert-warning alert-dismissible needs-account" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    You need a GoNexus account in order to import your converted FlashThemes video to GoNexus
+                </div>
             </div>
             <center class="modal-body">
                 <h1>FlashThemes Video Converter</h1>
@@ -622,9 +628,9 @@
                     <small id="converter_videoDesc"></small><br>
                     <form action="javascript:;" class="converterForm" data-for="flashthemes" data-converting="false">
                         What do you want to do with this video?<br>
-                        <select name="videoType">
+                        <select name="videoType" id="converter_videoTypes">
                             <option value="zip">Download ZIP File</option>
-                            <option value="import">Import Video To GoNexus</option>
+                            <option value="import" style="display: none;">Import Video To GoNexus</option>
                             <option value="preview">Preview Converted Video</option>
                         </select><br>
                         <a id="converter_videoDownload"></a><br>
@@ -638,7 +644,12 @@
                     <div class="row">
                         <div class="col-md-12 text-center">
                             <h2 class="intro-h2">Best FlashThemes Video Converter</h2>
-                            <p class="intro-text">FlashThemes may be the best LVM project of the year, but with some features like zip file downloading missing from user videos, it is impossible to import your FlashThemes creations onto Wrapper: Offline. but thanks to JosephAnimate, you won&#039;t have to worry about that happening again.</p>
+                            <p class="intro-text">
+                                FlashThemes may be the best LVM project of the year, 
+                                but with some features like zip file downloading missing from user videos, 
+                                it is impossible to import your FlashThemes creations onto Wrapper: Offline. 
+                                but thanks to one of our developers, you won&#039;t have to worry about that happening again.
+                            </p>
                         </div>
                     </div>
                     <hr>
@@ -1186,11 +1197,12 @@
         } else alert('FT Action Required!');
     }
     function setupFlashThemesMovieUploader() {
+        jQuery.blockUI();
         $("#userHasNoVideosForFtUpload").hide();
         $("#hasUserVideosForFtUpload").hide();
         jQuery.post('/api/getAllUsers', d => {
             const userInfo = d.find(i => i.id == userData.uid || userData.id);
-            if (!userInfo.isFTAcc) setupFTAccRequiredModal('You need a FlashThemes Account in order to upload your movie to FlashThemes');
+            if (!userInfo?.isFTAcc) setupFTAccRequiredModal('You need a FlashThemes Account in order to upload your movie to FlashThemes');
             else {
                 if (userInfo.movies.length < 1) $("#userHasNoVideosForFtUpload").show();
                 else {
@@ -1214,6 +1226,7 @@
                     backdrop: "static"
                 })
             }
+            jQuery.unblockUI();
         })
     }
     for (const elem of document.getElementsByClassName("converterForm")) {

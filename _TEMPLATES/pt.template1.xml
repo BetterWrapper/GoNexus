@@ -1,5 +1,31 @@
 <film copyable="0" duration="17.8" published="0" pshare="1">
-  <scene isPartOfVideoStart="" adelay="12" lock="Y" color="0">
+  <meta>
+    <title><![CDATA[qvm_pt]]></title>
+    <tag><![CDATA[school]]></tag>
+    <hiddenTag><![CDATA[pizza,pizza,vilgante,noise]]></hiddenTag>
+    <desc><![CDATA[]]></desc>
+    <mver><![CDATA[4]]></mver>
+    <studio>d7446f28669693f5b7a35d41831e43c3662c48bf</studio>
+    <thumbnail index="1"/>
+    <palette>
+      <color value="333333"/>
+      <color value="999999"/>
+      <color value="fbfbfb"/>
+      <color value="669999"/>
+      <color value="55bbaa"/>
+      <color value="7fbb11"/>
+      <color value="15709b"/>
+      <color value="9a5d1"/>
+      <color value="6ab8d6"/>
+      <color value="da2021"/>
+      <color value="fecd31"/>
+      <color value="28c6c1"/>
+      <color value="37444f"/>
+      <color value="ffffff"/>
+      <color value="0"/>
+    </palette>
+  </meta>
+  <scene id="SCENE1" adelay="12" lock="Y" index="0" color="0" guid="BF8B38BC-1E0D-05D0-0600-36F717FAA034">
     <effectAsset id="EFFECT3" themecode="common" index="1">
       <effect x="0" y="0" w="550" h="354" rotate="0" id="cut" type="ZOOM" isCut="true" isPan="false"/>
       <x>47</x>
@@ -9,7 +35,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene isPartOfVideoStart="" adelay="72" lock="Y" color="16777215" combgId="common.cbg_bar01">
+  <scene id="SCENE0" adelay="72" lock="Y" index="1" color="16777215" guid="B47E4141-5D21-11D7-906C-8FCE169081F8" combgId="common.cbg_bar01">
     <bg id="cbg_bar01_BG25" index="0">
       <file>common.ncc_floor.swf</file>
       <color r="colorA">3342336</color>
@@ -42,7 +68,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="9" raceCode="1">
-      <action face="1,1" motionface="1">ugc.charId.walk.xml</action>
+      <action face="1,1" motionface="1">ugc.138cdd8.walk.xml</action>
       <x>702.2,407.7</x>
       <y>248.375,245.25</y>
       <xscale>1,1</xscale>
@@ -132,7 +158,7 @@
       <aTran id="2" target="AVATOR109" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
     </aTranList>
   </scene>
-  <scene isPartOfVideoStart="" adelay="48" lock="Y" color="16777215">
+  <scene id="SCENE2" adelay="48" lock="Y" index="2" color="16777215" guid="55B8F630-FE8D-E6C3-2AB5-50671647D18B">
     <bg id="cbg_bar01_BG25" index="0">
       <file>common.ncc_floor.swf</file>
       <color r="colorA">3342336</color>
@@ -164,7 +190,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="9" raceCode="1">
-      <action face="1" motionface="-1">ugc.charId.stand2.xml</action>
+      <action face="1" motionface="-1">ugc.138cdd8.stand2.xml</action>
       <x>407.7</x>
       <y>245.25</y>
       <xscale>1</xscale>
@@ -243,7 +269,7 @@
       <aTran id="3" target="AVATOR106" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
     </aTranList>
   </scene>
-  <scene charsTalking="" char_1_talking="" lock="Y" color="16777215">
+  <scene id="SCENE3" adelay="51" lock="Y" index="3" color="16777215" guid="B30158A2-82AF-61FF-2FBB-39C2D0C5E244">
     <bg id="cbg_bar01_BG25" index="0">
       <file>common.ncc_floor.swf</file>
       <color r="colorA">3342336</color>
@@ -266,7 +292,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="9" raceCode="1">
-      <action face="1" motionface="1">ugc.charId.stand2.xml</action>
+      <action face="1" motionface="1">ugc.138cdd8.stand2.xml</action>
       <x>407.7</x>
       <y>245.25</y>
       <xscale>1</xscale>
@@ -350,7 +376,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene charsTalking="" char_2_talking="" lock="N" color="16777215">
+  <scene id="SCENE4" adelay="60" lock="N" index="4" color="16777215" guid="C3B06A92-D5D0-BC87-2688-A91F0576D702">
     <durationSetting countMinimum="1" countTransition="1" countAction="1" countBubble="1" countSpeech="1"/>
     <bg id="cbg_bar01_BG25" index="0">
       <file>common.ncc_floor.swf</file>
@@ -366,7 +392,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="8" raceCode="1">
-      <action face="1" motionface="1">ugc.charId.stand2.xml</action>
+      <action face="1" motionface="1">ugc.138cdd8.stand2.xml</action>
       <x>407.7</x>
       <y>245.25</y>
       <xscale>1</xscale>
@@ -465,7 +491,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="8" raceCode="1">
-      <action face="1" motionface="1">ugc.charId.stand2.xml</action>
+      <action face="1" motionface="1">ugc.138cdd8.stand2.xml</action>
       <x>407.7</x>
       <y>245.25</y>
       <xscale>1</xscale>
@@ -565,7 +591,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="8" raceCode="1">
-      <action face="1" motionface="1">ugc.charId.stand2.xml</action>
+      <action face="1" motionface="1">ugc.138cdd8.stand2.xml</action>
       <x>407.7</x>
       <y>245.25</y>
       <xscale>1</xscale>
@@ -649,7 +675,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene isPartOfVideoEnd="" adelay="24" lock="Y" color="16777215">
+  <scene id="SCENE7" adelay="24" lock="Y" index="7" color="16777215" guid="84297664-1F6D-9088-96EC-F346E5747DE2">
     <bg id="cbg_bar01_BG25" index="0">
       <file>common.ncc_floor.swf</file>
       <color r="colorA">3342336</color>
@@ -664,7 +690,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="8" raceCode="1">
-      <action face="1" motionface="1">ugc.charId.stand2.xml</action>
+      <action face="1" motionface="1">ugc.138cdd8.stand2.xml</action>
       <x>407.7</x>
       <y>245.25</y>
       <xscale>1</xscale>
@@ -748,7 +774,7 @@
       <speech>0</speech>
     </effectAsset>
   </scene>
-  <scene isPartOfVideoEnd="" adelay="48" lock="Y" color="16777215">
+  <scene id="SCENE8" adelay="48" lock="Y" index="8" color="16777215" guid="5114B6CD-5431-75A5-F96F-3416D4D518ED">
     <bg id="cbg_bar01_BG25" index="0">
       <file>common.ncc_floor.swf</file>
       <color r="colorA">3342336</color>
@@ -763,7 +789,7 @@
       <rotation>0</rotation>
     </char>
     <char id="AVATOR109" index="8" raceCode="1">
-      <action face="-1,-1" motionface="-1">ugc.charId.walk.xml</action>
+      <action face="-1,-1" motionface="-1">ugc.138cdd8.walk.xml</action>
       <x>407.7,684.85</x>
       <y>245.25,245.25</y>
       <xscale>1,1</xscale>
@@ -861,4 +887,12 @@
       <aTran id="6" target="AVATOR109" type="MotionPath" atype="Character" direction="2" section="6" timing="3" duration="24" delay="0">null</aTran>
     </aTranList>
   </scene>
+  <sound id="SOUND0" index="0" track="0" vol="1" tts="0">
+    <sfile>ugc.72a148e.mp3</sfile>
+    <start>1</start>
+    <stop>426</stop>
+    <trimEnd>426</trimEnd>
+    <fadein duration="48" vol="0"/>
+    <fadeout duration="48" vol="0"/>
+  </sound>
 </film>

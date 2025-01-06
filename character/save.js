@@ -16,8 +16,9 @@ module.exports = function (req, res, url) {
 				loadPost(req, res).then(async data => {
 					const userFile = JSON.parse(fs.readFileSync(`./_ASSETS/users.json`));
 					const json = userFile.users.find(i => i.id == data.userId);
-					json.gopoints -= 5;
-					const id = await character.save(await character.load(data.assetId));
+					json.gopoints -= 2;
+					const buf = await character.load(data.assetId);
+					const id = await character.save(buf);
 					json.assets.unshift({ 
 						id,
 						enc_asset_id: id,
@@ -27,10 +28,10 @@ module.exports = function (req, res, url) {
 						title: "Untitled",
 						published: 0,
 						tags: "",
-						themeId: character.getTheme(await character.load(data.assetId))
+						themeId: character.getTheme(buf)
 					});
 					fs.writeFileSync(`./_ASSETS/users.json`, JSON.stringify(userFile, null, "\t"));
-					res.end(`0<points sharing="${json.gopoints}" money="0" asset_id="${info.id}"/>`);
+					res.end(`0<points sharing="${json.gopoints}" money="0" asset_id="${id}"/>`);
 				});
 				break;
 			} case "/goapi/saveCCCharacter/": {

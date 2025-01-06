@@ -53,7 +53,7 @@ module.exports = function (req, res, url) {
 								path: `/goapi/getAsset/${aId}`
 							});
 							else b = tempbuffer.get(aId) || asset.load(aId);
-							if (data.file == "old_full_2013.swf" || parseInt(data.v) <= 2012) res.end(Buffer.concat([base, b]));
+							if (data.file == "old_full_2013.swf" || parseInt(data.studio) <= 2012) res.end(Buffer.concat([base, b]));
 							else res.end(b);
 						} catch (e) {
 							res.statusCode = 404;

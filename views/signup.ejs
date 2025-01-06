@@ -4,15 +4,14 @@
 <%- include("includes/favicon.ejs") %>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<link rel="dns-prefetch" href="//web.archive.org/web/20160801025729/https://d2qrjeyl4jwu9j.cloudfront.net/">
 
-<title>Signup - Nexus</title>
+<title>Signup - GoNexus</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="Nexus is an LVM project that helps improve the errors Wrapper: Offline has right now.">
+<meta name="description" content="GoNexus is an LVM project that helps improve the errors Wrapper: Offline has right now.">
 
-<meta property="og:site_name" content="GoNexus (Codename: BetterWrapper)">
+<meta property="og:site_name" content="GoNexus (Codenames: OrangeAura & BetterWrapper)">
 <meta property="fb:app_id" content="122508887813978">
 <meta name="google-site-verification" content="Vta3YTpj6Kx6u4p-EzeMArY0alNItkyUYYMvNM8seVI"/>
 
@@ -78,8 +77,8 @@ var aff_ref = '', currency = 'USD';
                 <div class="payment-form-section" id="signup-container">
                     <div>
                         <h3>Sign Up</h3><br>
-                        <p>Please fill out this form in order to use Nexus</p><br>
-                        <p id="error-message" class="text-danger"></p>
+                        <p>Please fill out this form in order to use GoNexus</p><br>
+                        <p id="signup-error-message" class="text-danger"></p>
                         <div class="form-group">
                             <label for="" class="col-sm-3 control-label">Display Name<span class="text-danger">*</span></label>
                             <div class="col-sm-6">
@@ -106,17 +105,15 @@ var aff_ref = '', currency = 'USD';
                         </div>
                     </div>
                     <div class="payment-form-section-footer">
-                        If you never used Nexus before and you are getting a message saying that your email has already been used to sign up, please try to login to Nexus for a better result.
-                        <br>
                         <button class="btn btn-orange btn-lg" type="submit">Sign Up &gt;</button>
                     </div>
                 </div>
                 <div class="payment-form-section" id="email-verification-container" style="display: none;">
                     <div>
                         <h3>Email Address Verification</h3><br>
-                        <p>Please verify your email address in order to use Nexus</p><br>
-                        <p id="error-message" class="text-danger"></p><br>
-                        <small>If you did not recieve an email from our Nexus development team, please try checking your spam folder.</small>
+                        <p>Please verify your email address in order to use GoNexus</p><br>
+                        <p id="emailVer-error-message" class="text-danger"></p><br>
+                        <small>If you did not recieve an email from our GoNexus development team, please try checking your spam folder.</small>
                     </div>
                 </div>
             </form>
@@ -132,16 +129,14 @@ var aff_ref = '', currency = 'USD';
                     keyboard: false,
                     backdrop: "static"
                 });
-                $("#error-message").text('');
-                setTimeout(() => {
-                    if ($('#password').val() != $('#password2').val()) {
-                        $("#error-message").text('Your password and confirm password must match.');
-                        $("#signup-processing").modal('hide');
-                    } else if (!$('#display_name').val()) {
-                        $("#error-message").text('You need to have a display name.');
-                        $("#signup-processing").modal('hide');
-                    } else userSignup($('#email').val(), $('#password').val(), $('#display_name').val());
-                }, 5000);
+                $("#signup-error-message").text('');
+                if ($('#password').val() != $('#password2').val()) {
+                    $("#signup-error-message").text('Your password and confirm password must match.');
+                    $("#signup-processing").modal('hide');
+                } else if (!$('#display_name').val()) {
+                    $("#signup-error-message").text('You need to have a display name.');
+                    $("#signup-processing").modal('hide');
+                } else userSignup($('#email').val(), $('#password').val(), $('#display_name').val());
             })
         </script>
     </div>

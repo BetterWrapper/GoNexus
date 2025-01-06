@@ -729,12 +729,6 @@
 			<selection type="skeleton" state_id="run"/>
 			<selection type="upper_body" state_id="default"/>
 		</action>
-		<action id="sprint" name="Sprint" loop="Y" totalframe="20" enable="Y" category="traveling" is_motion="Y">
-			<selection type="facial" facial_id="head_badass"/>
-			<selection type="lower_body" state_id="run"/>
-			<selection type="skeleton" state_id="sprint"/>
-			<selection type="upper_body" state_id="laugh"/>
-		</action>
 		<action id="jog" name="Jog" loop="Y" totalframe="20" enable="Y" category="traveling" is_motion="Y">
 			<selection type="facial" facial_id="head_neutral"/>
 			<selection type="lower_body" state_id="walk"/>
@@ -967,7 +961,6 @@
 			<state id="lie_down" filename="lie_down.swf"/>
 			<state id="point_at" filename="point_at.swf"/>
 			<state id="run" filename="run.swf"/>
-			<state id="sprint" filename="sprint.swf"/>
 			<state id="punch" filename="punch.swf"/>
 			<state id="sad" filename="sad.swf"/>
 			<state id="sit" filename="sit.swf"/>
@@ -2611,12 +2604,6 @@
 			<selection type="lower_body" state_id="run"/>
 			<selection type="skeleton" state_id="run"/>
 			<selection type="upper_body" state_id="default"/>
-		</action>
-		<action id="sprint" name="Sprint" loop="Y" totalframe="20" enable="Y" category="traveling" is_motion="Y">
-			<selection type="facial" facial_id="head_badass"/>
-			<selection type="lower_body" state_id="run"/>
-			<selection type="skeleton" state_id="run"/>
-			<selection type="upper_body" state_id="laugh"/>
 		</action>
 		<action id="jog" name="Jog" loop="Y" totalframe="20" enable="Y" category="traveling" is_motion="Y">
 			<selection type="facial" facial_id="head_neutral"/>

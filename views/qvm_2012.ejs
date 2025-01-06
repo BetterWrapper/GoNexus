@@ -48,7 +48,6 @@
     <body id="school">
     <script type="text/javascript">
     GoLite.settings.player = {
-        swf: "/static/animation/player.swf",
         height: 384,
         width: 550
     }
@@ -97,7 +96,7 @@
     </div>
     <div id="login_bar" style="display:none">
         <div class="inside">
-            You'll need to signup to save your video.  Do it now.		
+            You need a GoNexus Account in order to save your video. 
             <div class="options">
                 <a href="javascript:jQuery.blockUI()" onclick="updateUserState(response => {
                     jQuery.unblockUI();
@@ -635,6 +634,25 @@
             </div>
             <div class="loading"></div>
             <div class="preview" style="display:none">
+                <% if (params.qvm.playerYearOptions) { %>
+                    <% if (Object.keys(params.qvm.playerYearOptions).length > 1) { %>
+                        <label style="float: right;">
+                            Player Year: <select id="GoLitePlayerYear">
+                                <% for (const i in params.qvm.playerYearOptions) { %>
+                                    <% if (params.qvm.playerYearOptions[i].default != undefined) { %>
+                                        <option value="<%= i %>" selected><%= i %></option>
+                                    <% } else { %>
+                                        <option value="<%= i %>"><%= i %></option>
+                                    <% } %>
+                                <% } %>
+                            </select>
+                        </label>
+                    <% } else { %>
+                        <input type="hidden" id="GoLitePlayerYear" value="<%= Object.keys(params.qvm.playerYearOptions)[0] %>"/>
+                    <% } %>
+                <% } else { %>
+                    <input type="hidden" id="GoLitePlayerYear" value="2016"/>
+                <% } %>
                 <div id="player_container">
                     You can't use GoNexus because Flash might be disabled. <a href="https://get.adobe.com/flashplayer/">Enable Flash</a>.
                 </div>
@@ -905,7 +923,7 @@
     </script>
     <script type="text/javascript">
     jQuery.flash.expressInstall = "/static/libs/expressInstall.swf";
-    const customCharInfo = Object.fromEntries(GoLite.params('<%= params.customCharInfo %>'));
+    const customCharInfo = Object.fromEntries(GoLite.params(('<%= params.customCharsInfo %>').split("amp;").join("")));
     var customCC_model = [];
     var reloadCCList = function() {
         customCharInfo.userId = GoLite.userData.uid || GoLite.userData.id;

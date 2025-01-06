@@ -539,15 +539,16 @@ var GoLite = (function(e) {
         else w.opening_closing = {}
         e.each(a, function(z, A) {
             var y = {};
-            let g = A.data("cid");
-            g = g.includes(".") ? g.split(".").join(":") : g;
-            y[g] = z + 1;
+            y[A.data("cid")] = z + 1;
             w.characters.push(y)
         });
         if (i) {
             w.opening_closing.opening_characters = {
                 facial: w.script[0].facial
             };
+            for (const x in w.opening_closing.opening_characters.facial) {
+                w.opening_closing.opening_characters.facial[x] = "default"
+            }
             w.opening_closing.closing_characters = {
                 facial: w.script[(w.script.length - 1)].facial
             };
@@ -555,9 +556,10 @@ var GoLite = (function(e) {
         return w
     }
     function h(y, w) {
+        const GoLitePlayerYeaer = e("#GoLitePlayerYear").val();
         e("#" + y).flash({
             id: "Player",
-            swf: GoLite.settings.player.swf,
+            swf: `/animation/${GoLitePlayerYeaer}/player.swf`,
             height: !w.isWide ? 384 : 339,
             width: 550,
             bgcolor: "#000000",
@@ -567,7 +569,9 @@ var GoLite = (function(e) {
             allowFullScreen: "true",
             wmode: "transparent",
             hasVersion: "10.3",
-            flashvars: w
+            flashvars: Object.assign({
+                studio: GoLitePlayerYeaer
+            }, w)
         })
     }
     function k(y, w) {
@@ -706,14 +710,12 @@ var GoLite = (function(e) {
                             }, 500);
                         });
                     });
-                } else {
-                    this.userData = user;
-                    if (golite_theme != "talkingpicz") setTimeout(reloadCCList, 1000);
-                }
+                } else this.userData = user;
                 this.init(num, d);
                 if (this.params(window.location.search).get("movieId")) jQuery.post(`/api/qvm_script/get?movieId=${
                     this.params(window.location.search).get("movieId")
                 }`, this.initForEdit);
+                if (golite_theme != "talkingpicz" && user) reloadCCList()
             });
         },
         userLogin(form, callback) {
@@ -968,7 +970,17 @@ var GoLite = (function(e) {
                     B.data("textbkup", A.text);
                     B.data("voicebkup", A.voice)
                 });
-                h("player_container", y.player_object);
+                function flashPlayer() {
+                    const GoLitePlayerYeaer = e('#GoLitePlayerYear').val();
+                    h("player_container", Object.assign({
+                        clientThemePath: `/static/tommy/${y.playerYearOptions[GoLitePlayerYeaer].clientYear}/<client_theme>`
+                    }, y.player_object));
+                }
+                if (y.hasPlayerYearOptions) {
+                    e('#GoLitePlayerYear')[0].removeEventListener("change", flashPlayer);
+                    e('#GoLitePlayerYear')[0].addEventListener("change", flashPlayer);
+                }
+                flashPlayer();
                 e(document).trigger("GoLite.stateChange", ["preview"])
             }, "json");
             e.ajaxSetup({

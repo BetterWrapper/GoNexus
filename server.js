@@ -105,10 +105,42 @@ function stream2Buffer(readStream) {
 const {
 	getBuffersOnline
 } = require("./movie/main");
+const {
+	xmlToJson,
+	jsonToXml
+} = require("./movie/xmlConverter");
 let json = {};
-app.use(express.json());
-app.use(express.static('./frontend'));
-app
+const char = require("./character/main");
+//app.use(require("./FlickrAuth/src"))
+app.use(express.static('./frontend')).post('/goapi/assignwatermark/movie/:mId/:wId', async (req, res) => {
+	const data = await loadPost(req);
+	const users = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`));
+	const user = users.users.find(i => i.id == data.userId);
+	const movie = user.movies.find(i => i.id == req.params.mId);
+	movie.watermark = (() => {
+		switch (req.params.wId) {
+			case "0vTLbQy9hG7k": return '';
+			case "0dhteqDBt5nY": return '<watermark style="visualplugin"/>';
+			default: {
+				const assetInfo = user.assets.find(i => i.enc_asset_id == req.params.wId);
+				return `<watermark>/assets/${assetInfo.id}</watermark>`;
+			}
+		}
+	})();
+	fs.writeFileSync(`${asset.folder}/users.json`, JSON.stringify(users, null, "\t"));
+	res.end("0")
+}).get('/static/store/:tId/char/:cId/:aId', async (req, res) => {
+	const pieces = req.params.aId.split(".");
+	res.setHeader("Content-Type", `application/${pieces[1]}`);
+	const functionname1 = req.params.aId.startsWith("head_") ? 'genFacialXml' : 'genActionXml';
+	const functionname = pieces[1] == "zip" ? "genZip4ActionOrFacials" : functionname1;
+	res.end(await char[functionname](await xmlToJson(await char.load(req.params.cId)), pieces[0], functionname1));
+}).post('/goapi/getMovieInfo/', async (req, res) => {
+	const data = await loadPost(req);
+	const user = JSON.parse(fs.readFileSync(`${asset.folder}/users.json`)).users.find(i => i.id == (data.movieOwnerId || data.userId));
+	const info = user?.movies.find(i => i.id == data.movieId);
+	res.end(`<movie_info>${!info ? '<watermark>/ui/img/logo_better.png</watermark>' : info.watermark}</movie_info>`);
+})
 	.use(async (req, res) => {
 		try {
 			function checkFtAcc(data) {
@@ -240,7 +272,26 @@ app
 					break;
 				} case "POST": {
 					switch (parsedUrl.pathname) {
-						case "/api/templateStuff/get": {
+						case "/api/getCustomLVMFileSystemTree": {
+							function t(filepath = './frontend/animation') {
+								const tree = {};
+								for (const stuff of fs.readdirSync(filepath)) {
+									const ls = fs.lstatSync(`${filepath}/${stuff}`);
+									tree[stuff] = {};
+									function setVar(f) {
+										tree[stuff][f] = true;
+									}
+									if (ls.isDirectory()) {
+										setVar("folder");
+										Object.assign(tree[stuff], t(`${filepath}/${stuff}`))
+									}
+									else setVar("file");
+								}
+								return tree;
+							}
+							res.json(t())
+							break;
+						} case "/api/templateStuff/get": {
 							fs.readFile(`./_TEMPLATES/${parsedUrl.query.filename}`, (err, data) => {
 								if (err) res.end(JSON.stringify(err));
 								else {
@@ -1019,23 +1070,11 @@ app
 								}
 							});
 							break;
-						} case "/api/checkEmail": {
+						} case "/api/removeSession": {
 							loadPost(req, res).then(data => {
-								res.setHeader("Content-Type", "application/json");
-								const userInfo = JSON.parse(fs.readFileSync('./_ASSETS/users.json')).users.filter(i => i.email == data.email);
-								res.end(JSON.stringify({
-									success: userInfo.length <= 1,
-									error: `This email address already exists inside of GoNexus's database. 
-									Please use a different email address`
-								}));
-							});
-							break;
-						}
-						case "/api/removeSession": {
-							loadPost(req, res).then(data => {
-								if (session.remove(res, data)) res.end(JSON.stringify({
+								if (session.remove(res, data)) res.json({
 									success: true
-								}));
+								});
 							});
 							break;
 						} case "/api/getUserInfoFromSession": { // sends user info from the current session
@@ -1100,11 +1139,11 @@ app
 													const num = Math.floor(Math.random() * (28 - 7 + 1) + 1);
 													const uid = crypto.randomBytes(num).toString('hex');
 													const json = JSON.parse(fs.readFileSync('./_ASSETS/users.json'));
-													const meta = json.users.find(i => i.email == data.email);
-													if (meta && !meta.linkedFTAcc) {
+													const meta = json.users.filter(i => i.email == data.email);
+													if (meta.length == 1) {
 														res.end(JSON.stringify({
 															success: false,
-															error: "Your email address has already been taken by someone who has created their account on GoNexus. If this is your email address and you are trying to link your flashthemes account to GoNexus, please contact one of our developers on the GoNexus Discord Server for some help."
+															error: "There is another account that is using the provided email address. Please type in a different address."
 														}))
 													} else {
 														json.users.unshift({

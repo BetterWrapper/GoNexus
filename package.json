@@ -32,6 +32,8 @@
 		"node-zip": "github:kyriosli/node-zip",
 		"nodemailer": "^6.9.7",
 		"openai": "^4.76.2",
+		"passport": "^0.7.0",
+		"passport-flickr": "^0.2.0",
 		"request": "^2.88.2",
 		"sax": ">=0.6.0",
 		"xml-js": "^1.6.11",

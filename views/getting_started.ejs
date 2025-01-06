@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
         <meta name="generator" content="Hugo 0.101.0">
-        <title>Getting Started - Nexus</title>
+        <title>Getting Started - GoNexus</title>
         <link rel="stylesheet" href="/ui/css/common_combined.css">
         <style>
             #Player {
@@ -48,7 +48,7 @@
             }
         </style>
         <script type="text/javascript">
-            var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info";
+            var srv_tz_os = -4, view_name = "go", user_cookie_name = "u_info_school";
         </script>
         <script src="/js/common_combined.js"></script>
         <script src="https://fireanimate-eb62d.firebaseapp.com/__/firebase/6.2.4/firebase-app.js"></script>
@@ -93,8 +93,7 @@
             <div class="lightbox_wrapper">
                 <h3 class="modal-title">Sharing a video</h3>
                 <hr>
-                <h4 class="compact">Below you may share the url of this video to users who are logged in to Nexus.</h4>
-                <p>Anyone who isn't logged in to Nexus will have no access to this video.</p>
+                <h4 class="compact">Below you may share the url of this video to users who are logged in to GoNexus.</h4>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-group">
@@ -131,23 +130,22 @@
             var chars, movies;
             function checkUserChars() {
                 $("#getting_started_modal").block();
-                $.post("/api/getChars", {
+                $.post("/api/assets/get/theme/ugc", {
                     userId: userData.id || userData.uid,
-                    cc_theme_id: $("#themes_selector").val(),
-                }, e => {
-                    const d = JSON.parse(e);
-                    if (d[0] && !d[0].error && d[0].id) {
+                    type: "char"
+                }, d => {
+                    if (d[0]?.id) {
                         chars = d;
                         goTo('themes_selector');
                     } else {
                         $("#getting_started_modal").unblock();
-                        alert(d && d[0] && d[0].error ? d[0].error : "You have not created any characters yet.")
+                        alert(d && d[0] && d[0].error ? d[0].error : "You have not created any characters for this theme yet.")
                     }
                 });
             }
             function checkUserVideos(callback) {
                 $("#getting_started_modal").block();
-                $.getJSON(`/movieList?uid=${userData.id || userData.uid}`, d => {
+                $.getJSON(`/movieList`, d => {
                     if (d[0]) {
                         movies = d;
                         if (callback && typeof callback == "function") callback();
@@ -172,9 +170,23 @@
             function beginImport() {
                 const elem = getting_started_html_config.current == "custom_lvm" ? "#custom_studio" : "#Studio"
                 function importFailed(e) {
-                    const html = '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Failed</h4><br><hr><p>Something in Nexus\'s servers has failed that caused your asset not to import successfully and that\'s okay, it happens! you can close this window and try to import your asset again. here is the error you have gotten:</p><br><hr>' + 
-                    `<small>${typeof e != "string" ? e.toString() : e}</small>`
-                    + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
+                    const html = `
+                        <a style="float: right;" href="javascript:closeWindow()">×</a>
+                        <h4 style="float: left;">Import Failed</h4>
+                        <br>
+                        <hr>
+                        <p>
+                            Something in the GoNexus servers has failed that caused your asset not to import successfully and that's okay, 
+                            it happens. you can close this window and try to import your asset again. here is the error you have gotten:
+                        </p>
+                        <br>
+                        <hr>
+                        <small>
+                            ${typeof e != "string" ? e.toString() : e}
+                        </small>
+                        <hr>
+                        <a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>
+                    `
                     if (elem != "#custom_studio") {
                         $("#stuff").unblock();
                         $("#stuff").html(html);
@@ -193,9 +205,22 @@
                         if (d.suc) {
                             const importType = d.asset_data.type == "sound" ? d.asset_data.subtype : d.asset_data.type;
                             $(elem)[0].importerUploadComplete(importType, d.id, d.asset_data);
-                            const html = '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Import Complete!</h4><br><hr>' + 
-                            `<p>Because your asset has been imported to Nexus successfully, you may now use the asset you just imported in your video. to find your asset, go to the Your Library section in the dropdown menu in the top left corner of the lvm and find your asset based off of the file type you choose for your asset.</p><br>`
-                            + '<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><br>'
+                            const html = `
+                                <a style="float: right;" href="javascript:closeWindow()">×</a>
+                                <h4 style="float: left;">Import Complete!</h4>
+                                <br>
+                                <hr>
+                                <p>
+                                    Because your asset has been imported to GoNexus successfully, 
+                                    you may now use the asset you just imported in your video. to find your asset, 
+                                    go to the <strong>Your Library</strong> section in the dropdown menu in the top left corner of the lvm 
+                                    and find your asset based off of the file type you choose for your asset.
+                                </p>
+                                <br>
+                                <hr>
+                                <a class="btn btn-orange" href="javascript:closeWindow()">Close</a>
+                                <br>
+                            `
                             if (elem != "#custom_studio") {
                                 $("#stuff").unblock();
                                 $("#stuff").html(html);
@@ -244,17 +269,15 @@
             function showImporter() {
                 const elem = `<a style="float: right;" href="javascript:closeWindow()">×</a>
                 <h4 style="float: left;">Importing An Asset</h4>
-                <br>
                 <hr>
                 <p>
-                    The Import Window/Sidebar is a place where you can import all of your images/sounds to Nexus so that you can use them in your video.
+                    The Import Window/Sidebar is a place where you can import all of your images/sounds to GoNexus 
+                    so that you can use them in your video.
                 </p>
-                <br>
                 <hr>
                 <small>
                     To get started, click on the Select a File button below.
                 </small>
-                <br>
                 <hr>
                 <center>
                     <input type="file" name="import" onchange="importerUpdate(this)" id="fileImport"/>
@@ -269,7 +292,6 @@
                         <tbody id="importer_quene"></tbody>
                     </table>
                 </center>
-                <br>
                 <hr>
                 <a class="btn btn-orange" href="javascript:closeWindow()">Close</a>`;
                 if (getting_started_html_config.current != "custom_lvm") {
@@ -279,18 +301,33 @@
             }
             function initPreviewPlayer(dataXmlStr, startFrame) {
                 movieDataXmlStr = dataXmlStr;
-                const html = '<a style="float: right;" href="javascript:closeWindow()">×</a><h4 style="float: left;">Previewing A Video</h4><br><hr><p>The Preview Window is a place where you can view your video before saving any changes to it. This is really useful for helping you find any mistakes you make while making a video.</p><br><hr>toObjectString<hr><a class="btn btn-orange" href="javascript:closeWindow()">Close</a><a class="btn btn-green" href="javascript:closeWindow()" onclick="document.getElementById(\'Studio\').onExternalPreviewPlayerPublish()">Save & Close</a><br>'
+                const html = `
+                    <a style="float: right;" href="javascript:closeWindow()">×</a>
+                    <h4 style="float: left;">Previewing A Video</h4>
+                    <br>
+                    <hr>
+                    <p>
+                        The Preview Window is a place where you can view your video before saving any changes to it. 
+                        This is really useful for helping you find any mistakes you make while making a video.
+                    </p>
+                    <br>
+                    <hr>
+                    toObjectString
+                    <hr>
+                    <a class="btn btn-orange" href="javascript:closeWindow()">Close</a>
+                    <a class="btn btn-green" href="javascript:closeWindow()" onclick="document.getElementById(
+                        'Studio'
+                    ).onExternalPreviewPlayerPublish()">Save & Close</a>
+                    <br>
+                `
                 if (getting_started_html_config.current == "custom_lvm") {
-                    getting_started_html_config.custom_player_data.flashvars.v = getting_started_html_config.modalData.year;
                     getting_started_html_config.custom_player_data.flashvars.startFrame = startFrame || 1;
                     getting_started_html_config.custom_player_data.flashvars.isInitFromExternal = 1;
                     getting_started_html_config.custom_player_data.flashvars.autostart = 1;
-                    getting_started_html_config.custom_player_attrs.data = `/static/tommy/${
+                    getting_started_html_config.custom_player_attrs.data = `/animation/${
                         getting_started_html_config.modalData.year
-                    }/animation/player.swf`
-                    getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/${
-                        getting_started_html_config.modalData.year
-                    }/<client_theme>`
+                    }/player.swf`
+                    getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/2012/<client_theme>`
                     blockCustomStudio(html.split("toObjectString").join(toObjectString(
                         getting_started_html_config.custom_player_attrs,
                         getting_started_html_config.custom_player_data
@@ -305,8 +342,8 @@
                     getting_started_html_config.player_attrs.width = "640";
                     $("#Studio").css("height", "0px");
                     $("#stuff").html(html.split("toObjectString").join(toObjectString(
-                        getting_started_html_config.custom_player_attrs,
-                        getting_started_html_config.custom_player_data
+                        getting_started_html_config.player_attrs,
+                        getting_started_html_config.player_data
                     )));
                 }
             }
@@ -379,21 +416,18 @@
                     allowScriptAccess: "always",
                     wmode: "transparent",
                     flashvars: {
-                        endStyle: "1",
-                        movieLid: 13,
-                        isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
+                        isPreview: 1,
                         isLogin: "Y",
-                        siteId: "go",
-                        storePath: "/static/tommy/2010/store/<store>",
-                        ut: "10",
+                        siteId: 11,
+                        movieLid: 11,
+                        storePath: "/static/store/<store>",
+                        ut: 10,
                         apiserver: window.location.origin + "/",
                         ctc: "go",
                         tlang: "en_US",
-                        autostart: "0",
+                        autostart: 1,
                         appCode: "go",
-                        isEmbed: "0",
-                        showButtons: "1",
-                        fb_app_url: window.location.origin + "/"
+                        isEmbed: "0"
                     },
                     scale: "exactfit",
                     allowFullScreen: "true",
@@ -406,13 +440,19 @@
                 },
                 player_data: {
 					flashvars: {
-                        apiserver: "/",
+                        isPreview: 1,
+                        isLogin: "Y",
+                        siteId: 11,
+                        movieLid: 11,
                         storePath: "/static/store/<store>",
                         ut: 10,
+                        apiserver: window.location.origin + "/",
+                        ctc: "go",
+                        tlang: "en_US",
                         autostart: 1,
-                        isWide: 1,
-                        isPreview: 1,
-                        clientThemePath: "/static/<client_theme>",
+                        appCode: "go",
+                        isEmbed: "0",
+                        clientThemePath: "/static/<client_theme>"
                     },
                     allowScriptAccess: "always",
                     allowFullScreen: "true",
@@ -428,12 +468,12 @@
 					flashvars: {
                         apiserver: "/",
 					    storePath: "/static/store/<store>",
-					    isEmbed: 1,
+					    isEmbed: 0,
 					    ctc: "go",
 					    ut: 10,
 					    appCode: "go",
-					    siteId: "13",
-					    lid: 13,
+					    siteId: 11,
+					    lid: 11,
                         isWixPaid: 1,
 					    clientThemePath: "/static/<client_theme>",
 					    tlang: "en_US",
@@ -448,20 +488,19 @@
                 },
                 custom_studio_data: {
 					flashvars: {
-			            upl: 1,
-			            hb: 1,
                         pts: 1,
+                        upl: 1,
+                        hb: 1,
 			            appCode: "go",
 			            uisa: 1,
 			            isLogin: "Y",
 			            tlang: "en_US",
-			            isEmbed: 1,
+			            isEmbed: 0,
 			            isWide: "0",
 			            nextUrl: "javascript:showMyVideoUsingLVMYear('<movieId>')",
-                        siteId: window.location.host.startsWith("localhost") ? 7 : "go",
-                        lid: window.location.host.startsWith("localhost") ? 7 : 13,
-			            ut: "10",
-                        isOffline: window.location.host.startsWith("localhost") ? 1 : 0,
+                        siteId: 11,
+                        lid: 11,
+			            ut: 10,
                         apiserver: window.location.origin + "/",
                         newusr: 1
                     },
@@ -473,27 +512,21 @@
                 const oldModalData = getting_started_html_config.modalData;
                 goTo('custom_lvp', (json_info, callback) => {
                     checkUserVideos(() => {
-                        getting_started_html_config.player_data.flashvars.autostart = 0;
                         delete getting_started_html_config.player_data.flashvars.startFrame;
                         delete getting_started_html_config.player_data.flashvars.isInitFromExternal;
-                        getting_started_html_config.custom_player_data.flashvars.clientThemePath = `https://file.garden/ZP0Nfnn29AiCnZv5/static/2012/<client_theme>`;
-                        getting_started_html_config.custom_player_data.flashvars.v = oldModalData.year;
+                        getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/2012/<client_theme>`;
                         getting_started_html_config.custom_player_data.flashvars.movieOwnerId = userData.id || userData.uid;
                         getting_started_html_config.custom_player_data.flashvars.userId = userData.id || userData.uid;
                         getting_started_html_config.custom_player_data.flashvars.movieOwner = userData.displayName;
-                        getting_started_html_config.custom_player_data.flashvars.thumbnailURL = `movie_thumbs/${mId}.png`
                         getting_started_html_config.custom_player_data.flashvars.movieId = mId;
-                        getting_started_html_config.custom_player_attrs.data = `https://file.garden/ZP0Nfnn29AiCnZv5/animation/${
+                        getting_started_html_config.custom_player_attrs.data = `/animation/${
                             data.year
                         }/player.swf`;
                         $.getJSON(`/meta/${mId}`, d => {
-                            getting_started_html_config.custom_player_data.flashvars.movieTitle = d.title;
-                            getting_started_html_config.custom_player_data.flashvars.movieDesc = d.desc;
                             getting_started_html_config.custom_player_data.flashvars.isPublished = d.published;
                             getting_started_html_config.custom_player_data.flashvars.is_private_shared = d.pshare;
                             getting_started_html_config.custom_player_data.flashvars.copyable = d.copyable;
                             getting_started_html_config.custom_player_data.flashvars.isWide = d.isWide || 0;
-                            getting_started_html_config.custom_player_data.flashvars.duration = Math.round(d.duration);
                             jQuery("#getting_started_modal").unblock();
                             callback(json_info);
                         })
@@ -514,7 +547,6 @@
                             getting_started_html_config.player_data.flashvars.is_private_shared = d.pshare;
                             getting_started_html_config.player_data.flashvars.copyable = d.copyable;
                             getting_started_html_config.player_data.flashvars.isWide = d.isWide || 0;
-                            getting_started_html_config.player_data.flashvars.duration = Math.round(d.duration);
                             jQuery("#getting_started_modal").unblock();
                             callback(json_info);
                         })
@@ -524,13 +556,13 @@
             function modifyVideo() {
                 goTo('themes_selector', (json_info, callback) => {
                     getting_started_html_config.studio_data.flashvars.movieId = getting_started_html_config.player_data.flashvars.movieId;
-                    getting_started_html_config.player_data.flashvars.movieId = "";
+                    delete getting_started_html_config.player_data.flashvars.movieId;
                     callback(json_info);
                 })
             }
             function newVideo() {
                 goTo('themes_selector', (json_info, callback) => {
-                    getting_started_html_config.studio_data.flashvars.movieId = "";
+                    delete getting_started_html_config.studio_data.flashvars.movieId;
                     callback(json_info);
                 })
             }
@@ -637,8 +669,9 @@
             function openLVM() {
                 jQuery("#getting_started_modal").block();
                 jQuery.post("/api/getNewMovieId", d => {
-                    getting_started_html_config.studio_data.flashvars.presaveId = getting_started_html_config.studio_data.flashvars.movieId || d;
-                    jQuery("#getting_started_modal").unblock();
+                    if (
+                        !getting_started_html_config.studio_data.flashvars.movieId
+                    ) getting_started_html_config.studio_data.flashvars.presaveId = d;
                     jQuery("#getting_started_modal").block({
                         message: toObjectString(getting_started_html_config.studio_attrs, getting_started_html_config.studio_data),
                         css: {
@@ -653,28 +686,13 @@
             function yearSubmit() {
                 $("#getting_started_modal").block();
                 const data = Object.fromEntries(new URLSearchParams($("#year_input").serialize()));
-                function experimentalConfirm() {
-                    for (const i of [
-                        "retro_times",
-                        "business_times"
-                    ]) {
-                        const d = $(`#${i}`).find(`option[value="${data.year}"]`);
-                        if (
-                            d 
-                            && d.data("is-experimental")
-                        ) return confirm("NOTE: The year you selected is currently in it's experimental state right now. By clicking OK, you are understanding that the swf files included in that year are not stable for production use yet and are risking unstable performace from the SWF files included in the year you selected. Are you sure that you want to proceed to the next step without reconsidering first?");
-                    }
-                    return true;
-                }
-                if (experimentalConfirm()) switch (data.for) {
+                switch (data.for) {
                     case "lvp": {
                         goTo('custom_lvp', (json_info, callback) => {
                             checkUserVideos(() => {
                                 for (const i in data) getting_started_html_config.modalData[i] = data[i];
-                                getting_started_html_config.custom_player_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;
-                                getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/${
-                                    parseInt(data.year) >= 2012 ? "2012" : data.year
-                                }/<client_theme>`;
+                                getting_started_html_config.custom_player_data.flashvars.storePath = `/static/store/<store>`;
+                                getting_started_html_config.custom_player_data.flashvars.clientThemePath = `/static/tommy/2012/<client_theme>`;
                                 getting_started_html_config.custom_player_data.flashvars.v = data.year;
                                 getting_started_html_config.custom_player_data.flashvars.movieOwnerId = userData.id || userData.uid;
                                 getting_started_html_config.custom_player_data.flashvars.movieOwner = userData.displayName;
@@ -682,15 +700,14 @@
                                     getting_started_html_config.player_data.flashvars.movieId
                                 }.png`
                                 getting_started_html_config.custom_player_data.flashvars.movieId = getting_started_html_config.player_data.flashvars.movieId;
-                                getting_started_html_config.custom_player_attrs.data = `/static/animation/player.swf?v=${
+                                getting_started_html_config.custom_player_attrs.data = `/animation/${
                                     data.year
-                                }`;
+                                }/player.swf`;
                                 $.getJSON(`/meta/${getting_started_html_config.player_data.flashvars.movieId}`, d => {
                                     getting_started_html_config.custom_player_data.flashvars.isPublished = d.published;
                                     getting_started_html_config.custom_player_data.flashvars.is_private_shared = d.pshare;
                                     getting_started_html_config.custom_player_data.flashvars.copyable = d.copyable;
                                     getting_started_html_config.custom_player_data.flashvars.isWide = d.isWide || 0;
-                                    getting_started_html_config.custom_player_data.flashvars.duration = Math.round(d.duration);
                                     jQuery("#getting_started_modal").unblock();
                                     callback(json_info);
                                 })
@@ -698,17 +715,6 @@
                         });
                         break;
                     }
-                } else {
-                    $("#getting_started_modal").unblock();
-                    $("#getting_started_modal").block({
-                        message: $("#year_input"),
-                        css: {
-                            cursor: 'auto'
-                        },
-                        overlayCSS: {
-                            cursor: 'auto'
-                        }
-                    });
                 }
             }
             function switchLvp2(where) {
@@ -733,7 +739,7 @@
             }
             function getThemes() {
                 return new Promise((res, rej) => {
-                    jQuery.getJSON("/api/themes/get", d => res(d.filter(i => !i.attr.isHidden)));
+                    jQuery.getJSON("/api/themes/get?no_extras=true", d => res(d.filter(i => !i.attr.isHidden)));
                 })
             }
             function tutInit(obj) {
@@ -752,24 +758,29 @@
                 else (async () => {
                     const charIds = {};
                     for (const v of await getThemes()) charIds[v.attr.id] = v.attr.cc_theme_id;
-                    $.post("/api/getChars", {
+                    $.post("/api/assets/get/theme/ugc", {
+                        type: "char",
                         userId: userData.id || userData.uid,
-                        cc_theme_id: charIds[obj ? $(obj).val() : modalData.theme] || "family",
-                    }, e => {
-                        const d = JSON.parse(e);
-                        if (d[0] && !d[0].error && d[0].id) $(
-                            "#tutStuff"
-                        ).html(`<center><h1>Select A Character</h1></center><br><div id="row_chars" class="row">${
-                            d.map(v => `<div class="col-md-2" title="${v.title}"><input id="${v.id}" type="radio" name="tutchar" value="${
-                                v.id
-                            }" style="float: left;"/><img src="${v.head_url}"/></div>`).join("")
-                        }</div>`)
+                        themeId: charIds[obj ? $(obj).val() : modalData.theme] || "family",
+                    }, d => {
+                        if (d[0]) {
+                            if (d[0].head_url) $(
+                                "#tutStuff"
+                            ).html(`<center><h1>Select A Character</h1></center><br><div id="row_chars" class="row">${
+                                d.map(v => `<div class="col-md-2" title="${v.title}">
+                                    <input id="${v.id}" type="radio" name="tutchar" value="${v.id}" style="float: left;"/>
+                                    <img src="${v.head_url}"/>
+                                </div>`).join("")
+                            }</div>`)
+                            else $("#tutStuff").html(
+                                `There are some characters created for this theme, but for some reason a char head png 
+                                image does not exist withn the user database of your account. 
+                                Try going back to the step where you created characters to fix your issue.`
+                            );
+                        }
                         else $("#tutStuff").html(
-                            d 
-                            && d[0] 
-                            && d[0].error 
-                            ? d[0].error 
-                            : "You have not created any characters for this theme yet."
+                            `You have not created any characters for this theme yet. To create one, 
+                            head back a few steps until you see a section of this modal window where you can create characters.`
                         );
                         $("#getting_started_modal").unblock();
                     });
@@ -785,13 +796,13 @@
                 $("#tutStuff")[modalData.tutorial == "on" ? "show" : "hide"]();
             }
             function newAnimation() {
-                getting_started_html_config.custom_studio_data.flashvars.movieId = "";
+                delete getting_started_html_config.custom_studio_data.flashvars.movieId;
                 goTo('custom_lvm_themes_selector');
             }
             function onSwfChange(obj) {
-                getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${
+                getting_started_html_config.custom_studio_attrs.data = `/animation/${
                     getting_started_html_config.modalData.year
-                }/animation/${$(obj).val()}`;
+                }/${$(obj).val()}`;
                 getting_started_html_config.custom_studio_data.flashvars.file = $(obj).val();
                 $(".getting_started_custom_lvm_video_maker").html(
                     toObjectString(
@@ -816,6 +827,14 @@
                     elem.data("fullscreen-apath") || "go_full.swf"
                 }&clientThemePath=${staticPath}/<client_theme>&storePath=/static/tommy/2010/store/<store>`;
             }
+            function getCustomLVMYears() {
+                return new Promise((res, rej) => {
+                    jQuery.post("/api/getCustomLVMFileSystemTree", d => {
+                        $("#year_input").find(`select[name="year"]`).html(Object.keys(d).map(v => `<option year="${v}">${v}</option>`));
+                        res(d);
+                    });
+                })
+            }
             function showGettingStartedModal(json) {
                 jQuery.blockUI();
                 (async () => {
@@ -831,6 +850,7 @@
                             v.attr.cc_theme_id
                         }">${v.attr.name}</option>`).join("")
                     }
+                    if (!getting_started_html_config.customLVMyears) getting_started_html_config.customLVMyears = await getCustomLVMYears();
                     if (
                         $("#getting_started_modal").find(".modal-dialog").hasClass("custom_studio")
                     ) $("#getting_started_modal").find(".modal-dialog").removeClass("custom_studio");
@@ -844,83 +864,13 @@
                                 case "custom_lvm_themes_selector": {
                                     $("#other_options_custom_lvm").html(`
                                         <label style="margin: 30px;">
-                                            /static/animation/old_full.swf?v=<select onchange="tutInit()" name="year" id="yearInput">
-                                                <option value="2010" data-fullscreen-apath="457/old_full.swf" data-old-stuffs='[
-                                                    {
-                                                        "month": "May",
-                                                        "paths": [
-                                                            "old_full.swf",
-                                                            "erfhuhijfewhe.swf",
-                                                            "olad_full.swf",
-                                                            "old_full copy 2.swf",
-                                                            "old_full copy.swf"
-                                                        ]
-                                                    }
-                                                ]'>2010</option>
-                                                <option value="2011" data-old-stuffs='[
-                                                    {
-                                                        "month": "September",
-                                                        "paths": [
-                                                            "old_full.swf",
-                                                            "FIXEDDDD.swf",
-                                                            "go_full.swf",
-                                                            "old_full copy 2.swf",
-                                                            "old_full copy.swf",
-                                                            "ollld_full.swf"
-                                                        ]
-                                                    }
-                                                ]'>2011</option>
-                                                <option value="2011b" data-is-experimental="true">2011b</option>
-                                                <option value="2012" data-fullscreen-apath="old_full.swf~/old_full.swf" data-old-stuffs='[
-                                                    {
-                                                        "month": "Feburary",
-                                                        "paths": [
-                                                            "old_full.swf",
-                                                            "guy.swf",
-                                                            "KL.swf"
-                                                        ]
-                                                    },
-                                                    {
-                                                        "month": "September",
-                                                        "paths": [
-                                                            "go_full.swf"
-                                                        ]
-                                                    }
-                                                ]'>2012</option>
-                                                <option value="2013" data-old-stuffs='[
-                                                    {
-                                                        "month": "September",
-                                                        "paths": [
-                                                            "old_full.swf",
-                                                            "ld_full.swf",
-                                                            "go_full.swf"
-                                                        ]
-                                                    },
-                                                    {
-                                                        "month": "August",
-                                                        "paths": [
-                                                            "old_full_2013.swf"
-                                                        ]
-                                                    }
-                                                ]'>2013</option>
-                                                <option value="2014" data-old-stuffs='[
-                                                    {
-                                                        "month": "January",
-                                                        "paths": [
-                                                            "old_full.swf",
-                                                            "aaaa.swf"
-                                                        ]
-                                                    },
-                                                    {
-                                                        "month": "April",
-                                                        "paths": [
-                                                            "go_full.swf"
-                                                        ]
-                                                    }
-                                                ]'>2014</option>
-                                                <option value="2015">2015</option>
-                                                <option value="2016">2016</option>
-                                            </select>
+                                            /animation/<select onchange="tutInit()" name="year" id="yearInput">
+                                                ${Object.keys(
+                                                    getting_started_html_config.customLVMyears
+                                                ).map(v => `<option value="${v}" data-paths='${JSON.stringify(
+                                                    Object.keys(getting_started_html_config.customLVMyears[v])
+                                                )}'>${v}</option>`)}
+                                            </select>/old_full.swf
                                         </label>
                                         <div style="float: left;">
                                             <label for="tutoogle" style="float: left;">
@@ -940,45 +890,37 @@
                         } case "custom_lvm": {
                             const dat = getting_started_html_config.modalData;
                             interactiveTutorial.isShowTutorial = dat.tutorial == "on";
-                            function experimentalConfirm() {
-                                return getting_started_html_config.jsonData.elem.data("is-experimental") ? confirm(
-                                    'You are trying to access a studio that isn\'t stable and is currently under developer testing right now meaning that it is not yet ready for production use yet. Are you sure that you want to take all of the risks by using this studio?'
-                                ) : true
-                            }
                             if (dat.year == "2010" && interactiveTutorial.isShowTutorial && !dat.tutchar) {
                                 interactiveTutorial.isShowTutorial = interactiveTutorial.show_by_default;
                                 go('prev');
                                 alert("You need to select a character to use for the 2010 lvm tutorial.");
-                            } else if (experimentalConfirm()) jQuery.post("/api/getNewMovieId", d => {
+                            } else jQuery.post("/api/getNewMovieId", d => {
                                 $("#getting_started_modal").find(".modal-dialog").addClass("custom_studio");
-                                if (getting_started_html_config.jsonData.elem.data("old-stuffs")) {
+                                if (getting_started_html_config.jsonData.elem.data("paths")) {
                                     var html = '<label>Filename: <select onchange="onSwfChange(this)">';
-                                    for (const stuff of getting_started_html_config.jsonData.elem.data("old-stuffs")) {
-                                        html += `<optgroup label="${stuff.month}">`;
-                                        for (const path of stuff.paths) {
-                                            html += `<option value="${path}">${path}</option>`;
-                                        }
-                                        html += '</optgroup>';
+                                    for (const path of getting_started_html_config.jsonData.elem.data("paths")) {
+                                        if (!path.endsWith(".swf")) continue;
+                                        html += `<option value="${path}">${path}</option>`;
                                     }
                                     $("#old_stuffs_selector").html(html + '</select></label>').show();
                                 }
                                 if (parseInt(dat.year) > 2013) {
                                     getting_started_html_config.custom_studio_attrs.height = "640";
-                                    getting_started_html_config.custom_studio_attrs.width = "960";
+                                    getting_started_html_config.custom_studio_attrs.width = "959";
                                 } else {
                                     getting_started_html_config.custom_studio_attrs.height = "630";
                                     getting_started_html_config.custom_studio_attrs.width = "955";
                                 }
-                                getting_started_html_config.custom_studio_attrs.data = `/static/tommy/${dat.year}/animation/old_full.swf`;
-                                getting_started_html_config.custom_studio_data.flashvars.storePath = `/static/tommy/2010/store/<store>`;
+                                getting_started_html_config.custom_studio_attrs.data = `/animation/${dat.year}/old_full.swf`;
+                                getting_started_html_config.custom_studio_data.flashvars.storePath = `/static/store/<store>`;
                                 getting_started_html_config.custom_studio_data.flashvars.clientThemePath = `/static/tommy/${
                                     dat.year
                                 }/<client_theme>`;
-                                getting_started_html_config.custom_studio_data.flashvars.movieId = getting_started_html_config.custom_player_data.flashvars.movieId || "";
-                                getting_started_html_config.custom_studio_data.flashvars.presaveId = getting_started_html_config.custom_player_data.flashvars.movieId || d
+                                if (
+                                    getting_started_html_config.custom_player_data.flashvars.movieId
+                                ) getting_started_html_config.custom_studio_data.flashvars.movieId = getting_started_html_config.custom_player_data.flashvars.movieId;
+                                else getting_started_html_config.custom_studio_data.flashvars.presaveId = d;
                                 getting_started_html_config.custom_studio_data.flashvars.studio = dat.year
-                                getting_started_html_config.custom_studio_data.flashvars.file = 'old_full.swf'
-                                getting_started_html_config.custom_studio_data.flashvars.v = dat.year
                                 getting_started_html_config.custom_studio_data.flashvars.tray = dat.theme;
                                 getting_started_html_config.custom_studio_data.flashvars.tm = interactiveTutorial.isShowTutorial ? "NEW" : "FIN";
                                 getting_started_html_config.custom_studio_data.flashvars.tmcc = dat.tutchar || "";
@@ -990,11 +932,13 @@
                                     )
                                 )
                             });
-                            else go('prev');
                         } case "cc": {
                             function setupCC() {
                                 if (jQuery(".getting_started_char_creator")) {
-                                    if (jQuery.flash.available) jQuery(".getting_started_char_creator").html(`You need to click <a href="javascript:openCC('${getting_started_html_config.modalData.theme}', '${userData.uid || userData.id}')">here</a> in order to use the CC.`);
+                                    if (jQuery.flash.available) jQuery(".getting_started_char_creator").html(
+                                        `You need to click <a href="javascript:openCC('${
+                                            getting_started_html_config.modalData.theme
+                                        }', '${userData.uid || userData.id}')">here</a> in order to use the CC.`);
                                     else jQuery(".getting_started_char_creator").html("You need Adobe Flash Player in order to use the CC.");
                                     clearInterval(loop);
                                 }
@@ -1006,15 +950,18 @@
                             getting_started_html_config.studio_data.flashvars.userId =  userData.uid || userData.id;
                             function setupStudio() {
                                 if (jQuery(".getting_started_video_maker")) {
-                                    if (jQuery.flash.available) jQuery(".getting_started_video_maker").html("You need to click <a href='javascript:openLVM()'>here</a> in order to use the LVM.");
-                                    else jQuery(".getting_started_video_maker").html("You need Adobe Flash Player in order to use the LVM.");
+                                    if (jQuery.flash.available) jQuery(".getting_started_video_maker").html(
+                                        "You need to click <a href='javascript:openLVM()'>here</a> in order to use the LVM."
+                                    );
+                                    else jQuery(".getting_started_video_maker").html(
+                                        "You need Adobe Flash Player in order to use the LVM."
+                                    );
                                     clearInterval(loop);
                                 }
                             }
                             var loop = setInterval(setupStudio, 1);
                             break;
                         } case "custom_lvp": {
-                            console.log(getting_started_html_config.custom_player_attrs, getting_started_html_config.custom_player_data)
                             jQuery(".getting_started_custom_video_player").html(
                                 toObjectString(getting_started_html_config.custom_player_attrs, getting_started_html_config.custom_player_data)
                             );
@@ -1063,20 +1010,7 @@
             <center>
                 <h1><a style="float: right;" href="javascript:;" onclick="jQuery('#getting_started_modal').unblock()">&times;</a></h1><br>
                 <h3>Please select an lvm year.</h3><br>
-                <select name="year">
-                    <optgroup label="The Retro Times" id="retro_times">
-                        <option value="2010">2010</option>
-                        <option value="2011">2011</option>
-                        <option value="2011b" data-is-experimental="true">Mid 2012 (EXPERIMENTAL)</option>
-                        <option value="2012">Late 2012</option>
-                    </optgroup>
-                    <optgroup label="The Business Times" id="business_times">
-                        <option value="2013">2013</option>
-                        <option value="2014">2014</option>
-                        <option value="2015">2015</option>
-                        <option value="2016">2016</option>
-                    </optgroup>
-                </select><br>
+                <select name="year"></select><br>
                 <a href="javascript:yearSubmit()" class="btn btn-orange">Submit</a>
             </center>
         </form>
@@ -1088,7 +1022,7 @@
             <!-- END OF HEADER -->
             <h2>Getting Started</h2>
             <div class="alert alert-info">
-                <h3>Welcome To Nexus's Interactive Getting Started Guide!</h3>
+                <h3>Welcome To GoNexus's Interactive Getting Started Guide!</h3>
                 <p>To proceed with the steps, please click on the Start Now button to get started</p><br>
                 <button class="btn btn-orange" onclick="showGettingStartedModal()">Start Now ></button>
             </div>
