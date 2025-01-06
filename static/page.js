@@ -223,10 +223,9 @@ module.exports = function (req, res, url) {
 			}
 			filename = "create_2012";
 			break;
-		} case "/text2video": { // this url path will be for certain qvms like talkingpicz, ecards, etc.
+		} case "/text2video": { // this url path will be for certain qvms like talkingpicz and etc.
 			const quickvideoThemeids = {
 				talkingpicz: true,
-				"ecards-free": true,
 				election: true
 			};
 			if (quickvideoThemeids[url.query.filename]) filename = url.query.filename;
