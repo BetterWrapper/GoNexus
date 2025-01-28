@@ -33,6 +33,7 @@ Codenames for the project are BetterWrapper and OrangeAura.
 ## To Do
 * Add all videomakers ![75%](https://us-central1-progress-markdown.cloudfunctions.net/progress/75)
 * Fix voice clip issues in the QVM ![90%](https://us-central1-progress-markdown.cloudfunctions.net/progress/90)
+* Fix custom characters and its emotions for the 2011 and 2012 videomakers ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
 * Fix custom characters and its emotions for the 2011 and 2012 videomakers ![60%](https://us-central1-progress-markdown.cloudfunctions.net/progress/60)
 * Find a new site host for GoNexus ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
 * Add 2 new functional scenes to Slices of Daily Life ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
