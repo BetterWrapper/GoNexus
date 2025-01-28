@@ -31,15 +31,15 @@ Codenames for the project are BetterWrapper and OrangeAura.
 * Magical
   
 ## To Do
-* Add all videomakers ![75%](https://betterwrapper.github.io/progress/?percentage=75)
-* Fix voice clip issues in the QVM ![90%](https://betterwrapper.github.io/progress/?percentage=90)
-* Fix custom characters and its emotions for the 2011 and 2012 videomakers ![60%](https://betterwrapper.github.io/progress/?percentage=60)
-* Find a new site host for GoNexus ![100%](https://betterwrapper.github.io/progress/?percentage=100)
-* Add 2 new functional scenes to Slices of Daily Life ![100%](https://betterwrapper.github.io/progress/?percentage=100)
-* Release the final version of GoNexus ![20%](https://betterwrapper.github.io/progress/?percentage=20)
-* Fix characters not loading in the 2010 LVM ![100%](https://betterwrapper.github.io/progress/?percentage=100)
-* School Management System ![100%](https://betterwrapper.github.io/progress/?percentage=100)
-* Create an interactive Getting Started Guide ![100%](https://betterwrapper.github.io/progress/?percentage=100)
+* Add all videomakers ![75%](https://us-central1-progress-markdown.cloudfunctions.net/progress/75)
+* Fix voice clip issues in the QVM ![90%](https://us-central1-progress-markdown.cloudfunctions.net/progress/90)
+* Fix custom characters and its emotions for the 2011 and 2012 videomakers ![60%](https://us-central1-progress-markdown.cloudfunctions.net/progress/60)
+* Find a new site host for GoNexus ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
+* Add 2 new functional scenes to Slices of Daily Life ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
+* Release the final version of GoNexus ![20%](https://us-central1-progress-markdown.cloudfunctions.net/progress/20)
+* Fix characters not loading in the 2010 LVM ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
+* School Management System ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
+* Create an interactive Getting Started Guide ![100%](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
 
 ## Final Release Version
 This project will be worth the wait when it is released, but don't expect it to be released soon.
