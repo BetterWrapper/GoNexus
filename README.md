@@ -1,10 +1,10 @@
 # GoNexus
-Before reading this readme, please note that GoNexus is not affiluated with the GoAnimate/Vyond Inc trademark. We do not make any profit off of this project whatsoever.
+Before reading this readme, please note that GoNexus is not affiliated with the GoAnimate/Vyond Inc trademark. We do not make any profit off of this project whatsoever.
 ## About
-GoNexus is an LVM clone which brings back GoAnimate and GoAnimate for Schools. It's currently private and closed source but that'll change once it's released. This is a great alternative for FlashThemes if you have these problems:
-* The site is too slow and takes time to load even though I have good Wi-Fi like Starlink.
-* I have problems creating an account.
-* FlashThemes has serverside crashes, etc.
+GoNexus is an LVM clone which brings back the classic GoAnimate For Schools experience while keeping things up to date with the modern era. This project could come into play if you in one of these sanarios:
+* The FlashThemes site is down and I need a site to use while not taking up too much space on my computer.
+* I don't trust any sketchy LVM projects i see (Example: Wrapper Online Diamond).
+* I need to make animations at school but can't because FlashThemes is blocked by my school's firewall
 
 Codenames for the project are BetterWrapper and OrangeAura.
 
@@ -77,7 +77,7 @@ curl -fsSL -o install.sh https://raw.githubusercontent.com/Homebrew/install/HEAD
 ```
 After it is installed, run `brew install node`. Then, you should be done!
 
-### Nexus Setup
+### GoNexus Setup
 
 Once you have NodeJS installed, you will go to the Nexus folder. Open your desired terminal and run:
 
